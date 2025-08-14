@@ -120,7 +120,7 @@
 		},
 		"Level01": {
 			"best_score": 0.0,
-			"best_time": 0.0,
+			"best_time": 22.993,
 			"description": "Navigate platforms with dimension gates",
 			"hidden_gems": 1.0,
 			"name": "First Steps",
@@ -140,7 +140,7 @@
 				"best_time": 30.0,
 				"gems_collected": 1.0
 			},
-			"time_trial_unlocked": false,
+			"time_trial_unlocked": true,
 			"unlock_requirements": {
 				"min_score": 100.0,
 				"previous_level": "EnemyGauntlet"

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="5_deathzone"]
+[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="6_portal"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(400, 32)
@@ -73,12 +74,13 @@ checkpoint_name = "Tutorial Checkpoint 1"
 [node name="DeathZones" type="Node2D" parent="."]
 
 [node name="DeathZone1" parent="DeathZones" instance=ExtResource("5_deathzone")]
-position = Vector2(400, 600)
-
-[node name="DeathZone2" parent="DeathZones" instance=ExtResource("5_deathzone")]
-position = Vector2(800, 600)
+position = Vector2(600, 650)
 
 [node name="Instructions" type="CanvasLayer" parent="."]
+
+[node name="LevelPortal" parent="." instance=ExtResource("6_portal")]
+position = Vector2(1000, 420)
+portal_name = "Tutorial Complete"
 
 [node name="InstructionLabel" type="Label" parent="Instructions"]
 offset_left = 50.0
@@ -88,5 +90,6 @@ offset_bottom = 150.0
 text = "TUTORIAL
 WASD/Arrow Keys: Move
 Space: Jump
-Don't fall into the red zones!"
+Don't fall into the red zones!
+Reach the cyan portal to finish!"
 theme_override_font_sizes/font_size = 16

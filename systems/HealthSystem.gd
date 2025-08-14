@@ -63,13 +63,22 @@ func _on_player_died():
 func _trigger_game_over():
 	player_died.emit()
 	
-	# Wait a moment for effects to play
-	await get_tree().create_timer(1.0).timeout
+	print("💀 Game Over! All hearts lost - restarting level with full health")
 	
-	# Show game over screen or restart level
+	# Wait a moment for effects to play
+	await get_tree().create_timer(1.5).timeout
+	
+	# Reset health to full
+	reset_health()
+	
+	# Reset checkpoints so player starts from beginning
+	if Respawn:
+		Respawn.reset_checkpoints()
+	
+	# Restart the current level
 	if Game.current_level != "":
-		print("Game Over! Restarting level...")
-		LevelLoader.restart()
+		print("🔄 Restarting level: ", Game.current_level)
+		get_tree().reload_current_scene()
 	else:
-		print("Game Over! Returning to menu...")
+		print("🏠 No current level - returning to menu")
 		get_tree().change_scene_to_file("res://ui/MainMenu.tscn")

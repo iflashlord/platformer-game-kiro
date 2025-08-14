@@ -13,6 +13,16 @@ func _ready():
 	HealthSystem.reset_health()
 	Respawn.reset_checkpoints()
 	
+	# Start game timer
+	if GameTimer:
+		GameTimer.start_timer()
+		print("⏱️ Game timer started")
+	
+	# Reset score
+	if Game:
+		Game.score = 0
+		print("🎯 Score reset to 0")
+	
 	# Set initial spawn position
 	if player:
 		Respawn.default_spawn_position = player.global_position

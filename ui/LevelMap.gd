@@ -14,6 +14,7 @@ func _ready():
 	print("🔍 Finding UI elements...")
 	
 	playertest_button = get_node_or_null("ScrollContainer/MapContainer/PlayerTestContainer/PlayerTestButton")
+	var portaltest_button = get_node_or_null("ScrollContainer/MapContainer/PortalTestContainer/PortalTestButton")
 	tutorial_button = get_node_or_null("ScrollContainer/MapContainer/TutorialContainer/TutorialButton")
 	level01_button = get_node_or_null("ScrollContainer/MapContainer/Level01Container/Level01Button")
 	back_button = get_node_or_null("ScrollContainer/MapContainer/ButtonContainer/BackButton")
@@ -22,6 +23,7 @@ func _ready():
 	# Debug: Check if all buttons are found
 	print("🔍 Button references found:")
 	print("  PlayerTest button: ", playertest_button != null)
+	print("  PortalTest button: ", portaltest_button != null)
 	print("  Tutorial button: ", tutorial_button != null)
 	print("  Level01 button: ", level01_button != null)
 	print("  Back button: ", back_button != null)
@@ -32,6 +34,11 @@ func _ready():
 		playertest_button.pressed.connect(func(): 
 			print("🧪 PlayerTest button pressed")
 			_load_level("PlayerTest")
+		)
+	if portaltest_button:
+		portaltest_button.pressed.connect(func(): 
+			print("🌀 PortalTest button pressed")
+			_load_level("PortalTest")
 		)
 	if tutorial_button:
 		tutorial_button.pressed.connect(func(): 
@@ -61,6 +68,8 @@ func _load_level(level_name: String):
 			scene_path = "res://levels/Tutorial.tscn"
 		"Level01":
 			scene_path = "res://levels/Level01.tscn"
+		"PortalTest":
+			scene_path = "res://levels/PortalTest.tscn"
 		_:
 			print("❌ Unknown level: ", level_name)
 			return
