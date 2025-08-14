@@ -30,6 +30,9 @@ func _ready():
 	
 	print("💖 Found ", heart_labels.size(), " heart labels")
 	
+	# Initialize heart display
+	_update_health_display(5, 5)
+	
 	# Connect to health system
 	if HealthSystem:
 		HealthSystem.health_changed.connect(_on_health_changed)
@@ -65,16 +68,19 @@ func _on_heart_lost():
 		tween.parallel().tween_property(heart, "modulate", Color(0.3, 0.3, 0.3, 0.5), 0.2)
 
 func _update_health_display(current_health: int, max_health: int):
+	print("💖 GameHUD: Updating health display - ", current_health, "/", max_health)
+	
 	for i in range(heart_labels.size()):
-		var heart = heart_labels[i]
-		if i < current_health:
-			# Full heart
-			heart.modulate = Color(1, 0.2, 0.2, 1)
-			heart.text = "♥"
-		else:
-			# Empty heart
-			heart.modulate = Color(0.3, 0.3, 0.3, 0.5)
-			heart.text = "♡"
+		if i < heart_labels.size():
+			var heart = heart_labels[i]
+			if i < current_health:
+				# Full heart
+				heart.modulate = Color(1, 0.2, 0.2, 1)
+				heart.text = "♥"
+			else:
+				# Empty heart
+				heart.modulate = Color(0.3, 0.3, 0.3, 0.5)
+				heart.text = "♡"
 
 func _on_time_updated(time: float):
 	_update_time_display(time)

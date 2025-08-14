@@ -206,19 +206,41 @@ func handle_sprite_flip():
 		FX.shake(300) # 300ms shake
 
 func die():
+	print("💀 Player.die() called")
 	died.emit()
-	print("Player died")
+	
+	# Disable player input during death sequence
+	set_physics_process(false)
 	
 	# Track death in persistence
-	if Game.current_level != "":
+	if Game and Game.current_level != "":
 		Persistence.increment_level_deaths(Game.current_level)
+		print("📊 Death recorded for level: ", Game.current_level)
 	
 	# Notify health system (will handle heart loss and respawn)
-	EventBus.player_died.emit(self)
+	if EventBus:
+		print("📡 Sending death event to HealthSystem")
+		EventBus.player_died.emit(self)
+	else:
+		print("❌ EventBus not available!")
+		return
+	
+	# Wait for HealthSystem to process the death
+	print("⏱️ Waiting for HealthSystem to process death...")
+	await get_tree().create_timer(0.2).timeout
 	
 	# Only respawn if still have health, otherwise HealthSystem handles game over
 	if HealthSystem and HealthSystem.is_alive():
-		Respawn.respawn_player()
+		print("💖 Still have hearts - respawning at checkpoint")
+		# Re-enable physics before respawn
+		set_physics_process(true)
+		if Respawn:
+			Respawn.respawn_player()
+		else:
+			print("❌ Respawn system not available!")
+	else:
+		print("💀 No hearts left - HealthSystem will handle game over")
+		# Don't re-enable physics, let game over handle it
 
 func _on_death_zone_entered():
 	die()

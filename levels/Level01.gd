@@ -38,6 +38,7 @@ func _ready():
 		HealthSystem.player_died.connect(_on_game_over)
 		# Also update HUD directly to ensure it shows current health
 		hud.update_health(HealthSystem.get_current_health(), HealthSystem.get_max_health())
+		print("💖 HUD connected to HealthSystem - Current health: ", HealthSystem.get_current_health())
 	
 	print("✅ Level 1 systems initialized")
 	print("🎮 Jump across the platforms to reach the end!")

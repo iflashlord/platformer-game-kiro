@@ -12,5 +12,6 @@ func _ready():
 
 func _on_body_entered(body):
 	if body is Player:
-		print("💀 Player entered death zone - triggering death")
+		print("💀 DeathZone: Player entered death zone at ", global_position)
+		print("🎮 Player position: ", body.global_position)
 		body.die()
