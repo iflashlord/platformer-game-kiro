@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(800, 32)
+
+[node name="PlayerTest" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(400, 300)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(400, 500)
+
+[node name="GroundSprite" type="ColorRect" parent="Ground"]
+offset_left = -400.0
+offset_top = -16.0
+offset_right = 400.0
+offset_bottom = 16.0
+color = Color(0.5, 0.3, 0.1, 1)
+
+[node name="GroundCollision" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(400, 300)

@@ -1,0 +1,22 @@
+# HazardSprites.png Placeholder
+# This should be a 128x64 pixel PNG image containing:
+#
+# Top row (spikes, y=0):
+# - (0,0,32,32): Upward-pointing spikes
+# - (32,0,32,32): Downward-pointing spikes
+# - (64,0,32,32): Left-pointing spikes
+# - (96,0,32,32): Right-pointing spikes
+#
+# Bottom row (crates, y=32):
+# - (0,32,32,32): Normal wooden crate
+# - (32,32,32,32): Bounce crate (springs/coils)
+# - (64,32,32,32): TNT crate (red with "TNT" text)
+# - (96,32,32,32): Nitro crate (green with warning symbols)
+#
+# All should be clearly distinguishable
+# Spikes: Gray/metallic, dangerous looking
+# Crates: Wood texture with appropriate markings
+# Pixel art style recommended, 32x32 each
+
+# For now, the game will use colored rectangles
+# Replace this file with actual PNG artwork when available

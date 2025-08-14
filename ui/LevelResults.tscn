@@ -1,0 +1,89 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxvw8y7qkqx5"]
+
+[ext_resource type="Script" path="res://ui/LevelResults.gd" id="1_results"]
+
+[node name="LevelResults" type="CanvasLayer"]
+script = ExtResource("1_results")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.8)
+
+[node name="ResultsPanel" type="Panel" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 250.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ResultsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+
+[node name="Title" type="Label" parent="ResultsPanel/VBoxContainer"]
+layout_mode = 2
+text = "🎉 LEVEL COMPLETED! 🎉"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ResultsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="LevelName" type="Label" parent="ResultsPanel/VBoxContainer"]
+layout_mode = 2
+text = "Level Name"
+horizontal_alignment = 1
+
+[node name="StatsContainer" type="VBoxContainer" parent="ResultsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="TimeLabel" type="Label" parent="ResultsPanel/VBoxContainer/StatsContainer"]
+layout_mode = 2
+text = "⏱️ Time: 00:00.00"
+horizontal_alignment = 1
+
+[node name="HeartsLabel" type="Label" parent="ResultsPanel/VBoxContainer/StatsContainer"]
+layout_mode = 2
+text = "❤️ Hearts Remaining: 5/5"
+horizontal_alignment = 1
+
+[node name="GemsLabel" type="Label" parent="ResultsPanel/VBoxContainer/StatsContainer"]
+layout_mode = 2
+text = "💎 Hidden Gems: 0/1"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="ResultsPanel/VBoxContainer/StatsContainer"]
+layout_mode = 2
+text = "🏆 Final Score: 0000"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="ResultsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="ResultsPanel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RetryButton" type="Button" parent="ResultsPanel/VBoxContainer/ButtonContainer"]
+layout_mode = 2
+text = "🔄 Retry Level"
+
+[node name="MapButton" type="Button" parent="ResultsPanel/VBoxContainer/ButtonContainer"]
+layout_mode = 2
+text = "🗺️ Level Map"
+
+[node name="MenuButton" type="Button" parent="ResultsPanel/VBoxContainer/ButtonContainer"]
+layout_mode = 2
+text = "🏠 Main Menu"

@@ -1,0 +1,9 @@
+# PlayerSprite.png Placeholder
+# This should be a 32x32 pixel PNG image containing:
+# - A simple player character sprite
+# - Green/blue color scheme to distinguish from enemies
+# - Clear silhouette for easy recognition
+# - Pixel art style recommended
+
+# For now, the game will use a colored rectangle as defined in Player.tscn
+# Replace this file with actual PNG artwork when available

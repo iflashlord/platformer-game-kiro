@@ -1,0 +1,50 @@
+[gd_resource type="TileSet" load_steps=15 format=3 uid="uid://bqxvw4rkqh00i"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_solid"]
+texture_region_size = Vector2i(32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_solid"]
+size = Vector2(32, 32)
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_slope_up"]
+points = PackedVector2Array(0, 32, 32, 0, 32, 32, 0, 32)
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_slope_down"]
+points = PackedVector2Array(0, 0, 32, 32, 0, 32, 0, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oneway"]
+size = Vector2(32, 8)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oneway"]
+friction = 1.0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_platforms"]
+texture_region_size = Vector2i(32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(32, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_slopes"]
+texture_region_size = Vector2i(32, 32)
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_gentle_up"]
+points = PackedVector2Array(0, 32, 32, 16, 32, 32, 0, 32)
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_gentle_down"]
+points = PackedVector2Array(0, 16, 32, 32, 0, 32, 0, 16)
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_steep_up"]
+points = PackedVector2Array(16, 32, 32, 0, 32, 32, 16, 32)
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_steep_down"]
+points = PackedVector2Array(0, 0, 16, 32, 0, 32, 0, 0)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hazards"]
+texture_region_size = Vector2i(32, 32)
+
+[resource]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_solid")
+sources/1 = SubResource("TileSetAtlasSource_platforms")
+sources/2 = SubResource("TileSetAtlasSource_slopes")
+sources/3 = SubResource("TileSetAtlasSource_hazards")

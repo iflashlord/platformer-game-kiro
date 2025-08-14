@@ -1,0 +1,92 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/LevelMap.gd" id="1_script"]
+
+[node name="LevelMap" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.1, 0.2, 1)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 50.0
+offset_right = -50.0
+offset_bottom = -50.0
+
+[node name="MapContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+text = "🗺️ LEVEL SELECT"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+
+[node name="HSeparator" type="HSeparator" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="PlayerTestContainer" type="VBoxContainer" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="PlayerTestButton" type="Button" parent="ScrollContainer/MapContainer/PlayerTestContainer"]
+layout_mode = 2
+text = "🧪 PLAYER TEST"
+
+[node name="PlayerTestStats" type="Label" parent="ScrollContainer/MapContainer/PlayerTestContainer"]
+layout_mode = 2
+text = "Test player movement and controls"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="TutorialContainer" type="VBoxContainer" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="TutorialButton" type="Button" parent="ScrollContainer/MapContainer/TutorialContainer"]
+layout_mode = 2
+text = "🎓 TUTORIAL"
+
+[node name="TutorialStats" type="Label" parent="ScrollContainer/MapContainer/TutorialContainer"]
+layout_mode = 2
+text = "Learn the basics: movement, jumping, hearts, checkpoints"
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="Level01Container" type="VBoxContainer" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="Level01Button" type="Button" parent="ScrollContainer/MapContainer/Level01Container"]
+layout_mode = 2
+text = "🌲 LEVEL 1: FOREST ADVENTURE"
+
+[node name="Level01Stats" type="Label" parent="ScrollContainer/MapContainer/Level01Container"]
+layout_mode = 2
+text = "Jump across platforms and avoid death zones"
+horizontal_alignment = 1
+
+[node name="HSeparator4" type="HSeparator" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="ScrollContainer/MapContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🏠 Main Menu"
+
+[node name="ResetButton" type="Button" parent="ScrollContainer/MapContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🔄 Reset Progress"

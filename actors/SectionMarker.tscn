@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxvw0y9qkqxu"]
+
+[ext_resource type="Script" path="res://actors/SectionMarker.gd" id="1_0k8w7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(32, 128)
+
+[node name="SectionMarker" type="Area2D"]
+script = ExtResource("1_0k8w7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 1, 1, 0.3)
+scale = Vector2(32, 128)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")

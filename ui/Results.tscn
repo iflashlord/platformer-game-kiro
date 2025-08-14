@@ -1,0 +1,213 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxzyw8rkqh4ll"]
+
+[ext_resource type="Script" path="res://ui/Results.gd" id="1_results"]
+
+[node name="Results" type="CanvasLayer"]
+script = ExtResource("1_results")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.8)
+
+[node name="ResultsPanel" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="ResultsPanel"]
+layout_mode = 2
+text = "LEVEL COMPLETE!"
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="ScoreSection" type="VBoxContainer" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="ScoreTitle" type="Label" parent="ResultsPanel/ScoreSection"]
+layout_mode = 2
+text = "SCORE"
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+
+[node name="ScoreValue" type="Label" parent="ResultsPanel/ScoreSection"]
+layout_mode = 2
+text = "0"
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="CollectiblesSection" type="VBoxContainer" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="CollectiblesTitle" type="Label" parent="ResultsPanel/CollectiblesSection"]
+layout_mode = 2
+text = "COLLECTIBLES"
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+
+[node name="FruitSection" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection"]
+layout_mode = 2
+
+[node name="FruitTitle" type="Label" parent="ResultsPanel/CollectiblesSection/FruitSection"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fruits:"
+theme_override_font_sizes/font_size = 16
+
+[node name="FruitBreakdown" type="VBoxContainer" parent="ResultsPanel/CollectiblesSection/FruitSection"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AppleCount" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown"]
+layout_mode = 2
+
+[node name="AppleIcon" type="Sprite2D" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown/AppleCount"]
+modulate = Color(1, 0, 0, 1)
+position = Vector2(12, 12)
+scale = Vector2(12, 12)
+
+[node name="AppleLabel" type="Label" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown/AppleCount"]
+layout_mode = 2
+text = "Apples: 0"
+
+[node name="BananaCount" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown"]
+layout_mode = 2
+
+[node name="BananaIcon" type="Sprite2D" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown/BananaCount"]
+modulate = Color(1, 1, 0, 1)
+position = Vector2(12, 12)
+scale = Vector2(12, 12)
+
+[node name="BananaLabel" type="Label" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown/BananaCount"]
+layout_mode = 2
+text = "Bananas: 0"
+
+[node name="CherryCount" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown"]
+layout_mode = 2
+
+[node name="CherryIcon" type="Sprite2D" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown/CherryCount"]
+modulate = Color(0.8, 0.2, 0.4, 1)
+position = Vector2(12, 12)
+scale = Vector2(12, 12)
+
+[node name="CherryLabel" type="Label" parent="ResultsPanel/CollectiblesSection/FruitSection/FruitBreakdown/CherryCount"]
+layout_mode = 2
+text = "Cherries: 0"
+
+[node name="GemSection" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection"]
+layout_mode = 2
+
+[node name="GemTitle" type="Label" parent="ResultsPanel/CollectiblesSection/GemSection"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Gems:"
+theme_override_font_sizes/font_size = 16
+
+[node name="GemBreakdown" type="VBoxContainer" parent="ResultsPanel/CollectiblesSection/GemSection"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RubyCount" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown"]
+layout_mode = 2
+
+[node name="RubyIcon" type="Sprite2D" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown/RubyCount"]
+modulate = Color(1, 0, 0, 1)
+position = Vector2(12, 12)
+scale = Vector2(12, 12)
+
+[node name="RubyLabel" type="Label" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown/RubyCount"]
+layout_mode = 2
+text = "Rubies: 0"
+
+[node name="EmeraldCount" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown"]
+layout_mode = 2
+
+[node name="EmeraldIcon" type="Sprite2D" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown/EmeraldCount"]
+modulate = Color(0, 1, 0, 1)
+position = Vector2(12, 12)
+scale = Vector2(12, 12)
+
+[node name="EmeraldLabel" type="Label" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown/EmeraldCount"]
+layout_mode = 2
+text = "Emeralds: 0"
+
+[node name="DiamondCount" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown"]
+layout_mode = 2
+
+[node name="DiamondIcon" type="Sprite2D" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown/DiamondCount"]
+modulate = Color(1, 1, 1, 1)
+position = Vector2(12, 12)
+scale = Vector2(12, 12)
+
+[node name="DiamondLabel" type="Label" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown/DiamondCount"]
+layout_mode = 2
+text = "Diamonds: 0"
+
+[node name="HSeparator3" type="HSeparator" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="RankSection" type="VBoxContainer" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="RankTitle" type="Label" parent="ResultsPanel/RankSection"]
+layout_mode = 2
+text = "RANK"
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+
+[node name="RankValue" type="Label" parent="ResultsPanel/RankSection"]
+layout_mode = 2
+text = "C"
+theme_override_font_sizes/font_size = 48
+horizontal_alignment = 1
+
+[node name="HSeparator4" type="HSeparator" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="RelicContainer" type="VBoxContainer" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="RelicTitle" type="Label" parent="ResultsPanel/RelicContainer"]
+layout_mode = 2
+text = "RELIC EARNED"
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+
+[node name="Relic" type="Sprite2D" parent="ResultsPanel/RelicContainer"]
+modulate = Color(1, 0.8, 0.2, 1)
+position = Vector2(300, 50)
+scale = Vector2(32, 32)
+
+[node name="HSeparator5" type="HSeparator" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="ButtonSection" type="HBoxContainer" parent="ResultsPanel"]
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="ResultsPanel/ButtonSection"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "RESTART"
+
+[node name="ContinueButton" type="Button" parent="ResultsPanel/ButtonSection"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CONTINUE"
+
+[connection signal="pressed" from="ResultsPanel/ButtonSection/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="ResultsPanel/ButtonSection/ContinueButton" to="." method="_on_continue_button_pressed"]

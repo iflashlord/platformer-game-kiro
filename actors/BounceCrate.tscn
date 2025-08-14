@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxzyw6rkqh2ll"]
+
+[ext_resource type="PackedScene" uid="uid://bxzyw1rkqh7aa" path="res://actors/Crate.tscn" id="1_base"]
+[ext_resource type="Script" path="res://actors/BounceCrate.gd" id="2_bounce"]
+
+[node name="BounceCrate" instance=ExtResource("1_base")]
+script = ExtResource("2_bounce")
+
+[node name="Sprite2D" parent="." index="0"]
+modulate = Color(1, 1, 0, 1)

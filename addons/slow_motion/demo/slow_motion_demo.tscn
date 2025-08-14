@@ -1,0 +1,401 @@
+[gd_scene load_steps=10 format=3 uid="uid://kedtexa6xmrs"]
+
+[ext_resource type="Script" uid="uid://bcbqf3ypb3jsc" path="res://addons/slow_motion/demo/slow_motion_demo.gd" id="1_4o8pl"]
+[ext_resource type="Texture2D" uid="uid://noc7twy02muk" path="res://icon.svg" id="2_a34ya"]
+[ext_resource type="AudioStream" uid="uid://csmlnjs00w1o4" path="res://addons/slow_motion/demo/music.wav" id="3_4pnuc"]
+
+[sub_resource type="Animation" id="Animation_7lqia"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_hegyo"]
+resource_name = "spin"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_21d5l"]
+_data = {
+&"RESET": SubResource("Animation_7lqia"),
+&"spin": SubResource("Animation_hegyo")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3tkef"]
+bg_color = Color(0.1755, 0.307775, 0.39, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_35mnk"]
+bg_color = Color(0.276, 0.46, 0.453867, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4pnuc"]
+bg_color = Color(0.824074, 0.525487, 3.85046e-07, 1)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4o8pl")
+metadata/_edit_lock_ = true
+
+[node name="Spinner" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 787.0
+offset_top = 331.0
+offset_right = 787.0
+offset_bottom = 331.0
+metadata/_edit_group_ = true
+
+[node name="TextureRect" type="TextureRect" parent="Spinner"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_a34ya")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Spinner"]
+libraries = {
+&"": SubResource("AnimationLibrary_21d5l")
+}
+autoplay = "spin"
+
+[node name="SpinDuration" type="SpinBox" parent="."]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 61.0
+offset_right = 212.0
+offset_bottom = 92.0
+max_value = 10.0
+step = 0.1
+value = 2.0
+suffix = "s"
+
+[node name="Label" type="Label" parent="SpinDuration"]
+layout_mode = 0
+offset_top = -50.0
+offset_right = 69.0
+offset_bottom = -27.0
+text = "Duration"
+
+[node name="Label2" type="Label" parent="SpinDuration"]
+layout_mode = 0
+offset_top = -31.0
+offset_right = 129.0
+offset_bottom = -1.0
+theme_override_colors/font_color = Color(1, 1, 1, 0.521569)
+theme_override_constants/line_spacing = -4
+theme_override_font_sizes/font_size = 12
+text = "(Includes slow down and speed up ramps)"
+autowrap_mode = 3
+
+[node name="SpinSpeed" type="SpinBox" parent="."]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 133.0
+offset_right = 212.0
+offset_bottom = 164.0
+max_value = 1.0
+step = 0.01
+value = 0.05
+suffix = "s/s"
+
+[node name="Label" type="Label" parent="SpinSpeed"]
+layout_mode = 0
+offset_top = -26.0
+offset_right = 69.0
+offset_bottom = -3.0
+text = "Slow Speed"
+
+[node name="BtnAdvanced" type="CheckButton" parent="."]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 198.0
+offset_right = 257.0
+offset_bottom = 229.0
+text = "Advanced
+"
+
+[node name="AdvancedGroup" type="ReferenceRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 33.0
+offset_top = 229.0
+offset_right = 456.0
+offset_bottom = 559.0
+
+[node name="Label2" type="Label" parent="AdvancedGroup"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 12.0
+offset_right = 408.0
+offset_bottom = 110.0
+theme_override_constants/line_spacing = 0
+theme_override_font_sizes/font_size = 10
+text = "Duration of ramps is normalized (e.g. 0.2 means 20% of duration).
+
+Slow down and speed up ramps must not sum more than 1.0, and should ideally sum way less to leave some time for a constant slow period.
+(As a rule of thumb, make speed up longer than slow down, and leave at least 0.3 out for the constant part - but your mileage may vary.)"
+autowrap_mode = 3
+
+[node name="SpinSlowdownRamp" type="SpinBox" parent="AdvancedGroup"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 144.0
+offset_right = 113.0
+offset_bottom = 175.0
+max_value = 0.99
+step = 0.01
+value = 0.1
+
+[node name="Label" type="Label" parent="AdvancedGroup/SpinSlowdownRamp"]
+layout_mode = 0
+offset_top = -26.0
+offset_right = 95.0
+offset_bottom = -3.0
+text = "Slow down ramp"
+
+[node name="SpinSpeedupRamp" type="SpinBox" parent="AdvancedGroup"]
+layout_mode = 0
+offset_left = 192.0
+offset_top = 144.0
+offset_right = 289.0
+offset_bottom = 175.0
+max_value = 0.99
+step = 0.01
+value = 0.4
+
+[node name="Label" type="Label" parent="AdvancedGroup/SpinSpeedupRamp"]
+layout_mode = 0
+offset_top = -26.0
+offset_right = 86.0
+offset_bottom = -3.0
+text = "Speed up ramp"
+
+[node name="Label" type="Label" parent="AdvancedGroup"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 208.0
+offset_right = 346.0
+offset_bottom = 231.0
+theme_override_font_sizes/font_size = 14
+text = "Behaviour when slow_motion() requests overlap:"
+
+[node name="BtnOverlap" type="OptionButton" parent="AdvancedGroup"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 236.0
+offset_right = 392.0
+offset_bottom = 267.0
+selected = 0
+item_count = 1
+popup/item_0/text = "a"
+popup/item_0/id = 0
+
+[node name="Label3" type="Label" parent="AdvancedGroup"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 277.0
+offset_right = 232.0
+offset_bottom = 291.0
+theme_override_constants/line_spacing = 0
+theme_override_font_sizes/font_size = 10
+text = "(Check source code for explanations.)"
+autowrap_mode = 3
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 240.0
+offset_top = 61.0
+offset_right = 412.0
+offset_bottom = 157.0
+text = "Fire slow motion"
+
+[node name="BtnShowbars" type="CheckButton" parent="."]
+modulate = Color(1, 1, 1, 0.392157)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -75.0
+offset_right = 416.0
+offset_bottom = -50.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 12
+text = "Show bars for intensity, engine speed, and progress"
+
+[node name="BarGroup" type="ReferenceRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -45.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="IntensityBar" type="ProgressBar" parent="BarGroup"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -43.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 10
+theme_override_styles/fill = SubResource("StyleBoxFlat_3tkef")
+max_value = 1.0
+step = 0.001
+show_percentage = false
+
+[node name="SpeedBar" type="ProgressBar" parent="BarGroup"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -27.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 10
+theme_override_styles/fill = SubResource("StyleBoxFlat_35mnk")
+max_value = 1.0
+step = 0.001
+value = 1.0
+show_percentage = false
+
+[node name="ProgressBar" type="ProgressBar" parent="BarGroup"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -11.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 10
+theme_override_styles/fill = SubResource("StyleBoxFlat_4pnuc")
+max_value = 1.0
+step = 0.001
+show_percentage = false
+
+[node name="LabelPhysicsTime" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -247.0
+offset_top = 48.0
+offset_right = -24.0
+offset_bottom = 78.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 21
+text = "0.0"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="LabelPhysicsTime"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -32.0
+offset_bottom = -9.0
+grow_horizontal = 2
+text = "Time from _physics_process"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1034.0
+offset_top = 684.0
+offset_right = 1331.0
+offset_bottom = 732.0
+theme_override_font_sizes/font_size = 10
+text = "\"Raving Energy (faster)\" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/"
+
+[node name="BtnAudio" type="CheckButton" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -149.0
+offset_top = -126.0
+offset_right = -12.0
+offset_bottom = -95.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Play audio"
+
+[node name="AudioGroup" type="ReferenceRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -427.0
+offset_top = -89.0
+offset_right = -13.0
+offset_bottom = -56.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="BtnAudioSlowmotion" type="CheckButton" parent="AudioGroup"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -137.0
+offset_bottom = 31.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 14
+text = "Control audio speed from SlowMotion effect"
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="AudioGroup"]
+stream = ExtResource("3_4pnuc")
+
+[connection signal="toggled" from="BtnAdvanced" to="AdvancedGroup" method="set_visible"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="toggled" from="BtnShowbars" to="BarGroup" method="set_visible"]
+[connection signal="toggled" from="BtnAudio" to="." method="_on_btn_audio_toggled"]
+[connection signal="toggled" from="AudioGroup/BtnAudioSlowmotion" to="." method="_on_btn_audio_slowmotion_toggled"]

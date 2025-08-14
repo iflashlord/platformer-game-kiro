@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxzyw7rkqh3mm"]
+
+[ext_resource type="PackedScene" uid="uid://bxzyw1rkqh7aa" path="res://actors/Crate.tscn" id="1_base"]
+[ext_resource type="Script" path="res://actors/TNTCrate.gd" id="2_tnt"]
+
+[node name="TNTCrate" instance=ExtResource("1_base")]
+script = ExtResource("2_tnt")
+
+[node name="Sprite2D" parent="." index="0"]
+modulate = Color(1, 0.3, 0.3, 1)
+
+[node name="FuseLight" type="Sprite2D" parent="." index="3"]
+visible = false
+modulate = Color(1, 1, 0, 1)
+position = Vector2(0, -20)
+scale = Vector2(8, 8)

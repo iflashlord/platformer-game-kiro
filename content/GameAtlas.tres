@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SpriteAtlas" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://content/SpriteAtlas.gd" id="1_atlas"]
+[ext_resource type="Texture2D" path="res://content/PlayerSprite.png" id="2_player"]
+[ext_resource type="Texture2D" path="res://content/EnemySprites.png" id="3_enemies"]
+[ext_resource type="Texture2D" path="res://content/CollectibleSprites.png" id="4_collectibles"]
+[ext_resource type="Texture2D" path="res://content/HazardSprites.png" id="5_hazards"]
+[ext_resource type="Texture2D" path="res://content/UISprites.png" id="6_ui"]
+
+[resource]
+script = ExtResource("1_atlas")
+player_texture = ExtResource("2_player")
+enemy_texture = ExtResource("3_enemies")
+collectible_texture = ExtResource("4_collectibles")
+hazard_texture = ExtResource("5_hazards")
+ui_texture = ExtResource("6_ui")

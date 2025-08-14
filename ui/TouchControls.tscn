@@ -1,0 +1,139 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqxvw8y7qkqxj"]
+
+[ext_resource type="Script" path="res://ui/TouchControls.gd" id="1_0k8vx"]
+
+[node name="TouchControls" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_0k8vx")
+
+[node name="LeftButton" type="TouchScreenButton" parent="."]
+position = Vector2(50, 450)
+scale = Vector2(1.5, 1.5)
+action = "move_left"
+visibility_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="LeftButton"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
+color = Color(0.2, 0.2, 0.8, 0.6)
+
+[node name="Label" type="Label" parent="LeftButton"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -12.0
+offset_right = 10.0
+offset_bottom = 12.0
+text = "←"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightButton" type="TouchScreenButton" parent="."]
+position = Vector2(170, 450)
+scale = Vector2(1.5, 1.5)
+action = "move_right"
+visibility_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="RightButton"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
+color = Color(0.2, 0.2, 0.8, 0.6)
+
+[node name="Label" type="Label" parent="RightButton"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -12.0
+offset_right = 10.0
+offset_bottom = 12.0
+text = "→"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="JumpButton" type="TouchScreenButton" parent="."]
+position = Vector2(950, 450)
+scale = Vector2(1.5, 1.5)
+action = "jump"
+visibility_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="JumpButton"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
+color = Color(0.8, 0.2, 0.2, 0.6)
+
+[node name="Label" type="Label" parent="JumpButton"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -12.0
+offset_right = 15.0
+offset_bottom = 12.0
+text = "JUMP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DimensionButton" type="TouchScreenButton" parent="."]
+position = Vector2(830, 450)
+scale = Vector2(1.5, 1.5)
+action = "dimension_flip"
+visibility_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="DimensionButton"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
+color = Color(0.8, 0.2, 0.8, 0.6)
+
+[node name="Label" type="Label" parent="DimensionButton"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -12.0
+offset_right = 15.0
+offset_bottom = 12.0
+text = "DIM"
+horizontal_alignment = 1
+vertical_alignment = 1

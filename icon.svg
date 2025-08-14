@@ -1,0 +1,7 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" fill="#2d3748"/>
+  <rect x="16" y="16" width="96" height="96" rx="8" fill="#4a5568"/>
+  <rect x="32" y="32" width="64" height="64" rx="4" fill="#667eea"/>
+  <rect x="48" y="48" width="32" height="32" rx="2" fill="#764ba2"/>
+  <text x="64" y="72" text-anchor="middle" fill="white" font-family="Arial" font-size="24" font-weight="bold">P</text>
+</svg>

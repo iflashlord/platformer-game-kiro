@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://hxyy847haf26"]
+
+[ext_resource type="Script" uid="uid://dxy6xmayh52kr" path="res://addons/slow_motion/SlowMotion.gd" id="1_tjsbq"]
+
+[node name="SlowMotion" type="Node"]
+script = ExtResource("1_tjsbq")

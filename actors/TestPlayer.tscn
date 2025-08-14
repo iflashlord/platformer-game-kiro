@@ -1,0 +1,132 @@
+[gd_scene load_steps=6 format=3 uid="uid://cjdalmu018jbm"]
+
+[ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="1_test"]
+[ext_resource type="Script" uid="uid://chrb3gm5eqp87" path="res://actors/TestPlayer.gd" id="2_test"]
+[ext_resource type="PackedScene" path="res://actors/Checkpoint.tscn" id="3_checkpoint"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(400, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(32, 200)
+
+[node name="TestPlayer" type="Node2D"]
+script = ExtResource("2_test")
+
+[node name="Player" parent="." instance=ExtResource("1_test")]
+position = Vector2(200, 400)
+
+[node name="Platform" type="StaticBody2D" parent="."]
+position = Vector2(300, 500)
+
+[node name="PlatformSprite" type="ColorRect" parent="Platform"]
+offset_left = -200.0
+offset_top = -16.0
+offset_right = 200.0
+offset_bottom = 16.0
+color = Color(0.5, 0.3, 0.1, 1)
+
+[node name="PlatformCollision" type="CollisionShape2D" parent="Platform"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(50, 400)
+
+[node name="LeftWallSprite" type="ColorRect" parent="LeftWall"]
+offset_left = -16.0
+offset_top = -100.0
+offset_right = 16.0
+offset_bottom = 100.0
+color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="LeftWallCollision" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(550, 400)
+
+[node name="RightWallSprite" type="ColorRect" parent="RightWall"]
+offset_left = -16.0
+offset_top = -100.0
+offset_right = 16.0
+offset_bottom = 100.0
+color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="RightWallCollision" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="SmallPlatform" type="StaticBody2D" parent="."]
+position = Vector2(450, 350)
+
+[node name="SmallPlatformSprite" type="ColorRect" parent="SmallPlatform"]
+offset_left = -50.0
+offset_top = -8.0
+offset_right = 50.0
+offset_bottom = 8.0
+color = Color(0.7, 0.4, 0.2, 1)
+
+[node name="SmallPlatformCollision" type="CollisionShape2D" parent="SmallPlatform"]
+scale = Vector2(0.25, 0.5)
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="DebugPanel" type="VBoxContainer" parent="UI"]
+offset_right = 300.0
+offset_bottom = 200.0
+
+[node name="Title" type="Label" parent="UI/DebugPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Player Debug Test"
+
+[node name="Instructions" type="Label" parent="UI/DebugPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "WASD/Arrows: Move | Space/W: Jump | S: Flip | X: Shake | Esc: Pause | R: Restart"
+
+[node name="CoyoteLabel" type="Label" parent="UI/DebugPanel"]
+layout_mode = 2
+text = "Coyote Time: 0.00"
+
+[node name="BufferLabel" type="Label" parent="UI/DebugPanel"]
+layout_mode = 2
+text = "Jump Buffer: 0.00"
+
+[node name="VelocityLabel" type="Label" parent="UI/DebugPanel"]
+layout_mode = 2
+text = "Velocity: (0, 0)"
+
+[node name="StateLabel" type="Label" parent="UI/DebugPanel"]
+layout_mode = 2
+text = "State: Idle"
+
+[node name="EventLog" type="RichTextLabel" parent="UI"]
+offset_left = 320.0
+offset_right = 600.0
+offset_bottom = 300.0
+bbcode_enabled = true
+text = "[b]Event Log:[/b]
+"
+
+[node name="Checkpoint1" parent="." instance=ExtResource("3_checkpoint")]
+position = Vector2(150, 450)
+
+[node name="Checkpoint2" parent="." instance=ExtResource("3_checkpoint")]
+position = Vector2(450, 300)
+
+[node name="DeathZone" type="Area2D" parent="."]
+position = Vector2(300, 600)
+
+[node name="DeathZoneSprite" type="ColorRect" parent="DeathZone"]
+offset_left = -400.0
+offset_top = -20.0
+offset_right = 400.0
+offset_bottom = 20.0
+color = Color(1, 0, 0, 0.3)
+
+[node name="DeathZoneCollision" type="CollisionShape2D" parent="DeathZone"]
+scale = Vector2(2, 0.25)
+shape = SubResource("RectangleShape2D_platform")
+
+[connection signal="body_entered" from="DeathZone" to="." method="_on_death_zone_body_entered"]

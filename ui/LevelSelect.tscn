@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3 uid="uid://bx0yxarkqh5nn"]
+
+[ext_resource type="Script" uid="uid://chy58ev5r6qxx" path="res://ui/LevelSelect.gd" id="1_levelselect"]
+
+[node name="LevelSelect" type="CanvasLayer"]
+script = ExtResource("1_levelselect")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.1, 0.2, 1)
+
+[node name="UI" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="UI"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "LEVEL SELECT"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="UI"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LevelList" type="VBoxContainer" parent="UI/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator2" type="HSeparator" parent="UI"]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="UI"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="UI/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "BACK TO MENU"
+
+[node name="RefreshButton" type="Button" parent="UI/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "REFRESH"
+
+[connection signal="pressed" from="UI/ButtonContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="UI/ButtonContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]

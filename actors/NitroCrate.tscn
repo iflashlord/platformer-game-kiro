@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://exzyw8rkqh4nn"]
+
+[ext_resource type="PackedScene" uid="uid://bxzyw1rkqh7aa" path="res://actors/Crate.tscn" id="1_base"]
+[ext_resource type="Script" path="res://actors/NitroCrate.gd" id="2_nitro"]
+
+[node name="NitroCrate" instance=ExtResource("1_base")]
+script = ExtResource("2_nitro")
+
+[node name="Sprite2D" parent="." index="0"]
+modulate = Color(0.3, 1, 0.3, 1)
+
+[node name="WarningSprite" type="Sprite2D" parent="." index="3"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+position = Vector2(0, -25)
+scale = Vector2(12, 12)

@@ -1,0 +1,29 @@
+{
+  "name": "HTML5 Platformer - Dimension Shift Adventure",
+  "short_name": "HTML5 Platformer",
+  "description": "A fast-paced 2D platformer with dimension-shifting mechanics",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "theme_color": "#667eea",
+  "background_color": "#2d3748",
+  "icons": [
+    {
+      "src": "icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "lang": "en"
+}
