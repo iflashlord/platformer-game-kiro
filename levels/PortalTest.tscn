@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=7 format=3 uid="uid://cmmj13tlbc8m1"]
 
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="2_portal"]
-[ext_resource type="Script" path="res://levels/PortalTest.gd" id="3_script"]
-[ext_resource type="PackedScene" path="res://ui/GameHUD.tscn" id="4_hud"]
+[ext_resource type="Script" uid="uid://d1mk0gf2v7cta" path="res://levels/PortalTest.gd" id="3_script"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="4_hud"]
 [ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="5_deathzone"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]

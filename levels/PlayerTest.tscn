@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bk4w7jjgkjirp"]
+[gd_scene load_steps=4 format=3 uid="uid://bk4w7jjgkjirp"]
 
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="2_mlbsq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(800, 32)
@@ -25,3 +26,7 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(400, 300)
+
+[node name="LevelPortal" parent="." instance=ExtResource("2_mlbsq")]
+position = Vector2(748, 400)
+portal_name = "Portal Test Complete"

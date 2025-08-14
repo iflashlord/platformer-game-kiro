@@ -87,10 +87,41 @@ text = "🌲 LEVEL 1: FOREST ADVENTURE"
 
 [node name="Level01Stats" type="Label" parent="ScrollContainer/MapContainer/Level01Container"]
 layout_mode = 2
-text = "Jump across platforms and avoid death zones"
+text = "🌲 Forest Adventure: 5 fruits, 3 gems, enemies, crates, spikes
+Complete platforming challenge with all game mechanics!"
 horizontal_alignment = 1
 
 [node name="HSeparator4" type="HSeparator" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="Level01SimpleContainer" type="VBoxContainer" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="Level01SimpleButton" type="Button" parent="ScrollContainer/MapContainer/Level01SimpleContainer"]
+layout_mode = 2
+text = "🌲 LEVEL 1: SIMPLE VERSION"
+
+[node name="Level01SimpleStats" type="Label" parent="ScrollContainer/MapContainer/Level01SimpleContainer"]
+layout_mode = 2
+text = "Basic version for testing - platforms, checkpoints, portal"
+horizontal_alignment = 1
+
+[node name="HSeparator4b" type="HSeparator" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="Level01TestContainer" type="VBoxContainer" parent="ScrollContainer/MapContainer"]
+layout_mode = 2
+
+[node name="Level01TestButton" type="Button" parent="ScrollContainer/MapContainer/Level01TestContainer"]
+layout_mode = 2
+text = "🧪 LEVEL 1: TEST VERSION"
+
+[node name="Level01TestStats" type="Label" parent="ScrollContainer/MapContainer/Level01TestContainer"]
+layout_mode = 2
+text = "Minimal test to check if scene loading works"
+horizontal_alignment = 1
+
+[node name="HSeparator4c" type="HSeparator" parent="ScrollContainer/MapContainer"]
 layout_mode = 2
 
 [node name="ButtonContainer" type="HBoxContainer" parent="ScrollContainer/MapContainer"]

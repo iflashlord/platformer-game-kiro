@@ -17,6 +17,8 @@ func _ready():
 	var portaltest_button = get_node_or_null("ScrollContainer/MapContainer/PortalTestContainer/PortalTestButton")
 	tutorial_button = get_node_or_null("ScrollContainer/MapContainer/TutorialContainer/TutorialButton")
 	level01_button = get_node_or_null("ScrollContainer/MapContainer/Level01Container/Level01Button")
+	var level01simple_button = get_node_or_null("ScrollContainer/MapContainer/Level01SimpleContainer/Level01SimpleButton")
+	var level01test_button = get_node_or_null("ScrollContainer/MapContainer/Level01TestContainer/Level01TestButton")
 	back_button = get_node_or_null("ScrollContainer/MapContainer/ButtonContainer/BackButton")
 	reset_button = get_node_or_null("ScrollContainer/MapContainer/ButtonContainer/ResetButton")
 	
@@ -26,6 +28,8 @@ func _ready():
 	print("  PortalTest button: ", portaltest_button != null)
 	print("  Tutorial button: ", tutorial_button != null)
 	print("  Level01 button: ", level01_button != null)
+	print("  Level01Simple button: ", level01simple_button != null)
+	print("  Level01Test button: ", level01test_button != null)
 	print("  Back button: ", back_button != null)
 	print("  Reset button: ", reset_button != null)
 	
@@ -50,6 +54,16 @@ func _ready():
 			print("🌲 Level01 button pressed")
 			_load_level("Level01")
 		)
+	if level01simple_button:
+		level01simple_button.pressed.connect(func(): 
+			print("🌲 Level01Simple button pressed")
+			_load_level("Level01Simple")
+		)
+	if level01test_button:
+		level01test_button.pressed.connect(func(): 
+			print("🧪 Level01Test button pressed")
+			_load_level("Level01Test")
+		)
 	if back_button:
 		back_button.pressed.connect(_on_back_pressed)
 	if reset_button:
@@ -68,6 +82,10 @@ func _load_level(level_name: String):
 			scene_path = "res://levels/Tutorial.tscn"
 		"Level01":
 			scene_path = "res://levels/Level01.tscn"
+		"Level01Simple":
+			scene_path = "res://levels/Level01_Simple.tscn"
+		"Level01Test":
+			scene_path = "res://levels/Level01_Test.tscn"
 		"PortalTest":
 			scene_path = "res://levels/PortalTest.tscn"
 		_:

@@ -1,20 +1,14 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3 uid="uid://dnh2hkts3pdg8"]
 
-[ext_resource type="Script" path="res://levels/Level01.gd" id="1_level01"]
+[ext_resource type="Script" uid="uid://c0teo354estsf" path="res://levels/Level01.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
-[ext_resource type="PackedScene" path="res://ui/GameHUD.tscn" id="3_hud"]
-[ext_resource type="PackedScene" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
-[ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="5_deathzone"]
-[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="6_portal"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(400, 32)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
-size = Vector2(150, 32)
-
 [node name="Level01" type="Node2D"]
-script = ExtResource("1_level01")
+script = ExtResource("1_script")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(100, 400)
@@ -23,91 +17,26 @@ position = Vector2(100, 400)
 
 [node name="GameHUD" parent="UI" instance=ExtResource("3_hud")]
 
-[node name="Level" type="Node2D" parent="."]
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(300, 500)
 
-[node name="Ground1" type="StaticBody2D" parent="Level"]
-position = Vector2(200, 500)
-
-[node name="GroundSprite1" type="ColorRect" parent="Level/Ground1"]
+[node name="GroundSprite" type="ColorRect" parent="Ground"]
 offset_left = -200.0
 offset_top = -16.0
 offset_right = 200.0
 offset_bottom = 16.0
 color = Color(0.5, 0.3, 0.1, 1)
 
-[node name="GroundCollision1" type="CollisionShape2D" parent="Level/Ground1"]
-shape = SubResource("RectangleShape2D_ground")
-
-[node name="Platform1" type="StaticBody2D" parent="Level"]
-position = Vector2(550, 400)
-
-[node name="PlatformSprite1" type="ColorRect" parent="Level/Platform1"]
-offset_left = -75.0
-offset_top = -16.0
-offset_right = 75.0
-offset_bottom = 16.0
-color = Color(0.4, 0.4, 0.4, 1)
-
-[node name="PlatformCollision1" type="CollisionShape2D" parent="Level/Platform1"]
-shape = SubResource("RectangleShape2D_platform")
-
-[node name="Platform2" type="StaticBody2D" parent="Level"]
-position = Vector2(800, 300)
-
-[node name="PlatformSprite2" type="ColorRect" parent="Level/Platform2"]
-offset_left = -75.0
-offset_top = -16.0
-offset_right = 75.0
-offset_bottom = 16.0
-color = Color(0.4, 0.4, 0.4, 1)
-
-[node name="PlatformCollision2" type="CollisionShape2D" parent="Level/Platform2"]
-shape = SubResource("RectangleShape2D_platform")
-
-[node name="Ground2" type="StaticBody2D" parent="Level"]
-position = Vector2(1200, 500)
-
-[node name="GroundSprite2" type="ColorRect" parent="Level/Ground2"]
-offset_left = -200.0
-offset_top = -16.0
-offset_right = 200.0
-offset_bottom = 16.0
-color = Color(0.5, 0.3, 0.1, 1)
-
-[node name="GroundCollision2" type="CollisionShape2D" parent="Level/Ground2"]
-shape = SubResource("RectangleShape2D_ground")
-
-[node name="Checkpoints" type="Node2D" parent="."]
-
-[node name="Checkpoint1" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
-position = Vector2(550, 350)
-checkpoint_id = "level01_checkpoint_1"
-checkpoint_name = "Level 1 Checkpoint 1"
-
-[node name="Checkpoint2" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
-position = Vector2(1200, 450)
-checkpoint_id = "level01_checkpoint_2"
-checkpoint_name = "Level 1 Checkpoint 2"
-
-[node name="DeathZones" type="Node2D" parent="."]
-
-[node name="DeathZone1" parent="DeathZones" instance=ExtResource("5_deathzone")]
-position = Vector2(700, 650)
+[node name="GroundCollision" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_1")
 
 [node name="Instructions" type="CanvasLayer" parent="."]
-
-[node name="LevelPortal" parent="." instance=ExtResource("6_portal")]
-position = Vector2(1200, 420)
-portal_name = "Level 1 Complete"
 
 [node name="InstructionLabel" type="Label" parent="Instructions"]
 offset_left = 50.0
 offset_top = 50.0
-offset_right = 500.0
-offset_bottom = 150.0
-text = "LEVEL 1
-Jump across the platforms!
-Use checkpoints to save progress.
-Reach the portal to complete!
-ESC: Menu | R: Restart"
-theme_override_font_sizes/font_size = 16
+offset_right = 400.0
+offset_bottom = 100.0
+theme_override_font_sizes/font_size = 14
+text = "LEVEL 1 - MINIMAL VERSION
+WASD/Arrows: Move | Space: Jump | ESC: Menu"
