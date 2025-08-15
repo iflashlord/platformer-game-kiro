@@ -29,6 +29,14 @@ func initialize_level(name: String):
 	level_name = name
 	start_time = Time.get_time_dict_from_system()["second"]
 	
+	# Add to group for easy finding
+	add_to_group("level_managers")
+	
+	# Debug: Track LevelManager instances
+	var existing_managers = get_tree().get_nodes_in_group("level_managers")
+	print("🚨 LevelManager initialized! Total managers: ", existing_managers.size())
+	print("🚨 This manager for level: ", level_name)
+	
 	# Reset stats
 	for key in level_stats.keys():
 		level_stats[key] = 0
@@ -90,6 +98,13 @@ func auto_connect_components():
 		if pad.has_signal("player_bounced"):
 			pad.player_bounced.connect(_on_jump_pad_used)
 	print("🦘 Connected to ", jump_pads.size(), " jump pads")
+	
+	# Connect to all DeathZone instances
+	var death_zones = get_tree().get_nodes_in_group("death_zones")
+	for zone in death_zones:
+		if zone.has_signal("player_killed"):
+			zone.player_killed.connect(_on_player_killed_by_death_zone)
+	print("💀 Connected to ", death_zones.size(), " death zones")
 
 # Event handlers for reusable components
 func _on_fruit_collected(fruit: CollectibleFruit, points: int):
@@ -142,6 +157,12 @@ func _on_player_damaged_by_spike(spike: DangerousSpike, player: Node2D, damage: 
 func _on_jump_pad_used(jump_pad: JumpPad, player: Node2D, force: float):
 	print("🦘 Jump pad used! Force: ", force)
 
+func _on_player_killed_by_death_zone(death_zone: DeathZone, player: Node2D):
+	level_stats.damage_taken += 999  # Mark as death
+	player_damaged.emit("death_zone", 999)
+	
+	print("💀 Player killed by death zone: ", death_zone.zone_type)
+
 # Utility functions
 func get_completion_percentage() -> float:
 	var total_objectives = level_stats.total_fruits + level_stats.total_gems
@@ -161,15 +182,22 @@ func get_level_stats() -> Dictionary:
 	return level_stats.duplicate()
 
 func complete_level():
+	print("🚨 LevelManager: complete_level() called!")
+	print("🚨 Level name: ", level_name)
+	
 	var completion_data = get_level_stats()
 	completion_data["completion_percentage"] = get_completion_percentage()
 	completion_data["perfect_completion"] = is_perfect_completion()
 	
+	print("🚨 About to emit level_completed signal")
 	level_completed.emit(level_name, completion_data)
+	print("🚨 level_completed signal emitted")
 	
 	print("🏆 Level completed: ", level_name)
 	print("📊 Final stats: ", completion_data)
 
 # This should be called by the level portal, not automatically
 func trigger_level_completion():
+	print("🚨 LevelManager: trigger_level_completion() called!")
+	print("🚨 Level name: ", level_name)
 	complete_level()

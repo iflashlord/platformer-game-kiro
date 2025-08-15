@@ -44,8 +44,12 @@ func _animate_portal():
 	portal_sprite.color = colors[randi() % colors.size()]
 
 func _on_body_entered(body):
+	print("🌀 Portal collision detected with: ", body.name, " (groups: ", body.get_groups(), ")")
 	if body is Player and not is_activated:
+		print("🌀 Valid player collision, activating portal")
 		_activate_portal(body)
+	else:
+		print("🌀 Invalid collision or already activated")
 
 func _activate_portal(player: Player):
 	if is_activated:
@@ -95,22 +99,72 @@ func _play_completion_effects():
 func _complete_level():
 	print("🎉 Level completed via portal!")
 	
+	# Collect completion data
+	var completion_data = {
+		"level_name": Game.current_level,
+		"completion_time": 60.0,
+		"score": 1000,
+		"hearts_remaining": 5,
+		"gems_found": 0,
+		"total_gems": 0
+	}
+	
+	# Get actual data from systems
+	if GameTimer:
+		completion_data.completion_time = GameTimer.get_current_time()
+	
+	if Game:
+		completion_data.score = Game.get_score()
+	
+	if HealthSystem:
+		completion_data.hearts_remaining = HealthSystem.get_current_health()
+	
+	# Get gem data from LevelManager if available
+	var level_manager = get_tree().get_first_node_in_group("level_managers")
+	if not level_manager:
+		# Try to find it in the current scene
+		level_manager = get_tree().current_scene.get_node_or_null("LevelManager")
+	
+	if level_manager:
+		var stats = level_manager.get_level_stats()
+		completion_data.gems_found = stats.gems_collected
+		completion_data.total_gems = stats.total_gems
+		
+		# Trigger level completion in manager
+		level_manager.trigger_level_completion()
+	
 	# Mark level as completed in persistence
 	if Game.current_level != "":
-		var completion_time = 60.0  # Default completion time
-		var completion_score = 1000  # Default score
-		
-		# Get actual time from GameTimer if available
-		if GameTimer:
-			completion_time = GameTimer.get_current_time()
-		
-		# Get actual score from Game if available
-		if Game:
-			completion_score = Game.get_score()
-		
-		Persistence.complete_level(Game.current_level, completion_time, completion_score)
-		print("✅ Level completion saved: ", Game.current_level, " Time: ", completion_time, " Score: ", completion_score)
+		Persistence.complete_level(Game.current_level, completion_data.completion_time, completion_data.score)
+		print("✅ Level completion saved: ", Game.current_level)
 	
-	# Go to level select
-	print("🗺️ Returning to level select")
-	get_tree().change_scene_to_file("res://ui/LevelMap.tscn")
+	# Show level results
+	show_level_results(completion_data)
+
+func show_level_results(completion_data: Dictionary):
+	print("📊 LevelPortal: Attempting to show level results")
+	print("📊 Current scene: ", get_tree().current_scene.name if get_tree().current_scene else "None")
+	
+	# Check if results are already showing
+	var existing_results = get_tree().get_nodes_in_group("level_results")
+	print("📊 Existing results instances: ", existing_results.size())
+	if existing_results.size() > 0:
+		print("📊 Level results already showing, skipping")
+		return
+	
+	print("📊 Creating new LevelResults instance")
+	
+	# Load and show the LevelResults scene
+	var results_scene = preload("res://ui/LevelResults.tscn")
+	var results_instance = results_scene.instantiate()
+	
+	# Add to group to prevent duplicates
+	results_instance.add_to_group("level_results")
+	
+	# Add to the current scene
+	get_tree().current_scene.add_child(results_instance)
+	
+	# Setup the results with completion data
+	results_instance.setup_results(completion_data)
+	
+	print("📊 LevelResults instance created and added to scene")

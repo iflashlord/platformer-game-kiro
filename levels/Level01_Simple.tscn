@@ -1,15 +1,13 @@
-[gd_scene load_steps=16 format=3 uid="uid://dfqd7hu0sj2hg"]
+[gd_scene load_steps=14 format=3 uid="uid://dfqd7hu0sj2hg"]
 
 [ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
-[ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="5_deathzone"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
-[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://ui/LevelResults.tscn" id="23_spike"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
@@ -123,84 +121,7 @@ checkpoint_name = "High Platform"
 
 [node name="DeathZones" type="Node2D" parent="."]
 
-[node name="DeathZone1" parent="DeathZones" instance=ExtResource("5_deathzone")]
-position = Vector2(375, 650)
-scale = Vector2(12.84, 1)
-
-[node name="DeathZone2" parent="DeathZones" instance=ExtResource("5_deathzone")]
-position = Vector2(825, 650)
-scale = Vector2(5, 1)
-
 [node name="Collectibles" type="Node2D" parent="."]
-
-[node name="AppleFruit" parent="Collectibles"]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(300, 350)
-script = null
-
-[node name="BananaFruit" parent="Collectibles"]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(750, 270)
-fruit_type = "banana"
-script = null
-
-[node name="OrangeFruit" parent="Collectibles"]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(900, 200)
-fruit_type = "orange"
-script = null
-
-[node name="RubyGem" parent="Collectibles"]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(150, 450)
-is_hidden = true
-script = null
-
-[node name="EmeraldGem" parent="Collectibles"]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(825, 200)
-gem_type = "emerald"
-script = null
 
 [node name="InteractiveElements" type="Node2D" parent="."]
 
@@ -219,17 +140,9 @@ crate_type = "tnt"
 position = Vector2(1050, 450)
 
 [node name="JumpPad1" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
-position = Vector2(550, 416)
+position = Vector2(662, 376)
 
 [node name="Hazards" type="Node2D" parent="."]
-
-[node name="Spike1" parent="Hazards" instance=ExtResource("23_spike")]
-
-[node name="Spike2" parent="Hazards" instance=ExtResource("23_spike")]
-
-[node name="Spike3" parent="Hazards" instance=ExtResource("23_spike")]
-
-[node name="AutoSpike" parent="Hazards" instance=ExtResource("23_spike")]
 
 [node name="Enemies" type="Node2D" parent="."]
 

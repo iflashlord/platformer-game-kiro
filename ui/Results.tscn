@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxzyw8rkqh4ll"]
+[gd_scene load_steps=2 format=3 uid="uid://bx0yw8rkqh4ll"]
 
-[ext_resource type="Script" path="res://ui/Results.gd" id="1_results"]
+[ext_resource type="Script" uid="uid://42246qj3twnb" path="res://ui/Results.gd" id="1_results"]
 
 [node name="Results" type="CanvasLayer"]
 script = ExtResource("1_results")
@@ -26,8 +26,8 @@ grow_vertical = 2
 
 [node name="Title" type="Label" parent="ResultsPanel"]
 layout_mode = 2
-text = "LEVEL COMPLETE!"
 theme_override_font_sizes/font_size = 32
+text = "LEVEL COMPLETE!"
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="ResultsPanel"]
@@ -38,14 +38,14 @@ layout_mode = 2
 
 [node name="ScoreTitle" type="Label" parent="ResultsPanel/ScoreSection"]
 layout_mode = 2
-text = "SCORE"
 theme_override_font_sizes/font_size = 20
+text = "SCORE"
 horizontal_alignment = 1
 
 [node name="ScoreValue" type="Label" parent="ResultsPanel/ScoreSection"]
 layout_mode = 2
-text = "0"
 theme_override_font_sizes/font_size = 24
+text = "0"
 horizontal_alignment = 1
 
 [node name="HSeparator2" type="HSeparator" parent="ResultsPanel"]
@@ -56,8 +56,8 @@ layout_mode = 2
 
 [node name="CollectiblesTitle" type="Label" parent="ResultsPanel/CollectiblesSection"]
 layout_mode = 2
-text = "COLLECTIBLES"
 theme_override_font_sizes/font_size = 20
+text = "COLLECTIBLES"
 horizontal_alignment = 1
 
 [node name="FruitSection" type="HBoxContainer" parent="ResultsPanel/CollectiblesSection"]
@@ -66,8 +66,8 @@ layout_mode = 2
 [node name="FruitTitle" type="Label" parent="ResultsPanel/CollectiblesSection/FruitSection"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Fruits:"
 theme_override_font_sizes/font_size = 16
+text = "Fruits:"
 
 [node name="FruitBreakdown" type="VBoxContainer" parent="ResultsPanel/CollectiblesSection/FruitSection"]
 layout_mode = 2
@@ -115,8 +115,8 @@ layout_mode = 2
 [node name="GemTitle" type="Label" parent="ResultsPanel/CollectiblesSection/GemSection"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Gems:"
 theme_override_font_sizes/font_size = 16
+text = "Gems:"
 
 [node name="GemBreakdown" type="VBoxContainer" parent="ResultsPanel/CollectiblesSection/GemSection"]
 layout_mode = 2
@@ -150,7 +150,6 @@ text = "Emeralds: 0"
 layout_mode = 2
 
 [node name="DiamondIcon" type="Sprite2D" parent="ResultsPanel/CollectiblesSection/GemSection/GemBreakdown/DiamondCount"]
-modulate = Color(1, 1, 1, 1)
 position = Vector2(12, 12)
 scale = Vector2(12, 12)
 
@@ -166,14 +165,14 @@ layout_mode = 2
 
 [node name="RankTitle" type="Label" parent="ResultsPanel/RankSection"]
 layout_mode = 2
-text = "RANK"
 theme_override_font_sizes/font_size = 20
+text = "RANK"
 horizontal_alignment = 1
 
 [node name="RankValue" type="Label" parent="ResultsPanel/RankSection"]
 layout_mode = 2
-text = "C"
 theme_override_font_sizes/font_size = 48
+text = "C"
 horizontal_alignment = 1
 
 [node name="HSeparator4" type="HSeparator" parent="ResultsPanel"]
@@ -184,8 +183,8 @@ layout_mode = 2
 
 [node name="RelicTitle" type="Label" parent="ResultsPanel/RelicContainer"]
 layout_mode = 2
-text = "RELIC EARNED"
 theme_override_font_sizes/font_size = 16
+text = "RELIC EARNED"
 horizontal_alignment = 1
 
 [node name="Relic" type="Sprite2D" parent="ResultsPanel/RelicContainer"]

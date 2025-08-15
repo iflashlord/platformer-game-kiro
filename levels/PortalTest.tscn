@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="2_portal"]
 [ext_resource type="Script" uid="uid://d1mk0gf2v7cta" path="res://levels/PortalTest.gd" id="3_script"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="4_hud"]
-[ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="5_deathzone"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx8" path="res://actors/DeathZone.tscn" id="5_deathzone"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(400, 32)

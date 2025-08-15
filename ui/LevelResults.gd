@@ -13,6 +13,9 @@ extends CanvasLayer
 var current_level: String = ""
 
 func _ready():
+	# Add to group to prevent duplicates
+	add_to_group("level_results")
+	
 	# Connect buttons
 	retry_button.pressed.connect(_on_retry_pressed)
 	map_button.pressed.connect(_on_map_pressed)
@@ -92,7 +95,12 @@ func _apply_performance_colors(completion_data: Dictionary):
 func _on_retry_pressed():
 	Audio.play_sfx("ui_click")
 	# Restart the current level
-	LevelLoader.load_level(current_level)
+	print("🔄 Retrying level: ", current_level)
+	if LevelLoader and LevelLoader.has_method("load_level"):
+		LevelLoader.load_level(current_level)
+	else:
+		# Fallback: reload current scene
+		get_tree().reload_current_scene()
 	queue_free()
 
 func _on_map_pressed():

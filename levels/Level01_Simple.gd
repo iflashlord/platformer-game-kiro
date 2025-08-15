@@ -132,13 +132,17 @@ func _ready():
 	print("  👹 Enemies: ", get_tree().get_nodes_in_group("enemies").size())
 	print("  🔺 Spikes: ", get_tree().get_nodes_in_group("spikes").size())
 	print("  🦘 Jump Pads: ", get_tree().get_nodes_in_group("jump_pads").size())
+	print("  💀 Death Zones: ", get_tree().get_nodes_in_group("death_zones").size())
 	print("🔧 COLLISION LAYERS:")
 	print("  Player: Layer 2, Mask 1")
+	print("  Ground: Layer 1, Mask 0")
+	print("  Enemies: Layer 4, Mask 3")
 	print("  Collectibles: Layer 8, Mask 2")
 	print("  Interactive: Layer 16, Mask 2")
 	print("  Hazards: Layer 32, Mask 2")
-	print("  Enemies: Layer 4, Mask 3")
-	print("  Ground: Layer 1, Mask 0")
+	print("  Death Zones: Layer 64, Mask 2")
+	print("  Checkpoints: Layer 128, Mask 2")
+	print("  Portals: Layer 256, Mask 2")
 	print("🎮 FEATURES:")
 	print("  ✨ Reusable components with self-contained logic")
 	print("  🎯 Automatic level management and statistics")
@@ -147,9 +151,7 @@ func _ready():
 	print("  💔 Damage system with visual feedback")
 	print("🎮 Jump across platforms, collect items, avoid hazards, and reach the portal!")
 
-func _on_level_completed(level_name: String, completion_data: Dictionary):
-	print("🏆 Level completed with data: ", completion_data)
-	level_completed = true
+# Level completion is now handled by the LevelPortal directly
 
 # LEVEL EVENT HANDLERS
 func _on_player_died():

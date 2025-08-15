@@ -6,6 +6,8 @@
 size = Vector2(64, 96)
 
 [node name="LevelPortal" type="Area2D"]
+collision_layer = 256
+collision_mask = 2
 script = ExtResource("1_script")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

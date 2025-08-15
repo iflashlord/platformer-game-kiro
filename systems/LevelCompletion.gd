@@ -68,12 +68,17 @@ func _calculate_final_score(level_name: String, time: float, hearts: int, gems: 
 	return base_score + time_bonus + heart_bonus + gem_bonus + perfect_bonus
 
 func _show_completion_results(completion_data: Dictionary):
+	print("🚨 LevelCompletion: DISABLED - Would create LevelResults instance here")
+	
+	# TEMPORARILY DISABLED TO DEBUG
 	# Load the results screen
-	var results_scene = preload("res://ui/LevelResults.tscn")
-	var results = results_scene.instantiate()
+	#var results_scene = preload("res://ui/LevelResults.tscn")
+	#var results = results_scene.instantiate()
 	
 	# Pass completion data to results screen
-	results.setup_results(completion_data)
+	#results.setup_results(completion_data)
 	
 	# Add to scene tree
-	get_tree().current_scene.add_child(results)
+	#get_tree().current_scene.add_child(results)
+	
+	print("🚨 LevelCompletion: LevelResults creation DISABLED for debugging")
