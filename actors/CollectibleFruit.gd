@@ -167,6 +167,7 @@ func create_collection_effect():
 	effect_label.position = global_position + Vector2(-15, -30)
 	get_tree().current_scene.add_child(effect_label)
 	
+	
 	# Animate the effect
 	var tween = create_tween()
 	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)

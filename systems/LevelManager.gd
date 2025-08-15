@@ -105,6 +105,15 @@ func auto_connect_components():
 		if zone.has_signal("player_killed"):
 			zone.player_killed.connect(_on_player_killed_by_death_zone)
 	print("💀 Connected to ", death_zones.size(), " death zones")
+	
+	# Connect to all BounceCrate instances (fruit boxes)
+	var fruit_boxes = get_tree().get_nodes_in_group("fruit_boxes")
+	for box in fruit_boxes:
+		if box.has_signal("fruit_collected"):
+			box.fruit_collected.connect(_on_fruit_box_collected)
+		if box.has_signal("box_depleted"):
+			box.box_depleted.connect(_on_fruit_box_depleted)
+	print("🍊 Connected to ", fruit_boxes.size(), " fruit boxes")
 
 # Event handlers for reusable components
 func _on_fruit_collected(fruit: CollectibleFruit, points: int):
@@ -162,6 +171,15 @@ func _on_player_killed_by_death_zone(death_zone: DeathZone, player: Node2D):
 	player_damaged.emit("death_zone", 999)
 	
 	print("💀 Player killed by death zone: ", death_zone.zone_type)
+
+func _on_fruit_box_collected(position: Vector2, fruits_remaining: int, points: int):
+	level_stats.fruits_collected += 1
+	collectible_gathered.emit("fruit_box", points)
+	
+	print("🍊 Fruit collected from box! Points: ", points, " Remaining: ", fruits_remaining)
+
+func _on_fruit_box_depleted(position: Vector2):
+	print("🍊 Fruit box depleted at position: ", position)
 
 # Utility functions
 func get_completion_percentage() -> float:

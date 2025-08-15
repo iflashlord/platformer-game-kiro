@@ -252,3 +252,13 @@ script = null
 
 [node name="CollectibleFruit5" parent="." instance=ExtResource("12_hrxks")]
 position = Vector2(89, 417)
+
+[node name="CollectibleFruit6" parent="." instance=ExtResource("12_hrxks")]
+position = Vector2(331, 371)
+fruit_type = "banana"
+
+[node name="CollectibleFruit7" parent="." instance=ExtResource("12_hrxks")]
+position = Vector2(465, 330)
+
+[node name="CollectibleFruit8" parent="." instance=ExtResource("12_hrxks")]
+position = Vector2(407, 375)

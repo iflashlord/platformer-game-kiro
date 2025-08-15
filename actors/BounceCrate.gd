@@ -1,12 +1,13 @@
 extends StaticBody2D
 class_name BounceCrate
 
-signal fruit_collected(position: Vector2, fruits_remaining: int)
+signal fruit_collected(position: Vector2, fruits_remaining: int, points: int)
 signal box_depleted(position: Vector2)
 
 @export var player_bounce_force: float = 300.0
 @export var initial_fruit_count: int = 5
 @export var bounce_cooldown: float = 0.3
+@export var points_per_fruit: int = 75
 
 var fruits_remaining: int = 5
 var is_bouncing: bool = false
@@ -107,10 +108,18 @@ func consume_fruit():
 		fruits_remaining -= 1
 		update_display()
 		
-		# Emit signal for fruit collection
-		fruit_collected.emit(global_position, fruits_remaining)
+		# Add score
+		if has_node("/root/Game"):
+			Game.add_score(points_per_fruit)
+			print("Added ", points_per_fruit, " points! New score: ", Game.get_score())
 		
-		print("Fruit consumed! Remaining: ", fruits_remaining)
+		# Create collection effect
+		create_collection_effect()
+		
+		# Emit signal for fruit collection
+		fruit_collected.emit(global_position, fruits_remaining, points_per_fruit)
+		
+		print("Fruit consumed! Remaining: ", fruits_remaining, " Points awarded: ", points_per_fruit)
 		
 		# Check if box is depleted
 		if fruits_remaining <= 0:
@@ -148,3 +157,24 @@ func deplete_box():
 
 func _on_detection_area_body_exited(body):
 	print("Body exited detection area: ", body.name)
+
+func create_collection_effect():
+	# Create floating text effect
+	var effect_label = Label.new()
+	effect_label.text = "+" + str(points_per_fruit)
+	effect_label.add_theme_font_size_override("font_size", 16)
+	effect_label.add_theme_color_override("font_color", Color.YELLOW)
+	effect_label.position = global_position + Vector2(-15, -30)
+	get_tree().current_scene.add_child(effect_label)
+	
+	# Animate the effect
+	var tween = create_tween()
+	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
+	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
+	tween.tween_callback(effect_label.queue_free)
+ 
+	# Screen flash effect (with fallback if FX singleton doesn't exist)
+	if has_node("/root/FX") and FX.has_method("flash_screen"):
+		FX.flash_screen(Color.ORANGE * 0.3, 0.1)
+	else:
+		print("FX singleton not found, no screen flash")
