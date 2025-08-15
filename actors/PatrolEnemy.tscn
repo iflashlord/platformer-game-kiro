@@ -6,7 +6,7 @@
 size = Vector2(24, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jc0bi"]
-size = Vector2(70.5, 67.75)
+size = Vector2(30, 31)
 
 [node name="PatrolEnemy" type="CharacterBody2D"]
 collision_layer = 4
@@ -38,4 +38,5 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+position = Vector2(1, 0.5)
 shape = SubResource("RectangleShape2D_jc0bi")

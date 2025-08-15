@@ -1,10 +1,119 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxzyw6rkqh2ll"]
+[gd_scene load_steps=10 format=3 uid="uid://cxzyw6rkqh2ll"]
 
-[ext_resource type="PackedScene" uid="uid://bxzyw1rkqh7aa" path="res://actors/Crate.tscn" id="1_base"]
-[ext_resource type="Script" path="res://actors/BounceCrate.gd" id="2_bounce"]
+[ext_resource type="Script" path="res://actors/BounceCrate.gd" id="1_bounce"]
 
-[node name="BounceCrate" instance=ExtResource("1_base")]
-script = ExtResource("2_bounce")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crate"]
+size = Vector2(32, 32)
 
-[node name="Sprite2D" parent="." index="0"]
-modulate = Color(1, 1, 0, 1)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_detection"]
+size = Vector2(40, 40)
+
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CrateSprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.03, 0.97), Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_bounce"]
+resource_name = "bounce"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CrateSprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.125, 0.875), Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_deplete"]
+resource_name = "deplete"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CrateSprite:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FruitLabel:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
+_data = {
+"bounce": SubResource("Animation_bounce"),
+"deplete": SubResource("Animation_deplete"),
+"idle": SubResource("Animation_idle")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_1"]
+font_size = 16
+font_color = Color(1, 1, 1, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[node name="BounceCrate" type="StaticBody2D"]
+script = ExtResource("1_bounce")
+
+[node name="CrateSprite" type="ColorRect" parent="."]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(1, 0.647059, 0, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_crate")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="DetectionCollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("RectangleShape2D_detection")
+
+[node name="FruitLabel" type="Label" parent="."]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "5"
+label_settings = SubResource("LabelSettings_1")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1")
+}
+autoplay = "idle"

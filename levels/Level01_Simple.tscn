@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://dfqd7hu0sj2hg"]
+[gd_scene load_steps=16 format=3 uid="uid://dfqd7hu0sj2hg"]
 
 [ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
+[ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx8" path="res://actors/DeathZone.tscn" id="10_wew37"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
@@ -154,6 +155,9 @@ position = Vector2(1000, 468)
 enemy_type = "orc"
 patrol_speed = 50.0
 patrol_distance = 80.0
+
+[node name="BounceCrate" parent="Enemies" instance=ExtResource("9_ub75y")]
+position = Vector2(247, 418)
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
 position = Vector2(1200, 420)
