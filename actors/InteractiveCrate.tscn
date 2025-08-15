@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxvw8y7qkqx4"]
+
+[ext_resource type="Script" path="res://actors/InteractiveCrate.gd" id="1_crate"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crate"]
+size = Vector2(32, 32)
+
+[node name="InteractiveCrate" type="Area2D"]
+script = ExtResource("1_crate")
+
+[node name="CrateSprite" type="ColorRect" parent="."]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.6, 0.4, 0.2, 1)
+
+[node name="CrateLabel" type="Label" parent="."]
+offset_left = -16.0
+offset_top = -8.0
+offset_right = 16.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 10
+text = "📦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_crate")

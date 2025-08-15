@@ -1,0 +1,175 @@
+extends Node
+class_name LevelManager
+
+signal level_completed(level_name: String, completion_data: Dictionary)
+signal collectible_gathered(type: String, points: int)
+signal enemy_defeated(enemy_type: String, points: int)
+signal player_damaged(damage_source: String, damage: int)
+
+var level_name: String = ""
+var level_stats: Dictionary = {
+	"fruits_collected": 0,
+	"gems_collected": 0,
+	"enemies_defeated": 0,
+	"crates_destroyed": 0,
+	"total_fruits": 0,
+	"total_gems": 0,
+	"total_enemies": 0,
+	"total_crates": 0,
+	"damage_taken": 0,
+	"completion_time": 0.0
+}
+
+var start_time: float
+
+func _ready():
+	start_time = Time.get_time_dict_from_system()["second"]
+
+func initialize_level(name: String):
+	level_name = name
+	start_time = Time.get_time_dict_from_system()["second"]
+	
+	# Reset stats
+	for key in level_stats.keys():
+		level_stats[key] = 0
+	
+	# Auto-connect to all reusable components
+	auto_connect_components()
+	
+	print("🎮 Level Manager initialized for: ", level_name)
+
+func auto_connect_components():
+	print("🔗 Auto-connecting reusable components...")
+	
+	# Connect to all CollectibleFruit instances
+	var fruits = get_tree().get_nodes_in_group("fruits")
+	level_stats.total_fruits = fruits.size()
+	for fruit in fruits:
+		if fruit.has_signal("fruit_collected"):
+			fruit.fruit_collected.connect(_on_fruit_collected)
+	print("🍎 Connected to ", fruits.size(), " fruits")
+	
+	# Connect to all CollectibleGem instances
+	var gems = get_tree().get_nodes_in_group("gems")
+	level_stats.total_gems = gems.size()
+	for gem in gems:
+		if gem.has_signal("gem_collected"):
+			gem.gem_collected.connect(_on_gem_collected)
+	print("💎 Connected to ", gems.size(), " gems")
+	
+	# Connect to all InteractiveCrate instances
+	var crates = get_tree().get_nodes_in_group("crates")
+	level_stats.total_crates = crates.size()
+	for crate in crates:
+		if crate.has_signal("crate_destroyed"):
+			crate.crate_destroyed.connect(_on_crate_destroyed)
+		if crate.has_signal("player_bounced"):
+			crate.player_bounced.connect(_on_player_bounced)
+	print("📦 Connected to ", crates.size(), " crates")
+	
+	# Connect to all PatrolEnemy instances
+	var enemies = get_tree().get_nodes_in_group("enemies")
+	level_stats.total_enemies = enemies.size()
+	for enemy in enemies:
+		if enemy.has_signal("enemy_defeated"):
+			enemy.enemy_defeated.connect(_on_enemy_defeated)
+		if enemy.has_signal("player_damaged"):
+			enemy.player_damaged.connect(_on_player_damaged_by_enemy)
+	print("👹 Connected to ", enemies.size(), " enemies")
+	
+	# Connect to all DangerousSpike instances
+	var spikes = get_tree().get_nodes_in_group("spikes")
+	for spike in spikes:
+		if spike.has_signal("player_damaged"):
+			spike.player_damaged.connect(_on_player_damaged_by_spike)
+	print("🔺 Connected to ", spikes.size(), " spikes")
+	
+	# Connect to all JumpPad instances
+	var jump_pads = get_tree().get_nodes_in_group("jump_pads")
+	for pad in jump_pads:
+		if pad.has_signal("player_bounced"):
+			pad.player_bounced.connect(_on_jump_pad_used)
+	print("🦘 Connected to ", jump_pads.size(), " jump pads")
+
+# Event handlers for reusable components
+func _on_fruit_collected(fruit: CollectibleFruit, points: int):
+	level_stats.fruits_collected += 1
+	collectible_gathered.emit("fruit", points)
+	
+	print("🍎 Fruit collected! (", level_stats.fruits_collected, "/", level_stats.total_fruits, ")")
+	
+	# Check for completion bonus
+	if level_stats.fruits_collected >= level_stats.total_fruits:
+		print("🎉 All fruits collected! Bonus: +500 points")
+		Game.add_score(500)
+
+func _on_gem_collected(gem: CollectibleGem, points: int):
+	level_stats.gems_collected += 1
+	collectible_gathered.emit("gem", points)
+	
+	print("💎 Gem collected! (", level_stats.gems_collected, "/", level_stats.total_gems, ")")
+	
+	# Check for completion bonus
+	if level_stats.gems_collected >= level_stats.total_gems:
+		print("✨ All gems found! Bonus: +1000 points")
+		Game.add_score(1000)
+
+func _on_crate_destroyed(crate: InteractiveCrate, points: int):
+	level_stats.crates_destroyed += 1
+	print("📦 Crate destroyed! (", level_stats.crates_destroyed, "/", level_stats.total_crates, ")")
+
+func _on_player_bounced(crate: InteractiveCrate, player: Node2D):
+	print("🦘 Player bounced by crate!")
+
+func _on_enemy_defeated(enemy: PatrolEnemy, points: int):
+	level_stats.enemies_defeated += 1
+	enemy_defeated.emit(enemy.enemy_type, points)
+	
+	print("👹 Enemy defeated! (", level_stats.enemies_defeated, "/", level_stats.total_enemies, ")")
+
+func _on_player_damaged_by_enemy(enemy: PatrolEnemy, player: Node2D, damage: int):
+	level_stats.damage_taken += damage
+	player_damaged.emit("enemy", damage)
+	
+	print("💔 Player damaged by enemy! Total damage: ", level_stats.damage_taken)
+
+func _on_player_damaged_by_spike(spike: DangerousSpike, player: Node2D, damage: int):
+	level_stats.damage_taken += damage
+	player_damaged.emit("spike", damage)
+	
+	print("💔 Player damaged by spike! Total damage: ", level_stats.damage_taken)
+
+func _on_jump_pad_used(jump_pad: JumpPad, player: Node2D, force: float):
+	print("🦘 Jump pad used! Force: ", force)
+
+# Utility functions
+func get_completion_percentage() -> float:
+	var total_objectives = level_stats.total_fruits + level_stats.total_gems
+	if total_objectives == 0:
+		return 100.0
+	
+	var completed_objectives = level_stats.fruits_collected + level_stats.gems_collected
+	return (float(completed_objectives) / float(total_objectives)) * 100.0
+
+func is_perfect_completion() -> bool:
+	return (level_stats.fruits_collected >= level_stats.total_fruits and 
+			level_stats.gems_collected >= level_stats.total_gems and 
+			level_stats.damage_taken == 0)
+
+func get_level_stats() -> Dictionary:
+	level_stats.completion_time = Time.get_time_dict_from_system()["second"] - start_time
+	return level_stats.duplicate()
+
+func complete_level():
+	var completion_data = get_level_stats()
+	completion_data["completion_percentage"] = get_completion_percentage()
+	completion_data["perfect_completion"] = is_perfect_completion()
+	
+	level_completed.emit(level_name, completion_data)
+	
+	print("🏆 Level completed: ", level_name)
+	print("📊 Final stats: ", completion_data)
+
+# This should be called by the level portal, not automatically
+func trigger_level_completion():
+	complete_level()

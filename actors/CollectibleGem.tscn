@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxvw9y8qkqx3"]
+
+[ext_resource type="Script" path="res://actors/CollectibleGem.gd" id="1_gem"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gem"]
+radius = 8.0
+
+[node name="CollectibleGem" type="Area2D"]
+script = ExtResource("1_gem")
+
+[node name="GemSprite" type="ColorRect" parent="."]
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+color = Color(1, 0, 0, 0.8)
+
+[node name="GemLabel" type="Label" parent="."]
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+theme_override_font_sizes/font_size = 10
+text = "💎"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_gem")

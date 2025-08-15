@@ -6,9 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="5_deathzone"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
-[ext_resource type="Script" uid="uid://b15hdxub1u51o" path="res://levels/SimpleCrate.gd" id="14_simple_crate"]
-[ext_resource type="Script" uid="uid://b1yru55pyyjx3" path="res://levels/SimpleEnemy.gd" id="15_simple_enemy"]
-[ext_resource type="Script" uid="uid://n2a7m4vsi68k" path="res://levels/SimpleSpike.gd" id="16_simple_spike"]
+[ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://ui/LevelResults.tscn" id="23_spike"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(400, 32)
@@ -22,14 +24,11 @@ size = Vector2(100, 32)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tiny_platform"]
 size = Vector2(64, 32)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_collectible"]
-radius = 12.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_gem"]
-radius = 8.0
-
 [node name="Level01" type="Node2D"]
 script = ExtResource("1_simple")
+
+[node name="LevelManager" type="Node" parent="."]
+script = ExtResource("18_level_manager")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(100, 400)
@@ -42,6 +41,7 @@ position = Vector2(100, 400)
 
 [node name="Ground1" type="StaticBody2D" parent="Level"]
 position = Vector2(200, 500)
+collision_mask = 0
 
 [node name="GroundSprite1" type="ColorRect" parent="Level/Ground1"]
 offset_left = -200.0
@@ -55,6 +55,7 @@ shape = SubResource("RectangleShape2D_ground")
 
 [node name="Platform1" type="StaticBody2D" parent="Level"]
 position = Vector2(550, 400)
+collision_mask = 0
 
 [node name="PlatformSprite1" type="ColorRect" parent="Level/Platform1"]
 offset_left = -75.0
@@ -68,6 +69,7 @@ shape = SubResource("RectangleShape2D_platform")
 
 [node name="Platform2" type="StaticBody2D" parent="Level"]
 position = Vector2(750, 320)
+collision_mask = 0
 
 [node name="PlatformSprite2" type="ColorRect" parent="Level/Platform2"]
 offset_left = -50.0
@@ -81,6 +83,7 @@ shape = SubResource("RectangleShape2D_small_platform")
 
 [node name="Platform3" type="StaticBody2D" parent="Level"]
 position = Vector2(900, 250)
+collision_mask = 0
 
 [node name="PlatformSprite3" type="ColorRect" parent="Level/Platform3"]
 offset_left = -32.0
@@ -94,6 +97,7 @@ shape = SubResource("RectangleShape2D_tiny_platform")
 
 [node name="Ground2" type="StaticBody2D" parent="Level"]
 position = Vector2(1200, 500)
+collision_mask = 0
 
 [node name="GroundSprite2" type="ColorRect" parent="Level/Ground2"]
 offset_left = -200.0
@@ -129,323 +133,115 @@ scale = Vector2(5, 1)
 
 [node name="Collectibles" type="Node2D" parent="."]
 
-[node name="Fruit1" type="Area2D" parent="Collectibles"]
+[node name="AppleFruit" parent="Collectibles"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(300, 350)
+script = null
 
-[node name="FruitSprite1" type="ColorRect" parent="Collectibles/Fruit1"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-color = Color(1, 0, 0, 1)
-
-[node name="FruitLabel1" type="Label" parent="Collectibles/Fruit1"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 12
-text = "🍎"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="FruitCollision1" type="CollisionShape2D" parent="Collectibles/Fruit1"]
-shape = SubResource("CircleShape2D_collectible")
-
-[node name="Fruit2" type="Area2D" parent="Collectibles"]
+[node name="BananaFruit" parent="Collectibles"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(750, 270)
+fruit_type = "banana"
+script = null
 
-[node name="FruitSprite2" type="ColorRect" parent="Collectibles/Fruit2"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-color = Color(1, 1, 0, 1)
-
-[node name="FruitLabel2" type="Label" parent="Collectibles/Fruit2"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 12
-text = "🍌"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="FruitCollision2" type="CollisionShape2D" parent="Collectibles/Fruit2"]
-shape = SubResource("CircleShape2D_collectible")
-
-[node name="Fruit3" type="Area2D" parent="Collectibles"]
+[node name="OrangeFruit" parent="Collectibles"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(900, 200)
+fruit_type = "orange"
+script = null
 
-[node name="FruitSprite3" type="ColorRect" parent="Collectibles/Fruit3"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-color = Color(1, 0.5, 0, 1)
-
-[node name="FruitLabel3" type="Label" parent="Collectibles/Fruit3"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 12
-text = "🍊"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="FruitCollision3" type="CollisionShape2D" parent="Collectibles/Fruit3"]
-shape = SubResource("CircleShape2D_collectible")
-
-[node name="HiddenGem1" type="Area2D" parent="Collectibles"]
+[node name="RubyGem" parent="Collectibles"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(150, 450)
+is_hidden = true
+script = null
 
-[node name="GemSprite1" type="ColorRect" parent="Collectibles/HiddenGem1"]
-offset_left = -6.0
-offset_top = -6.0
-offset_right = 6.0
-offset_bottom = 6.0
-color = Color(1, 0, 0, 0.7)
-
-[node name="GemLabel1" type="Label" parent="Collectibles/HiddenGem1"]
-offset_left = -6.0
-offset_top = -6.0
-offset_right = 6.0
-offset_bottom = 6.0
-theme_override_font_sizes/font_size = 10
-text = "💎"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="GemCollision1" type="CollisionShape2D" parent="Collectibles/HiddenGem1"]
-shape = SubResource("CircleShape2D_gem")
-
-[node name="HiddenGem2" type="Area2D" parent="Collectibles"]
+[node name="EmeraldGem" parent="Collectibles"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(825, 200)
-
-[node name="GemSprite2" type="ColorRect" parent="Collectibles/HiddenGem2"]
-offset_left = -6.0
-offset_top = -6.0
-offset_right = 6.0
-offset_bottom = 6.0
-color = Color(0, 1, 0, 0.7)
-
-[node name="GemLabel2" type="Label" parent="Collectibles/HiddenGem2"]
-offset_left = -6.0
-offset_top = -6.0
-offset_right = 6.0
-offset_bottom = 6.0
-theme_override_font_sizes/font_size = 10
-text = "💎"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="GemCollision2" type="CollisionShape2D" parent="Collectibles/HiddenGem2"]
-shape = SubResource("CircleShape2D_gem")
+gem_type = "emerald"
+script = null
 
 [node name="InteractiveElements" type="Node2D" parent="."]
 
-[node name="BasicCrate1" type="Area2D" parent="InteractiveElements"]
+[node name="BasicCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(400, 450)
-script = ExtResource("14_simple_crate")
 
-[node name="CrateSprite1" type="ColorRect" parent="InteractiveElements/BasicCrate1"]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(0.6, 0.4, 0.2, 1)
-
-[node name="CrateLabel1" type="Label" parent="InteractiveElements/BasicCrate1"]
-offset_left = -16.0
-offset_top = -8.0
-offset_right = 16.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 10
-text = "📦"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CrateCollision1" type="CollisionShape2D" parent="InteractiveElements/BasicCrate1"]
-shape = SubResource("RectangleShape2D_tiny_platform")
-
-[node name="BounceCrate1" type="Area2D" parent="InteractiveElements"]
+[node name="BounceCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(650, 350)
-script = ExtResource("14_simple_crate")
 crate_type = "bounce"
-bounce_force = 500.0
 
-[node name="CrateSprite2" type="ColorRect" parent="InteractiveElements/BounceCrate1"]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(1, 1, 0, 1)
-
-[node name="CrateLabel2" type="Label" parent="InteractiveElements/BounceCrate1"]
-offset_left = -16.0
-offset_top = -8.0
-offset_right = 16.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 10
-text = "🦘"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CrateCollision2" type="CollisionShape2D" parent="InteractiveElements/BounceCrate1"]
-shape = SubResource("RectangleShape2D_tiny_platform")
-
-[node name="TNTCrate1" type="Area2D" parent="InteractiveElements"]
+[node name="TNTCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(800, 270)
-script = ExtResource("14_simple_crate")
 crate_type = "tnt"
 
-[node name="CrateSprite3" type="ColorRect" parent="InteractiveElements/TNTCrate1"]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(1, 0.3, 0.3, 1)
-
-[node name="CrateLabel3" type="Label" parent="InteractiveElements/TNTCrate1"]
-offset_left = -16.0
-offset_top = -8.0
-offset_right = 16.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 10
-text = "💥"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CrateCollision3" type="CollisionShape2D" parent="InteractiveElements/TNTCrate1"]
-shape = SubResource("RectangleShape2D_tiny_platform")
-
-[node name="BasicCrate2" type="Area2D" parent="InteractiveElements"]
+[node name="BasicCrate2" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(1050, 450)
-script = ExtResource("14_simple_crate")
 
-[node name="CrateSprite4" type="ColorRect" parent="InteractiveElements/BasicCrate2"]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(0.6, 0.4, 0.2, 1)
-
-[node name="CrateLabel4" type="Label" parent="InteractiveElements/BasicCrate2"]
-offset_left = -16.0
-offset_top = -8.0
-offset_right = 16.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 10
-text = "📦"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CrateCollision4" type="CollisionShape2D" parent="InteractiveElements/BasicCrate2"]
-shape = SubResource("RectangleShape2D_tiny_platform")
+[node name="JumpPad1" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
+position = Vector2(550, 416)
 
 [node name="Hazards" type="Node2D" parent="."]
 
-[node name="Spike1" type="Area2D" parent="Hazards"]
-position = Vector2(475, 484)
-script = ExtResource("16_simple_spike")
+[node name="Spike1" parent="Hazards" instance=ExtResource("23_spike")]
 
-[node name="SpikeSprite1" type="ColorRect" parent="Hazards/Spike1"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-color = Color(0.5, 0.5, 0.5, 1)
+[node name="Spike2" parent="Hazards" instance=ExtResource("23_spike")]
 
-[node name="SpikeLabel1" type="Label" parent="Hazards/Spike1"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 12
-text = "🔺"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="Spike3" parent="Hazards" instance=ExtResource("23_spike")]
 
-[node name="SpikeCollision1" type="CollisionShape2D" parent="Hazards/Spike1"]
-shape = SubResource("RectangleShape2D_tiny_platform")
-
-[node name="Spike2" type="Area2D" parent="Hazards"]
-position = Vector2(500, 484)
-script = ExtResource("16_simple_spike")
-
-[node name="SpikeSprite2" type="ColorRect" parent="Hazards/Spike2"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-color = Color(0.5, 0.5, 0.5, 1)
-
-[node name="SpikeLabel2" type="Label" parent="Hazards/Spike2"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 12
-text = "🔺"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SpikeCollision2" type="CollisionShape2D" parent="Hazards/Spike2"]
-shape = SubResource("RectangleShape2D_tiny_platform")
-
-[node name="Spike3" type="Area2D" parent="Hazards"]
-position = Vector2(525, 484)
-script = ExtResource("16_simple_spike")
-
-[node name="SpikeSprite3" type="ColorRect" parent="Hazards/Spike3"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-color = Color(0.5, 0.5, 0.5, 1)
-
-[node name="SpikeLabel3" type="Label" parent="Hazards/Spike3"]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 12
-text = "🔺"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SpikeCollision3" type="CollisionShape2D" parent="Hazards/Spike3"]
-shape = SubResource("RectangleShape2D_tiny_platform")
+[node name="AutoSpike" parent="Hazards" instance=ExtResource("23_spike")]
 
 [node name="Enemies" type="Node2D" parent="."]
 
-[node name="EnemyPatrol1" type="CharacterBody2D" parent="Enemies"]
-position = Vector2(700, 450)
-script = ExtResource("15_simple_enemy")
-patrol_speed = 75.0
-patrol_distance = 150.0
+[node name="GoblinPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
+position = Vector2(300, 468)
+patrol_distance = 100.0
 
-[node name="EnemySprite1" type="ColorRect" parent="Enemies/EnemyPatrol1"]
-offset_left = -12.0
-offset_top = -12.0
-offset_right = 12.0
-offset_bottom = 12.0
-color = Color(1, 0, 1, 1)
-
-[node name="EnemyLabel1" type="Label" parent="Enemies/EnemyPatrol1"]
-offset_left = -12.0
-offset_top = -12.0
-offset_right = 12.0
-offset_bottom = 12.0
-theme_override_font_sizes/font_size = 14
-text = "👹"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="EnemyCollision1" type="CollisionShape2D" parent="Enemies/EnemyPatrol1"]
-shape = SubResource("RectangleShape2D_tiny_platform")
+[node name="OrcPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
+position = Vector2(1000, 468)
+enemy_type = "orc"
+patrol_speed = 50.0
+patrol_distance = 80.0
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
 position = Vector2(1200, 420)
@@ -461,15 +257,18 @@ offset_bottom = 200.0
 theme_override_font_sizes/font_size = 14
 text = "🌲 LEVEL 1: FOREST ADVENTURE
 
-🎯 Complete level with all elements:
-• 📦 Crates: Basic, Bounce, TNT
-• 🍎 Fruits: Collect for points
-• 💎 Hidden Gems: Find secret gems
-• 👹 Enemies: Avoid or defeat
-• 🔺 Spikes: Dangerous hazards
+🎯 Complete level with reusable components:
+• 📦 Crates: Basic, Bounce, TNT (3s countdown)
+• 🍎 Fruits: Apple, Banana, Orange (floating)
+• 💎 Gems: Ruby (hidden), Emerald (visible)
+• 👹 Enemies: Goblin, Orc (patrol AI)
+• 🔺 Spikes: Static + Auto-retracting
+• 🦘 Jump Pad: Extra bounce power
 • ✅ Checkpoints: Save progress
 • 🚪 Portal: Complete level
 
 🎮 Controls:
 WASD/Arrows: Move | Space: Jump
-ESC: Menu | R: Restart | Enter: Stats"
+ESC: Menu | R: Restart | Enter: Stats
+
+✨ All components are reusable and self-contained!"
