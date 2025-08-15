@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx2" path="res://actors/CollectibleFruit.tscn" id="1_fruit"]
+
+[node name="TestFruit" type="Node2D"]
+
+[node name="CollectibleFruit" parent="." instance=ExtResource("1_fruit")]
+position = Vector2(100, 100)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(100, 100)
