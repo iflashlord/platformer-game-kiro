@@ -30,6 +30,7 @@ var original_position: Vector2
 @onready var area: Area2D = $Area2D
 @onready var area_collision: CollisionShape2D = $Area2D/CollisionShape2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var health_label: Label = $HealthLabel
 
 func _ready():
 	# Connect signals
@@ -46,11 +47,14 @@ func _ready():
 	# Set initial state
 	set_state(CrateState.IDLE)
 	
+	# Initialize health display
+	update_health_display()
+	
 	# Add to crate group
 	add_to_group("crates")
 	add_to_group("interactive_objects")
 	
-	print("Crate initialized: ", crate_type)
+	print("Crate initialized: ", crate_type, " with health: ", health)
 	print("Area2D monitoring: ", area.monitoring)
 	print("Area2D collision mask: ", area.collision_mask)
 
@@ -134,6 +138,7 @@ func exit_exploding_state():
 func enter_broken_state():
 	# Hide sprite and disable collision
 	sprite.visible = false
+	health_label.visible = false
 	collision_shape.disabled = true
 	area_collision.disabled = true
 	
@@ -199,6 +204,10 @@ func take_damage(amount: int = 1):
 		return
 	
 	health -= amount
+	print("Crate took damage! Health remaining: ", health)
+	
+	# Update health display
+	update_health_display()
 	
 	if health <= 0:
 		break_crate()
@@ -261,6 +270,21 @@ func create_hit_effect():
 	else:
 		print("FX singleton not found, no screen flash")
 
+func update_health_display():
+	# Update the health number display
+	if health_label:
+		health_label.text = str(health)
+		
+		# Change color based on remaining health
+		if health <= 1:
+			health_label.add_theme_color_override("font_color", Color.RED)
+		elif health <= 2:
+			health_label.add_theme_color_override("font_color", Color.YELLOW)
+		else:
+			health_label.add_theme_color_override("font_color", Color.WHITE)
+		
+		print("Health display updated: ", health)
+
 func on_player_interaction(player):
 	print("Player interacted with crate: ", crate_type)
 	print("Player position: ", player.global_position)
@@ -272,8 +296,8 @@ func on_player_interaction(player):
 	
 	# Check if player is above the crate (bouncing)
 	if player.global_position.y < global_position.y - 5:
-		# Player is above, bounce them
-		print("Player is above crate, bouncing...")
+		# Player is above, bounce them AND damage crate
+		print("Player is above crate, bouncing and damaging...")
 		if "velocity" in player:
 			player.velocity.y = -bounce_force
 			print("Set player velocity to: ", player.velocity.y)
@@ -282,7 +306,10 @@ func on_player_interaction(player):
 		
 		player_bounced.emit(self, player)
 		set_state(CrateState.BOUNCING)
-		print("Player bounced on crate!")
+		
+		# Also damage the crate when bounced on
+		take_damage(1)
+		print("Player bounced on crate and damaged it!")
 	else:
 		# Player hit from side/below, damage crate
 		print("Player hit crate from side/below, taking damage...")
