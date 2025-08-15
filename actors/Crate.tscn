@@ -16,7 +16,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CrateSprite:scale")
+tracks/0/path = NodePath("CrateSprite:size")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -32,7 +32,7 @@ length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CrateSprite:scale")
+tracks/0/path = NodePath("CrateSprite:size")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -48,7 +48,7 @@ length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CrateSprite:scale")
+tracks/0/path = NodePath("CrateSprite:size")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -65,7 +65,7 @@ _data = {
 "idle": SubResource("Animation_idle")
 }
 
-[node name="Crate" type="RigidBody2D"]
+[node name="Crate" type="StaticBody2D"]
 script = ExtResource("1_crate")
 
 [node name="DebugBorder" type="Node2D" parent="."]
@@ -79,15 +79,17 @@ offset_right = 16.0
 offset_bottom = 16.0
 color = Color(0.7, 0.5, 0.3, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_crate")
 
 [node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("RectangleShape2D_area")
 
-[node name="AnimationPlayer" type="AnimationPlayer"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_1")
 }
