@@ -37,6 +37,10 @@ var invincibility_duration: float = 3.0
 var invincibility_timer: float = 0.0
 var blink_frequency: float = 0.15  # How fast to blink during invincibility
 
+# Enemy stomping system
+@export var stomp_bounce_velocity: float = -300.0
+@export var stomp_detection_threshold: float = 50.0  # Minimum downward velocity to stomp
+
 @onready var sprite: ColorRect = $PlayerSprite
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var camera: PlayerCamera = get_node_or_null("PlayerCamera")
@@ -89,6 +93,9 @@ func _physics_process(delta):
 	was_on_floor = is_on_floor()
 	
 	move_and_slide()
+	
+	# Check for enemy stomping
+	handle_enemy_stomping()
 	
 	# Check for landing
 	if is_on_floor() and not was_on_floor:
@@ -268,6 +275,67 @@ func take_damage(amount: int = 1):
 
 func is_player_invincible() -> bool:
 	return is_invincible
+
+func handle_enemy_stomping():
+	# Only check for stomping when falling with sufficient velocity
+	if velocity.y < stomp_detection_threshold:
+		return
+	
+	# Check all slide collisions for enemies
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		
+		if collider and collider.is_in_group("enemies"):
+			# Check if we're landing on top of the enemy
+			var collision_normal = collision.get_normal()
+			
+			# If collision normal points upward (we're on top), it's a stomp
+			if collision_normal.y < -0.7:  # Normal pointing up
+				stomp_enemy(collider)
+				return  # Only stomp one enemy per frame
+
+func stomp_enemy(enemy):
+	if not enemy.has_method("take_damage") or not enemy.is_alive:
+		return
+	
+	print("🦶 Player stomped enemy: ", enemy.enemy_type if enemy.has_method("get") else "unknown")
+	
+	# Mark enemy as being stomped and kill it
+	if enemy.has_method("set"):
+		enemy.set("being_stomped", true)
+	
+	# Kill the enemy (most enemies have 1 HP)
+	enemy.take_damage(999, true)  # Pass stomp flag
+	
+	# Bounce the player upward
+	velocity.y = stomp_bounce_velocity
+	current_jumps = max(0, current_jumps - 1)  # Reset one jump for combo potential
+	
+	# Visual and audio feedback
+	_handle_stomp_effects(enemy)
+	
+	# Add score (enemy handles this in its defeat() method)
+	print("🎯 Enemy stomped! Score added by enemy defeat.")
+
+func _handle_stomp_effects(enemy):
+	# Visual effects
+	if FX:
+		FX.flash_screen(Color.YELLOW * 0.3, 0.1)
+		FX.shake(100)
+	
+	# Audio feedback
+	if Audio:
+		Audio.play_sfx("enemy_stomp")
+	
+	# Particle effect at stomp location
+	if land_particles:
+		land_particles.global_position = enemy.global_position + Vector2(0, -10)
+		land_particles.restart()
+		land_particles.emitting = true
+	
+	# Squash effect on player
+	_squash_sprite()
 
 func die():
 	print("💀 Player.die() called")

@@ -5,8 +5,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_enemy"]
 size = Vector2(24, 24)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_detection"]
-radius = 100.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jc0bi"]
+size = Vector2(70.5, 67.75)
 
 [node name="PatrolEnemy" type="CharacterBody2D"]
 collision_layer = 4
@@ -38,4 +38,4 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
-shape = SubResource("CircleShape2D_detection")
+shape = SubResource("RectangleShape2D_jc0bi")

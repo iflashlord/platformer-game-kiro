@@ -1,12 +1,13 @@
 extends Node2D
 
-# Simple test script to verify invincibility system
+# Test script to verify invincibility and stomping systems
 func _ready():
-	print("🧪 Invincibility Test Level Ready")
+	print("🧪 Combat Test Level Ready")
 	print("Instructions:")
-	print("- Walk into enemies or spikes to test invincibility")
+	print("- Walk into enemies from the side to test invincibility")
+	print("- Jump on top of enemies to stomp them")
 	print("- Player should blink for 3 seconds after taking damage")
-	print("- During blinking, player should not take additional damage")
+	print("- Stomped enemies should give points and bounce player up")
 	
 	# Add some debug info
 	if Input.is_action_pressed("ui_accept"):

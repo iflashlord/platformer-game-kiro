@@ -2,6 +2,7 @@ extends CharacterBody2D
 class_name PatrolEnemy
 
 signal enemy_defeated(enemy: PatrolEnemy, points: int)
+signal enemy_stomped(enemy: PatrolEnemy, player: Node2D, points: int)
 signal player_detected(enemy: PatrolEnemy, player: Node2D)
 signal player_damaged(enemy: PatrolEnemy, player: Node2D, damage: int)
 
@@ -61,13 +62,28 @@ func _physics_process(delta):
 	
 	move_and_slide()
 	
-	# Check for player collision (damage)
+	# Check for player collision (damage) - but not if player is stomping
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
 		if collider and collider.is_in_group("player"):
-			print("👹 Enemy collided with player!")
-			damage_player(collider)
+			# Check if this is a stomp (player falling on top) or side collision
+			# var collision_normal = collision.get_normal()
+			var player_velocity = collider.velocity if collider.has_method("get") else Vector2.ZERO
+			
+			# Check if player is above enemy and moving downward (stomp detection)
+			var player_below_enemy = collider.global_position.y <= global_position.y + 20  
+ 			
+			print("STOMP CHECK: player_below=", player_below_enemy, " vel=", player_velocity.y)
+			
+			if player_below_enemy:
+				print("👹 Player is stomping this enemy - no damage dealt")
+				take_damage(1, true)
+				# Don't damage player, let player handle the stomp
+				continue
+			else:
+				print("👹 Enemy collided with player from side!")
+				damage_player(collider)
 
 func setup_enemy_appearance():
 	match enemy_type:
@@ -107,9 +123,13 @@ func setup_detection_area():
 		return
 	
 	# Create detection collision shape
-	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = detection_range
-	detection_collision.shape = circle_shape
+	# var circle_shape = CircleShape2D.new()
+	# circle_shape.radius = detection_range
+	# detection_collision.shape = circle_shape
+	
+	var rect_shape = RectangleShape2D.new()
+	rect_shape.extents = Vector2(detection_range, detection_range)
+	detection_collision.shape = rect_shape
 	
 	# Set collision layers for detection
 	detection_area.collision_layer = 0
@@ -157,7 +177,7 @@ func create_damage_effect():
 	if FX and FX.has_method("shake"):
 		FX.shake(100)
 
-func take_damage(amount: int = 1):
+func take_damage(amount: int = 1, from_stomp: bool = false):
 	if not is_alive:
 		return
 	
@@ -168,12 +188,15 @@ func take_damage(amount: int = 1):
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.2)
 	
-	print("👹 ", enemy_type.capitalize(), " took ", amount, " damage (", current_health, "/", health, " HP)")
+	if from_stomp:
+		print("🦶 ", enemy_type.capitalize(), " stomped! (", current_health, "/", health, " HP)")
+	else:
+		print("👹 ", enemy_type.capitalize(), " took ", amount, " damage (", current_health, "/", health, " HP)")
 	
 	if current_health <= 0:
-		defeat()
+		defeat(from_stomp)
 
-func defeat():
+func defeat(from_stomp: bool = false):
 	if not is_alive:
 		return
 	
@@ -182,15 +205,18 @@ func defeat():
 	# Add score
 	Game.add_score(points_value)
 	
-	# Emit signal
-	enemy_defeated.emit(self, points_value)
+	# Emit appropriate signal
+	if from_stomp:
+		enemy_stomped.emit(self, null, points_value)  # Player reference would be passed separately
+		print("🦶 ", enemy_type.capitalize(), " stomped! +", points_value, " points")
+	else:
+		enemy_defeated.emit(self, points_value)
+		print("👹 ", enemy_type.capitalize(), " defeated! +", points_value, " points")
 	
 	# Create defeat effect
-	create_defeat_effect()
-	
-	print("👹 ", enemy_type.capitalize(), " defeated! +", points_value, " points")
+	create_defeat_effect(from_stomp)
 
-func create_defeat_effect():
+func create_defeat_effect(from_stomp: bool = false):
 	# Disable collision
 	collision_shape.disabled = true
 	if detection_area:
@@ -200,8 +226,15 @@ func create_defeat_effect():
 	var effect_label = Label.new()
 	effect_label.text = "+" + str(points_value)
 	effect_label.add_theme_font_size_override("font_size", 16)
-	effect_label.add_theme_color_override("font_color", Color.YELLOW)
-	effect_label.position = global_position + Vector2(-20, -30)
+	
+	# Different colors for stomp vs regular defeat
+	if from_stomp:
+		effect_label.add_theme_color_override("font_color", Color.ORANGE)
+		effect_label.text = "STOMP! +" + str(points_value)
+	else:
+		effect_label.add_theme_color_override("font_color", Color.YELLOW)
+	
+	effect_label.position = global_position + Vector2(-30, -30)
 	get_tree().current_scene.add_child(effect_label)
 	
 	# Animate the effect
@@ -210,10 +243,17 @@ func create_defeat_effect():
 	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(effect_label.queue_free)
 	
-	# Animate enemy disappearing
+	# Different death animation for stomp
 	var death_tween = create_tween()
-	death_tween.parallel().tween_property(self, "modulate:a", 0.0, 0.5)
-	death_tween.parallel().tween_property(self, "scale", Vector2(0.5, 0.5), 0.5)
+	if from_stomp:
+		# Squash effect for stomp
+		death_tween.parallel().tween_property(self, "scale", Vector2(1.2, 0.3), 0.2)
+		death_tween.parallel().tween_property(self, "modulate:a", 0.0, 0.3)
+	else:
+		# Regular shrink effect
+		death_tween.parallel().tween_property(self, "modulate:a", 0.0, 0.5)
+		death_tween.parallel().tween_property(self, "scale", Vector2(0.5, 0.5), 0.5)
+	
 	death_tween.tween_callback(queue_free)
 
 func set_patrol_points(point_a: Vector2, point_b: Vector2):
