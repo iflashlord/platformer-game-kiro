@@ -137,11 +137,27 @@ func detonate():
 	if player:
 		var distance = global_position.distance_to(player.global_position)
 		if distance <= explosion_radius:
-			print("💔 Player caught in explosion!")
+			print("💔 Player caught in explosion! Distance: ", distance)
+			
+			# Apply damage
 			if HealthSystem and HealthSystem.has_method("take_damage"):
 				HealthSystem.take_damage(1)
 			elif player.has_method("take_damage"):
 				player.take_damage(1)
+			
+			# Apply knockback force
+			apply_explosion_knockback(player, distance)
+	
+	# Check for other crates in explosion radius (chain reaction)
+	var nearby_crates = get_tree().get_nodes_in_group("crates")
+	for crate in nearby_crates:
+		if crate != self and crate.has_method("start_explosion_countdown"):
+			var crate_distance = global_position.distance_to(crate.global_position)
+			if crate_distance <= explosion_radius * 0.8:  # Slightly smaller radius for chain reaction
+				print("💥 Chain reaction with crate at distance: ", crate_distance)
+				# Trigger other TNT crates
+				if crate.crate_type == "tnt":
+					crate.start_explosion_countdown()
 	
 	# Visual explosion effect
 	create_explosion_effect()
@@ -193,6 +209,27 @@ func create_destruction_effect():
 	item_tween.tween_property(self, "modulate:a", 0.0, 0.3)
 	item_tween.tween_callback(queue_free)
 
+func apply_explosion_knockback(player, distance: float):
+	# Calculate knockback direction (away from explosion)
+	var knockback_direction = (player.global_position - global_position).normalized()
+	
+	# Calculate knockback force based on distance (closer = stronger)
+	var max_knockback = 600.0
+	var knockback_strength = max_knockback * (1.0 - (distance / explosion_radius))
+	knockback_strength = max(knockback_strength, 200.0)  # Minimum knockback
+	
+	# Apply knockback to player
+	if "velocity" in player:
+		player.velocity += knockback_direction * knockback_strength
+		# Add some upward force
+		player.velocity.y -= 200.0
+		
+		print("💥 Applied knockback: ", knockback_direction * knockback_strength)
+	
+	# Visual feedback for knockback
+	if FX and FX.has_method("shake"):
+		FX.shake(400)  # Stronger shake for explosion
+
 func create_explosion_effect():
 	# Create explosion visual
 	var explosion_sprite = ColorRect.new()
@@ -212,4 +249,4 @@ func create_explosion_effect():
 	
 	# Screen shake effect
 	if FX and FX.has_method("shake"):
-		FX.shake(300)
+		FX.shake(400)  # Increased shake for explosion
