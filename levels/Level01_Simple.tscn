@@ -185,6 +185,20 @@ ESC: Menu | R: Restart | Enter: Stats
 
 ✨ All components are reusable and self-contained!"
 
-[node name="DeathZone" parent="." instance=ExtResource("10_wew37")]
+[node name="DeathZone" parent="."]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(729, 644)
 scale = Vector2(21.16, 1)
+script = null
+
+[node name="DeathZone2" parent="." instance=ExtResource("10_wew37")]
+position = Vector2(727, 652)
+scale = Vector2(19, 1)
