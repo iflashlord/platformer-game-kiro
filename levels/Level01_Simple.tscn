@@ -1,13 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://dfqd7hu0sj2hg"]
+[gd_scene load_steps=16 format=3 uid="uid://dfqd7hu0sj2hg"]
 
 [ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
-[ext_resource type="PackedScene" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="5_deathzone"]
-[ext_resource type="PackedScene" uid="uid://cxvxay8qkqxq" path="res://actors/Fruit.tscn" id="6_jw41l"]
-[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="6_portal"]
-[ext_resource type="Shader" uid="uid://bhbbfqtbyv37s" path="res://levels/Level01_Simple.gdshader" id="7_sdxv2"]
+[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
+[ext_resource type="Script" uid="uid://b15hdxub1u51o" path="res://levels/SimpleCrate.gd" id="14_simple_crate"]
+[ext_resource type="Script" uid="uid://b1yru55pyyjx3" path="res://levels/SimpleEnemy.gd" id="15_simple_enemy"]
+[ext_resource type="Script" uid="uid://n2a7m4vsi68k" path="res://levels/SimpleSpike.gd" id="16_simple_spike"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(400, 32)
@@ -15,8 +16,17 @@ size = Vector2(400, 32)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
 size = Vector2(150, 32)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jw41l"]
-shader = ExtResource("7_sdxv2")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_small_platform"]
+size = Vector2(100, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tiny_platform"]
+size = Vector2(64, 32)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_collectible"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gem"]
+radius = 8.0
 
 [node name="Level01" type="Node2D"]
 script = ExtResource("1_simple")
@@ -56,8 +66,34 @@ color = Color(0.4, 0.4, 0.4, 1)
 [node name="PlatformCollision1" type="CollisionShape2D" parent="Level/Platform1"]
 shape = SubResource("RectangleShape2D_platform")
 
+[node name="Platform2" type="StaticBody2D" parent="Level"]
+position = Vector2(750, 320)
+
+[node name="PlatformSprite2" type="ColorRect" parent="Level/Platform2"]
+offset_left = -50.0
+offset_top = -16.0
+offset_right = 50.0
+offset_bottom = 16.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="PlatformCollision2" type="CollisionShape2D" parent="Level/Platform2"]
+shape = SubResource("RectangleShape2D_small_platform")
+
+[node name="Platform3" type="StaticBody2D" parent="Level"]
+position = Vector2(900, 250)
+
+[node name="PlatformSprite3" type="ColorRect" parent="Level/Platform3"]
+offset_left = -32.0
+offset_top = -16.0
+offset_right = 32.0
+offset_bottom = 16.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="PlatformCollision3" type="CollisionShape2D" parent="Level/Platform3"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
 [node name="Ground2" type="StaticBody2D" parent="Level"]
-position = Vector2(1000, 500)
+position = Vector2(1200, 500)
 
 [node name="GroundSprite2" type="ColorRect" parent="Level/Ground2"]
 offset_left = -200.0
@@ -76,21 +112,343 @@ position = Vector2(550, 350)
 checkpoint_id = "level01_checkpoint_1"
 checkpoint_name = "First Platform"
 
+[node name="Checkpoint2" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+position = Vector2(900, 200)
+checkpoint_id = "level01_checkpoint_2"
+checkpoint_name = "High Platform"
+
 [node name="DeathZones" type="Node2D" parent="."]
 
 [node name="DeathZone1" parent="DeathZones" instance=ExtResource("5_deathzone")]
 position = Vector2(375, 650)
 scale = Vector2(12.84, 1)
 
-[node name="Fruit" parent="DeathZones" instance=ExtResource("6_jw41l")]
-position = Vector2(361, 397)
+[node name="DeathZone2" parent="DeathZones" instance=ExtResource("5_deathzone")]
+position = Vector2(825, 650)
+scale = Vector2(5, 1)
 
-[node name="Fruit2" parent="DeathZones" instance=ExtResource("6_jw41l")]
-material = SubResource("ShaderMaterial_jw41l")
-position = Vector2(223, 443)
+[node name="Collectibles" type="Node2D" parent="."]
 
-[node name="LevelPortal" parent="." instance=ExtResource("6_portal")]
-position = Vector2(1000, 420)
+[node name="Fruit1" type="Area2D" parent="Collectibles"]
+position = Vector2(300, 350)
+
+[node name="FruitSprite1" type="ColorRect" parent="Collectibles/Fruit1"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(1, 0, 0, 1)
+
+[node name="FruitLabel1" type="Label" parent="Collectibles/Fruit1"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 12
+text = "🍎"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FruitCollision1" type="CollisionShape2D" parent="Collectibles/Fruit1"]
+shape = SubResource("CircleShape2D_collectible")
+
+[node name="Fruit2" type="Area2D" parent="Collectibles"]
+position = Vector2(750, 270)
+
+[node name="FruitSprite2" type="ColorRect" parent="Collectibles/Fruit2"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(1, 1, 0, 1)
+
+[node name="FruitLabel2" type="Label" parent="Collectibles/Fruit2"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 12
+text = "🍌"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FruitCollision2" type="CollisionShape2D" parent="Collectibles/Fruit2"]
+shape = SubResource("CircleShape2D_collectible")
+
+[node name="Fruit3" type="Area2D" parent="Collectibles"]
+position = Vector2(900, 200)
+
+[node name="FruitSprite3" type="ColorRect" parent="Collectibles/Fruit3"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(1, 0.5, 0, 1)
+
+[node name="FruitLabel3" type="Label" parent="Collectibles/Fruit3"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 12
+text = "🍊"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FruitCollision3" type="CollisionShape2D" parent="Collectibles/Fruit3"]
+shape = SubResource("CircleShape2D_collectible")
+
+[node name="HiddenGem1" type="Area2D" parent="Collectibles"]
+position = Vector2(150, 450)
+
+[node name="GemSprite1" type="ColorRect" parent="Collectibles/HiddenGem1"]
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+color = Color(1, 0, 0, 0.7)
+
+[node name="GemLabel1" type="Label" parent="Collectibles/HiddenGem1"]
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+theme_override_font_sizes/font_size = 10
+text = "💎"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemCollision1" type="CollisionShape2D" parent="Collectibles/HiddenGem1"]
+shape = SubResource("CircleShape2D_gem")
+
+[node name="HiddenGem2" type="Area2D" parent="Collectibles"]
+position = Vector2(825, 200)
+
+[node name="GemSprite2" type="ColorRect" parent="Collectibles/HiddenGem2"]
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+color = Color(0, 1, 0, 0.7)
+
+[node name="GemLabel2" type="Label" parent="Collectibles/HiddenGem2"]
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+theme_override_font_sizes/font_size = 10
+text = "💎"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemCollision2" type="CollisionShape2D" parent="Collectibles/HiddenGem2"]
+shape = SubResource("CircleShape2D_gem")
+
+[node name="InteractiveElements" type="Node2D" parent="."]
+
+[node name="BasicCrate1" type="Area2D" parent="InteractiveElements"]
+position = Vector2(400, 450)
+script = ExtResource("14_simple_crate")
+
+[node name="CrateSprite1" type="ColorRect" parent="InteractiveElements/BasicCrate1"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.6, 0.4, 0.2, 1)
+
+[node name="CrateLabel1" type="Label" parent="InteractiveElements/BasicCrate1"]
+offset_left = -16.0
+offset_top = -8.0
+offset_right = 16.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 10
+text = "📦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CrateCollision1" type="CollisionShape2D" parent="InteractiveElements/BasicCrate1"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="BounceCrate1" type="Area2D" parent="InteractiveElements"]
+position = Vector2(650, 350)
+script = ExtResource("14_simple_crate")
+crate_type = "bounce"
+bounce_force = 500.0
+
+[node name="CrateSprite2" type="ColorRect" parent="InteractiveElements/BounceCrate1"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(1, 1, 0, 1)
+
+[node name="CrateLabel2" type="Label" parent="InteractiveElements/BounceCrate1"]
+offset_left = -16.0
+offset_top = -8.0
+offset_right = 16.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 10
+text = "🦘"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CrateCollision2" type="CollisionShape2D" parent="InteractiveElements/BounceCrate1"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="TNTCrate1" type="Area2D" parent="InteractiveElements"]
+position = Vector2(800, 270)
+script = ExtResource("14_simple_crate")
+crate_type = "tnt"
+
+[node name="CrateSprite3" type="ColorRect" parent="InteractiveElements/TNTCrate1"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(1, 0.3, 0.3, 1)
+
+[node name="CrateLabel3" type="Label" parent="InteractiveElements/TNTCrate1"]
+offset_left = -16.0
+offset_top = -8.0
+offset_right = 16.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 10
+text = "💥"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CrateCollision3" type="CollisionShape2D" parent="InteractiveElements/TNTCrate1"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="BasicCrate2" type="Area2D" parent="InteractiveElements"]
+position = Vector2(1050, 450)
+script = ExtResource("14_simple_crate")
+
+[node name="CrateSprite4" type="ColorRect" parent="InteractiveElements/BasicCrate2"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.6, 0.4, 0.2, 1)
+
+[node name="CrateLabel4" type="Label" parent="InteractiveElements/BasicCrate2"]
+offset_left = -16.0
+offset_top = -8.0
+offset_right = 16.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 10
+text = "📦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CrateCollision4" type="CollisionShape2D" parent="InteractiveElements/BasicCrate2"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Spike1" type="Area2D" parent="Hazards"]
+position = Vector2(475, 484)
+script = ExtResource("16_simple_spike")
+
+[node name="SpikeSprite1" type="ColorRect" parent="Hazards/Spike1"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="SpikeLabel1" type="Label" parent="Hazards/Spike1"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 12
+text = "🔺"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpikeCollision1" type="CollisionShape2D" parent="Hazards/Spike1"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="Spike2" type="Area2D" parent="Hazards"]
+position = Vector2(500, 484)
+script = ExtResource("16_simple_spike")
+
+[node name="SpikeSprite2" type="ColorRect" parent="Hazards/Spike2"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="SpikeLabel2" type="Label" parent="Hazards/Spike2"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 12
+text = "🔺"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpikeCollision2" type="CollisionShape2D" parent="Hazards/Spike2"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="Spike3" type="Area2D" parent="Hazards"]
+position = Vector2(525, 484)
+script = ExtResource("16_simple_spike")
+
+[node name="SpikeSprite3" type="ColorRect" parent="Hazards/Spike3"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="SpikeLabel3" type="Label" parent="Hazards/Spike3"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 12
+text = "🔺"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpikeCollision3" type="CollisionShape2D" parent="Hazards/Spike3"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="EnemyPatrol1" type="CharacterBody2D" parent="Enemies"]
+position = Vector2(700, 450)
+script = ExtResource("15_simple_enemy")
+patrol_speed = 75.0
+patrol_distance = 150.0
+
+[node name="EnemySprite1" type="ColorRect" parent="Enemies/EnemyPatrol1"]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+color = Color(1, 0, 1, 1)
+
+[node name="EnemyLabel1" type="Label" parent="Enemies/EnemyPatrol1"]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+theme_override_font_sizes/font_size = 14
+text = "👹"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnemyCollision1" type="CollisionShape2D" parent="Enemies/EnemyPatrol1"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
+position = Vector2(1200, 420)
 portal_name = "Level 1 Complete"
 
 [node name="Instructions" type="CanvasLayer" parent="."]
@@ -98,17 +456,20 @@ portal_name = "Level 1 Complete"
 [node name="InstructionLabel" type="Label" parent="Instructions"]
 offset_left = 50.0
 offset_top = 50.0
-offset_right = 500.0
-offset_bottom = 150.0
+offset_right = 600.0
+offset_bottom = 200.0
 theme_override_font_sizes/font_size = 14
-text = "🌲 LEVEL 1: SIMPLE VERSION
+text = "🌲 LEVEL 1: FOREST ADVENTURE
 
-🎯 Basic level with:
-• Platforms to jump on
-• Checkpoint system
-• Death zones to avoid
-• Portal to complete
+🎯 Complete level with all elements:
+• 📦 Crates: Basic, Bounce, TNT
+• 🍎 Fruits: Collect for points
+• 💎 Hidden Gems: Find secret gems
+• 👹 Enemies: Avoid or defeat
+• 🔺 Spikes: Dangerous hazards
+• ✅ Checkpoints: Save progress
+• 🚪 Portal: Complete level
 
 🎮 Controls:
 WASD/Arrows: Move | Space: Jump
-ESC: Menu | R: Restart"
+ESC: Menu | R: Restart | Enter: Stats"
