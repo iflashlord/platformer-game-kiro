@@ -1,11 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://cxvw9y8qkqx3"]
+[gd_scene load_steps=3 format=3 uid="uid://cxvxay8qkqx3"]
 
-[ext_resource type="Script" path="res://actors/CollectibleGem.gd" id="1_gem"]
+[ext_resource type="Script" uid="uid://cbpm4ejmempee" path="res://actors/CollectibleGem.gd" id="1_gem"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gem"]
 radius = 8.0
 
 [node name="CollectibleGem" type="Area2D"]
+z_index = 10
 script = ExtResource("1_gem")
 
 [node name="GemSprite" type="ColorRect" parent="."]

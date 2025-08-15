@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dfqd7hu0sj2hg"]
+[gd_scene load_steps=18 format=3 uid="uid://dfqd7hu0sj2hg"]
 
 [ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx8" path="res://actors/DeathZone.tscn" id="10_wew37"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx2" path="res://actors/CollectibleFruit.tscn" id="12_hrxks"]
+[ext_resource type="PackedScene" uid="uid://cxvxay8qkqx3" path="res://actors/CollectibleGem.tscn" id="13_ji7l4"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
@@ -262,3 +263,12 @@ position = Vector2(465, 330)
 
 [node name="CollectibleFruit8" parent="." instance=ExtResource("12_hrxks")]
 position = Vector2(407, 375)
+
+[node name="CollectibleGem" parent="." instance=ExtResource("13_ji7l4")]
+position = Vector2(292, 319)
+
+[node name="CollectibleGem2" parent="." instance=ExtResource("13_ji7l4")]
+position = Vector2(374, 300)
+
+[node name="CollectibleGem3" parent="." instance=ExtResource("13_ji7l4")]
+position = Vector2(150, 387)
