@@ -49,11 +49,11 @@ func _physics_process(delta):
 	velocity.x = patrol_speed * direction
 	
 	# Check if we've moved too far from start position
-	var distance_from_start = abs(global_position.x - start_position.x)
-	if distance_from_start > patrol_distance:
-		print("👹 Enemy reached patrol limit, turning around")
-		direction *= -1
-		flip_sprite()
+	#var distance_from_start = abs(global_position.x - start_position.x)
+	#if distance_from_start > patrol_distance:
+	#	print("👹 Enemy reached patrol limit, turning around")
+	#	direction *= -1
+	#	flip_sprite()
 	
 	# Apply gravity
 	if not is_on_floor():
@@ -132,11 +132,13 @@ func damage_player(player):
 	if not is_alive:
 		return
 	
-	# Apply damage through HealthSystem
-	if HealthSystem and HealthSystem.has_method("take_damage"):
-		HealthSystem.take_damage(damage_amount)
-	elif player.has_method("take_damage"):
+	# Check if player has invincibility and use take_damage method
+	if player.has_method("take_damage"):
 		player.take_damage(damage_amount)
+	elif HealthSystem and HealthSystem.has_method("lose_heart"):
+		# Fallback to direct HealthSystem call
+		for i in range(damage_amount):
+			HealthSystem.lose_heart()
 	
 	# Emit signal
 	player_damaged.emit(self, player, damage_amount)
@@ -144,7 +146,7 @@ func damage_player(player):
 	# Visual feedback
 	create_damage_effect()
 	
-	print("👹 ", enemy_type.capitalize(), " damaged player for ", damage_amount, " damage")
+	print("👹 ", enemy_type.capitalize(), " attempted to damage player for ", damage_amount, " damage")
 
 func create_damage_effect():
 	# Screen flash

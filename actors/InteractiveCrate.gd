@@ -121,10 +121,28 @@ func start_explosion_countdown():
 	is_exploding = true
 	explosion_timer = 0.0
 	
-	print("💣 TNT countdown started!")
+	print("💣 TNT countdown started! Explosion radius: ", explosion_radius)
+	
+	# Create visual explosion radius indicator
+	create_explosion_radius_indicator()
 	
 	# Disable further collision during countdown
 	collision_layer = 0
+
+func create_explosion_radius_indicator():
+	# Create a visual circle to show explosion radius
+	var radius_indicator = ColorRect.new()
+	radius_indicator.name = "ExplosionRadiusIndicator"
+	radius_indicator.size = Vector2(explosion_radius * 2, explosion_radius * 2)
+	radius_indicator.position = Vector2(-explosion_radius, -explosion_radius)
+	radius_indicator.color = Color(1, 0, 0, 0.2)  # Semi-transparent red
+	add_child(radius_indicator)
+	
+	# Animate the indicator
+	var tween = create_tween()
+	tween.set_loops()
+	tween.tween_property(radius_indicator, "modulate:a", 0.1, 0.5)
+	tween.tween_property(radius_indicator, "modulate:a", 0.3, 0.5)
 
 func detonate():
 	if is_destroyed:
@@ -134,19 +152,31 @@ func detonate():
 	
 	# Check for player in explosion radius
 	var player = get_tree().get_first_node_in_group("player")
+	print("💥 Looking for player... Found: ", player != null)
 	if player:
 		var distance = global_position.distance_to(player.global_position)
+		print("💥 Player distance from explosion: ", distance, " (radius: ", explosion_radius, ")")
 		if distance <= explosion_radius:
 			print("💔 Player caught in explosion! Distance: ", distance)
 			
 			# Apply damage
-			if HealthSystem and HealthSystem.has_method("take_damage"):
-				HealthSystem.take_damage(1)
+			print("💥 Applying damage to player")
+			print("💥 HealthSystem available: ", HealthSystem != null)
+			if HealthSystem and HealthSystem.has_method("lose_heart"):
+				var health_before = HealthSystem.get_current_health()
+				HealthSystem.lose_heart()
+				var health_after = HealthSystem.get_current_health()
+				print("💔 Health changed from ", health_before, " to ", health_after)
 			elif player.has_method("take_damage"):
 				player.take_damage(1)
+				print("💔 Called player.take_damage(1)")
+			else:
+				print("❌ No damage method found!")
 			
 			# Apply knockback force
 			apply_explosion_knockback(player, distance)
+		else:
+			print("💥 Player outside explosion radius")
 	
 	# Check for other crates in explosion radius (chain reaction)
 	var nearby_crates = get_tree().get_nodes_in_group("crates")
@@ -243,9 +273,13 @@ func create_explosion_effect():
 	tween.parallel().tween_property(explosion_sprite, "scale", Vector2(1.5, 1.5), 0.3)
 	tween.parallel().tween_property(explosion_sprite, "modulate:a", 0.0, 0.3)
 	
-	# Hide countdown label
+	# Hide countdown label and radius indicator
 	if countdown_label:
 		countdown_label.visible = false
+	
+	var radius_indicator = get_node_or_null("ExplosionRadiusIndicator")
+	if radius_indicator:
+		radius_indicator.queue_free()
 	
 	# Screen shake effect
 	if FX and FX.has_method("shake"):

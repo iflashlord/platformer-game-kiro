@@ -31,6 +31,12 @@ var was_on_floor: bool = false
 var is_jumping: bool = false
 var has_jumped: bool = false
 
+# Invincibility system
+var is_invincible: bool = false
+var invincibility_duration: float = 3.0
+var invincibility_timer: float = 0.0
+var blink_frequency: float = 0.15  # How fast to blink during invincibility
+
 @onready var sprite: ColorRect = $PlayerSprite
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var camera: PlayerCamera = get_node_or_null("PlayerCamera")
@@ -77,6 +83,7 @@ func _physics_process(delta):
 	handle_jump()
 	handle_movement(delta)
 	handle_sprite_flip()
+	handle_invincibility(delta)
 	
 	# Store previous floor state
 	was_on_floor = is_on_floor()
@@ -204,6 +211,63 @@ func handle_sprite_flip():
 	# Debug shake test
 	if Input.is_action_just_pressed("debug_shake"):
 		FX.shake(300) # 300ms shake
+
+func handle_invincibility(delta):
+	if is_invincible:
+		invincibility_timer -= delta
+		
+		# Handle blinking effect
+		var blink_cycle = fmod(invincibility_timer, blink_frequency * 2)
+		if blink_cycle < blink_frequency:
+			sprite.modulate.a = 0.3  # Semi-transparent
+		else:
+			sprite.modulate.a = 1.0  # Fully visible
+		
+		# End invincibility
+		if invincibility_timer <= 0.0:
+			end_invincibility()
+
+func start_invincibility():
+	if is_invincible:
+		return  # Already invincible
+	
+	print("🛡️ Player invincibility started for ", invincibility_duration, " seconds")
+	is_invincible = true
+	invincibility_timer = invincibility_duration
+	
+	# Visual feedback - start blinking
+	sprite.modulate.a = 0.3
+
+func end_invincibility():
+	print("🛡️ Player invincibility ended")
+	is_invincible = false
+	invincibility_timer = 0.0
+	
+	# Restore normal appearance
+	sprite.modulate.a = 1.0
+
+func take_damage(amount: int = 1):
+	# Check if player is invincible
+	if is_invincible:
+		print("🛡️ Player is invincible - damage blocked!")
+		return
+	
+	print("💔 Player taking ", amount, " damage")
+	
+	# Start invincibility frames
+	start_invincibility()
+	
+	# Apply damage through HealthSystem
+	if HealthSystem:
+		for i in range(amount):
+			HealthSystem.lose_heart()
+	else:
+		print("❌ HealthSystem not available!")
+		# Fallback - call die directly
+		die()
+
+func is_player_invincible() -> bool:
+	return is_invincible
 
 func die():
 	print("💀 Player.die() called")

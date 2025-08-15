@@ -83,11 +83,13 @@ func _on_body_entered(body):
 		damage_player(body)
 
 func damage_player(player):
-	# Apply damage through HealthSystem
-	if HealthSystem and HealthSystem.has_method("take_damage"):
-		HealthSystem.take_damage(damage_amount)
-	elif player.has_method("take_damage"):
+	# Check if player has invincibility and use take_damage method
+	if player.has_method("take_damage"):
 		player.take_damage(damage_amount)
+	elif HealthSystem and HealthSystem.has_method("lose_heart"):
+		# Fallback to direct HealthSystem call
+		for i in range(damage_amount):
+			HealthSystem.lose_heart()
 	
 	# Emit signal
 	player_damaged.emit(self, player, damage_amount)
@@ -99,7 +101,7 @@ func damage_player(player):
 	if retract_on_hit:
 		retract_spike()
 	
-	print("🔺 Spike damaged player for ", damage_amount, " damage")
+	print("🔺 Spike attempted to damage player for ", damage_amount, " damage")
 
 func create_damage_effect():
 	# Screen flash

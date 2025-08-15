@@ -100,10 +100,11 @@ func kill_player(player):
 		if HealthSystem:
 			if HealthSystem.has_method("kill_player"):
 				HealthSystem.kill_player()
-			elif HealthSystem.has_method("take_damage"):
-				# Take all remaining health
+			else:
+				# Take all remaining health by calling lose_heart repeatedly
 				var remaining_health = HealthSystem.get_current_health()
-				HealthSystem.take_damage(remaining_health)
+				#for i in range(remaining_health):
+				#HealthSystem.lose_heart()
 		
 		# Fallback: call player's die method directly
 		if player.has_method("die"):

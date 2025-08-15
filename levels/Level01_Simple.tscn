@@ -146,7 +146,7 @@ position = Vector2(662, 376)
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="GoblinPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
-position = Vector2(300, 468)
+position = Vector2(148, 460)
 patrol_distance = 100.0
 
 [node name="OrcPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
@@ -185,20 +185,6 @@ ESC: Menu | R: Restart | Enter: Stats
 
 ✨ All components are reusable and self-contained!"
 
-[node name="DeathZone" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(729, 644)
-scale = Vector2(21.16, 1)
-script = null
-
 [node name="DeathZone2" parent="." instance=ExtResource("10_wew37")]
-position = Vector2(727, 652)
+position = Vector2(713, 680)
 scale = Vector2(19, 1)

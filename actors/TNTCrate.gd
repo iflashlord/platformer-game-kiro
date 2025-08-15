@@ -72,8 +72,11 @@ func remote_explode():
 	for result in results:
 		var body = result.collider
 		if body is Player:
-			# Damage player
-			body.die()
+			# Damage player with explosion damage
+			if body.has_method("take_damage"):
+				body.take_damage(int(explosion_damage))
+			else:
+				body.die()
 		elif body is Crate and body != self:
 			# Chain reaction with other crates
 			body.take_damage(explosion_damage)

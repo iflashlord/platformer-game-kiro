@@ -23,20 +23,20 @@ func camera_shake(camera: Camera2D, strength: float, duration: float):
 			randf_range(-strength, strength),
 			randf_range(-strength, strength)
 		)
-		tween.tween_method(
-			func(offset): camera.offset = offset,
-			camera.offset,
-			original_offset + shake_offset,
-			1.0 / 60.0
-		)
+		#tween.tween_method(
+			#func(offset): camera.offset = offset,
+			#camera.offset,
+			#original_offset + shake_offset,
+			#1.0 / 60.0
+		#)
 	
 	# Return to original position
-	tween.tween_method(
-		func(offset): camera.offset = offset,
-		camera.offset,
-		original_offset,
-		0.1
-	)
+	#tween.tween_method(
+		#func(offset): camera.offset = offset,
+		#camera.offset,
+		#original_offset,
+		#0.1
+	#)
 
 func screen_shake(duration: float = 0.3, strength: float = 10.0):
 	var camera = get_viewport().get_camera_2d()
