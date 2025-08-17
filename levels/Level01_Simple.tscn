@@ -160,7 +160,7 @@ patrol_speed = 50.0
 patrol_distance = 80.0
 
 [node name="BounceCrate" parent="Enemies" instance=ExtResource("9_ub75y")]
-position = Vector2(247, 418)
+position = Vector2(489, 248)
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
 position = Vector2(1200, 420)

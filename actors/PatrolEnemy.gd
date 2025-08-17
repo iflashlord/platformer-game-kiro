@@ -18,12 +18,16 @@ var start_position: Vector2
 var direction: int = 1
 var is_alive: bool = true
 var current_health: int
+var damage_cooldown: float = 0.0
+var damage_cooldown_time: float = 0.5  # Prevent rapid damage
 
 @onready var sprite: ColorRect = $EnemySprite
 @onready var label: Label = $EnemyLabel
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var detection_area: Area2D = $DetectionArea
 @onready var detection_collision: CollisionShape2D = $DetectionArea/CollisionShape2D
+@onready var damage_area: Area2D = $DamageArea
+@onready var damage_collision: CollisionShape2D = $DamageArea/CollisionShape2D
 
 func _ready():
 	add_to_group("enemies")
@@ -41,10 +45,21 @@ func _ready():
 	if detection_area:
 		detection_area.body_entered.connect(_on_detection_area_entered)
 		detection_area.body_exited.connect(_on_detection_area_exited)
+	
+	# Connect damage signals
+	if damage_area:
+		damage_area.body_entered.connect(_on_damage_area_entered)
+		damage_area.body_exited.connect(_on_damage_area_exited)
+	
+	print("👹 Enemy initialized: ", enemy_type, " at ", global_position)
 
 func _physics_process(delta):
 	if not is_alive:
 		return
+	
+	# Update damage cooldown
+	if damage_cooldown > 0:
+		damage_cooldown -= delta
 	
 	# Simple patrol movement
 	velocity.x = patrol_speed * direction
@@ -62,28 +77,7 @@ func _physics_process(delta):
 	
 	move_and_slide()
 	
-	# Check for player collision (damage) - but not if player is stomping
-	for i in get_slide_collision_count():
-		var collision = get_slide_collision(i)
-		var collider = collision.get_collider()
-		if collider and collider.is_in_group("player"):
-			# Check if this is a stomp (player falling on top) or side collision
-			# var collision_normal = collision.get_normal()
-			var player_velocity = collider.velocity if collider.has_method("get") else Vector2.ZERO
-			
-			# Check if player is above enemy and moving downward (stomp detection)
-			var player_below_enemy = collider.global_position.y <= global_position.y + 20  
- 			
-			print("STOMP CHECK: player_below=", player_below_enemy, " vel=", player_velocity.y)
-			
-			if player_below_enemy:
-				print("👹 Player is stomping this enemy - no damage dealt")
-				take_damage(1, true)
-				# Don't damage player, let player handle the stomp
-				continue
-			else:
-				print("👹 Enemy collided with player from side!")
-				damage_player(collider)
+	# Movement and collision is now handled by damage area signals
 
 func setup_enemy_appearance():
 	match enemy_type:
@@ -148,17 +142,95 @@ func _on_detection_area_exited(body):
 	if body.is_in_group("player") and is_alive:
 		print("👁️ ", enemy_type.capitalize(), " lost sight of player")
 
-func damage_player(player):
-	if not is_alive:
+func _on_damage_area_entered(body):
+	print("👹 🚨 DAMAGE AREA ENTERED - Body: ", body.name, " Groups: ", body.get_groups())
+	
+	# Visual feedback - change enemy color when player enters damage area
+	sprite.color = Color.RED
+	
+	if not body.is_in_group("player") or not is_alive:
+		print("👹 Not player or enemy dead - ignoring")
 		return
 	
-	# Check if player has invincibility and use take_damage method
+	# Check damage cooldown
+	if damage_cooldown > 0:
+		print("👹 Damage on cooldown - ignoring (", damage_cooldown, "s remaining)")
+		return
+	
+	print("👹 🎯 VALID DAMAGE COLLISION with: ", body.name)
+	print("👹 Player pos: ", body.global_position, " Enemy pos: ", global_position)
+	
+	var player_velocity = body.velocity if "velocity" in body else Vector2.ZERO
+	
+	# Check if this is a stomp (player above enemy and falling down)
+	var player_above_enemy = body.global_position.y < global_position.y - 8
+	var player_falling = player_velocity.y > 50  # Must be falling with some speed
+	
+	print("� STOMP rCHECK: player_above=", player_above_enemy, " falling=", player_falling, " vel_y=", player_velocity.y)
+	
+	if player_above_enemy and player_falling:
+		print("👹 🦶 Player is stomping this enemy!")
+		take_damage(1, true)
+		# Bounce player upward
+		if "velocity" in body:
+			body.velocity.y = -400  # Bounce force
+		if "is_jumping" in body:
+			body.is_jumping = true
+	else:
+		print("👹 💥 Player hit enemy from side - applying damage and pushback")
+		damage_player_with_pushback(body, Vector2.ZERO)
+		# Set damage cooldown to prevent rapid damage
+		damage_cooldown = damage_cooldown_time
+
+func _on_damage_area_exited(body):
+	if body.is_in_group("player"):
+		print("👹 Player left damage area")
+		# Reset enemy color
+		setup_enemy_appearance()  # This will restore the original color
+
+func damage_player_with_pushback(player, collision_normal: Vector2):
+	if not is_alive:
+		print("👹 Enemy is dead - no damage")
+		return
+	
+	print("👹 ATTEMPTING TO DAMAGE PLAYER")
+	print("👹 Player pos: ", player.global_position, " Enemy pos: ", global_position)
+	print("👹 Player has take_damage method: ", player.has_method("take_damage"))
+	print("👹 Player invincible: ", player.has_method("is_player_invincible") and player.is_player_invincible())
+	
+	# Simple approach: determine pushback based on player position relative to enemy
+	var pushback_force = 400.0
+	var direction_to_player = (player.global_position - global_position).normalized()
+	var pushback_direction = Vector2(direction_to_player.x, -0.3)  # Push away from enemy + slight upward
+	
+	print("👹 Direction to player: ", direction_to_player)
+	print("👹 Pushback direction: ", pushback_direction)
+	
+	# Apply pushback to player FIRST
+	if "velocity" in player:
+		player.velocity.x = pushback_direction.x * pushback_force
+		player.velocity.y = pushback_direction.y * pushback_force
+		print("👹 Applied pushback velocity: ", player.velocity)
+	
+	# Damage the player - use the method we know exists
+	var damage_applied = false
+	
+	print("👹 Attempting to call player.take_damage(", damage_amount, ")")
 	if player.has_method("take_damage"):
 		player.take_damage(damage_amount)
-	elif HealthSystem and HealthSystem.has_method("lose_heart"):
-		# Fallback to direct HealthSystem call
-		for i in range(damage_amount):
+		damage_applied = true
+		print("👹 ✅ Successfully called player.take_damage()")
+	else:
+		print("👹 ❌ Player doesn't have take_damage method!")
+		# Try alternative methods
+		if has_node("/root/HealthSystem") and HealthSystem.has_method("lose_heart"):
 			HealthSystem.lose_heart()
+			damage_applied = true
+			print("👹 ✅ Used HealthSystem.lose_heart() as fallback")
+	
+	if not damage_applied:
+		print("👹 ❌ CRITICAL: Could not apply damage to player!")
+		print("👹 Available methods: ", player.get_method_list())
 	
 	# Emit signal
 	player_damaged.emit(self, player, damage_amount)
@@ -166,7 +238,7 @@ func damage_player(player):
 	# Visual feedback
 	create_damage_effect()
 	
-	print("👹 ", enemy_type.capitalize(), " attempted to damage player for ", damage_amount, " damage")
+	print("👹 ", enemy_type.capitalize(), " finished damage attempt")
 
 func create_damage_effect():
 	# Screen flash
@@ -221,6 +293,8 @@ func create_defeat_effect(from_stomp: bool = false):
 	collision_shape.disabled = true
 	if detection_area:
 		detection_collision.disabled = true
+	if damage_area:
+		damage_collision.disabled = true
 	
 	# Create floating text effect
 	var effect_label = Label.new()
