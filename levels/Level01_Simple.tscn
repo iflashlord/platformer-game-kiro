@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx8" path="res://actors/DeathZone.tscn" id="13_ji7l4"]
 [ext_resource type="PackedScene" uid="uid://bx0yw1rkqh7aa" path="res://actors/Crate.tscn" id="14_svrvc"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
@@ -234,3 +235,6 @@ teleport_target = NodePath("../TeleportGate2")
 [node name="TeleportGate2" parent="." node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
 position = Vector2(731, 204)
 teleport_target = NodePath("../TeleportGate")
+
+[node name="DeathZone" parent="." instance=ExtResource("13_ji7l4")]
+position = Vector2(459, 564)
