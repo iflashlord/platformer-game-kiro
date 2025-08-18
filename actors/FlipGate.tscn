@@ -1,32 +1,187 @@
-[gd_scene load_steps=4 format=3 uid="uid://bxvw8y7qkqxs"]
+[gd_scene load_steps=8 format=3 uid="uid://bxvw8y7qkqxs"]
 
 [ext_resource type="Script" uid="uid://ck30klvqrblc6" path="res://actors/FlipGate.gd" id="1_0k8w5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(64, 128)
+size = Vector2(80, 140)
 
 [sub_resource type="Gradient" id="Gradient_1"]
 colors = PackedColorArray(1, 0.5, 1, 1, 1, 0.5, 1, 0)
 
+[sub_resource type="Gradient" id="Gradient_2"]
+offsets = PackedFloat32Array(0, 1, 0)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.5, 1, 0.5, 0.8, 0.3, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_3"]
+offsets = PackedFloat32Array(0, 1, 0)
+colors = PackedColorArray(1, 0.8, 1, 1, 0.7, 0.3, 1, 0.8, 0.5, 0.1, 0.8, 0)
+
+[sub_resource type="Gradient" id="Gradient_4"]
+offsets = PackedFloat32Array(0, 0, 1)
+colors = PackedColorArray(1, 1, 0.8, 1, 0.8, 0.4, 1, 0, 1, 0.6, 0.9, 0.6)
+
+[sub_resource type="Gradient" id="Gradient_5"]
+offsets = PackedFloat32Array(0, 0, 1)
+colors = PackedColorArray(0.9, 0.4, 1, 1, 0.5, 0.1, 0.7, 0, 0.7, 0.2, 0.9, 0.7)
+
 [node name="FlipGate" type="Area2D"]
 script = ExtResource("1_0k8w5")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(1, 0.5, 1, 0.8)
-scale = Vector2(64, 128)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_1")
 
+[node name="GateFrame" type="Node2D" parent="."]
+
+[node name="LeftPillar" type="Polygon2D" parent="GateFrame"]
+color = Color(0.6, 0.3, 0.8, 0.9)
+polygon = PackedVector2Array(-45, -70, -35, -70, -35, 70, -45, 70)
+
+[node name="RightPillar" type="Polygon2D" parent="GateFrame"]
+color = Color(0.6, 0.3, 0.8, 0.9)
+polygon = PackedVector2Array(35, -70, 45, -70, 45, 70, 35, 70)
+
+[node name="TopBeam" type="Polygon2D" parent="GateFrame"]
+color = Color(0.7, 0.4, 0.9, 0.9)
+polygon = PackedVector2Array(-45, -70, 45, -70, 45, -60, -45, -60)
+
+[node name="LeftGem" type="Polygon2D" parent="GateFrame"]
+color = Color(1, 0.6, 1, 1)
+polygon = PackedVector2Array(-40, -65, -35, -67, -30, -65, -35, -63)
+
+[node name="RightGem" type="Polygon2D" parent="GateFrame"]
+color = Color(1, 0.6, 1, 1)
+polygon = PackedVector2Array(30, -65, 35, -67, 40, -65, 35, -63)
+
+[node name="EnergyField" type="Node2D" parent="."]
+
+[node name="EnergyMesh" type="Polygon2D" parent="EnergyField"]
+color = Color(1, 0.5, 1, 0.6)
+polygon = PackedVector2Array(-35, -60, 35, -60, 35, 70, -35, 70)
+
+[node name="EnergyLines" type="Node2D" parent="EnergyField"]
+
+[node name="Line1" type="Polygon2D" parent="EnergyField/EnergyLines"]
+color = Color(1, 0.8, 1, 0.4)
+polygon = PackedVector2Array(-30, -50, -28, -50, -28, 60, -30, 60)
+
+[node name="Line2" type="Polygon2D" parent="EnergyField/EnergyLines"]
+color = Color(1, 0.8, 1, 0.4)
+polygon = PackedVector2Array(-10, -50, -8, -50, -8, 60, -10, 60)
+
+[node name="Line3" type="Polygon2D" parent="EnergyField/EnergyLines"]
+color = Color(1, 0.8, 1, 0.4)
+polygon = PackedVector2Array(8, -50, 10, -50, 10, 60, 8, 60)
+
+[node name="Line4" type="Polygon2D" parent="EnergyField/EnergyLines"]
+color = Color(1, 0.8, 1, 0.4)
+polygon = PackedVector2Array(28, -50, 30, -50, 30, 60, 28, 60)
+
+[node name="CoreOrb" type="Node2D" parent="."]
+
+[node name="OrbOuter" type="Polygon2D" parent="CoreOrb"]
+color = Color(1, 0.7, 1, 0.8)
+polygon = PackedVector2Array(-12, 0, -8.49, -8.49, 0, -12, 8.49, -8.49, 12, 0, 8.49, 8.49, 0, 12, -8.49, 8.49)
+
+[node name="OrbInner" type="Polygon2D" parent="CoreOrb"]
+color = Color(1, 1, 1, 0.9)
+polygon = PackedVector2Array(-8, 0, -5.66, -5.66, 0, -8, 5.66, -5.66, 8, 0, 5.66, 5.66, 0, 8, -5.66, 5.66)
+
+[node name="OrbCore" type="Polygon2D" parent="CoreOrb"]
+color = Color(1, 1, 0.8, 1)
+polygon = PackedVector2Array(-4, 0, -2.83, -2.83, 0, -4, 2.83, -2.83, 4, 0, 2.83, 2.83, 0, 4, -2.83, 2.83)
+
 [node name="Particles" type="CPUParticles2D" parent="."]
-amount = 20
+amount = 30
+lifetime = 3.0
+emission_shape = 3
+emission_rect_extents = Vector2(35, 65)
+direction = Vector2(0, -1)
+spread = 20.0
+gravity = Vector2(0, -25)
+initial_velocity_min = 30.0
+initial_velocity_max = 80.0
+scale_amount_min = 0.3
+color = Color(1, 0.5, 1, 0.8)
+color_ramp = SubResource("Gradient_1")
+
+[node name="ActivationParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 100
 lifetime = 2.0
 emission_shape = 3
-emission_rect_extents = Vector2(32, 64)
+emission_rect_extents = Vector2(40, 70)
 direction = Vector2(0, -1)
-spread = 30.0
-gravity = Vector2(0, -20)
-initial_velocity_min = 20.0
-initial_velocity_max = 50.0
+spread = 180.0
+gravity = Vector2(0, -50)
+initial_velocity_min = 80.0
+initial_velocity_max = 200.0
 scale_amount_min = 0.5
-color_ramp = SubResource("Gradient_1")
+scale_amount_max = 2.0
+color = Color(1, 0.8, 1, 1)
+color_ramp = SubResource("Gradient_2")
+
+[node name="EnergyParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 50
+lifetime = 1.5
+emission_shape = 3
+emission_rect_extents = Vector2(30, 60)
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 40.0
+initial_velocity_max = 100.0
+scale_amount_min = 0.2
+scale_amount_max = 0.8
+color = Color(0.8, 0.4, 1, 0.7)
+color_ramp = SubResource("Gradient_3")
+
+[node name="AmbientParticles" type="CPUParticles2D" parent="."]
+amount = 15
+lifetime = 4.0
+emission_shape = 3
+emission_rect_extents = Vector2(50, 75)
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 30.0
+scale_amount_min = 0.1
+scale_amount_max = 0.5
+color = Color(1, 0.9, 1, 0.4)
+color_ramp = SubResource("Gradient_4")
+
+[node name="SparkParticles" type="CPUParticles2D" parent="."]
+lifetime = 2.5
+emission_shape = 1
+emission_sphere_radius = 15.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 60.0
+scale_amount_min = 0.2
+scale_amount_max = 0.6
+color = Color(0.9, 0.6, 1, 0.6)
+color_ramp = SubResource("Gradient_5")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -50.0
+offset_top = -95.0
+offset_right = 50.0
+offset_bottom = -75.0
+theme_override_colors/font_color = Color(1, 0.8, 1, 0.9)
+theme_override_colors/font_shadow_color = Color(0.5, 0.2, 0.8, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+text = "DIMENSION GATE"
+horizontal_alignment = 1
+
+[node name="ActivationTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+
+[node name="AnimationTimer" type="Timer" parent="."]
+wait_time = 0.05
+autostart = true

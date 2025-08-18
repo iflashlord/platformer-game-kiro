@@ -16,8 +16,8 @@ func _ready():
 	shard_color = Color.RED
 	health = 1 # One hit to activate
 
-func _physics_process(delta):
-	super._physics_process(delta)
+func _process(delta):
+	super._process(delta)
 	
 	if is_fuse_lit:
 		fuse_timer += delta

@@ -1,0 +1,75 @@
+[gd_scene load_steps=6 format=3 uid="uid://cx0yxarkqh5oo"]
+
+[ext_resource type="Script" uid="uid://ca1ewd2vjwky6" path="res://levels/TeleportTest.gd" id="1_teleport_test"]
+[ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="2_teleport_gate"]
+[ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="3_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(800, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(200, 20)
+
+[node name="TeleportTest" type="Node2D"]
+script = ExtResource("1_teleport_test")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(400, 580)
+
+[node name="GroundSprite" type="ColorRect" parent="Ground"]
+offset_left = -400.0
+offset_top = -20.0
+offset_right = 400.0
+offset_bottom = 20.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="Platform1" type="StaticBody2D" parent="."]
+position = Vector2(150, 450)
+
+[node name="PlatformSprite" type="ColorRect" parent="Platform1"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.5, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Platform2" type="StaticBody2D" parent="."]
+position = Vector2(650, 300)
+
+[node name="PlatformSprite" type="ColorRect" parent="Platform2"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.5, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="TeleportGate1" parent="." node_paths=PackedStringArray("teleport_target") instance=ExtResource("2_teleport_gate")]
+position = Vector2(150, 400)
+teleport_target = NodePath("../TeleportGate2")
+
+[node name="TeleportGate2" parent="." node_paths=PackedStringArray("teleport_target") instance=ExtResource("2_teleport_gate")]
+position = Vector2(650, 250)
+teleport_target = NodePath("../TeleportGate1")
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(100, 500)
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 400.0
+offset_bottom = 120.0
+text = "TeleportGate Test Level
+Walk into the cyan gates to teleport!
+Gates have a 1-second cooldown after use."
+horizontal_alignment = 1
+vertical_alignment = 1
