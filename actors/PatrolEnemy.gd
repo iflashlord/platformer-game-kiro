@@ -7,12 +7,12 @@ signal player_detected(enemy: PatrolEnemy, player: Node2D)
 signal player_damaged(enemy: PatrolEnemy, player: Node2D, damage: int)
 
 @export var enemy_type: String = "goblin"
-@export var patrol_speed: float = 75.0
+@export var patrol_speed: float = 65.0
 @export var patrol_distance: float = 150.0
 @export var damage_amount: int = 1
 @export var points_value: int = 150
 @export var health: int = 1
-@export var detection_range: float = 100.0
+@export var detection_range: float = 90.0
 
 var start_position: Vector2
 var direction: int = 1
@@ -77,6 +77,12 @@ func _physics_process(delta):
 	
 	move_and_slide()
 	
+	# Check for wall collisions and turn around
+	check_wall_collisions()
+	
+	# Check for edges and turn around
+	check_edge_detection()
+	
 	# Movement and collision is now handled by damage area signals
 
 func setup_enemy_appearance():
@@ -132,6 +138,60 @@ func setup_detection_area():
 func flip_sprite():
 	sprite.scale.x = -sprite.scale.x
 	label.scale.x = -label.scale.x
+
+func check_wall_collisions():
+	# Check if we hit a wall or obstacle
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		var collision_normal = collision.get_normal()
+		
+		# Skip player collisions (handled by damage area)
+		if collider and collider.is_in_group("player"):
+			continue
+		
+		# Check if this is a wall collision (horizontal normal)
+		if abs(collision_normal.x) > 0.7:  # Normal pointing left or right
+			print("👹 ", enemy_type.capitalize(), " hit wall! Normal: ", collision_normal)
+			turn_around()
+			break  # Only process one collision per frame
+
+func check_edge_detection():
+	# Only check for edges when on the ground
+	if not is_on_floor():
+		return
+	
+	# Cast a ray downward from the front of the enemy to detect edges
+	var space_state = get_world_2d().direct_space_state
+	var query = PhysicsRayQueryParameters2D.new()
+	
+	# Start from the front edge of the enemy
+	var front_offset = direction * 16  # Half the enemy width + a bit more
+	var start_pos = global_position + Vector2(front_offset, 0)
+	var end_pos = start_pos + Vector2(0, 32)  # Check 32 pixels down
+	
+	query.from = start_pos
+	query.to = end_pos
+	query.collision_mask = 1  # Ground layer
+	
+	var result = space_state.intersect_ray(query)
+	
+	# If no ground detected ahead, turn around
+	if result.is_empty():
+		print("👹 ", enemy_type.capitalize(), " detected edge! Turning around")
+		turn_around()
+
+func turn_around():
+	# Change direction
+	direction *= -1
+	
+	# Flip sprite to face new direction
+	flip_sprite()
+	
+	# Move slightly away from the wall to prevent getting stuck
+	global_position.x += direction * 2
+	
+	print("👹 ", enemy_type.capitalize(), " turned around! New direction: ", direction)
 
 func _on_detection_area_entered(body):
 	if body.is_in_group("player") and is_alive:
@@ -199,7 +259,7 @@ func damage_player_with_pushback(player, collision_normal: Vector2):
 	print("👹 Player invincible: ", player.has_method("is_player_invincible") and player.is_player_invincible())
 	
 	# Simple approach: determine pushback based on player position relative to enemy
-	var pushback_force = 400.0
+	var pushback_force = 200.0
 	var direction_to_player = (player.global_position - global_position).normalized()
 	var pushback_direction = Vector2(direction_to_player.x, -0.3)  # Push away from enemy + slight upward
 	

@@ -69,6 +69,7 @@ color = Color(0.4, 0.4, 0.4, 1)
 
 [node name="PlatformCollision1" type="CollisionShape2D" parent="Level/Platform1"]
 shape = SubResource("RectangleShape2D_platform")
+metadata/_edit_group_ = true
 
 [node name="Platform2" type="StaticBody2D" parent="Level"]
 position = Vector2(750, 320)
@@ -95,7 +96,18 @@ offset_right = 32.0
 offset_bottom = 16.0
 color = Color(0.4, 0.4, 0.4, 1)
 
+[node name="PlatformSprite4" type="ColorRect" parent="Level/Platform3"]
+offset_left = 58.0
+offset_top = 94.0
+offset_right = 122.0
+offset_bottom = 126.0
+color = Color(0.4, 0.4, 0.4, 1)
+
 [node name="PlatformCollision3" type="CollisionShape2D" parent="Level/Platform3"]
+shape = SubResource("RectangleShape2D_tiny_platform")
+
+[node name="PlatformCollision4" type="CollisionShape2D" parent="Level/Platform3"]
+position = Vector2(91, 111)
 shape = SubResource("RectangleShape2D_tiny_platform")
 
 [node name="Ground2" type="StaticBody2D" parent="Level"]
@@ -131,7 +143,7 @@ checkpoint_name = "High Platform"
 [node name="InteractiveElements" type="Node2D" parent="."]
 
 [node name="BasicCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(400, 450)
+position = Vector2(411, 259)
 
 [node name="BounceCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(650, 350)
@@ -151,13 +163,33 @@ position = Vector2(662, 376)
 
 [node name="GoblinPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
 position = Vector2(149, 462)
+enemy_type = null
+patrol_speed = null
 patrol_distance = 100.0
+damage_amount = null
+points_value = null
+health = null
+detection_range = null
+
+[node name="GoblinPatrol2" parent="Enemies" instance=ExtResource("24_enemy")]
+position = Vector2(975, 297)
+enemy_type = "skeleton"
+patrol_speed = null
+patrol_distance = 100.0
+damage_amount = null
+points_value = null
+health = null
+detection_range = null
 
 [node name="OrcPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
-position = Vector2(1000, 468)
+position = Vector2(1088, 443)
 enemy_type = "orc"
 patrol_speed = 50.0
 patrol_distance = 80.0
+damage_amount = null
+points_value = null
+health = null
+detection_range = null
 
 [node name="BounceCrate" parent="Enemies" instance=ExtResource("9_ub75y")]
 position = Vector2(489, 248)
