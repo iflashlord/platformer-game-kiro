@@ -9,13 +9,15 @@ var level_completed: bool = false
 
 func _ready():
 	print("🌲 Level 1: Forest Adventure loaded")
-	# Add dimension manager
-	var dimension_manager = preload("res://systems/DimensionManager.gd").new()
-	dimension_manager.name = "DimensionManager"
-	add_child(dimension_manager)
 	
-	# Example: Make some platforms layer-specific
-	setup_layer_examples()
+	
+	# Add dimension manager TO BE FIXED
+	#var dimension_manager = preload("res://systems/DimensionManager.gd").new()
+	#dimension_manager.name = "DimensionManager"
+	#add_child(dimension_manager)
+	#
+	## Example: Make some platforms layer-specific
+	#setup_layer_examples()
 	
 	
 	# Set current level for persistence

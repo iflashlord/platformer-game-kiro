@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dfqd7hu0sj2hg"]
+[gd_scene load_steps=18 format=3 uid="uid://dfqd7hu0sj2hg"]
 
 [ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -6,7 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
-[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqxs" path="res://actors/FlipGate.tscn" id="14_080q8"]
+[ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx8" path="res://actors/DeathZone.tscn" id="13_ji7l4"]
 [ext_resource type="PackedScene" uid="uid://bx0yw1rkqh7aa" path="res://actors/Crate.tscn" id="14_svrvc"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
@@ -230,22 +231,14 @@ position = Vector2(196, 348)
 position = Vector2(130, 365)
 health = 5
 
-[node name="DeathZone" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(30, 597)
-scale = Vector2(26.92, 1)
-script = null
+[node name="TeleportGate" parent="." node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
+position = Vector2(353, 448)
+teleport_target = NodePath("../TeleportGate2")
 
-[node name="FlipGate" parent="." instance=ExtResource("14_080q8")]
-position = Vector2(353, 411)
+[node name="TeleportGate2" parent="." node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
+position = Vector2(731, 204)
+teleport_target = NodePath("../TeleportGate")
 
-[node name="FlipGate2" parent="." instance=ExtResource("14_080q8")]
-position = Vector2(749, 231)
+[node name="DeathZone" parent="." instance=ExtResource("13_ji7l4")]
+position = Vector2(565, 619)
+scale = Vector2(31.68, 1)
