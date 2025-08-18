@@ -4,9 +4,12 @@ class_name LevelPortal
 @export var next_level: String = ""
 @export var portal_name: String = "Level Complete"
 
-@onready var portal_sprite: ColorRect = $PortalSprite
-@onready var inner_glow: ColorRect = $InnerGlow
-@onready var particles: CPUParticles2D = get_node_or_null("Particles")
+@onready var portal_sprite: Node2D = $PortalSprite
+@onready var outer_ring: Node2D = $PortalSprite/OuterRing
+@onready var inner_glow: Node2D = $PortalSprite/InnerGlow
+@onready var core: Node2D = $PortalSprite/Core
+@onready var particles: CPUParticles2D = $Particles
+@onready var completion_particles: CPUParticles2D = $CompletionParticles
 @onready var animation_timer: Timer = $AnimationTimer
 
 var is_activated: bool = false
@@ -26,22 +29,36 @@ func _ready():
 	_start_portal_animation()
 
 func _start_portal_animation():
-	# Animate the portal glow
+	# Animate the portal glow and rotation
 	glow_tween = create_tween()
 	glow_tween.set_loops()
-	glow_tween.tween_property(inner_glow, "modulate", Color(1, 1, 1, 0.2), 1.0)
-	glow_tween.tween_property(inner_glow, "modulate", Color(1, 1, 1, 0.8), 1.0)
+	glow_tween.parallel().tween_property(inner_glow, "modulate", Color(1, 1, 1, 0.3), 1.5)
+	glow_tween.parallel().tween_property(inner_glow, "modulate", Color(1, 1, 1, 0.9), 1.5)
+	glow_tween.parallel().tween_property(core, "modulate", Color(0.8, 0.8, 1, 0.6), 1.5)
+	glow_tween.parallel().tween_property(core, "modulate", Color(1, 1, 1, 1), 1.5)
+	
+	# Continuous rotation for outer ring
+	var rotation_tween = create_tween()
+	rotation_tween.set_loops()
+	rotation_tween.tween_property(outer_ring, "rotation", TAU, 3.0)
+	
+	# Counter-rotation for inner glow
+	var inner_rotation_tween = create_tween()
+	inner_rotation_tween.set_loops()
+	inner_rotation_tween.tween_property(inner_glow, "rotation", -TAU, 4.0)
 
 func _animate_portal():
 	# Random color shifts for magical effect
 	var colors = [
-		Color(0.5, 1, 1, 0.7),    # Cyan
-		Color(0.7, 0.5, 1, 0.7),  # Purple
-		Color(0.5, 1, 0.7, 0.7),  # Green
-		Color(1, 0.7, 0.5, 0.7)   # Orange
+		Color(0.5, 1, 1, 0.8),    # Cyan
+		Color(0.7, 0.5, 1, 0.8),  # Purple
+		Color(0.5, 1, 0.7, 0.8),  # Green
+		Color(1, 0.7, 0.5, 0.8)   # Orange
 	]
 	
-	portal_sprite.color = colors[randi() % colors.size()]
+	var new_color = colors[randi() % colors.size()]
+	outer_ring.modulate = new_color
+	particles.color = new_color
 
 func _on_body_entered(body):
 	print("🌀 Portal collision detected with: ", body.name, " (groups: ", body.get_groups(), ")")
@@ -78,23 +95,52 @@ func _play_completion_effects():
 	
 	# Screen shake and flash
 	if FX:
-		FX.shake(500)  # 500ms shake
-		FX.flash_screen(Color.CYAN * 0.5, 0.5)
+		FX.shake(800)  # 800ms shake
+		FX.flash_screen(Color.CYAN * 0.7, 0.8)
 	
-	# Enhanced particles
+	# Stop existing tweens
+	if glow_tween:
+		glow_tween.kill()
+	
+	# Massive particle burst
 	if particles:
-		particles.amount = 100
-		particles.initial_velocity_max = 100.0
+		particles.amount = 200
+		particles.initial_velocity_max = 150.0
+		particles.scale_amount_max = 2.0
 		particles.emitting = true
 	
-	# Portal animation
-	var completion_tween = create_tween()
-	completion_tween.parallel().tween_property(portal_sprite, "scale", Vector2(1.5, 1.5), 0.5)
-	completion_tween.parallel().tween_property(inner_glow, "scale", Vector2(2.0, 2.0), 0.5)
-	completion_tween.parallel().tween_property(portal_sprite, "modulate", Color.WHITE, 0.5)
+	# Activate completion particles
+	if completion_particles:
+		completion_particles.emitting = true
+		completion_particles.amount = 150
+		completion_particles.initial_velocity_max = 200.0
 	
-	# Spin effect
-	completion_tween.parallel().tween_property(self, "rotation", rotation + PI * 2, 1.0)
+	# Portal expansion and glow animation
+	var completion_tween = create_tween()
+	completion_tween.set_parallel(true)
+	
+	# Scale up the entire portal
+	completion_tween.tween_property(portal_sprite, "scale", Vector2(2.0, 2.0), 1.0)
+	
+	# Bright flash effect
+	completion_tween.tween_property(outer_ring, "modulate", Color.WHITE * 2.0, 0.3)
+	completion_tween.tween_property(inner_glow, "modulate", Color.WHITE * 3.0, 0.3)
+	completion_tween.tween_property(core, "modulate", Color.WHITE * 4.0, 0.3)
+	
+	# Then fade to bright colors
+	completion_tween.tween_property(outer_ring, "modulate", Color.CYAN * 1.5, 0.7)
+	completion_tween.tween_property(inner_glow, "modulate", Color.WHITE * 1.8, 0.7)
+	completion_tween.tween_property(core, "modulate", Color.YELLOW * 2.0, 0.7)
+	
+	# Rapid spin effect
+	completion_tween.tween_property(outer_ring, "rotation", outer_ring.rotation + PI * 6, 1.5)
+	completion_tween.tween_property(inner_glow, "rotation", inner_glow.rotation - PI * 4, 1.5)
+	
+	# Pulsing effect
+	var pulse_tween = create_tween()
+	pulse_tween.set_loops(3)
+	pulse_tween.tween_property(portal_sprite, "scale", Vector2(2.2, 2.2), 0.2)
+	pulse_tween.tween_property(portal_sprite, "scale", Vector2(1.8, 1.8), 0.2)
 
 func _complete_level():
 	print("🎉 Level completed via portal!")

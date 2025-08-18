@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dfqd7hu0sj2hg"]
+[gd_scene load_steps=18 format=3 uid="uid://dfqd7hu0sj2hg"]
 
 [ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx8" path="res://actors/DeathZone.tscn" id="12_hrxks"]
+[ext_resource type="PackedScene" uid="uid://3l4c6ub6a8vv" path="res://actors/NitroCrate.tscn" id="13_ji7l4"]
 [ext_resource type="PackedScene" uid="uid://bx0yw1rkqh7aa" path="res://actors/Crate.tscn" id="14_svrvc"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
@@ -223,112 +224,6 @@ ESC: Menu | R: Restart | Enter: Stats
 ✨ All components are reusable and self-contained!"
 metadata/_edit_lock_ = true
 
-[node name="DeathZone2" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(713, 680)
-scale = Vector2(19, 1)
-script = null
-
-[node name="CollectibleFruit5" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(89, 417)
-script = null
-
-[node name="CollectibleFruit6" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(331, 371)
-fruit_type = "banana"
-script = null
-
-[node name="CollectibleFruit7" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(465, 330)
-script = null
-
-[node name="CollectibleFruit8" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(407, 375)
-script = null
-
-[node name="CollectibleGem" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(292, 319)
-script = null
-
-[node name="CollectibleGem2" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(374, 300)
-script = null
-
-[node name="CollectibleGem3" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-position = Vector2(150, 387)
-script = null
-
 [node name="Crate" parent="." instance=ExtResource("14_svrvc")]
 position = Vector2(196, 348)
 
@@ -339,3 +234,6 @@ health = 5
 [node name="DeathZone" parent="." instance=ExtResource("12_hrxks")]
 position = Vector2(30, 597)
 scale = Vector2(26.92, 1)
+
+[node name="NitroCrate" parent="." instance=ExtResource("13_ji7l4")]
+position = Vector2(483, 520)
