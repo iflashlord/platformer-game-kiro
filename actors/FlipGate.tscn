@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bxvw8y7qkqxs"]
 
-[ext_resource type="Script" path="res://actors/FlipGate.gd" id="1_0k8w5"]
+[ext_resource type="Script" uid="uid://ck30klvqrblc6" path="res://actors/FlipGate.gd" id="1_0k8w5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(64, 128)
@@ -25,9 +25,8 @@ emission_shape = 3
 emission_rect_extents = Vector2(32, 64)
 direction = Vector2(0, -1)
 spread = 30.0
+gravity = Vector2(0, -20)
 initial_velocity_min = 20.0
 initial_velocity_max = 50.0
-gravity = Vector2(0, -20)
 scale_amount_min = 0.5
-scale_amount_max = 1.0
 color_ramp = SubResource("Gradient_1")

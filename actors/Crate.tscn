@@ -1,30 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://bxzyw1rkqh7aa"]
+[gd_scene load_steps=9 format=3 uid="uid://bx0yw1rkqh7aa"]
 
-[ext_resource type="Script" path="res://actors/Crate.gd" id="1_crate"]
-[ext_resource type="Script" path="res://systems/DebugBorder.gd" id="3_debug"]
+[ext_resource type="Script" uid="uid://b7ac87uj4fncu" path="res://actors/Crate.gd" id="1_crate"]
+[ext_resource type="Script" uid="uid://cxf8gb242c2s8" path="res://systems/DebugBorder.gd" id="3_debug"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_crate"]
 size = Vector2(32, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
 size = Vector2(36, 36)
-
-[sub_resource type="Animation" id="Animation_idle"]
-resource_name = "idle"
-length = 2.0
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CrateSprite:size")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1, 2),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(32, 32), Vector2(33, 31), Vector2(32, 32)]
-}
 
 [sub_resource type="Animation" id="Animation_bounce"]
 resource_name = "bounce"
@@ -58,11 +41,28 @@ tracks/0/keys = {
 "values": [Vector2(32, 32), Vector2(40, 24), Vector2(0, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CrateSprite:size")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(32, 32), Vector2(33, 31), Vector2(32, 32)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
 _data = {
-"bounce": SubResource("Animation_bounce"),
-"explode": SubResource("Animation_explode"),
-"idle": SubResource("Animation_idle")
+&"bounce": SubResource("Animation_bounce"),
+&"explode": SubResource("Animation_explode"),
+&"idle": SubResource("Animation_idle")
 }
 
 [node name="Crate" type="StaticBody2D"]
@@ -70,7 +70,6 @@ script = ExtResource("1_crate")
 
 [node name="DebugBorder" type="Node2D" parent="."]
 script = ExtResource("3_debug")
-border_color = Color(0.6, 0.4, 0.2, 1)
 
 [node name="CrateSprite" type="ColorRect" parent="."]
 offset_left = -16.0
@@ -94,16 +93,16 @@ offset_left = -8.0
 offset_top = -8.0
 offset_right = 8.0
 offset_bottom = 8.0
-theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
 text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_1")
+&"": SubResource("AnimationLibrary_1")
 }
 autoplay = "idle"

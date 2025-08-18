@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bxvw8y7qkqx5"]
 
-[ext_resource type="Script" path="res://actors/DangerousSpike.gd" id="1_spike"]
+[ext_resource type="Script" uid="uid://ccwl8nn142nqx" path="res://actors/DangerousSpike.gd" id="1_spike"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
 size = Vector2(16, 16)

@@ -1,10 +1,10 @@
 extends CharacterBody2D
 class_name EnemyCharger
 
-signal player_detected(player: Player)
+signal player_detected(player: Node2D)
 signal charge_started
 signal charge_completed
-signal enemy_defeated
+signal enemy_defeated(enemy: EnemyCharger, points: int)
 
 enum ChargerState {
 	IDLE,
@@ -23,22 +23,25 @@ enum ChargerState {
 @export var stun_time: float = 2.0
 @export var health: int = 2
 @export var damage_to_player: int = 1
+@export var points_value: int = 200
 
 var current_state: ChargerState = ChargerState.IDLE
 var state_timer: float = 0.0
-var target_player: Player = null
+var target_player: Node2D = null
 var charge_direction: Vector2 = Vector2.ZERO
 var charge_start_position: Vector2 = Vector2.ZERO
 var original_position: Vector2 = Vector2.ZERO
 
-@onready var sprite: Sprite2D = $Sprite2D
+@onready var sprite: ColorRect = $ChargerSprite
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var detection_area: Area2D = $DetectionArea
 @onready var detection_collision: CollisionShape2D = $DetectionArea/CollisionShape2D
-@onready var dimension_node: DimensionNode = $DimensionNode
+@onready var dimension_node: Node = $DimensionNode
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var windup_particles: CPUParticles2D = $WindupParticles
 @onready var charge_particles: CPUParticles2D = $ChargeParticles
+@onready var damage_area: Area2D = $DamageArea
+@onready var damage_collision: CollisionShape2D = $DamageArea/CollisionShape2D
 
 func _ready():
 	# Add to enemy group
@@ -53,6 +56,7 @@ func _ready():
 	# Connect signals
 	detection_area.body_entered.connect(_on_player_entered_detection)
 	detection_area.body_exited.connect(_on_player_exited_detection)
+	damage_area.body_entered.connect(_on_damage_area_entered)
 	
 	# Start in idle state
 	set_state(ChargerState.IDLE)
@@ -154,7 +158,10 @@ func handle_detecting_state(delta):
 	
 	# Face the player
 	var direction_to_player = (target_player.global_position - global_position).normalized()
-	sprite.flip_h = direction_to_player.x < 0
+	if direction_to_player.x < 0:
+		sprite.scale.x = -abs(sprite.scale.x)
+	else:
+		sprite.scale.x = abs(sprite.scale.x)
 	
 	# Start charging after detection delay
 	if state_timer >= 0.5:
@@ -201,26 +208,43 @@ func is_player_in_range() -> bool:
 	
 	return global_position.distance_to(target_player.global_position) <= detection_radius
 
-#func is_on_wall() -> bool:
-	#return is_on_wall_only()
+func is_on_wall() -> bool:
+	# Check for wall collisions during charge
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		var collision_normal = collision.get_normal()
+		
+		# Skip player collisions
+		if collider and collider.is_in_group("player"):
+			continue
+		
+		# Check if this is a wall collision (horizontal normal)
+		if abs(collision_normal.x) > 0.7:
+			print("EnemyCharger hit wall during charge!")
+			return true
+	
+	return false
 
 func _on_player_entered_detection(body):
-	if body is Player:
+	if body.is_in_group("player"):
 		target_player = body
 		player_detected.emit(body)
 		print("Player entered charger detection range")
 
 func _on_player_exited_detection(body):
-	if body is Player and body == target_player:
+	if body.is_in_group("player") and body == target_player:
 		target_player = null
 		print("Player exited charger detection range")
 
-func _on_body_entered(body):
-	if body is Player and current_state == ChargerState.CHARGING:
+func _on_damage_area_entered(body):
+	if body.is_in_group("player") and current_state == ChargerState.CHARGING:
+		print("EnemyCharger hit player during charge!")
+		
 		# Damage player during charge
 		if body.has_method("take_damage"):
 			body.take_damage(damage_to_player)
-		else:
+		elif body.has_method("die"):
 			body.die()
 		
 		# Stun self after hitting player
@@ -229,12 +253,17 @@ func _on_body_entered(body):
 func take_damage(amount: int = 1):
 	health -= amount
 	
-	# Visual feedback
-	FX.shake(150)
+	# Visual feedback with fallbacks
+	if has_node("/root/FX"):
+		if FX.has_method("shake"):
+			FX.shake(150)
+	
 	sprite.modulate = Color.RED
 	
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.3)
+	
+	print("EnemyCharger took ", amount, " damage. Health: ", health)
 	
 	if health <= 0:
 		defeat()
@@ -243,15 +272,22 @@ func take_damage(amount: int = 1):
 		set_state(ChargerState.STUNNED)
 
 func defeat():
-	enemy_defeated.emit()
+	# Add score
+	if has_node("/root/Game"):
+		Game.add_score(points_value)
+		print("EnemyCharger defeated! +", points_value, " points")
 	
-	# Death effects
-	FX.shake(250)
-	FX.flash_screen(Color.RED, 0.2)
+	enemy_defeated.emit(self, points_value)
 	
-	# Death animation
-	if animation_player:
-		animation_player.play("death")
+	# Death effects with fallbacks
+	if has_node("/root/FX"):
+		if FX.has_method("shake"):
+			FX.shake(250)
+		if FX.has_method("flash_screen"):
+			FX.flash_screen(Color.RED, 0.2)
+	
+	# Create defeat effect
+	create_defeat_effect()
 	
 	# Disable collision
 	collision_shape.disabled = true
@@ -260,6 +296,26 @@ func defeat():
 	# Remove after delay
 	await get_tree().create_timer(1.5).timeout
 	queue_free()
+
+func create_defeat_effect():
+	# Create floating text effect
+	var effect_label = Label.new()
+	effect_label.text = "+" + str(points_value)
+	effect_label.add_theme_font_size_override("font_size", 16)
+	effect_label.add_theme_color_override("font_color", Color.YELLOW)
+	effect_label.position = global_position + Vector2(-30, -30)
+	get_tree().current_scene.add_child(effect_label)
+	
+	# Animate the effect
+	var tween = create_tween()
+	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
+	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
+	tween.tween_callback(effect_label.queue_free)
+	
+	# Death animation
+	var death_tween = create_tween()
+	death_tween.parallel().tween_property(self, "modulate:a", 0.0, 0.5)
+	death_tween.parallel().tween_property(self, "scale", Vector2(0.5, 0.5), 0.5)
 
 func reset_to_original_position():
 	global_position = original_position

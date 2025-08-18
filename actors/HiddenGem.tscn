@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cxvw9y8qkqxt"]
+[gd_scene load_steps=5 format=3 uid="uid://cxvxay8qkqxt"]
 
-[ext_resource type="Script" path="res://actors/HiddenGem.gd" id="1_0k8w6"]
-[ext_resource type="Script" path="res://systems/DebugBorder.gd" id="3_debug"]
+[ext_resource type="Script" uid="uid://doq1otjmvrtg5" path="res://actors/HiddenGem.gd" id="1_0k8w6"]
+[ext_resource type="Script" uid="uid://cxf8gb242c2s8" path="res://systems/DebugBorder.gd" id="3_debug"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 16.0
@@ -14,7 +14,6 @@ script = ExtResource("1_0k8w6")
 
 [node name="DebugBorder" type="Node2D" parent="."]
 script = ExtResource("3_debug")
-border_color = Color(1, 0, 1, 1)
 
 [node name="GemSprite" type="ColorRect" parent="."]
 offset_left = -8.0
@@ -33,9 +32,9 @@ emission_shape = 1
 emission_sphere_radius = 20.0
 direction = Vector2(0, -1)
 spread = 360.0
+gravity = Vector2(0, -10)
 initial_velocity_min = 10.0
 initial_velocity_max = 30.0
-gravity = Vector2(0, -10)
 scale_amount_min = 0.3
 scale_amount_max = 0.8
 color_ramp = SubResource("Gradient_1")
@@ -43,15 +42,14 @@ color_ramp = SubResource("Gradient_1")
 [node name="CollectParticles" type="CPUParticles2D" parent="."]
 emitting = false
 amount = 25
-lifetime = 1.0
 one_shot = true
 emission_shape = 1
 emission_sphere_radius = 25.0
 direction = Vector2(0, -1)
 spread = 360.0
+gravity = Vector2(0, 50)
 initial_velocity_min = 50.0
 initial_velocity_max = 100.0
-gravity = Vector2(0, 50)
 scale_amount_min = 0.5
 scale_amount_max = 1.2
 color = Color(1, 1, 0.5, 1)

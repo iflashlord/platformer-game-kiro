@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bxvw8y7qkqx4"]
 
-[ext_resource type="Script" path="res://actors/InteractiveCrate.gd" id="1_crate"]
+[ext_resource type="Script" uid="uid://liohwky0chg" path="res://actors/InteractiveCrate.gd" id="1_crate"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_crate"]
 size = Vector2(32, 32)

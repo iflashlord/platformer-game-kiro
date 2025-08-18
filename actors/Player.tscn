@@ -1,15 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://b8yxvw2qkqh8yi"]
+[gd_scene load_steps=5 format=3 uid="uid://ca03v34a42d3i"]
 
-[ext_resource type="Script" path="res://actors/Player.gd" id="1_1x2y3"]
-[ext_resource type="Script" path="res://actors/PlayerCamera.gd" id="2_camera"]
-[ext_resource type="Script" path="res://systems/DebugBorder.gd" id="4_debug"]
+[ext_resource type="Script" uid="uid://cjurqcrmk7uyq" path="res://actors/Player.gd" id="1_1x2y3"]
+[ext_resource type="Script" uid="uid://3yyy4wi45oct" path="res://actors/PlayerCamera.gd" id="2_camera"]
+[ext_resource type="Script" uid="uid://cxf8gb242c2s8" path="res://systems/DebugBorder.gd" id="4_debug"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(24, 32)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
-collision_mask = 1
 script = ExtResource("1_1x2y3")
 
 [node name="PlayerSprite" type="ColorRect" parent="."]
@@ -24,7 +23,6 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="DebugBorder" type="Node2D" parent="."]
 script = ExtResource("4_debug")
-border_color = Color(0, 1, 0, 1)
 
 [node name="DebugLabel" type="Label" parent="."]
 offset_left = -50.0
@@ -41,14 +39,13 @@ script = ExtResource("2_camera")
 position = Vector2(0, 16)
 emitting = false
 amount = 20
-lifetime = 1.0
 emission_shape = 3
 emission_rect_extents = Vector2(12, 2)
 direction = Vector2(0, -1)
 spread = 30.0
+gravity = Vector2(0, 98)
 initial_velocity_min = 20.0
 initial_velocity_max = 40.0
-gravity = Vector2(0, 98)
 scale_amount_min = 0.3
 scale_amount_max = 0.6
 color = Color(0.8, 0.7, 0.5, 0.8)
@@ -63,9 +60,9 @@ emission_shape = 3
 emission_rect_extents = Vector2(15, 3)
 direction = Vector2(0, -1)
 spread = 60.0
+gravity = Vector2(0, 150)
 initial_velocity_min = 30.0
 initial_velocity_max = 80.0
-gravity = Vector2(0, 150)
 scale_amount_min = 0.4
 scale_amount_max = 0.8
-color = Color(0.7, 0.6, 0.4, 1.0)
+color = Color(0.7, 0.6, 0.4, 1)
