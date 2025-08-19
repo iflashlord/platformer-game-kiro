@@ -29,8 +29,13 @@ var damage_cooldown_time: float = 0.5  # Prevent rapid damage
 @onready var damage_area: Area2D = $DamageArea
 @onready var damage_collision: CollisionShape2D = $DamageArea/CollisionShape2D
 
+# get mouse animated sprite and play default aniamtion
+@onready var mouse_sprite: AnimatedSprite2D = $AnimatedSprite2D
+
 func _ready():
 	add_to_group("enemies")
+
+	mouse_sprite.play("default")
 	
 	start_position = global_position
 	current_health = health
