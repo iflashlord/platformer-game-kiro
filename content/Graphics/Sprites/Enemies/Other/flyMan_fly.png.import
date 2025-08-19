@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bud7oywoq3mxd"
-path="res://.godot/imported/flyMan_fly.png-ce768cba707d211401241da5fde96296.ctex"
+path="res://.godot/imported/flyMan_fly.png-27d012fbb4b489231a74fd56e1286e3c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://content/Assets/PNG/Enemies/flyMan_fly.png"
-dest_files=["res://.godot/imported/flyMan_fly.png-ce768cba707d211401241da5fde96296.ctex"]
+source_file="res://content/Graphics/Sprites/Enemies/Other/flyMan_fly.png"
+dest_files=["res://.godot/imported/flyMan_fly.png-27d012fbb4b489231a74fd56e1286e3c.ctex"]
 
 [params]
 

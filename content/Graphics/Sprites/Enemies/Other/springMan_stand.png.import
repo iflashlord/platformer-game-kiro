@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://be8jox8m8lsns"
-path="res://.godot/imported/springMan_stand.png-560053588d339827540539b56dca9583.ctex"
+path="res://.godot/imported/springMan_stand.png-4725209a6ebdb7e362979107f56cf997.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://content/Assets/PNG/Enemies/springMan_stand.png"
-dest_files=["res://.godot/imported/springMan_stand.png-560053588d339827540539b56dca9583.ctex"]
+source_file="res://content/Graphics/Sprites/Enemies/Other/springMan_stand.png"
+dest_files=["res://.godot/imported/springMan_stand.png-4725209a6ebdb7e362979107f56cf997.ctex"]
 
 [params]
 

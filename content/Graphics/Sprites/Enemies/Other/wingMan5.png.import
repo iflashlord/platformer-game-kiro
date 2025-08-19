@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cry5ihg22xn12"
-path="res://.godot/imported/wingMan5.png-521f45a7c1326dbea14536839bdc60f8.ctex"
+path="res://.godot/imported/wingMan5.png-b248a619eb912e385a9d94e11b738982.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://content/Assets/PNG/Enemies/wingMan5.png"
-dest_files=["res://.godot/imported/wingMan5.png-521f45a7c1326dbea14536839bdc60f8.ctex"]
+source_file="res://content/Graphics/Sprites/Enemies/Other/wingMan5.png"
+dest_files=["res://.godot/imported/wingMan5.png-b248a619eb912e385a9d94e11b738982.ctex"]
 
 [params]
 

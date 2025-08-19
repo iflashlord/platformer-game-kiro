@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dk2k32fdhbq83"
-path="res://.godot/imported/spikeMan_walk1.png-b02e5d07ffa452b0df679ddcf92b7c0c.ctex"
+path="res://.godot/imported/spikeMan_walk1.png-6b0e5c4ead71b63191976141b052048c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://content/Assets/PNG/Enemies/spikeMan_walk1.png"
-dest_files=["res://.godot/imported/spikeMan_walk1.png-b02e5d07ffa452b0df679ddcf92b7c0c.ctex"]
+source_file="res://content/Graphics/Sprites/Enemies/Other/spikeMan_walk1.png"
+dest_files=["res://.godot/imported/spikeMan_walk1.png-6b0e5c4ead71b63191976141b052048c.ctex"]
 
 [params]
 

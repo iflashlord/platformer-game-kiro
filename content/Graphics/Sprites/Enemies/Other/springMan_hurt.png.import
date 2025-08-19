@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dg8myj8qa480k"
-path="res://.godot/imported/springMan_hurt.png-7e3a55e094e1ced1e7f60f014bd8f13d.ctex"
+path="res://.godot/imported/springMan_hurt.png-172065caa3eba945e00f10a40c0b4692.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://content/Assets/PNG/Enemies/springMan_hurt.png"
-dest_files=["res://.godot/imported/springMan_hurt.png-7e3a55e094e1ced1e7f60f014bd8f13d.ctex"]
+source_file="res://content/Graphics/Sprites/Enemies/Other/springMan_hurt.png"
+dest_files=["res://.godot/imported/springMan_hurt.png-172065caa3eba945e00f10a40c0b4692.ctex"]
 
 [params]
 
