@@ -31,7 +31,7 @@ script = ExtResource("1_simple")
 script = ExtResource("18_level_manager")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(22, 391)
+position = Vector2(17, 304)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -160,6 +160,7 @@ portal_name = "Level 1 Complete"
 [node name="Instructions" type="CanvasLayer" parent="."]
 
 [node name="InstructionLabel" type="Label" parent="Instructions"]
+visible = false
 offset_left = 50.0
 offset_top = 50.0
 offset_right = 600.0
@@ -182,21 +183,20 @@ WASD/Arrows: Move | Space: Jump
 ESC: Menu | R: Restart | Enter: Stats
 
 ✨ All components are reusable and self-contained!"
-metadata/_edit_lock_ = true
 
 [node name="Crate" parent="." instance=ExtResource("14_svrvc")]
-position = Vector2(196, 348)
+position = Vector2(197, 245)
 
 [node name="Crate2" parent="." instance=ExtResource("14_svrvc")]
-position = Vector2(130, 365)
+position = Vector2(130, 266)
 health = 5
 
 [node name="TeleportGate" parent="." node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(370, 378)
+position = Vector2(80, 394)
 teleport_target = NodePath("../TeleportGate2")
 
 [node name="TeleportGate2" parent="." node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(731, 204)
+position = Vector2(1080, 360)
 teleport_target = NodePath("../TeleportGate")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
@@ -206,7 +206,7 @@ tile_map_data = PackedByteArray("AAD+/x4ABQADAAAAAAD+/x8ABQADAAEAAAD+/yAABQADAAI
 tile_set = ExtResource("14_080q8")
 
 [node name="HiddenGem" parent="." instance=ExtResource("16_6oto5")]
-position = Vector2(68, 352)
+position = Vector2(16, 216)
 
 [node name="JumpPad" parent="." instance=ExtResource("22_jump_pad")]
 position = Vector2(591, 372)

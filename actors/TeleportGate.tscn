@@ -1,19 +1,29 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxzyw8rkqh4nn"]
+[gd_scene load_steps=5 format=3 uid="uid://bx0yw8rkqh4nn"]
 
-[ext_resource type="Script" path="res://actors/TeleportGate.gd" id="1_teleport"]
+[ext_resource type="Script" uid="uid://c1s6pomewt6tl" path="res://actors/TeleportGate.gd" id="1_teleport"]
+[ext_resource type="Texture2D" uid="uid://y4aetbuops1v" path="res://content/Graphics/Sprites/Tiles/Double/window.png" id="2_pks1y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
-size = Vector2(40, 60)
+size = Vector2(40, 43)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fajlm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pks1y")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="TeleportGate" type="Area2D"]
 script = ExtResource("1_teleport")
 
-[node name="GateSprite" type="ColorRect" parent="."]
-offset_left = -20.0
-offset_top = -30.0
-offset_right = 20.0
-offset_bottom = 30.0
-color = Color(0, 1, 1, 1)
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_gate")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.32, 0.32)
+sprite_frames = SubResource("SpriteFrames_fajlm")

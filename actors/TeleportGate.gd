@@ -8,12 +8,10 @@ class_name TeleportGate
 var is_active: bool = true
 var cooldown_timer: float = 0.0
 
-@onready var sprite: ColorRect = $GateSprite
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var port_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready():
-	# Setup gate appearance
-	sprite.color = Color.CYAN
 	
 	# Connect signals
 	body_entered.connect(_on_body_entered)
@@ -94,13 +92,13 @@ func create_simple_effect(pos: Vector2):
 		tween.tween_callback(particle.queue_free)
 
 func update_visual_state():
-	if not sprite:
+	if not port_sprite:
 		return
 	
 	if is_active:
 		# Active state - bright cyan with simple pulse
 		var pulse = (sin(Time.get_unix_time_from_system() * 2.0) + 1.0) / 2.0
-		sprite.modulate.a = 0.8 + (pulse * 0.2)
+		port_sprite.modulate.a = 0.8 + (pulse * 0.2)
 	else:
 		# Inactive state - dimmed
-		sprite.modulate.a = 0.4
+		port_sprite.modulate.a = 0.4
