@@ -6,7 +6,7 @@ signal enemy_stomped(enemy: PatrolEnemy, player: Node2D, points: int)
 signal player_detected(enemy: PatrolEnemy, player: Node2D)
 signal player_damaged(enemy: PatrolEnemy, player: Node2D, damage: int)
 
-@export var enemy_type: String = "goblin"
+@export var enemy_type: String = "mouse"
 @export var patrol_speed: float = 65.0
 @export var patrol_distance: float = 150.0
 @export var damage_amount: int = 1
@@ -30,12 +30,12 @@ var damage_cooldown_time: float = 0.5  # Prevent rapid damage
 @onready var damage_collision: CollisionShape2D = $DamageArea/CollisionShape2D
 
 # get mouse animated sprite and play default aniamtion
-@onready var mouse_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var enemy_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready():
 	add_to_group("enemies")
 
-	mouse_sprite.play("default")
+	enemy_sprite.play("default")
 	
 	start_position = global_position
 	current_health = health
@@ -69,13 +69,6 @@ func _physics_process(delta):
 	# Simple patrol movement
 	velocity.x = patrol_speed * direction
 	
-	# Check if we've moved too far from start position
-	#var distance_from_start = abs(global_position.x - start_position.x)
-	#if distance_from_start > patrol_distance:
-	#	print("👹 Enemy reached patrol limit, turning around")
-	#	direction *= -1
-	#	flip_sprite()
-	
 	# Apply gravity
 	if not is_on_floor():
 		velocity.y += 980 * delta
@@ -92,33 +85,94 @@ func _physics_process(delta):
 
 func setup_enemy_appearance():
 	match enemy_type:
-		"goblin":
-			sprite.color = Color(0, 0.8, 0, 1)  # Green
-			label.text = "👹"
+		"mouse":
+			enemy_sprite.play("mouse")
 			patrol_speed = 75.0
 			points_value = 150
 			damage_amount = 1
-		"orc":
-			sprite.color = Color(0.6, 0.3, 0.1, 1)  # Brown
-			label.text = "👺"
-			patrol_speed = 50.0
-			points_value = 200
-			damage_amount = 2
-		"skeleton":
-			sprite.color = Color(0.9, 0.9, 0.9, 1)  # White
-			label.text = "💀"
-			patrol_speed = 60.0
-			points_value = 175
+		"barnacle":
+			enemy_sprite.play("barnacle")
+			patrol_speed = 80.0
+			points_value = 150
 			damage_amount = 1
-		"demon":
-			sprite.color = Color(1, 0, 1, 1)  # Magenta
-			label.text = "😈"
-			patrol_speed = 100.0
-			points_value = 300
-			damage_amount = 2
+		"bee":
+			enemy_sprite.play("bee")
+			patrol_speed = 70.0
+			points_value = 150
+			damage_amount = 1
+		"fish_blue":
+			enemy_sprite.play("fish_blue")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"fish_yellow":
+			enemy_sprite.play("fish_yellow")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"flog":
+			enemy_sprite.play("flog")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"fly":
+			enemy_sprite.play("fly")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"ladybug":
+			enemy_sprite.play("ladybug")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"ladybug_fly":
+			enemy_sprite.play("ladybug_fly")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"saw":
+			enemy_sprite.play("saw")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"slime_fire":
+			enemy_sprite.play("slime_fire")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"slime_green":
+			enemy_sprite.play("slime_green")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"slime_normal":
+			enemy_sprite.play("slime_normal")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"slime_spike":
+			enemy_sprite.play("slime_spike")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"snail":
+			enemy_sprite.play("snail")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"worm_blue":
+			enemy_sprite.play("worm_blue")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+		"worm_ring":
+			enemy_sprite.play("worm_ring")
+			patrol_speed = 75.0
+			points_value = 150
+			damage_amount = 1
+
 		_:
-			sprite.color = Color(1, 0, 1, 1)
-			label.text = "👹"
+			enemy_sprite.play("mouse")
 			patrol_speed = 75.0
 			points_value = 150
 			damage_amount = 1

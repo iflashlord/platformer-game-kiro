@@ -1,8 +1,40 @@
-[gd_scene load_steps=7 format=3 uid="uid://bxvw8y7qkqx6"]
+[gd_scene load_steps=39 format=3 uid="uid://bxvw8y7qkqx6"]
 
 [ext_resource type="Script" uid="uid://dmw8yx5lbmqy2" path="res://actors/PatrolEnemy.gd" id="1_enemy"]
 [ext_resource type="Texture2D" uid="uid://dxstxojp65ylu" path="res://content/Graphics/Sprites/Enemies/Double/mouse_walk_a.png" id="2_c3565"]
+[ext_resource type="Texture2D" uid="uid://xv1qxqtpqv4f" path="res://content/Graphics/Sprites/Enemies/Double/barnacle_attack_a.png" id="2_fdt22"]
 [ext_resource type="Texture2D" uid="uid://dv3xi41qbcenv" path="res://content/Graphics/Sprites/Enemies/Double/mouse_walk_b.png" id="3_a5e0x"]
+[ext_resource type="Texture2D" uid="uid://cy6g53t67sn0q" path="res://content/Graphics/Sprites/Enemies/Double/barnacle_attack_b.png" id="3_cr4t5"]
+[ext_resource type="Texture2D" uid="uid://bx67dd2rbklsp" path="res://content/Graphics/Sprites/Enemies/Double/bee_a.png" id="4_u4voh"]
+[ext_resource type="Texture2D" uid="uid://bhbpaoodsu5re" path="res://content/Graphics/Sprites/Enemies/Double/bee_b.png" id="5_rpcbc"]
+[ext_resource type="Texture2D" uid="uid://dd1dhne38iekg" path="res://content/Graphics/Sprites/Enemies/Double/fish_blue_swim_a.png" id="6_n34mm"]
+[ext_resource type="Texture2D" uid="uid://dm0ldt4sysomk" path="res://content/Graphics/Sprites/Enemies/Double/fish_blue_swim_b.png" id="7_g0an4"]
+[ext_resource type="Texture2D" uid="uid://dsr2mh23kk63m" path="res://content/Graphics/Sprites/Enemies/Double/fish_yellow_swim_a.png" id="8_kbpy8"]
+[ext_resource type="Texture2D" uid="uid://cimwmywm7aphw" path="res://content/Graphics/Sprites/Enemies/Double/fish_yellow_swim_b.png" id="9_ugwag"]
+[ext_resource type="Texture2D" uid="uid://dqyth4shew76e" path="res://content/Graphics/Sprites/Enemies/Double/frog_jump.png" id="10_e2x2t"]
+[ext_resource type="Texture2D" uid="uid://23sycte5hjkp" path="res://content/Graphics/Sprites/Enemies/Double/frog_rest.png" id="11_berb0"]
+[ext_resource type="Texture2D" uid="uid://hwf76uwcmbl" path="res://content/Graphics/Sprites/Enemies/Double/fly_a.png" id="12_klp7u"]
+[ext_resource type="Texture2D" uid="uid://ct7402qlsp1to" path="res://content/Graphics/Sprites/Enemies/Double/fly_b.png" id="13_ldsut"]
+[ext_resource type="Texture2D" uid="uid://csmrikpnh183f" path="res://content/Graphics/Sprites/Enemies/Double/ladybug_walk_a.png" id="14_xaoo4"]
+[ext_resource type="Texture2D" uid="uid://bth7wxykgpgkq" path="res://content/Graphics/Sprites/Enemies/Double/ladybug_walk_b.png" id="15_e4hmv"]
+[ext_resource type="Texture2D" uid="uid://dr2sk2cl7x2j6" path="res://content/Graphics/Sprites/Enemies/Double/ladybug_fly.png" id="16_3f0vr"]
+[ext_resource type="Texture2D" uid="uid://rxmfip4r2667" path="res://content/Graphics/Sprites/Enemies/Double/saw_a.png" id="19_sodou"]
+[ext_resource type="Texture2D" uid="uid://d070tqlp6hh1u" path="res://content/Graphics/Sprites/Enemies/Double/saw_b.png" id="20_17nia"]
+[ext_resource type="Texture2D" uid="uid://t8ralgeyx8t" path="res://content/Graphics/Sprites/Enemies/Double/slime_fire_walk_a.png" id="21_6wcdf"]
+[ext_resource type="Texture2D" uid="uid://b0084y22tr02o" path="res://content/Graphics/Sprites/Enemies/Double/slime_fire_walk_b.png" id="22_2ae41"]
+[ext_resource type="Texture2D" uid="uid://bf321p4dij4ri" path="res://content/Graphics/Sprites/Enemies/Double/slime_block_walk_a.png" id="23_4nhcl"]
+[ext_resource type="Texture2D" uid="uid://lwks55h04a22" path="res://content/Graphics/Sprites/Enemies/Double/slime_block_jump.png" id="24_vxvk0"]
+[ext_resource type="Texture2D" uid="uid://de1ieqqoxkt2v" path="res://content/Graphics/Sprites/Enemies/Double/slime_block_walk_b.png" id="25_4affp"]
+[ext_resource type="Texture2D" uid="uid://bflaa3r8ywus7" path="res://content/Graphics/Sprites/Enemies/Double/slime_normal_walk_a.png" id="26_gvvbf"]
+[ext_resource type="Texture2D" uid="uid://crw4h7rirvoud" path="res://content/Graphics/Sprites/Enemies/Double/slime_normal_walk_b.png" id="27_abgx6"]
+[ext_resource type="Texture2D" uid="uid://cmkau8cqo1mq8" path="res://content/Graphics/Sprites/Enemies/Double/slime_spike_walk_a.png" id="28_uwkwm"]
+[ext_resource type="Texture2D" uid="uid://drpun4o5wl0m8" path="res://content/Graphics/Sprites/Enemies/Double/slime_spike_walk_b.png" id="29_mi83a"]
+[ext_resource type="Texture2D" uid="uid://dfuqpfqqe3lpn" path="res://content/Graphics/Sprites/Enemies/Double/snail_walk_a.png" id="30_r1dmv"]
+[ext_resource type="Texture2D" uid="uid://tb857p8wndep" path="res://content/Graphics/Sprites/Enemies/Double/snail_walk_b.png" id="31_r5a2n"]
+[ext_resource type="Texture2D" uid="uid://btjf3hkf21kx4" path="res://content/Graphics/Sprites/Enemies/Double/worm_normal_move_a.png" id="32_qkiit"]
+[ext_resource type="Texture2D" uid="uid://cb0mnpqrd8373" path="res://content/Graphics/Sprites/Enemies/Double/worm_normal_move_b.png" id="33_33t4o"]
+[ext_resource type="Texture2D" uid="uid://brcjvo6omoagg" path="res://content/Graphics/Sprites/Enemies/Double/worm_ring_move_a.png" id="34_unagv"]
+[ext_resource type="Texture2D" uid="uid://ld6a5ncqr37o" path="res://content/Graphics/Sprites/Enemies/Double/worm_ring_move_b.png" id="35_i7w7h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_enemy"]
 size = Vector2(24, 18)
@@ -15,13 +47,192 @@ resource_name = "mouse"
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("2_fdt22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_cr4t5")
+}],
+"loop": true,
+"name": &"barnacle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_u4voh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_rpcbc")
+}],
+"loop": true,
+"name": &"bee",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_n34mm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_g0an4")
+}],
+"loop": true,
+"name": &"fish_blue",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_kbpy8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ugwag")
+}],
+"loop": true,
+"name": &"fish_yellow",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_e2x2t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_berb0")
+}],
+"loop": true,
+"name": &"flog",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_klp7u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_ldsut")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_xaoo4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_e4hmv")
+}],
+"loop": true,
+"name": &"ladybug",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_3f0vr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_e4hmv")
+}],
+"loop": true,
+"name": &"ladybug_fly",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("2_c3565")
 }, {
 "duration": 1.0,
 "texture": ExtResource("3_a5e0x")
 }],
 "loop": true,
-"name": &"default",
+"name": &"mouse",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19_sodou")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_17nia")
+}],
+"loop": true,
+"name": &"saw",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_6wcdf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_2ae41")
+}],
+"loop": true,
+"name": &"slime_fire",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_4nhcl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_vxvk0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_4affp")
+}],
+"loop": true,
+"name": &"slime_green",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("26_gvvbf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_abgx6")
+}],
+"loop": true,
+"name": &"slime_normal",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("28_uwkwm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_mi83a")
+}],
+"loop": true,
+"name": &"slime_spike",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("30_r1dmv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_r5a2n")
+}],
+"loop": true,
+"name": &"snail",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("32_qkiit")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_33t4o")
+}],
+"loop": true,
+"name": &"worm_blue",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("34_unagv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_i7w7h")
+}],
+"loop": true,
+"name": &"worm_ring",
 "speed": 5.0
 }]
 
@@ -73,4 +284,4 @@ shape = SubResource("RectangleShape2D_jc0bi")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.240001, 0.240001)
 sprite_frames = SubResource("SpriteFrames_21rm6")
-frame_progress = 0.497016
+animation = &"slime_normal"

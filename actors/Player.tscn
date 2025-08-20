@@ -12,9 +12,6 @@
 [ext_resource type="Texture2D" uid="uid://d25ejiykai5xo" path="res://content/Graphics/Sprites/Characters/Double/character_beige_walk_a.png" id="11_hji1j"]
 [ext_resource type="Texture2D" uid="uid://b8m5ovue4te7p" path="res://content/Graphics/Sprites/Characters/Double/character_beige_walk_b.png" id="12_amb8q"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(22, 35)
-
 [sub_resource type="Curve" id="Curve_q73sa"]
 _data = [Vector2(0.00422833, 1), 0.0, 0.0, 0, 0, Vector2(0.980972, 0.660222), 0.0, 0.0, 0, 0]
 point_count = 2
@@ -88,13 +85,12 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(15.5, 34.25)
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_1x2y3")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -2)
-shape = SubResource("RectangleShape2D_1")
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
 script = ExtResource("2_camera")
@@ -138,3 +134,7 @@ position = Vector2(0, -7)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_lm5co")
 animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.25, -1.875)
+shape = SubResource("RectangleShape2D_1")
