@@ -430,11 +430,15 @@ func create_defeat_effect(from_stomp: bool = false):
 	effect_label.position = global_position + Vector2(-30, -30)
 	get_tree().current_scene.add_child(effect_label)
 	
-	# Animate the effect
-	var tween = create_tween()
-	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
-	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
-	tween.tween_callback(effect_label.queue_free)
+	# Animate the effect with a scene-based tween (not tied to this enemy)
+	var scene_tween = get_tree().create_tween()
+	scene_tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
+	scene_tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
+	scene_tween.tween_callback(func(): 
+		if is_instance_valid(effect_label):
+			effect_label.queue_free()
+	)
+
 	
 	# Different death animation for stomp
 	var death_tween = create_tween()
