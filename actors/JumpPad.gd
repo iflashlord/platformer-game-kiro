@@ -11,9 +11,8 @@ signal player_bounced(jump_pad: JumpPad, player: Node2D, force: float)
 var is_on_cooldown: bool = false
 var cooldown_timer: float = 0.0
 
-@onready var sprite: ColorRect = $PadSprite
-@onready var label: Label = $PadLabel
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var spring_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready():
 	add_to_group("jump_pads")
@@ -38,24 +37,14 @@ func _process(delta):
 func setup_pad_appearance():
 	match pad_type:
 		"normal":
-			sprite.color = Color(0.2, 0.8, 0.2, 1)  # Green
-			label.text = "⬆️"
+			spring_sprite.play("default")
 			bounce_force = 600.0
-		"super":
-			sprite.color = Color(0.2, 0.2, 1, 1)  # Blue
-			label.text = "⏫"
-			bounce_force = 800.0
-		"mega":
-			sprite.color = Color(1, 0.2, 1, 1)  # Magenta
-			label.text = "🚀"
-			bounce_force = 1000.0
+	
 		"horizontal":
-			sprite.color = Color(1, 0.8, 0.2, 1)  # Orange
-			label.text = "➡️"
+			spring_sprite.play("horizontal_default")
 			bounce_force = 400.0
 		_:
-			sprite.color = Color(0.2, 0.8, 0.2, 1)
-			label.text = "⬆️"
+			spring_sprite.play("horizontal_default")
 			bounce_force = 600.0
 
 func _on_body_entered(body):
@@ -70,7 +59,7 @@ func activate_jump_pad(player):
 	if "velocity" in player:
 		match pad_type:
 			"horizontal":
-				player.velocity.x = bounce_force * (1 if sprite.scale.x > 0 else -1)
+				player.velocity.x = bounce_force * (1 if spring_sprite.scale.x > 0 else -1)
 				player.velocity.y = -200.0  # Small upward boost
 			_:
 				player.velocity.y = -bounce_force
@@ -90,6 +79,17 @@ func activate_jump_pad(player):
 	print("🦘 Jump pad activated! Force: ", bounce_force)
 
 func create_bounce_effect():
+	
+	match pad_type:
+		"normal":
+			spring_sprite.play("jump")
+	
+		"horizontal":
+			spring_sprite.play("horizontal_jump")
+		_:
+			spring_sprite.play("jump")
+	
+	
 	# Visual bounce animation
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1.2, 0.8), 0.1)
@@ -101,15 +101,14 @@ func create_bounce_effect():
 	
 	# Particle effect (simple color flash)
 	var flash_tween = create_tween()
-	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
-	flash_tween.tween_property(sprite, "modulate", sprite.color, 0.2)
-
+	flash_tween.tween_property(spring_sprite, "modulate", Color.WHITE, 0.1)
+ 
 func start_cooldown():
 	is_on_cooldown = true
 	cooldown_timer = 0.0
 	
 	# Visual cooldown indicator
-	sprite.modulate = Color(0.6, 0.6, 0.6, 1)
+	spring_sprite.modulate = Color(0.6, 0.6, 0.6, 1)
 
 func reset_cooldown():
 	is_on_cooldown = false
@@ -121,15 +120,14 @@ func reset_cooldown():
 func set_bounce_direction(direction: Vector2):
 	if direction.x > 0:
 		pad_type = "horizontal"
-		sprite.scale.x = 1
-		label.text = "➡️"
+		spring_sprite.scale.x = 1
+
 	elif direction.x < 0:
 		pad_type = "horizontal"
-		sprite.scale.x = -1
-		label.text = "⬅️"
+		spring_sprite.scale.x = -1
 	else:
 		pad_type = "normal"
-		label.text = "⬆️"
+
 
 func set_bounce_power(power: float):
 	bounce_force = power

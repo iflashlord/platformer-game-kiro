@@ -1,29 +1,63 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxvw8y7qkqx7"]
+[gd_scene load_steps=8 format=3 uid="uid://bxvw8y7qkqx7"]
 
 [ext_resource type="Script" uid="uid://cdgatou53h8l8" path="res://actors/JumpPad.gd" id="1_jump_pad"]
+[ext_resource type="Texture2D" uid="uid://bpoq1uvyrleex" path="res://content/Graphics/Sprites/Tiles/Double/spring.png" id="2_aki2t"]
+[ext_resource type="Texture2D" uid="uid://d3028csaqphj" path="res://content/Graphics/Sprites/Tiles/Double/spring_out.png" id="3_8dunt"]
+[ext_resource type="Texture2D" uid="uid://be5xduemkv8xb" path="res://content/Graphics/Sprites/Tiles/Double/spring_h.png" id="3_eynkn"]
+[ext_resource type="Texture2D" uid="uid://bbfxaoihvd8ce" path="res://content/Graphics/Sprites/Tiles/Double/spring_h_out.png" id="4_u4pwv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pad"]
-size = Vector2(32, 16)
+size = Vector2(32, 21)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eynkn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_aki2t")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_eynkn")
+}],
+"loop": true,
+"name": &"horizontal_default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_eynkn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_u4pwv")
+}],
+"loop": true,
+"name": &"horizontal_jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_aki2t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_8dunt")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}]
 
 [node name="JumpPad" type="Area2D"]
 script = ExtResource("1_jump_pad")
 
-[node name="PadSprite" type="ColorRect" parent="."]
-offset_left = -16.0
-offset_top = -8.0
-offset_right = 16.0
-offset_bottom = 8.0
-color = Color(0.2, 0.8, 0.2, 1)
-
-[node name="PadLabel" type="Label" parent="."]
-offset_left = -16.0
-offset_top = -8.0
-offset_right = 16.0
-offset_bottom = 8.0
-theme_override_font_sizes/font_size = 12
-text = "⬆️"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2.5)
 shape = SubResource("RectangleShape2D_pad")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -7)
+scale = Vector2(0.240001, 0.240001)
+sprite_frames = SubResource("SpriteFrames_eynkn")

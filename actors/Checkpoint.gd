@@ -4,6 +4,8 @@ class_name Checkpoint
 @export var checkpoint_id: String = "checkpoint_01"
 @export var checkpoint_name: String = "Checkpoint 1"
 
+@onready var flag_sprite: AnimatedSprite2D = $AnimatedSprite2D
+
 var is_activated: bool = false
 
 func _ready():
@@ -12,6 +14,8 @@ func _ready():
 	
 	# Add to checkpoint group
 	add_to_group("checkpoints")
+	
+	flag_sprite.play("default")
 	
 	print("🏁 Checkpoint created: ", checkpoint_name, " at ", global_position)
 
@@ -30,13 +34,8 @@ func activate():
 	is_activated = true
 	
 	# Visual feedback
-	var sprite = $CheckpointSprite
-	sprite.color = Color.GREEN
-	
-	# Add a glow effect
-	var tween = create_tween()
-	tween.tween_property(sprite, "scale", Vector2(1.2, 1.2), 0.2)
-	tween.tween_property(sprite, "scale", Vector2.ONE, 0.2)
+	 
+	flag_sprite.play("checked")
 	
 	# Screen flash
 	if FX and FX.has_method("flash_screen"):
@@ -53,5 +52,4 @@ func activate():
 
 func reset():
 	is_activated = false
-	var sprite = $CheckpointSprite
-	sprite.color = Color(0, 1, 1, 0.7)
+	flag_sprite.play("default")

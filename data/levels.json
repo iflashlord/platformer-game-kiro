@@ -119,8 +119,8 @@
 			"unlocked": true
 		},
 		"Level01": {
-			"best_score": 4285,
-			"best_time": 8.371,
+			"best_score": 4285.0,
+			"best_time": 6.475,
 			"description": "Navigate platforms with dimension gates",
 			"hidden_gems": 1.0,
 			"name": "First Steps",

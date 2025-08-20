@@ -1,6 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://cxzyw6rkqh2ll"]
+[gd_scene load_steps=9 format=3 uid="uid://cx0yw6rkqh2ll"]
 
-[ext_resource type="Script" path="res://actors/BounceCrate.gd" id="1_bounce"]
+[ext_resource type="Script" uid="uid://cjobmdyssbcx7" path="res://actors/BounceCrate.gd" id="1_bounce"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_crate"]
 size = Vector2(32, 32)
@@ -8,22 +8,9 @@ size = Vector2(32, 32)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_detection"]
 size = Vector2(40, 40)
 
-[sub_resource type="Animation" id="Animation_idle"]
-resource_name = "idle"
-length = 2.0
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CrateSprite:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1, 2),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(1, 1), Vector2(1.03, 0.97), Vector2(1, 1)]
-}
+[sub_resource type="LabelSettings" id="LabelSettings_1"]
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Animation" id="Animation_bounce"]
 resource_name = "bounce"
@@ -69,18 +56,29 @@ tracks/1/keys = {
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
-_data = {
-"bounce": SubResource("Animation_bounce"),
-"deplete": SubResource("Animation_deplete"),
-"idle": SubResource("Animation_idle")
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CrateSprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.03, 0.97), Vector2(1, 1)]
 }
 
-[sub_resource type="LabelSettings" id="LabelSettings_1"]
-font_size = 16
-font_color = Color(1, 1, 1, 1)
-outline_size = 2
-outline_color = Color(0, 0, 0, 1)
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
+_data = {
+&"bounce": SubResource("Animation_bounce"),
+&"deplete": SubResource("Animation_deplete"),
+&"idle": SubResource("Animation_idle")
+}
 
 [node name="BounceCrate" type="StaticBody2D"]
 script = ExtResource("1_bounce")
@@ -114,6 +112,6 @@ vertical_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_1")
+&"": SubResource("AnimationLibrary_1")
 }
 autoplay = "idle"
