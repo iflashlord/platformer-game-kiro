@@ -34,7 +34,7 @@ var damage_cooldown_time: float = 0.5  # Prevent rapid damage
 func _ready():
 	add_to_group("enemies")
 
-	enemy_sprite.play("default")
+	enemy_sprite.play("mouse")
 	
 	start_position = global_position
 	current_health = health

@@ -146,10 +146,12 @@ func create_death_effect(player):
 	
 	# Death particles effect (simple color animation)
 	var death_effect = ColorRect.new()
-	death_effect.size = Vector2(50, 50)
-	death_effect.position = player.global_position + Vector2(-25, -25)
+	death_effect.size = Vector2(45, 45)
+	death_effect.position = player.global_position + Vector2(-30, -30)
 	death_effect.color = Color.RED
 	get_tree().current_scene.add_child(death_effect)
+
+	FX.flash_screen(2000)
 	
 	# Animate death effect
 	var tween = create_tween()

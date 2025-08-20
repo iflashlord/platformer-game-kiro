@@ -78,6 +78,7 @@ pad_type = "horizontal"
 [node name="DeathZone" parent="InteractiveElements" instance=ExtResource("15_080q8")]
 position = Vector2(632, 672)
 scale = Vector2(24.28, 1)
+zone_type = "lava"
 
 [node name="BasicCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(367, 268)

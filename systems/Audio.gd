@@ -46,7 +46,7 @@ func _ready():
 
 func _setup_audio_buses():
 	# Get the audio server
-	var master_idx = AudioServer.get_bus_index(MASTER_BUS)
+	var _master_idx = AudioServer.get_bus_index(MASTER_BUS)
 	
 	# Create Music bus if it doesn't exist
 	if AudioServer.get_bus_index(MUSIC_BUS) == -1:
@@ -64,17 +64,18 @@ func play_music(track: String, loop: bool = true):
 	var stream = _load_music(track)
 	if stream:
 		music_player.stream = stream
+		music_player.loop = loop
 		music_player.play()
 		print("Playing music: ", track)
 
 func stop_music():
 	music_player.stop()
-
-func play_sfx(name: String):
-	var stream = _load_sfx(name)
+func play_sfx(sfx_name: String):
+	var stream = _load_sfx(sfx_name)
 	if stream:
 		var player = _get_available_sfx_player()
 		player.stream = stream
+		player.play()
 		player.play()
 
 func _get_available_sfx_player() -> AudioStreamPlayer:
@@ -87,25 +88,25 @@ func _get_available_sfx_player() -> AudioStreamPlayer:
 	var player = sfx_players[current_sfx_index]
 	current_sfx_index = (current_sfx_index + 1) % sfx_pool_size
 	return player
-
-func _load_sfx(name: String) -> AudioStream:
-	if name in sfx_cache:
-		return sfx_cache[name]
+func _load_sfx(sfx_name: String) -> AudioStream:
+	if sfx_name in sfx_cache:
+		return sfx_cache[sfx_name]
 	
-	var path = "res://audio/sfx/" + name + ".ogg"
+	var path = "res://audio/sfx/" + sfx_name + ".ogg"
 	if ResourceLoader.exists(path):
 		var stream = load(path)
-		sfx_cache[name] = stream
+		sfx_cache[sfx_name] = stream
 		return stream
 	
 	# Try .wav extension
-	path = "res://audio/sfx/" + name + ".wav"
+	path = "res://audio/sfx/" + sfx_name + ".wav"
 	if ResourceLoader.exists(path):
 		var stream = load(path)
-		sfx_cache[name] = stream
+		sfx_cache[sfx_name] = stream
 		return stream
 	
-	print("SFX not found: ", name)
+	print("SFX not found: ", sfx_name)
+	return null
 	return null
 
 func _load_music(track: String) -> AudioStream:

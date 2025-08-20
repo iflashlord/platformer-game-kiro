@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cxvw9y8qkqxm"]
+[gd_scene load_steps=3 format=3 uid="uid://cxvxay8qkqxm"]
 
-[ext_resource type="Script" path="res://systems/AudioTest.gd" id="1_0k8vx"]
+[ext_resource type="Script" uid="uid://dfw4yr07mgq47" path="res://systems/AudioTest.gd" id="1_0k8vx"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqxl" path="res://ui/SettingsMenu.tscn" id="2_0k8vy"]
 
 [node name="AudioTest" type="Control"]
@@ -8,6 +8,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_0k8vx")
 
 [node name="VBox" type="VBoxContainer" parent="."]
@@ -21,6 +23,8 @@ offset_left = -150.0
 offset_top = -100.0
 offset_right = 150.0
 offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="StatusLabel" type="Label" parent="VBox"]
 layout_mode = 2
@@ -50,3 +54,4 @@ layout_mode = 2
 text = "Audio Settings"
 
 [node name="SettingsMenu" parent="." instance=ExtResource("2_0k8vy")]
+layout_mode = 1
