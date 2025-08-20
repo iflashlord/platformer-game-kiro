@@ -21,7 +21,6 @@ var current_health: int
 var damage_cooldown: float = 0.0
 var damage_cooldown_time: float = 0.5  # Prevent rapid damage
 
-@onready var sprite: ColorRect = $EnemySprite
 @onready var label: Label = $EnemyLabel
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var detection_area: Area2D = $DetectionArea
@@ -195,8 +194,9 @@ func setup_detection_area():
 	detection_area.collision_mask = 2  # Player layer
 
 func flip_sprite():
-	sprite.scale.x = -sprite.scale.x
-	label.scale.x = -label.scale.x
+	# Flip the animated sprite horizontally to match direction
+	enemy_sprite.scale.x = -enemy_sprite.scale.x
+ 
 
 func check_wall_collisions():
 	# Check if we hit a wall or obstacle
@@ -264,8 +264,8 @@ func _on_detection_area_exited(body):
 func _on_damage_area_entered(body):
 	print("👹 🚨 DAMAGE AREA ENTERED - Body: ", body.name, " Groups: ", body.get_groups())
 	
-	# Visual feedback - change enemy color when player enters damage area
-	sprite.color = Color.RED
+	
+	
 	
 	if not body.is_in_group("player") or not is_alive:
 		print("👹 Not player or enemy dead - ignoring")
@@ -375,9 +375,9 @@ func take_damage(amount: int = 1, from_stomp: bool = false):
 	current_health -= amount
 	
 	# Visual feedback for taking damage
-	sprite.modulate = Color.RED
+	enemy_sprite.modulate = Color.RED
 	var tween = create_tween()
-	tween.tween_property(sprite, "modulate", Color.WHITE, 0.2)
+	tween.tween_property(enemy_sprite, "modulate", Color.WHITE, 0.2)
 	
 	if from_stomp:
 		print("🦶 ", enemy_type.capitalize(), " stomped! (", current_health, "/", health, " HP)")

@@ -285,3 +285,4 @@ shape = SubResource("RectangleShape2D_jc0bi")
 scale = Vector2(0.240001, 0.240001)
 sprite_frames = SubResource("SpriteFrames_21rm6")
 animation = &"slime_normal"
+flip_h = true
