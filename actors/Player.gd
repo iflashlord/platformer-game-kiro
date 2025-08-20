@@ -107,6 +107,7 @@ func _physics_process(delta):
 		landed.emit()
 		has_jumped = false
 		current_jumps = 0  # Reset jump count on landing
+		character_sprite.play("jump")
 		print("Player landed")
 	
 	# Store fall velocity for landing impact
@@ -143,6 +144,7 @@ func handle_jump_buffer(delta):
 			print("Jump buffer expired")
 
 func handle_jump():
+	character_sprite.play("jump")
 	# Handle jump input
 	if Input.is_action_just_pressed("jump"):
 		# First jump (ground or coyote time)
@@ -179,10 +181,10 @@ func perform_jump():
 	if current_jumps == 2:
 		# Double jump effects
 		FX.flash_screen(Color.CYAN * 0.2, 0.1)
-		Audio.play_sfx("double_jump")
+		Audio.play_sfx("sfx_jump-high")
 		print("Player double jumped")
 	else:
-		Audio.play_sfx("jump")
+		Audio.play_sfx("sfx_jump")
 		print("Player jumped")
 	
 	# Track jump in persistence
