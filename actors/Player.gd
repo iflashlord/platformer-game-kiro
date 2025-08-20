@@ -41,11 +41,13 @@ var blink_frequency: float = 0.15  # How fast to blink during invincibility
 @export var stomp_bounce_velocity: float = -300.0
 @export var stomp_detection_threshold: float = 50.0  # Minimum downward velocity to stomp
 
-@onready var sprite: ColorRect = $PlayerSprite
+#@onready var sprite: ColorRect = $PlayerSprite
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var camera: PlayerCamera = get_node_or_null("PlayerCamera")
 @onready var dust_particles: CPUParticles2D = get_node_or_null("DustParticles")
 @onready var land_particles: CPUParticles2D = get_node_or_null("LandParticles")
+
+@onready var character_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 # Visual effects
 var original_sprite_scale: Vector2
@@ -58,11 +60,13 @@ func _ready():
 	# Add to player group for respawn system
 	add_to_group("player")
 	
+	character_sprite.play("idle")
+	
 	# Check if sprite exists
-	if sprite:
+	if character_sprite:
 		print("✅ Player sprite found")
 		# Store original sprite scale for squash/stretch effects
-		original_sprite_scale = sprite.scale
+		original_sprite_scale = character_sprite.scale
 	else:
 		print("❌ Player sprite not found!")
 		original_sprite_scale = Vector2.ONE
@@ -166,6 +170,8 @@ func perform_jump():
 	current_jumps += 1
 	jumped.emit()
 	
+	character_sprite.play("jump")
+	
 	# Visual effects for jump
 	_handle_takeoff()
 	
@@ -191,24 +197,29 @@ func handle_movement(delta):
 		var accel = acceleration if is_on_floor() else air_acceleration
 		velocity.x = move_toward(velocity.x, input_dir * max_speed, accel * delta)
 		
+		character_sprite.play("walk")
 		# Emit dust particles when running on ground
 		if is_on_floor() and abs(velocity.x) > 50:
 			_emit_dust_particles()
+			
 	else:
 		# Apply friction only when on ground
 		if is_on_floor():
 			velocity.x = move_toward(velocity.x, 0, friction * delta)
-			
+			character_sprite.play("idle")
+
 			# Stop dust when stopping
 			if was_moving and abs(velocity.x) <= 10:
 				_stop_dust_particles()
+				#character_sprite.play("idle")
+
 
 func handle_sprite_flip():
-	#if velocity.x > 0:
-		#sprite.scale.x = abs(sprite.scale.x)  # Face right
-	#elif velocity.x < 0:
-		#sprite.scale.x = -abs(sprite.scale.x)  # Face left
-	#
+	if velocity.x > 0:
+		character_sprite.scale.x = abs(character_sprite.scale.x)  # Face right
+	elif velocity.x < 0:
+		character_sprite.scale.x = -abs(character_sprite.scale.x)  # Face left
+	
 	# Handle dimension flip input
 	if Input.is_action_just_pressed("dimension_flip"):
 		# Dimension flip with VFX
@@ -218,6 +229,8 @@ func handle_sprite_flip():
 	# Debug shake test
 	if Input.is_action_just_pressed("debug_shake"):
 		FX.shake(300) # 300ms shake
+		
+	
 
 func handle_invincibility(delta):
 	if is_invincible:
@@ -226,9 +239,9 @@ func handle_invincibility(delta):
 		# Handle blinking effect
 		var blink_cycle = fmod(invincibility_timer, blink_frequency * 2)
 		if blink_cycle < blink_frequency:
-			sprite.modulate.a = 0.3  # Semi-transparent
+			character_sprite.modulate.a = 0.3  # Semi-transparent
 		else:
-			sprite.modulate.a = 1.0  # Fully visible
+			character_sprite.modulate.a = 1.0  # Fully visible
 		
 		# End invincibility
 		if invincibility_timer <= 0.0:
@@ -243,7 +256,7 @@ func start_invincibility():
 	invincibility_timer = invincibility_duration
 	
 	# Visual feedback - start blinking
-	sprite.modulate.a = 0.3
+	character_sprite.modulate.a = 0.3
 
 func end_invincibility():
 	print("🛡️ Player invincibility ended")
@@ -251,7 +264,7 @@ func end_invincibility():
 	invincibility_timer = 0.0
 	
 	# Restore normal appearance
-	sprite.modulate.a = 1.0
+	character_sprite.modulate.a = 1.0
 
 func take_damage(amount: int = 1):
 	# Check if player is invincible
@@ -260,6 +273,8 @@ func take_damage(amount: int = 1):
 		return
 	
 	print("💔 Player taking ", amount, " damage")
+	
+	character_sprite.play("hit")
 	
 	# Start invincibility frames
 	start_invincibility()
@@ -293,6 +308,7 @@ func handle_enemy_stomping():
 			# If collision normal points upward (we're on top), it's a stomp
 			if collision_normal.y < -0.7:  # Normal pointing up
 				stomp_enemy(collider)
+				character_sprite.play("duck")
 				return  # Only stomp one enemy per frame
 
 func stomp_enemy(enemy):
@@ -340,6 +356,8 @@ func _handle_stomp_effects(enemy):
 func die():
 	print("💀 Player.die() called")
 	died.emit()
+	
+	character_sprite.play("hit")
 	
 	# Disable player input during death sequence
 	set_physics_process(false)
@@ -408,6 +426,8 @@ func _handle_takeoff():
 	
 	# Use event bus for sound
 	EventBus.request_sfx("jump", global_position)
+	
+	character_sprite.play("jump")
 
 func _squash_sprite():
 	if is_squashing:
@@ -417,13 +437,13 @@ func _squash_sprite():
 	var tween = create_tween()
 	
 	# Preserve horizontal flip direction
-	var flip_sign = sign(sprite.scale.x)
+	var flip_sign = sign(character_sprite.scale.x)
 	var base_scale_x = abs(original_sprite_scale.x) * flip_sign
 	
 	# Squash down
-	tween.tween_property(sprite, "scale", Vector2(base_scale_x * 1.2, original_sprite_scale.y * 0.8), 0.1)
+	tween.tween_property(character_sprite, "scale", Vector2(base_scale_x * 1.2, original_sprite_scale.y * 0.8), 0.1)
 	# Return to normal
-	tween.tween_property(sprite, "scale", Vector2(base_scale_x, original_sprite_scale.y), 0.2)
+	tween.tween_property(character_sprite, "scale", Vector2(base_scale_x, original_sprite_scale.y), 0.2)
 	tween.tween_callback(func(): is_squashing = false)
 
 func _stretch_sprite():
@@ -434,13 +454,13 @@ func _stretch_sprite():
 	var tween = create_tween()
 	
 	# Preserve horizontal flip direction
-	var flip_sign = sign(sprite.scale.x)
+	var flip_sign = sign(character_sprite.scale.x)
 	var base_scale_x = abs(original_sprite_scale.x) * flip_sign
 	
 	# Stretch up
-	tween.tween_property(sprite, "scale", Vector2(base_scale_x * 0.8, original_sprite_scale.y * 1.2), 0.1)
+	tween.tween_property(character_sprite, "scale", Vector2(base_scale_x * 0.8, original_sprite_scale.y * 1.2), 0.1)
 	# Return to normal
-	tween.tween_property(sprite, "scale", Vector2(base_scale_x, original_sprite_scale.y), 0.2)
+	tween.tween_property(character_sprite, "scale", Vector2(base_scale_x, original_sprite_scale.y), 0.2)
 	tween.tween_callback(func(): is_squashing = false)
 
 func _emit_dust_particles():

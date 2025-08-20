@@ -96,11 +96,12 @@ func _on_retry_pressed():
 	Audio.play_sfx("ui_click")
 	# Restart the current level
 	print("🔄 Retrying level: ", current_level)
-	if LevelLoader and LevelLoader.has_method("load_level"):
-		LevelLoader.load_level(current_level)
-	else:
-		# Fallback: reload current scene
-		get_tree().reload_current_scene()
+	#if LevelLoader and LevelLoader.has_method("load_level"):
+	#	LevelLoader.load_level(current_level)
+	#else:
+		# Fallback:	 reload current scene
+	#	get_tree().reload_current_scene()
+	get_tree().reload_current_scene()
 	queue_free()
 
 func _on_map_pressed():
