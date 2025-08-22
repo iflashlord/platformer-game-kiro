@@ -8,7 +8,10 @@ signal player_bounced(crate: InteractiveCrate, player: Node2D)
 @export var points_value: int = 50
 @export var bounce_force: float = 500.0
 @export var explosion_radius: float = 100.0
-@export var explosion_countdown: float = 3.0
+@export var explosion_countdown: int = 3
+
+@onready var interactive_sprite: AnimatedSprite2D = $AnimatedSprite2D
+
 
 var is_destroyed: bool = false
 var is_exploding: bool = false
@@ -28,6 +31,7 @@ func _ready():
 	
 	# Create countdown label for TNT
 	if crate_type == "tnt":
+		interactive_sprite.play("tnt_idle")
 		countdown_label = Label.new()
 		countdown_label.position = Vector2(-10, -35)
 		countdown_label.add_theme_font_size_override("font_size", 16)
@@ -44,6 +48,7 @@ func _ready():
 
 func _process(delta):
 	if is_exploding and crate_type == "tnt":
+		interactive_sprite.play("tnt_exploding")
 		explosion_timer += delta
 		var remaining_time = explosion_countdown - explosion_timer
 		
@@ -61,22 +66,27 @@ func _process(delta):
 func setup_crate_appearance():
 	match crate_type:
 		"basic":
+			interactive_sprite.play("basic_idle")
 			sprite.color = Color(0.6, 0.4, 0.2, 1)
 			label.text = "📦"
 			points_value = 50
 		"bounce":
+			interactive_sprite.play("bounce_idle")
 			sprite.color = Color.YELLOW
 			label.text = "🦘"
 			points_value = 75
 		"tnt":
+			interactive_sprite.play("tnt_idle")
 			sprite.color = Color(1, 0.3, 0.3, 1)
 			label.text = "💥"
 			points_value = 100
 		"metal":
+			interactive_sprite.play("metal_idle")
 			sprite.color = Color(0.7, 0.7, 0.8, 1)
 			label.text = "🔩"
 			points_value = 150
 		_:
+			interactive_sprite.play("basic_idle")
 			sprite.color = Color(0.6, 0.4, 0.2, 1)
 			label.text = "📦"
 			points_value = 50
@@ -140,7 +150,7 @@ func create_explosion_radius_indicator():
 	
 	# Animate the indicator
 	var tween = create_tween()
-	tween.set_loops()
+	tween.set_loops(10)
 	tween.tween_property(radius_indicator, "modulate:a", 0.1, 0.5)
 	tween.tween_property(radius_indicator, "modulate:a", 0.3, 0.5)
 
@@ -205,7 +215,7 @@ func destroy_crate():
 	Game.add_score(points_value)
 	
 	# Emit signal
-	crate_destroyed.emit(self, points_value)
+	crate_destroyed.emit(self as InteractiveCrate, points_value)
 	
 	# Create destruction effect
 	create_destruction_effect()
@@ -258,7 +268,7 @@ func apply_explosion_knockback(player, distance: float):
 	
 	# Visual feedback for knockback
 	if FX and FX.has_method("shake"):
-		FX.shake(400)  # Stronger shake for explosion
+		FX.shake(100)  # Stronger shake for explosion
 
 func create_explosion_effect():
 	# Create explosion visual
@@ -283,4 +293,4 @@ func create_explosion_effect():
 	
 	# Screen shake effect
 	if FX and FX.has_method("shake"):
-		FX.shake(400)  # Increased shake for explosion
+		FX.shake(100)  # Increased shake for explosion

@@ -1,12 +1,68 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxvw8y7qkqx4"]
+[gd_scene load_steps=9 format=3 uid="uid://bxvw8y7qkqx4"]
 
 [ext_resource type="Script" uid="uid://liohwky0chg" path="res://actors/InteractiveCrate.gd" id="1_crate"]
+[ext_resource type="Texture2D" uid="uid://bvnqnjs5e6l03" path="res://content/Graphics/Sprites/Tiles/Double/block_planks.png" id="2_enpyk"]
+[ext_resource type="Texture2D" uid="uid://bvxwkptrp1yla" path="res://content/Graphics/Sprites/Tiles/Double/block_red.png" id="2_ngvu6"]
+[ext_resource type="Texture2D" uid="uid://cltq1oo3yhwcy" path="res://content/Graphics/Sprites/Tiles/Double/block_strong_danger_active.png" id="3_im5un"]
+[ext_resource type="Texture2D" uid="uid://d30xuqpmb38ar" path="res://content/Graphics/Sprites/Tiles/Double/block_strong_exclamation.png" id="3_me5sj"]
+[ext_resource type="Texture2D" uid="uid://vog3lepqhvdi" path="res://content/Graphics/Sprites/Tiles/Double/bricks_grey.png" id="4_lpfn4"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jt3jt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_enpyk")
+}],
+"loop": true,
+"name": &"basic_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_me5sj")
+}],
+"loop": true,
+"name": &"bounce_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_lpfn4")
+}],
+"loop": true,
+"name": &"metal_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ngvu6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_im5un")
+}],
+"loop": true,
+"name": &"tnt_exploding",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ngvu6")
+}],
+"loop": true,
+"name": &"tnt_idle",
+"speed": 5.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_crate"]
 size = Vector2(32, 32)
 
 [node name="InteractiveCrate" type="Area2D"]
 script = ExtResource("1_crate")
+crate_type = null
+points_value = null
+bounce_force = null
+explosion_radius = null
+explosion_countdown = null
 
 [node name="CrateSprite" type="ColorRect" parent="."]
 offset_left = -16.0
@@ -14,6 +70,11 @@ offset_top = -16.0
 offset_right = 16.0
 offset_bottom = 16.0
 color = Color(0.6, 0.4, 0.2, 1)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.239999, 0.239999)
+sprite_frames = SubResource("SpriteFrames_jt3jt")
+animation = &"bounce_idle"
 
 [node name="CrateLabel" type="Label" parent="."]
 offset_left = -16.0

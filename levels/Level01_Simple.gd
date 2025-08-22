@@ -10,6 +10,11 @@ var level_completed: bool = false
 func _ready():
 	print("🌲 Level 1: Forest Adventure loaded")
 	
+	# Safely play music if Audio system is available and method exists
+	if Audio and Audio.has_method("play_music"):
+		Audio.play_music("level_1_theme")
+	else:
+		print("⚠️ Audio system or play_music method not available")
 	
 	# Add dimension manager TO BE FIXED
 	#var dimension_manager = preload("res://systems/DimensionManager.gd").new()

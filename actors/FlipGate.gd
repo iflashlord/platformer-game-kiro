@@ -55,13 +55,13 @@ func _ready():
 func _start_idle_animations():
 	# Pulsing energy field
 	energy_tween = create_tween()
-	energy_tween.set_loops()
+	energy_tween.set_loops(10)
 	energy_tween.parallel().tween_property(energy_field, "modulate", Color(1, 0.3, 1, 0.4), 1.2)
 	energy_tween.parallel().tween_property(energy_field, "modulate", Color(1, 0.7, 1, 0.8), 1.2)
 	
 	# Floating core orb
 	idle_tween = create_tween()
-	idle_tween.set_loops()
+	idle_tween.set_loops(10)
 	idle_tween.parallel().tween_property(core_orb, "position", Vector2(0, -5), 2.0)
 	idle_tween.parallel().tween_property(core_orb, "position", Vector2(0, 5), 2.0)
 	idle_tween.parallel().tween_property(core_orb, "rotation", TAU, 3.0)

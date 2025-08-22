@@ -41,7 +41,7 @@ func _on_explosion_pressed():
 	explosion.setup(100, 1.0)  # Big explosion for TNT effect
 
 func _on_shake_pressed():
-	FX.shake(200)
+	FX.shake(100)
 
 func _on_hitstop_pressed():
 	FX.hit_stop(120)

@@ -154,18 +154,18 @@ func animate_relic():
 	
 	# Floating animation
 	var tween = create_tween()
-	tween.set_loops()
+	tween.set_loops(10)
 	tween.tween_property(relic, "position:y", relic.position.y - 10, 1.5)
 	tween.tween_property(relic, "position:y", relic.position.y + 10, 1.5)
 	
 	# Rotation animation
 	var rotation_tween = create_tween()
-	rotation_tween.set_loops()
+	rotation_tween.set_loops(10)
 	rotation_tween.tween_property(relic, "rotation", TAU, 4.0)
 	
 	# Scale pulse animation
 	var scale_tween = create_tween()
-	scale_tween.set_loops()
+	scale_tween.set_loops(10)
 	scale_tween.tween_property(relic, "scale", Vector2(1.1, 1.1), 0.8)
 	scale_tween.tween_property(relic, "scale", Vector2.ONE, 0.8)
 

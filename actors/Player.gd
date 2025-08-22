@@ -144,7 +144,6 @@ func handle_jump_buffer(delta):
 			print("Jump buffer expired")
 
 func handle_jump():
-	character_sprite.play("jump")
 	# Handle jump input
 	if Input.is_action_just_pressed("jump"):
 		# First jump (ground or coyote time)
@@ -181,10 +180,11 @@ func perform_jump():
 	if current_jumps == 2:
 		# Double jump effects
 		FX.flash_screen(Color.CYAN * 0.2, 0.1)
-		Audio.play_sfx("sfx_jump-high")
+		Audio.play_sfx("jump-high")
+
 		print("Player double jumped")
 	else:
-		Audio.play_sfx("sfx_jump")
+		Audio.play_sfx("jump")
 		print("Player jumped")
 	
 	# Track jump in persistence
@@ -193,28 +193,30 @@ func perform_jump():
 func handle_movement(delta):
 	var input_dir = Input.get_axis("move_left", "move_right")
 	var was_moving = abs(velocity.x) > 10
-	
 	if input_dir != 0:
 		# Use different acceleration based on ground state
 		var accel = acceleration if is_on_floor() else air_acceleration
 		velocity.x = move_toward(velocity.x, input_dir * max_speed, accel * delta)
 		
-		character_sprite.play("walk")
+		if is_on_floor():
+			if character_sprite.animation != "walk":
+				character_sprite.play("walk")
 		# Emit dust particles when running on ground
 		if is_on_floor() and abs(velocity.x) > 50:
 			_emit_dust_particles()
-			
 	else:
 		# Apply friction only when on ground
 		if is_on_floor():
 			velocity.x = move_toward(velocity.x, 0, friction * delta)
-			character_sprite.play("idle")
-
+			if abs(velocity.x) > 10:
+				if character_sprite.animation != "walk":
+					character_sprite.play("walk")
+			else:
+				if character_sprite.animation != "idle":
+					character_sprite.play("idle")
 			# Stop dust when stopping
 			if was_moving and abs(velocity.x) <= 10:
 				_stop_dust_particles()
-				#character_sprite.play("idle")
-
 
 func handle_sprite_flip():
 	if velocity.x > 0:
@@ -227,7 +229,7 @@ func handle_sprite_flip():
 		# Dimension flip with VFX
 		if DimensionManager.toggle_layer():
 			print("Player triggered dimension flip")
-	
+		
 	# Debug shake test
 	if Input.is_action_just_pressed("debug_shake"):
 		FX.shake(300) # 300ms shake
@@ -344,7 +346,7 @@ func _handle_stomp_effects(enemy):
 	
 	# Audio feedback
 	if Audio:
-		Audio.play_sfx("enemy_stomp")
+		Audio.play_sfx("hurt")
 	
 	# Particle effect at stomp location
 	if land_particles:
@@ -488,5 +490,3 @@ func _emit_landing_particles():
 			land_particles.emitting = false
 			timer.queue_free()
 		)
-		
-	

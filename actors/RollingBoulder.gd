@@ -94,7 +94,7 @@ func crush_player(player: Player):
 		player.die()
 	
 	# Dramatic effects
-	FX.shake(300)
+	FX.shake(100)
 	FX.flash_screen(Color.RED, 0.2)
 	FX.hit_stop(150)
 	
@@ -127,7 +127,7 @@ func destroy_boulder():
 	linear_velocity = Vector2.ZERO
 	
 	# Visual effects
-	FX.shake(200)
+	FX.shake(100)
 	
 	# Explosion particles
 	if dust_particles:

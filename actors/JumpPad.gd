@@ -97,7 +97,7 @@ func create_bounce_effect():
 	
 	# Screen shake
 	if FX and FX.has_method("shake"):
-		FX.shake(150)
+		FX.shake(100)
 	
 	# Particle effect (simple color flash)
 	var flash_tween = create_tween()

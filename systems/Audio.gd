@@ -63,8 +63,9 @@ func _setup_audio_buses():
 func play_music(track: String, loop: bool = true):
 	var stream = _load_music(track)
 	if stream:
+		if "loop" in stream:
+			stream.loop = loop
 		music_player.stream = stream
-		music_player.loop = loop
 		music_player.play()
 		print("Playing music: ", track)
 

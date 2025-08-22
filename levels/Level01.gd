@@ -158,7 +158,7 @@ func _on_crate_destroyed(crate_type: String, position: Vector2):
 		
 		# Screen shake for explosion
 		if FX:
-			FX.shake(300)
+			FX.shake(100)
 
 func _on_player_bounced(position: Vector2):
 	print("🦘 Player bounced at: ", position)

@@ -121,7 +121,7 @@ func enter_exploding_state():
 	# Visual effects with fallbacks
 	if has_node("/root/FX"):
 		if FX.has_method("shake"):
-			FX.shake(200)
+			FX.shake(100)
 		if FX.has_method("flash_screen"):
 			FX.flash_screen(Color.ORANGE, 0.1)
 	else:
@@ -152,7 +152,7 @@ func enter_broken_state():
 	
 	# Emit signals
 	broken.emit(crate_type, global_position)
-	crate_destroyed.emit(self, points_value)
+	crate_destroyed.emit(self as Crate, points_value)
 	
 	print("Crate broken: ", crate_type, " at ", global_position)
 	
@@ -304,7 +304,7 @@ func on_player_interaction(player):
 		if "is_jumping" in player:
 			player.is_jumping = true
 		
-		player_bounced.emit(self, player)
+		player_bounced.emit(self as Crate, player as Node2D)
 		set_state(CrateState.BOUNCING)
 		
 		# Also damage the crate when bounced on

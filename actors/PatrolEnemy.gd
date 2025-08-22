@@ -366,7 +366,8 @@ func create_damage_effect():
 	
 	# Screen shake
 	if FX and FX.has_method("shake"):
-		FX.shake(100)
+		FX.shake(10)
+	
 
 func take_damage(amount: int = 1, from_stomp: bool = false):
 	if not is_alive:
@@ -392,7 +393,16 @@ func defeat(from_stomp: bool = false):
 		return
 	
 	is_alive = false
+
+
+	# Audio feedback
+	if Audio:
+		Audio.play_sfx("enemy_hurt")
 	
+	# Screen shake
+	if FX and FX.has_method("shake"):
+		FX.shake(100)
+
 	# Add score
 	Game.add_score(points_value)
 	
@@ -409,11 +419,11 @@ func defeat(from_stomp: bool = false):
 
 func create_defeat_effect(from_stomp: bool = false):
 	# Disable collision
-	collision_shape.disabled = true
+	collision_shape.set_deferred("disabled", true)
 	if detection_area:
-		detection_collision.disabled = true
+		detection_collision.set_deferred("disabled", true)
 	if damage_area:
-		damage_collision.disabled = true
+		damage_collision.set_deferred("disabled", true)
 	
 	# Create floating text effect
 	var effect_label = Label.new()

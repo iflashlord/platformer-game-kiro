@@ -10,10 +10,7 @@ func _ready():
 	if not DebugSettings.show_debug_borders:
 		visible = false
 		return
-	
-	# Connect to debug toggle
-	EventBus.debug_borders_toggled.connect(_on_debug_borders_toggled)
-	
+	 
 	# Get target node (parent)
 	target_node = get_parent()
 	_calculate_border_rect()
@@ -76,10 +73,7 @@ func _get_node_bounds(node: Node2D) -> Rect2:
 	
 	# Default bounds
 	return Rect2(-16, -16, 32, 32)
-
-func _on_debug_borders_toggled(enabled: bool):
-	visible = enabled
-	queue_redraw()
+ 
 
 func set_border_color(color: Color):
 	border_color = color

@@ -1,6 +1,28 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxvw8y7qkqx1"]
+[gd_scene load_steps=5 format=3 uid="uid://bxvw8y7qkqx1"]
 
-[ext_resource type="Script" path="res://ui/GameHUD.gd" id="1_hud"]
+[ext_resource type="Script" uid="uid://ckejxjsytfb42" path="res://ui/GameHUD.gd" id="1_hud"]
+[ext_resource type="Texture2D" uid="uid://dnbnh78jaq2k8" path="res://content/Graphics/Sprites/Tiles/Double/hud_heart.png" id="2_b8fo0"]
+[ext_resource type="Texture2D" uid="uid://bvuuf4nixnjr0" path="res://content/Graphics/Sprites/Tiles/Double/hud_heart_empty.png" id="3_o4xvh"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mpdc4"]
+resource_name = "AnimatedSprite2D_1"
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_b8fo0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_o4xvh")
+}],
+"loop": true,
+"name": &"empty",
+"speed": 5.0
+}]
 
 [node name="GameHUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -10,65 +32,46 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
 [node name="TopBar" type="HBoxContainer" parent="UI"]
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 0.0
-anchor_bottom = 0.0
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 1260.0
 offset_bottom = 60.0
+grow_vertical = 0
 
 [node name="HealthContainer" type="HBoxContainer" parent="UI/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="HealthLabel" type="Label" parent="UI/TopBar/HealthContainer"]
-layout_mode = 2
-text = "HEALTH:"
-theme_override_font_sizes/font_size = 16
-vertical_alignment = 1
+[node name="AnimatedSprite2D_1" type="AnimatedSprite2D" parent="UI/TopBar/HealthContainer"]
+position = Vector2(14, 18)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_mpdc4")
 
-[node name="HeartsContainer" type="HBoxContainer" parent="UI/TopBar/HealthContainer"]
-layout_mode = 2
+[node name="AnimatedSprite2D_2" type="AnimatedSprite2D" parent="UI/TopBar/HealthContainer"]
+position = Vector2(53.6, 17.6)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_mpdc4")
 
-[node name="Heart1" type="Label" parent="UI/TopBar/HealthContainer/HeartsContainer"]
-layout_mode = 2
-text = "♥"
-theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 24
-vertical_alignment = 1
+[node name="AnimatedSprite2D_3" type="AnimatedSprite2D" parent="UI/TopBar/HealthContainer"]
+position = Vector2(93.6, 17.6)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_mpdc4")
 
-[node name="Heart2" type="Label" parent="UI/TopBar/HealthContainer/HeartsContainer"]
-layout_mode = 2
-text = "♥"
-theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 24
-vertical_alignment = 1
+[node name="AnimatedSprite2D_4" type="AnimatedSprite2D" parent="UI/TopBar/HealthContainer"]
+position = Vector2(133.6, 17.6)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_mpdc4")
 
-[node name="Heart3" type="Label" parent="UI/TopBar/HealthContainer/HeartsContainer"]
-layout_mode = 2
-text = "♥"
-theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 24
-vertical_alignment = 1
-
-[node name="Heart4" type="Label" parent="UI/TopBar/HealthContainer/HeartsContainer"]
-layout_mode = 2
-text = "♥"
-theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 24
-vertical_alignment = 1
-
-[node name="Heart5" type="Label" parent="UI/TopBar/HealthContainer/HeartsContainer"]
-layout_mode = 2
-text = "♥"
-theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 24
-vertical_alignment = 1
+[node name="AnimatedSprite2D_5" type="AnimatedSprite2D" parent="UI/TopBar/HealthContainer"]
+position = Vector2(173, 18)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_mpdc4")
 
 [node name="Spacer" type="Control" parent="UI/TopBar"]
 layout_mode = 2
@@ -80,16 +83,20 @@ size_flags_horizontal = 0
 
 [node name="TimerLabel" type="Label" parent="UI/TopBar/TimerContainer"]
 layout_mode = 2
-text = "TIME:"
 theme_override_font_sizes/font_size = 16
+text = "TIME:"
 vertical_alignment = 1
 
 [node name="TimeDisplay" type="Label" parent="UI/TopBar/TimerContainer"]
 layout_mode = 2
-text = "00:00.00"
 theme_override_colors/font_color = Color(0.8, 0.8, 1, 1)
 theme_override_font_sizes/font_size = 20
+text = "00:00"
 vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="UI/TopBar"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
 
 [node name="ScoreContainer" type="HBoxContainer" parent="UI/TopBar"]
 layout_mode = 2
@@ -97,13 +104,34 @@ size_flags_horizontal = 0
 
 [node name="ScoreLabel" type="Label" parent="UI/TopBar/ScoreContainer"]
 layout_mode = 2
-text = "SCORE:"
 theme_override_font_sizes/font_size = 16
+text = "SCORE:"
 vertical_alignment = 1
 
 [node name="ScoreDisplay" type="Label" parent="UI/TopBar/ScoreContainer"]
 layout_mode = 2
-text = "0"
 theme_override_colors/font_color = Color(1, 1, 0.5, 1)
 theme_override_font_sizes/font_size = 20
+text = "0"
 vertical_alignment = 1
+
+[node name="Spacer3" type="Control" parent="UI/TopBar"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="PauseButton" type="Button" parent="UI/TopBar"]
+custom_minimum_size = Vector2(60, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 24
+text = "⏸"
+
+[node name="PauseOverlay" type="Control" parent="UI"]
+visible = false
+modulate = Color(0, 0, 0, 0.5)
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

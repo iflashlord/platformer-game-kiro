@@ -69,28 +69,28 @@ func _setup_portal_appearance():
 func _create_portal_animation():
 	# Outer ring rotation (slow)
 	var outer_tween = create_tween()
-	outer_tween.set_loops()
+	outer_tween.set_loops(10)
 	outer_tween.tween_property(outer_ring, "rotation", TAU, 4.0)
 	
 	# Middle ring rotation (medium, opposite direction)
 	var middle_tween = create_tween()
-	middle_tween.set_loops()
+	middle_tween.set_loops(10)
 	middle_tween.tween_property(middle_ring, "rotation", -TAU, 3.0)
 	
 	# Inner core rotation (fast)
 	var core_tween = create_tween()
-	core_tween.set_loops()
+	core_tween.set_loops(10)
 	core_tween.tween_property(inner_core, "rotation", TAU, 2.0)
 	
 	# Pulsing animation for middle ring
 	var pulse_tween = create_tween()
-	pulse_tween.set_loops()
+	pulse_tween.set_loops(10)
 	pulse_tween.tween_property(middle_ring, "scale", Vector2(1.1, 1.1), 1.5)
 	pulse_tween.tween_property(middle_ring, "scale", Vector2(1.0, 1.0), 1.5)
 	
 	# Core pulsing (faster)
 	var core_pulse_tween = create_tween()
-	core_pulse_tween.set_loops()
+	core_pulse_tween.set_loops(10)
 	core_pulse_tween.tween_property(inner_core, "scale", Vector2(1.2, 1.2), 1.0)
 	core_pulse_tween.tween_property(inner_core, "scale", Vector2(1.0, 1.0), 1.0)
 
@@ -170,7 +170,7 @@ func _activate_portal():
 		if FX.has_method("flash_screen"):
 			FX.flash_screen(Color.WHITE * 0.7, 1.0)
 		if FX.has_method("shake"):
-			FX.shake(400)
+			FX.shake(100)
 	
 	if has_node("/root/Audio"):
 		if Audio.has_method("play_sfx"):

@@ -44,7 +44,7 @@ func _trigger_completion_explosion():
 	
 	# Additional visual effects
 	FX.flash_screen(Color.GOLD * 0.3, 0.5)
-	FX.shake(200)
+	FX.shake(100)
 	Audio.play_sfx("level_complete")
 	
 	# Particle burst

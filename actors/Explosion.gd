@@ -54,10 +54,10 @@ func setup(radius: float, dmg: float):
 	# Visual effects for big explosions
 	if radius >= 80:  # TNT-sized explosion
 		FX.hit_stop(120)  # 120ms hit-stop
-		FX.shake(300)  # Strong screen shake
+		FX.shake(110)  # Strong screen shake
 		Audio.play_sfx("big_explosion")
 	elif radius >= 50:  # Medium explosion
-		FX.shake(150)  # Medium screen shake
+		FX.shake(90)  # Medium screen shake
 		Audio.play_sfx("explosion")
 	else:  # Small explosion
 		FX.shake(75)  # Small screen shake

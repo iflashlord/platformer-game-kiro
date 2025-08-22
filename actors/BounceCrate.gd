@@ -17,8 +17,9 @@ var bounce_timer: float = 0.0
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var detection_area: Area2D = $DetectionArea
 @onready var detection_collision: CollisionShape2D = $DetectionArea/DetectionCollisionShape2D
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var fruit_label: Label = $FruitLabel
+@onready var crateSprite: AnimatedSprite2D = $AnimatedSprite2D
+
 
 func _ready():
 	# Connect area signals
@@ -39,9 +40,6 @@ func _ready():
 	# Add to groups
 	add_to_group("fruit_boxes")
 	add_to_group("interactive_objects")
-	
-	# Start idle animation
-	animation_player.play("idle")
 	
 	print("Fruit box initialized with ", fruits_remaining, " fruits")
 	print("Detection area monitoring: ", detection_area.monitoring)
@@ -83,8 +81,6 @@ func bounce_player_up(player):
 	# Consume a fruit
 	consume_fruit()
 	
-	# Play bounce animation
-	animation_player.play("bounce")
 	
 	print("Player bounced on fruit box! Fruits remaining: ", fruits_remaining)
 
@@ -97,10 +93,7 @@ func hit_from_below(player):
 	
 	# Consume a fruit
 	consume_fruit()
-	
-	# Play bounce animation
-	animation_player.play("bounce")
-	
+	 
 	print("Player hit fruit box from below! Fruits remaining: ", fruits_remaining)
 
 func consume_fruit():
@@ -139,13 +132,10 @@ func deplete_box():
 	
 	# Emit depletion signal
 	box_depleted.emit(global_position)
-	
-	# Play depletion animation
-	animation_player.play("deplete")
-	
+	 
 	# Disable collision and areas
-	collision_shape.disabled = true
-	detection_collision.disabled = true
+	collision_shape.set_deferred("disabled", true)
+	detection_collision.set_deferred("disabled", true)
 	
 	# Queue for removal after animation
 	var timer = Timer.new()

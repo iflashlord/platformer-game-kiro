@@ -51,7 +51,7 @@ func _on_sfx_volume_changed(value: float):
 
 func _on_test_sfx_pressed():
 	# Play a test sound effect
-	Audio.play_sfx("test_beep")
+	Audio.play_sfx("ui_cancel")
 
 func _on_back_pressed():
 	# Return to main menu

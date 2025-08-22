@@ -27,7 +27,7 @@ func _update_status():
 	status_label.text = text
 
 func _on_play_music_pressed():
-	Audio.play_sfx("sfx_bump")
+	Audio.play_sfx("jump")
 	_update_status()
 
 func _on_stop_music_pressed():
@@ -35,7 +35,7 @@ func _on_stop_music_pressed():
 	_update_status()
 
 func _on_play_sfx_pressed():
-	Audio.play_sfx("sfx_bump")
+	Audio.play_sfx("jump")
 	_update_status()
 
 func _on_settings_pressed():

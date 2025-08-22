@@ -65,7 +65,15 @@ func restart_game():
 		Persistence.increment_level_attempts(current_level)
 	
 	game_restarted.emit()
-	get_tree().reload_current_scene()
+	var current_scene = get_tree().current_scene
+	if current_scene:
+		var scene_path = current_scene.filename
+		if scene_path != "":
+			get_tree().change_scene_to_file(scene_path)
+		else:
+			print("Error: Current scene path is empty, cannot reload.")
+	else:
+		print("Error: No current scene to reload.")
 
 func reset_collectibles():
 	fruit_counts.clear()

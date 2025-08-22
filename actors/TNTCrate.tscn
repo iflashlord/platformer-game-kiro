@@ -33,21 +33,24 @@ fuse_time = 3.0
 explosion_radius = 150.0
 explosion_damage = 2.0
 
-[node name="CrateSprite" parent="." index="1"]
-visible = false
+[node name="DebugBorder" parent="." index="0"]
+script = null
 
-[node name="FuseLight" type="Sprite2D" parent="." index="3"]
-visible = false
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="3"]
+scale = Vector2(0.28, 0.28)
+sprite_frames = SubResource("SpriteFrames_r8ajt")
+
+[node name="FuseLight" type="Sprite2D" parent="." index="4"]
 modulate = Color(1, 1, 0, 1)
 position = Vector2(0, -20)
 scale = Vector2(8, 8)
 
-[node name="AnimationPlayer" parent="." index="6"]
+[node name="HealthLabel" parent="." index="6"]
+offset_left = -6.0
+offset_right = 10.0
+offset_bottom = 15.0
+
+[node name="AnimationPlayer" parent="." index="7"]
 active = false
 reset_on_save = false
 libraries = {}
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="7"]
-scale = Vector2(0.28, 0.28)
-sprite_frames = SubResource("SpriteFrames_r8ajt")
-animation = &"active"

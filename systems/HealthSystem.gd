@@ -64,14 +64,14 @@ func lose_heart():
 func _play_heart_loss_effects():
 	# Visual feedback with error handling
 	if FX:
-		FX.shake(150)
+		FX.shake(100)
 		FX.flash_screen(Color.RED * 0.4, 0.2)
 	else:
 		print("⚠️ FX system not available")
 	
 	# Audio feedback with error handling
 	if Audio:
-		Audio.play_sfx("heart_lost")
+		Audio.play_sfx("disappear")
 	else:
 		print("⚠️ Audio system not available")
 

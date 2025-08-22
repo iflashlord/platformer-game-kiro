@@ -31,7 +31,7 @@ func _ready():
 func _start_portal_animation():
 	# Animate the portal glow and rotation
 	glow_tween = create_tween()
-	glow_tween.set_loops()
+	glow_tween.set_loops(10)
 	glow_tween.parallel().tween_property(inner_glow, "modulate", Color(1, 1, 1, 0.3), 1.5)
 	glow_tween.parallel().tween_property(inner_glow, "modulate", Color(1, 1, 1, 0.9), 1.5)
 	glow_tween.parallel().tween_property(core, "modulate", Color(0.8, 0.8, 1, 0.6), 1.5)
@@ -39,12 +39,12 @@ func _start_portal_animation():
 	
 	# Continuous rotation for outer ring
 	var rotation_tween = create_tween()
-	rotation_tween.set_loops()
+	rotation_tween.set_loops(10)
 	rotation_tween.tween_property(outer_ring, "rotation", TAU, 3.0)
 	
 	# Counter-rotation for inner glow
 	var inner_rotation_tween = create_tween()
-	inner_rotation_tween.set_loops()
+	inner_rotation_tween.set_loops(10)
 	inner_rotation_tween.tween_property(inner_glow, "rotation", -TAU, 4.0)
 
 func _animate_portal():
@@ -95,7 +95,7 @@ func _play_completion_effects():
 	
 	# Screen shake and flash
 	if FX:
-		FX.shake(800)  # 800ms shake
+		FX.shake(100)  # 800ms shake
 		FX.flash_screen(Color.CYAN * 0.7, 0.8)
 	
 	# Stop existing tweens

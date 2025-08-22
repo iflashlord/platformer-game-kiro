@@ -6,6 +6,8 @@ class_name PauseMenu
 @onready var level_select_button: Button = $UI/MenuContainer/ButtonContainer/LevelSelectButton
 @onready var main_menu_button: Button = $UI/MenuContainer/ButtonContainer/MainMenuButton
 
+signal resume_requested
+
 var selected_button_index: int = 0
 var menu_buttons: Array[Button] = []
 var is_paused: bool = false
@@ -13,7 +15,7 @@ var is_paused: bool = false
 func _ready():
 	# Setup button array for keyboard navigation
 	menu_buttons = [resume_button, restart_button, level_select_button, main_menu_button]
-	
+	 
 	# Connect button signals
 	resume_button.pressed.connect(_on_resume_button_pressed)
 	restart_button.pressed.connect(_on_restart_button_pressed)
@@ -88,16 +90,16 @@ func _on_game_resumed():
 	hide_pause_menu()
 
 func _on_resume_button_pressed():
-	Game.toggle_pause()
+	emit_signal("resume_requested")
 
 func _on_restart_button_pressed():
-	Game.toggle_pause()  # Unpause first
+	emit_signal("resume_requested") # Unpause
 	LevelLoader.restart()
 
 func _on_level_select_button_pressed():
-	Game.toggle_pause()  # Unpause first
+	emit_signal("resume_requested") # Unpause
 	get_tree().change_scene_to_file("res://ui/LevelMap.tscn")
 
 func _on_main_menu_button_pressed():
-	Game.toggle_pause()  # Unpause first
+	emit_signal("resume_requested") # Unpause
 	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
