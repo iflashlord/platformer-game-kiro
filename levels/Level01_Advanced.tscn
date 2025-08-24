@@ -1,0 +1,294 @@
+[gd_scene load_steps=18 format=4 uid="uid://c7wies2nueay3"]
+
+[ext_resource type="Script" uid="uid://bbcwy67ul0j2i" path="res://levels/Level01_Advanced.gd" id="1_advanced"]
+[ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
+[ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
+[ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
+[ext_resource type="TileSet" uid="uid://bqxvw4rkqh00i" path="res://content/Tileset.tres" id="14_080q8"]
+[ext_resource type="PackedScene" uid="uid://bx0yw1rkqh7aa" path="res://actors/Crate.tscn" id="14_svrvc"]
+[ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="15_080q8"]
+[ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="16_6oto5"]
+[ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx2" path="res://actors/CollectibleFruit.tscn" id="25_fruit"]
+[ext_resource type="PackedScene" uid="uid://cxvxay8qkqx3" path="res://actors/CollectibleGem.tscn" id="26_gem"]
+
+[node name="Level01_Advanced" type="Node2D"]
+script = ExtResource("1_advanced")
+
+[node name="LevelManager" type="Node" parent="."]
+script = ExtResource("18_level_manager")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(17, 304)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="GameHUD" parent="UI" instance=ExtResource("3_hud")]
+
+[node name="Level" type="Node2D" parent="."]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="Level"]
+position = Vector2(22, 344)
+scale = Vector2(0.28013, 0.286886)
+tile_map_data = PackedByteArray("AAD+/x4ABQADAAAAAAD+/x8ABQADAAEAAAD+/yAABQADAAIAAAD+/yEABQADAAMAAAD+/yIABQADAAQAAAD+/yMABQADAAUAAAD+/yQABQADAAYAAAD+/yUABQADAAcAAAD//x4ABQAEAAAAAAD//x8ABQAEAAEAAAD//yAABQAEAAIAAAD//yEABQAEAAMAAAD//yIABQAEAAQAAAD//yMABQAEAAUAAAD//yQABQAEAAYAAAD//yUABQAEAAcAAAAAAB4ABQADAAAAAAAAAB8ABQADAAEAAAAAACAABQADAAIAAAAAACEABQADAAMAAAAAACIABQADAAQAAAAAACMABQADAAUAAAAAACQABQADAAYAAAAAACUABQADAAcAAAABAB4ABQAEAAAAAAABAB8ABQAEAAEAAAABACAABQAEAAIAAAABACEABQAEAAMAAAABACIABQAEAAQAAAABACMABQAEAAUAAAABACQABQAEAAYAAAABACUABQAEAAcAAAACAB4ABQADAAAAAAACAB8ABQADAAEAAAACACAABQADAAIAAAACACEABQADAAMAAAACACIABQADAAQAAAACACMABQADAAUAAAACACQABQADAAYAAAACACUABQADAAcAAAADAB4ABQAEAAAAAAADAB8ABQAEAAEAAAADACAABQAEAAIAAAADACEABQAEAAMAAAADACIABQAEAAQAAAADACMABQAEAAUAAAADACQABQAEAAYAAAADACUABQAEAAcAAAAEAB4ABQADAAAAAAAEAB8ABQADAAEAAAAEACAABQADAAIAAAAEACEABQADAAMAAAAEACIABQADAAQAAAAEACMABQADAAUAAAAEACQABQADAAYAAAAEACUABQADAAcAAAAFAB4ABQAEAAAAAAAFAB8ABQAEAAEAAAAFACAABQAEAAIAAAAFACEABQAEAAMAAAAFACIABQAEAAQAAAAFACMABQAEAAUAAAAFACQABQAEAAYAAAAFACUABQAEAAcAAAAGAB4ABQADAAAAAAAGAB8ABQADAAEAAAAGACAABQADAAIAAAAGACEABQADAAMAAAAGACIABQADAAQAAAAGACMABQADAAUAAAAGACQABQADAAYAAAAGACUABQADAAcAAAAHAB4ABQAEAAAAAAAHAB8ABQAEAAEAAAAHACAABQAEAAIAAAAHACEABQAEAAMAAAAHACIABQAEAAQAAAAHACMABQAEAAUAAAAHACQABQAEAAYAAAAHACUABQAEAAcAAAAIAB4ABQADAAAAAAAIAB8ABQADAAEAAAAIACAABQADAAIAAAAIACEABQADAAMAAAAIACIABQADAAQAAAAIACMABQADAAUAAAAIACQABQADAAYAAAAIACUABQADAAcAAAAJAB4ABQAEAAAAAAAJAB8ABQAEAAEAAAAJACAABQAEAAIAAAAJACEABQAEAAMAAAAJACIABQAEAAQAAAAJACMABQAEAAUAAAAJACQABQAEAAYAAAAJACUABQAEAAcAAAAKAB4ABQADAAAAAAAKAB8ABQADAAEAAAAKACAABQADAAIAAAAKACEABQADAAMAAAAKACIABQADAAQAAAAKACMABQADAAUAAAAKACQABQADAAYAAAAKACUABQADAAcAAAALAB4ABQAEAAAAAAALAB8ABQAEAAEAAAALACAABQAEAAIAAAALACEABQAEAAMAAAALACIABQAEAAQAAAALACMABQAEAAUAAAALACQABQAEAAYAAAALACUABQAEAAcAAAAMAB4ABQADAAAAAAAMAB8ABQADAAEAAAAMACAABQADAAIAAAAMACEABQADAAMAAAAMACIABQADAAQAAAAMACMABQADAAUAAAAMACQABQADAAYAAAAMACUABQADAAcAAAANAB4ABQAEAAAAAAANAB8ABQAEAAEAAAANACAABQAEAAIAAAANACEABQAEAAMAAAANACIABQAEAAQAAAANACMABQAEAAUAAAANACQABQAEAAYAAAANACUABQAEAAcAAAAOAB4ABQADAAAAAAAOAB8ABQADAAEAAAAOACAABQADAAIAAAAOACEABQADAAMAAAAOACIABQADAAQAAAAOACMABQADAAUAAAAOACQABQADAAYAAAAOACUABQADAAcAAAAPAB4ABQAEAAAAAAAPAB8ABQAEAAEAAAAPACAABQAEAAIAAAAPACEABQAEAAMAAAAPACIABQAEAAQAAAAPACMABQAEAAUAAAAPACQABQAEAAYAAAAPACUABQAEAAcAAAAQAB4ABQADAAAAAAAQAB8ABQADAAEAAAAQACAABQADAAIAAAAQACEABQADAAMAAAAQACIABQADAAQAAAAQACMABQADAAUAAAAQACQABQADAAYAAAAQACUABQADAAcAAAARAB4ABQAEAAAAAAARAB8ABQAEAAEAAAARACAABQAEAAIAAAARACEABQAEAAMAAAARACIABQAEAAQAAAARACMABQAEAAUAAAARACQABQAEAAYAAAARACUABQAEAAcAAAASAB4ABQADAAAAAAASAB8ABQADAAEAAAASACAABQADAAIAAAASACEABQADAAMAAAASACIABQADAAQAAAASACMABQADAAUAAAASACQABQADAAYAAAASACUABQADAAcAAAATAB4ABQAEAAAAAAATAB8ABQAEAAEAAAATACAABQAEAAIAAAATACEABQAEAAMAAAATACIABQAEAAQAAAATACMABQAEAAUAAAATACQABQAEAAYAAAATACUABQAEAAcAAAAUAB4ABQADAAAAAAAUAB8ABQADAAEAAAAUACAABQADAAIAAAAUACEABQADAAMAAAAUACIABQADAAQAAAAUACMABQADAAUAAAAUACQABQADAAYAAAAUACUABQADAAcAAAAVAB4ABQAEAAAAAAAVAB8ABQAEAAEAAAAVACAABQAEAAIAAAAVACEABQAEAAMAAAAVACIABQAEAAQAAAAVACMABQAEAAUAAAAVACQABQAEAAYAAAAVACUABQAEAAcAAAAWAB4ABQADAAAAAAAWAB8ABQADAAEAAAAWACAABQADAAIAAAAWACEABQADAAMAAAAWACIABQADAAQAAAAWACMABQADAAUAAAAWACQABQADAAYAAAAWACUABQADAAcAAAAXAB4ABQAEAAAAAAAXAB8ABQAEAAEAAAAXACAABQAEAAIAAAAXACEABQAEAAMAAAAXACIABQAEAAQAAAAXACMABQAEAAUAAAAXACQABQAEAAYAAAAXACUABQAEAAcAAAAYAB4ABQADAAAAAAAYAB8ABQADAAEAAAAYACAABQADAAIAAAAYACEABQADAAMAAAAYACIABQADAAQAAAAYACMABQADAAUAAAAYACQABQADAAYAAAAYACUABQADAAcAAAAZAB4ABQAEAAAAAAAZAB8ABQAEAAEAAAAZACAABQAEAAIAAAAZACEABQAEAAMAAAAZACIABQAEAAQAAAAZACMABQAEAAUAAAAZACQABQAEAAYAAAAZACUABQAEAAcAAAAaAB4ABQADAAAAAAAaAB8ABQADAAEAAAAaACAABQADAAIAAAAaACEABQADAAMAAAAaACIABQADAAQAAAAaACMABQADAAUAAAAaACQABQADAAYAAAAaACUABQADAAcAAAAbAB4ABQAEAAAAAAAbAB8ABQAEAAEAAAAbACAABQAEAAIAAAAbACEABQAEAAMAAAAbACIABQAEAAQAAAAbACMABQAEAAUAAAAbACQABQAEAAYAAAAbACUABQAEAAcAAAAcAB4ABQADAAAAAAAcAB8ABQADAAEAAAAcACAABQADAAIAAAAcACEABQADAAMAAAAcACIABQADAAQAAAAcACMABQADAAUAAAAcACQABQADAAYAAAAcACUABQADAAcAAAAdAB0ABQADAAAAAAA=")
+tile_set = ExtResource("14_080q8")
+
+[node name="ExtendedTileMapLayer" type="TileMapLayer" parent="Level"]
+position = Vector2(1200, 344)
+scale = Vector2(0.28013, 0.286886)
+tile_map_data = PackedByteArray("AAD+/x4ABQADAAAAAAD+/x8ABQADAAEAAAD+/yAABQADAAIAAAD+/yEABQADAAMAAAD+/yIABQADAAQAAAD+/yMABQADAAUAAAD+/yQABQADAAYAAAD+/yUABQADAAcAAAD//x4ABQAEAAAAAAD//x8ABQAEAAEAAAD//yAABQAEAAIAAAD//yEABQAEAAMAAAD//yIABQAEAAQAAAD//yMABQAEAAUAAAD//yQABQAEAAYAAAD//yUABQAEAAcAAAAAAB4ABQADAAAAAAAAAB8ABQADAAEAAAAAACAABQADAAIAAAAAACEABQADAAMAAAAAACIABQADAAQAAAAAACMABQADAAUAAAAAACQABQADAAYAAAAAACUABQADAAcAAAABAB4ABQAEAAAAAAABAB8ABQAEAAEAAAABACAABQAEAAIAAAABACEABQAEAAMAAAABACIABQAEAAQAAAABACMABQAEAAUAAAABACQABQAEAAYAAAABACUABQAEAAcAAAACAB4ABQADAAAAAAACAB8ABQADAAEAAAACACAABQADAAIAAAACACEABQADAAMAAAACACIABQADAAQAAAACACMABQADAAUAAAACACQABQADAAYAAAACACUABQADAAcAAAADAB4ABQAEAAAAAAADAB8ABQAEAAEAAAADACAABQAEAAIAAAADACEABQAEAAMAAAADACIABQAEAAQAAAADACMABQAEAAUAAAADACQABQAEAAYAAAADACUABQAEAAcAAAAEAB4ABQADAAAAAAAEAB8ABQADAAEAAAAEACAABQADAAIAAAAEACEABQADAAMAAAAEACIABQADAAQAAAAEACMABQADAAUAAAAEACQABQADAAYAAAAEACUABQADAAcAAAAFAB4ABQAEAAAAAAAFAB8ABQAEAAEAAAAFACAABQAEAAIAAAAFACEABQAEAAMAAAAFACIABQAEAAQAAAAFACMABQAEAAUAAAAFACQABQAEAAYAAAAFACUABQAEAAcAAAAGAB4ABQADAAAAAAAGAB8ABQADAAEAAAAGACAABQADAAIAAAAGACEABQADAAMAAAAGACIABQADAAQAAAAGACMABQADAAUAAAAGACQABQADAAYAAAAGACUABQADAAcAAAAHAB4ABQAEAAAAAAAHAB8ABQAEAAEAAAAHACAABQAEAAIAAAAHACEABQAEAAMAAAAHACIABQAEAAQAAAAHACMABQAEAAUAAAAHACQABQAEAAYAAAAHACUABQAEAAcAAAAIAB4ABQADAAAAAAAIAB8ABQADAAEAAAAIACAABQADAAIAAAAIACEABQADAAMAAAAIACIABQADAAQAAAAIACMABQADAAUAAAAIACQABQADAAYAAAAIACUABQADAAcAAAAJAB4ABQAEAAAAAAAJAB8ABQAEAAEAAAAJACAABQAEAAIAAAAJACEABQAEAAMAAAAJACIABQAEAAQAAAAJACMABQAEAAUAAAAJACQABQAEAAYAAAAJACUABQAEAAcAAAAKAB4ABQADAAAAAAAKAB8ABQADAAEAAAAKACAABQADAAIAAAAKACEABQADAAMAAAAKACIABQADAAQAAAAKACMABQADAAUAAAAKACQABQADAAYAAAAKACUABQADAAcAAAALAB4ABQAEAAAAAAALAB8ABQAEAAEAAAALACAABQAEAAIAAAALACEABQAEAAMAAAALACIABQAEAAQAAAALACMABQAEAAUAAAALACQABQAEAAYAAAALACUABQAEAAcAAAAMAB4ABQADAAAAAAAMAB8ABQADAAEAAAAMACAABQADAAIAAAAMACEABQADAAMAAAAMACIABQADAAQAAAAMACMABQADAAUAAAAMACQABQADAAYAAAAMACUABQADAAcAAAANAB4ABQAEAAAAAAANAB8ABQAEAAEAAAANACAABQAEAAIAAAANACEABQAEAAMAAAANACIABQAEAAQAAAANACMABQAEAAUAAAANACQABQAEAAYAAAANACUABQAEAAcAAAAOAB4ABQADAAAAAAAOAB8ABQADAAEAAAAOACAABQADAAIAAAAOACEABQADAAMAAAAOACIABQADAAQAAAAOACMABQADAAUAAAAOACQABQADAAYAAAAOACUABQADAAcAAAAPAB4ABQAEAAAAAAAPAB8ABQAEAAEAAAAPACAABQAEAAIAAAAPACEABQAEAAMAAAAPACIABQAEAAQAAAAPACMABQAEAAUAAAAPACQABQAEAAYAAAAPACUABQAEAAcAAAAQAB4ABQADAAAAAAAQAB8ABQADAAEAAAAQACAABQADAAIAAAAQACEABQADAAMAAAAQACIABQADAAQAAAAQACMABQADAAUAAAAQACQABQADAAYAAAAQACUABQADAAcAAAARAB4ABQAEAAAAAAARAB8ABQAEAAEAAAARACAABQAEAAIAAAARACEABQAEAAMAAAARACIABQAEAAQAAAARACMABQAEAAUAAAARACQABQAEAAYAAAARACUABQAEAAcAAAASAB4ABQADAAAAAAASAB8ABQADAAEAAAASACAABQADAAIAAAASACEABQADAAMAAAASACIABQADAAQAAAASACMABQADAAUAAAASACQABQADAAYAAAASACUABQADAAcAAAATAB4ABQAEAAAAAAATAB8ABQAEAAEAAAATACAABQAEAAIAAAATACEABQAEAAMAAAATACIABQAEAAQAAAATACMABQAEAAUAAAATACQABQAEAAYAAAATACUABQAEAAcAAAAUAB4ABQADAAAAAAAUAB8ABQADAAEAAAAUACAABQADAAIAAAAUACEABQADAAMAAAAUACIABQADAAQAAAAUACMABQADAAUAAAAUACQABQADAAYAAAAUACUABQADAAcAAAAVAB4ABQAEAAAAAAAVAB8ABQAEAAEAAAAVACAABQAEAAIAAAAVACEABQAEAAMAAAAVACIABQAEAAQAAAAVACMABQAEAAUAAAAVACQABQAEAAYAAAAVACUABQAEAAcAAAAWAB4ABQADAAAAAAAWAB8ABQADAAEAAAAWACAABQADAAIAAAAWACEABQADAAMAAAAWACIABQADAAQAAAAWACMABQADAAUAAAAWACQABQADAAYAAAAWACUABQADAAcAAAAXAB4ABQAEAAAAAAAXAB8ABQAEAAEAAAAXACAABQAEAAIAAAAXACEABQAEAAMAAAAXACIABQAEAAQAAAAXACMABQAEAAUAAAAXACQABQAEAAYAAAAXACUABQAEAAcAAAAYAB4ABQADAAAAAAAYAB8ABQADAAEAAAAYACAABQADAAIAAAAYACEABQADAAMAAAAYACIABQADAAQAAAAYACMABQADAAUAAAAYACQABQADAAYAAAAYACUABQADAAcAAAAZAB4ABQAEAAAAAAAZAB8ABQAEAAEAAAAZACAABQAEAAIAAAAZACEABQAEAAMAAAAZACIABQAEAAQAAAAZACMABQAEAAUAAAAZACQABQAEAAYAAAAZACUABQAEAAcAAAAaAB4ABQADAAAAAAAaAB8ABQADAAEAAAAaACAABQADAAIAAAAaACEABQADAAMAAAAaACIABQADAAQAAAAaACMABQADAAUAAAAaACQABQADAAYAAAAaACUABQADAAcAAAAbAB4ABQAEAAAAAAAbAB8ABQAEAAEAAAAbACAABQAEAAIAAAAbACEABQAEAAMAAAAbACIABQAEAAQAAAAbACMABQAEAAUAAAAbACQABQAEAAYAAAAbACUABQAEAAcAAAAcAB4ABQADAAAAAAAcAB8ABQADAAEAAAAcACAABQADAAIAAAAcACEABQADAAMAAAAcACIABQADAAQAAAAcACMABQADAAUAAAAcACQABQADAAYAAAAcACUABQADAAcAAAAdAB4ABQAEAAAAAAA=")
+tile_set = ExtResource("14_080q8")
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="Checkpoint1" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+position = Vector2(520, 364)
+checkpoint_id = "level01_checkpoint_1"
+checkpoint_name = "First Platform"
+
+[node name="Checkpoint2" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+position = Vector2(900, 215)
+checkpoint_id = "level01_checkpoint_2"
+checkpoint_name = "High Platform"
+
+[node name="Checkpoint3" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+position = Vector2(1400, 300)
+checkpoint_id = "level01_checkpoint_3"
+checkpoint_name = "Boulder Section"
+
+[node name="Checkpoint4" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+position = Vector2(1800, 150)
+checkpoint_id = "level01_checkpoint_4"
+checkpoint_name = "Advanced Section"
+
+[node name="Checkpoint5" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+position = Vector2(2200, 400)
+checkpoint_id = "level01_checkpoint_5"
+checkpoint_name = "Final Challenge"
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="FruitSection1" type="Node2D" parent="Collectibles"]
+
+[node name="Apple1" parent="Collectibles/FruitSection1" instance=ExtResource("25_fruit")]
+position = Vector2(150, 200)
+
+[node name="Apple2" parent="Collectibles/FruitSection1" instance=ExtResource("25_fruit")]
+position = Vector2(200, 180)
+
+[node name="Banana1" parent="Collectibles/FruitSection1" instance=ExtResource("25_fruit")]
+position = Vector2(350, 220)
+
+[node name="Orange1" parent="Collectibles/FruitSection1" instance=ExtResource("25_fruit")]
+position = Vector2(450, 160)
+
+[node name="FruitSection2" type="Node2D" parent="Collectibles"]
+
+[node name="Apple3" parent="Collectibles/FruitSection2" instance=ExtResource("25_fruit")]
+position = Vector2(650, 300)
+
+[node name="Banana2" parent="Collectibles/FruitSection2" instance=ExtResource("25_fruit")]
+position = Vector2(750, 250)
+
+[node name="Orange2" parent="Collectibles/FruitSection2" instance=ExtResource("25_fruit")]
+position = Vector2(850, 180)
+
+[node name="GemSection1" type="Node2D" parent="Collectibles"]
+
+[node name="Ruby1" parent="Collectibles/GemSection1" instance=ExtResource("26_gem")]
+position = Vector2(320, 120)
+
+[node name="Emerald1" parent="Collectibles/GemSection1" instance=ExtResource("26_gem")]
+position = Vector2(720, 100)
+
+[node name="Diamond1" parent="Collectibles/GemSection1" instance=ExtResource("26_gem")]
+position = Vector2(1200, 80)
+
+[node name="SecretSection" type="Node2D" parent="Collectibles"]
+
+[node name="HiddenRuby1" parent="Collectibles/SecretSection" instance=ExtResource("16_6oto5")]
+position = Vector2(16, 216)
+
+[node name="HiddenRuby2" parent="Collectibles/SecretSection" instance=ExtResource("16_6oto5")]
+position = Vector2(1650, 50)
+
+[node name="HiddenEmerald1" parent="Collectibles/SecretSection" instance=ExtResource("16_6oto5")]
+position = Vector2(2100, 250)
+
+[node name="BonusSection" type="Node2D" parent="Collectibles"]
+
+[node name="BonusFruit1" parent="Collectibles/BonusSection" instance=ExtResource("25_fruit")]
+position = Vector2(1500, 200)
+
+[node name="BonusFruit2" parent="Collectibles/BonusSection" instance=ExtResource("25_fruit")]
+position = Vector2(1900, 100)
+
+[node name="BonusGem1" parent="Collectibles/BonusSection" instance=ExtResource("26_gem")]
+position = Vector2(2300, 300)
+
+[node name="InteractiveElements" type="Node2D" parent="."]
+
+[node name="DeathZones" type="Node2D" parent="InteractiveElements"]
+
+[node name="DeathZone1" parent="InteractiveElements/DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(288, 568)
+scale = Vector2(15.952, 0.555505)
+
+[node name="DeathZone2" parent="InteractiveElements/DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(1064, 632)
+scale = Vector2(12.36, 1)
+
+[node name="DeathZone3" parent="InteractiveElements/DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(1600, 500)
+scale = Vector2(8, 1)
+
+[node name="DeathZone4" parent="InteractiveElements/DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(2400, 600)
+scale = Vector2(10, 1)
+
+[node name="Crates" type="Node2D" parent="InteractiveElements"]
+
+[node name="BasicCrate1" parent="InteractiveElements/Crates" instance=ExtResource("14_svrvc")]
+position = Vector2(197, 245)
+
+[node name="BasicCrate2" parent="InteractiveElements/Crates" instance=ExtResource("14_svrvc")]
+position = Vector2(130, 266)
+health = 5
+
+[node name="BasicCrate3" parent="InteractiveElements/Crates" instance=ExtResource("21_crate")]
+position = Vector2(367, 268)
+
+[node name="BasicCrate4" parent="InteractiveElements/Crates" instance=ExtResource("21_crate")]
+position = Vector2(1160, 350)
+
+[node name="BounceCrate1" parent="InteractiveElements/Crates" instance=ExtResource("9_ub75y")]
+position = Vector2(598, 319)
+
+[node name="BounceCrate2" parent="InteractiveElements/Crates" instance=ExtResource("9_ub75y")]
+position = Vector2(489, 248)
+
+[node name="BounceCrate3" parent="InteractiveElements/Crates" instance=ExtResource("9_ub75y")]
+position = Vector2(1300, 380)
+
+[node name="TNTCrate1" parent="InteractiveElements/Crates" instance=ExtResource("21_crate")]
+position = Vector2(800, 270)
+
+[node name="TNTCrate2" parent="InteractiveElements/Crates" instance=ExtResource("21_crate")]
+position = Vector2(1450, 320)
+
+[node name="JumpPads" type="Node2D" parent="InteractiveElements"]
+
+[node name="JumpPad1" parent="InteractiveElements/JumpPads" instance=ExtResource("22_jump_pad")]
+position = Vector2(591, 372)
+
+[node name="JumpPad2" parent="InteractiveElements/JumpPads" instance=ExtResource("22_jump_pad")]
+position = Vector2(679, 372)
+
+[node name="JumpPad3" parent="InteractiveElements/JumpPads" instance=ExtResource("22_jump_pad")]
+position = Vector2(1100, 450)
+
+[node name="JumpPad4" parent="InteractiveElements/JumpPads" instance=ExtResource("22_jump_pad")]
+position = Vector2(1550, 400)
+
+[node name="JumpPad5" parent="InteractiveElements/JumpPads" instance=ExtResource("22_jump_pad")]
+position = Vector2(2000, 480)
+
+[node name="Teleporters" type="Node2D" parent="InteractiveElements"]
+
+[node name="TeleportGate1" parent="InteractiveElements/Teleporters" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
+position = Vector2(80, 394)
+teleport_target = NodePath("../TeleportGate2")
+
+[node name="TeleportGate2" parent="InteractiveElements/Teleporters" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
+position = Vector2(1080, 360)
+teleport_target = NodePath("../TeleportGate1")
+
+[node name="TeleportGate3" parent="InteractiveElements/Teleporters" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
+position = Vector2(1350, 200)
+teleport_target = NodePath("../TeleportGate4")
+
+[node name="TeleportGate4" parent="InteractiveElements/Teleporters" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
+position = Vector2(1950, 300)
+teleport_target = NodePath("../TeleportGate3")
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="PatrolEnemies" type="Node2D" parent="Enemies"]
+
+[node name="GoblinPatrol1" parent="Enemies/PatrolEnemies" instance=ExtResource("24_enemy")]
+position = Vector2(149, 462)
+patrol_distance = 100.0
+
+[node name="GoblinPatrol2" parent="Enemies/PatrolEnemies" instance=ExtResource("24_enemy")]
+position = Vector2(550, 350)
+patrol_distance = 80.0
+
+[node name="SkeletonPatrol1" parent="Enemies/PatrolEnemies" instance=ExtResource("24_enemy")]
+position = Vector2(975, 297)
+patrol_distance = 120.0
+
+[node name="SkeletonPatrol2" parent="Enemies/PatrolEnemies" instance=ExtResource("24_enemy")]
+position = Vector2(1350, 380)
+patrol_distance = 100.0
+
+[node name="OrcPatrol1" parent="Enemies/PatrolEnemies" instance=ExtResource("24_enemy")]
+position = Vector2(1088, 443)
+patrol_distance = 80.0
+
+[node name="OrcPatrol2" parent="Enemies/PatrolEnemies" instance=ExtResource("24_enemy")]
+position = Vector2(1700, 400)
+patrol_distance = 90.0
+
+[node name="GuardianEnemies" type="Node2D" parent="Enemies"]
+
+[node name="Guardian1" parent="Enemies/GuardianEnemies" instance=ExtResource("24_enemy")]
+position = Vector2(1200, 350)
+patrol_distance = 60.0
+
+[node name="Guardian2" parent="Enemies/GuardianEnemies" instance=ExtResource("24_enemy")]
+position = Vector2(2000, 350)
+patrol_distance = 80.0
+
+[node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
+position = Vector2(2500, 400)
+portal_name = "Level 1 Complete - Advanced Forest Adventure"
+
+[node name="Instructions" type="CanvasLayer" parent="."]
+
+[node name="InstructionLabel" type="Label" parent="Instructions"]
+visible = false
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 700.0
+offset_bottom = 300.0
+theme_override_font_sizes/font_size = 12
+text = "🌲 LEVEL 1: ADVANCED FOREST ADVENTURE
+
+🎯 ADVANCED GAMEPLAY FEATURES:
+• 📦 Crates: Basic, Bounce, TNT (interactive destruction)
+• 🍎 Fruits: Apple, Banana, Orange (combo system)
+• 💎 Gems: Ruby, Emerald, Diamond (hidden & visible)
+• 👹 Enemies: Multiple patrol types with varied AI
+• 🦘 Jump Pads: Enhanced bounce mechanics
+• 🌀 Teleporters: Multi-gate network system
+• ✅ Checkpoints: 5 strategic save points
+• 🚪 Portal: Complete the advanced challenge
+
+🎮 ADVANCED CONTROLS:
+WASD/Arrows: Move | Space: Jump
+ESC: Menu | R: Restart | Enter: Stats
+
+🏆 COMPLETION GOALS:
+• Collect all 15+ fruits and gems
+• Discover 3 hidden secrets
+• Survive enemy encounters
+• Master teleporter navigation
+• Reach the final portal alive!
+
+✨ Features advanced AI, combo systems, and strategic gameplay!"
