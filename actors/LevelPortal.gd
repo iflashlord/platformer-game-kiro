@@ -84,7 +84,7 @@ func _activate_portal(player: Player):
 	
 	# Audio feedback
 	if Audio:
-		Audio.play_sfx("portal_enter")  # Will gracefully fail if sound doesn't exist
+		Audio.play_sfx("game-level-completed")  # Will gracefully fail if sound doesn't exist
 	
 	# Wait for effects then complete level
 	await get_tree().create_timer(2.0).timeout

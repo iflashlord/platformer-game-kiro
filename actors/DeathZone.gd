@@ -1,3 +1,4 @@
+@tool
 extends Area2D
 class_name DeathZone
 
@@ -11,20 +12,33 @@ signal player_killed(death_zone: DeathZone, player: Node2D)
 var players_in_zone: Array[Node2D] = []
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
-@onready var visual_indicator: ColorRect = null
+var visual_indicator: ColorRect = null
 
 func _ready():
+	# Skip setup in editor mode
+	if Engine.is_editor_hint():
+		return
+		
 	add_to_group("death_zones")
 	add_to_group("hazards")
 	
 	# Set up collision detection
-	body_entered.connect(_on_body_entered)
-	body_exited.connect(_on_body_exited)
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)
+	if not body_exited.is_connected(_on_body_exited):
+		body_exited.connect(_on_body_exited)
 	
 	# Set collision layers
 	collision_layer = 64  # Death zone layer
 	collision_mask = 2    # Player layer
 	
+	# Wait for scene to be fully loaded before setting up visuals
+	call_deferred("_setup_visuals")
+
+func _setup_visuals():
+	if Engine.is_editor_hint():
+		return
+		
 	# Create visual indicator if none exists
 	if not has_node("VisualIndicator"):
 		create_visual_indicator()
@@ -35,6 +49,9 @@ func _ready():
 	setup_zone_appearance()
 
 func create_visual_indicator():
+	if not _validate_setup():
+		return
+	
 	visual_indicator = ColorRect.new()
 	visual_indicator.name = "VisualIndicator"
 	
@@ -55,10 +72,11 @@ func create_visual_indicator():
 		visual_indicator.size = Vector2(100, 50)
 		visual_indicator.position = Vector2(-50, -25)
 	
+	# Add to scene tree safely
 	add_child(visual_indicator)
 
 func setup_zone_appearance():
-	if not visual_indicator:
+	if not visual_indicator or not is_instance_valid(visual_indicator):
 		return
 	
 	match zone_type:
@@ -75,7 +93,21 @@ func setup_zone_appearance():
 		_:
 			visual_indicator.color = Color(0.5, 0, 0, 0.7)  # Default red
 
+func _validate_setup() -> bool:
+	if not collision_shape:
+		push_error("DeathZone: CollisionShape2D not found")
+		return false
+	
+	if not collision_shape.shape:
+		push_error("DeathZone: CollisionShape2D has no shape assigned")
+		return false
+	
+	return true
+
 func _on_body_entered(body):
+	if Engine.is_editor_hint():
+		return
+		
 	print("💀 DeathZone collision detected with: ", body.name, " (groups: ", body.get_groups(), ")")
 	if body.is_in_group("player"):
 		print("💀 Player entered death zone: ", zone_type)
@@ -85,8 +117,21 @@ func _on_body_entered(body):
 		print("💀 Non-player entered death zone")
 
 func _on_body_exited(body):
+	if Engine.is_editor_hint():
+		return
+		
 	if body.is_in_group("player") and body in players_in_zone:
 		players_in_zone.erase(body)
+
+func _exit_tree():
+	# Clean up any remaining references
+	players_in_zone.clear()
+	
+	# Disconnect signals if connected
+	if body_entered.is_connected(_on_body_entered):
+		body_entered.disconnect(_on_body_entered)
+	if body_exited.is_connected(_on_body_exited):
+		body_exited.disconnect(_on_body_exited)
 
 func kill_player(player):
 	# Emit signal for tracking
@@ -96,36 +141,44 @@ func kill_player(player):
 		# Instant death
 		print("💀 Instant kill in ", zone_type, " death zone")
 		
-		# Apply damage through HealthSystem
-		if HealthSystem:
-			if HealthSystem.has_method("kill_player"):
-				HealthSystem.kill_player()
-			else:
-				# Take all remaining health by calling lose_heart repeatedly
-				var remaining_health = HealthSystem.get_current_health()
-				#for i in range(remaining_health):
-				#HealthSystem.lose_heart()
+		# Apply damage through HealthSystem if available
+		var health_system_found = false
+		if has_node("/root/HealthSystem"):
+			var health_system = get_node("/root/HealthSystem")
+			if health_system.has_method("kill_player"):
+				health_system.kill_player()
+				health_system_found = true
+			elif health_system.has_method("take_damage"):
+				health_system.take_damage(999)  # Large damage for instant kill
+				health_system_found = true
 		
 		# Fallback: call player's die method directly
-		if player.has_method("die"):
+		if not health_system_found and player.has_method("die"):
 			player.die()
 	else:
 		# Gradual damage
 		print("💔 Taking ", damage_amount, " damage in ", zone_type, " death zone")
 		
-		if HealthSystem and HealthSystem.has_method("take_damage"):
-			HealthSystem.take_damage(damage_amount)
-		elif player.has_method("take_damage"):
+		var damage_applied = false
+		if has_node("/root/HealthSystem"):
+			var health_system = get_node("/root/HealthSystem")
+			if health_system.has_method("take_damage"):
+				health_system.take_damage(damage_amount)
+				damage_applied = true
+		
+		if not damage_applied and player.has_method("take_damage"):
 			player.take_damage(damage_amount)
 	
 	# Visual feedback
 	create_death_effect(player)
 	
 	# Respawn player if configured
-	if respawn_player and Respawn and Respawn.has_method("respawn_player"):
-		# Small delay before respawn
-		await get_tree().create_timer(0.5).timeout
-		Respawn.respawn_player()
+	if respawn_player and has_node("/root/Respawn"):
+		var respawn_system = get_node("/root/Respawn")
+		if respawn_system.has_method("respawn_player"):
+			# Small delay before respawn
+			await get_tree().create_timer(0.5).timeout
+			respawn_system.respawn_player()
 
 func create_death_effect(player):
 	# Screen flash
@@ -149,15 +202,16 @@ func create_death_effect(player):
 	death_effect.size = Vector2(45, 45)
 	death_effect.position = player.global_position + Vector2(-30, -30)
 	death_effect.color = Color.RED
-	get_tree().current_scene.add_child(death_effect)
-
-	FX.flash_screen(2000)
 	
-	# Animate death effect
-	var tween = create_tween()
-	tween.parallel().tween_property(death_effect, "scale", Vector2(2.0, 2.0), 0.5)
-	tween.parallel().tween_property(death_effect, "modulate:a", 0.0, 0.5)
-	tween.tween_callback(death_effect.queue_free)
+	# Safely add to scene tree
+	if get_tree() and get_tree().current_scene:
+		get_tree().current_scene.add_child(death_effect)
+		
+		# Animate death effect
+		var tween = create_tween()
+		tween.parallel().tween_property(death_effect, "scale", Vector2(2.0, 2.0), 0.5)
+		tween.parallel().tween_property(death_effect, "modulate:a", 0.0, 0.5)
+		tween.tween_callback(death_effect.queue_free)
 
 func set_zone_type(new_type: String):
 	zone_type = new_type

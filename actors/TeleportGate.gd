@@ -59,6 +59,9 @@ func teleport_player(player):
 	
 	print("Teleporting player")
 	
+	# Play teleport sound effect
+	Audio.play_sfx("teleport")
+	
 	# Deactivate both gates temporarily
 	is_active = false
 	cooldown_timer = teleport_cooldown

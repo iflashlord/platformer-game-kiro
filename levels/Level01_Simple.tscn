@@ -6,10 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
-[ext_resource type="PackedScene" uid="uid://dx0yw7rkqh3mm" path="res://actors/TNTCrate.tscn" id="12_080q8"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
 [ext_resource type="TileSet" uid="uid://bqxvw4rkqh00i" path="res://content/Tileset.tres" id="14_080q8"]
 [ext_resource type="PackedScene" uid="uid://bx0yw1rkqh7aa" path="res://actors/Crate.tscn" id="14_svrvc"]
+[ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="15_080q8"]
 [ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="16_6oto5"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
@@ -53,6 +53,14 @@ checkpoint_name = "High Platform"
 
 [node name="InteractiveElements" type="Node2D" parent="."]
 
+[node name="DeathZone" parent="InteractiveElements" instance=ExtResource("15_080q8")]
+position = Vector2(288, 568)
+scale = Vector2(15.952, 0.555505)
+
+[node name="DeathZone2" parent="InteractiveElements" instance=ExtResource("15_080q8")]
+position = Vector2(1064, 632)
+scale = Vector2(12.36, 1)
+
 [node name="Crate" parent="InteractiveElements" instance=ExtResource("14_svrvc")]
 position = Vector2(197, 245)
 
@@ -91,9 +99,6 @@ position = Vector2(1160, 350)
 
 [node name="JumpPad1" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
 position = Vector2(679, 372)
-
-[node name="TNTCrate" parent="InteractiveElements" instance=ExtResource("12_080q8")]
-position = Vector2(152, 414)
 
 [node name="Enemies" type="Node2D" parent="."]
 
