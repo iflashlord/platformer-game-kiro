@@ -1,10 +1,6 @@
-name: Deploy HTML5 Game to Vercel
+name: Deploy HTML5 Game to Vercel (Alternative)
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 env:
@@ -16,33 +12,30 @@ jobs:
     name: Web Export
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    container:
-      image: barichello/godot-ci:4.4
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
       
-      - name: Setup
+      - name: Download Godot
         run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          if [ -d "/root/.local/share/godot/export_templates/${GODOT_VERSION}.stable" ]; then
-            mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          else
-            echo "Export templates not found at expected location"
-            ls -la /root/.local/share/godot/export_templates/ || echo "Templates directory not found"
-          fi
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          unzip Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          sudo mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 /usr/local/bin/godot
       
-      - name: Verify Export Presets
+      - name: Download Export Templates
         run: |
-          echo "Checking export_presets.cfg..."
-          cat export_presets.cfg | head -20
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          unzip -q Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
       
       - name: Web Build
         run: |
           mkdir -v -p build/web
-          godot --headless --verbose --export-release "Web" build/web/index.html 2>&1
+          godot --headless --verbose --export-release "Web" build/web/index.html
       
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

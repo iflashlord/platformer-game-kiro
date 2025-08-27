@@ -62,34 +62,54 @@ All core systems are autoloaded in project.godot:
 
 ## Development Commands
 
+### Platform-Specific Godot Paths
+- **macOS**: `/Applications/Godot.app/Contents/MacOS/Godot`
+- **Windows**: `godot.exe` (if in PATH)
+- **Linux**: `godot` (if in PATH)
+
 ### Local Development
 ```bash
 # Open project in Godot editor
 godot project.godot
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot project.godot
 
 # Run specific scene
 godot --main-scene res://levels/Level01.tscn
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot --main-scene res://levels/Level01.tscn
 
 # Run with debug
 godot --debug --main-scene res://ui/MainMenu.tscn
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot --debug --main-scene res://ui/MainMenu.tscn
 ```
 
 ### Testing
 ```bash
 # Performance testing
 godot --main-scene res://systems/PerformanceTest.tscn
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot --main-scene res://systems/PerformanceTest.tscn
 
 # Audio testing  
 godot --main-scene res://systems/AudioTest.tscn
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot --main-scene res://systems/AudioTest.tscn
 
 # VFX testing
 godot --main-scene res://systems/VFXTest.tscn
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot --main-scene res://systems/VFXTest.tscn
+
+# Test DynamicPlatform system
+godot --main-scene res://examples/Level_DynamicPlatforms.tscn
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot --main-scene res://examples/Level_DynamicPlatforms.tscn
+
+# Test simple DynamicPlatform (for debugging)
+godot --main-scene res://examples/Level_DynamicPlatforms_Simple.tscn
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot --main-scene res://examples/Level_DynamicPlatforms_Simple.tscn
 ```
 
 ### Web Deployment
 ```bash
 # Export for web
 godot --headless --export-release "Web" build/web/index.html
+# macOS: /Applications/Godot.app/Contents/MacOS/Godot --headless --export-release "Web" build/web/index.html
 
 # Deploy to Vercel (requires setup)
 cd build/web
