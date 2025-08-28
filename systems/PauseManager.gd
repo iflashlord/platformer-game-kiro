@@ -79,12 +79,13 @@ func _on_resume_requested():
 
 func _on_restart_requested():
 	"""Handle restart request"""
-	print("🎮 Restart requested")
+	print("🎮 PauseManager: Restart requested - received signal")
 	
 	# Unpause first
 	if Game:
 		Game.is_paused = false
 		get_tree().paused = false
+		print("🎮 PauseManager: Game unpaused")
 	
 	# Hide pause menu
 	hide_pause_menu()
@@ -94,14 +95,15 @@ func _on_restart_requested():
 		current_pause_menu.queue_free()
 		current_pause_menu = null
 		is_pause_menu_loaded = false
+		print("🎮 PauseManager: Pause menu cleaned up")
 	
 	# Use Game singleton restart method (most reliable)
 	if Game and Game.has_method("restart_game"):
-		print("🔄 Using Game.restart_game()")
+		print("🔄 PauseManager: Calling Game.restart_game()")
 		Game.restart_game()
 	else:
 		# Fallback: reload current scene
-		print("🔄 Using scene reload fallback")
+		print("🔄 PauseManager: Using scene reload fallback")
 		_restart_current_scene()
 
 

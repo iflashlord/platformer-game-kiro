@@ -203,6 +203,7 @@ func _on_resume_pressed():
 
 func _on_restart_pressed():
 	"""Restart the current level"""
+	print("🎮 PauseMenu: Restart button pressed")
 	_play_ui_sound("ui_select")
 	
 	# Show confirmation dialog for restart
@@ -226,7 +227,7 @@ func _show_restart_confirmation():
 	"""Show confirmation dialog for restart"""
 	# For now, just restart immediately
 	# TODO: Add proper confirmation dialog
-	print("🔄 Restarting level...")
+	print("🔄 PauseMenu: Emitting restart_requested signal...")
 	hide_pause_menu()
 	restart_requested.emit()
 

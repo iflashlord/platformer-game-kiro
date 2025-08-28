@@ -54,40 +54,59 @@ func toggle_pause():
 		game_resumed.emit()
 
 func restart_game():
-	print("🔄 Restarting game...")
+	print("🔄 Game: restart_game() called")
 	
+	# Unpause first
 	get_tree().paused = false
 	is_paused = false
+	
+	# Reset game state
 	score = 0
 	trial_time = 0.0
 	reset_collectibles()
+	print("🔄 Game: Basic state reset complete")
 	
 	# Track level attempt
 	if current_level != "":
 		Persistence.increment_level_attempts(current_level)
+		print("🔄 Game: Level attempt tracked for: ", current_level)
 	
+	# Emit signals for UI updates
+	score_changed.emit(score)
 	game_restarted.emit()
+	print("🔄 Game: Signals emitted")
 	
-	# Use LevelLoader if available for better restart handling
-	if LevelLoader and LevelLoader.has_method("restart") and current_level != "":
-		print("🔄 Using LevelLoader to restart: ", current_level)
-		LevelLoader.restart()
-	else:
-		# Fallback to scene reload
-		_restart_current_scene()
+	# Reset systems
+	if HealthSystem and HealthSystem.has_method("reset_health"):
+		HealthSystem.reset_health()
+		print("🔄 Game: Health reset to full")
+	
+	if GameTimer and GameTimer.has_method("reset_timer"):
+		GameTimer.reset_timer()
+		print("🔄 Game: Timer reset")
+	
+	# Reload the scene (this will reset player position and level state)
+	print("🔄 Game: Reloading scene to restart level")
+	_restart_current_scene()
 
 func _restart_current_scene():
 	"""Restart current scene as fallback"""
+	print("🔄 Game: _restart_current_scene() called")
 	var current_scene = get_tree().current_scene
+	print("🔄 Game: Current scene: ", current_scene)
+	
 	if current_scene:
 		var scene_path = current_scene.scene_file_path
+		print("🔄 Game: Scene path: ", scene_path)
+		
 		if scene_path != "":
-			print("🔄 Reloading scene: ", scene_path)
-			get_tree().change_scene_to_file(scene_path)
+			print("🔄 Game: Calling get_tree().change_scene_to_file(", scene_path, ")")
+			var result = get_tree().change_scene_to_file(scene_path)
+			print("🔄 Game: Scene change result: ", result)
 		else:
-			print("❌ Current scene path is empty, cannot reload.")
+			print("❌ Game: Current scene path is empty, cannot reload.")
 	else:
-		print("❌ No current scene to reload.")
+		print("❌ Game: No current scene to reload.")
 
 func reset_collectibles():
 	fruit_counts.clear()
