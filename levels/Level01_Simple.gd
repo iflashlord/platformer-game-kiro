@@ -1,13 +1,14 @@
-extends Node2D
-
-@onready var player: Player = $Player
-@onready var hud = $UI/GameHUD
-@onready var level_manager: LevelManager = $LevelManager
-
-# Level state
-var level_completed: bool = false
+extends BaseLevel
+class_name Level01Simple
 
 func _ready():
+	level_id = "Level01"
+	level_name = "Forest Adventure"
+	target_score = 200
+	super._ready()
+
+func setup_level():
+	# Level-specific setup after BaseLevel initialization
 	print("🌲 Level 1: Forest Adventure loaded")
 	
 	# Safely play music if Audio system is available and method exists
@@ -16,55 +17,8 @@ func _ready():
 	else:
 		print("⚠️ Audio system or play_music method not available")
 	
-	# Add dimension manager TO BE FIXED
-	#var dimension_manager = preload("res://systems/DimensionManager.gd").new()
-	#dimension_manager.name = "DimensionManager"
-	#add_child(dimension_manager)
-	#
-	## Example: Make some platforms layer-specific
-	#setup_layer_examples()
-	
-	
-	# Set current level for persistence
-	Game.current_level = "Level01"
-	
-	# Initialize systems
-	HealthSystem.reset_health()
-	Respawn.reset_checkpoints()
-	
-	# Start game timer
-	if GameTimer:
-		GameTimer.start_timer()
-		print("⏱️ Game timer started")
-	
-	# Reset score
-	if Game:
-		Game.score = 0
-		print("🎯 Score reset to 0")
-	
-	# Set initial spawn position
-	if player:
-		Respawn.default_spawn_position = player.global_position
-		print("🏁 Level 1 spawn position set: ", player.global_position)
-	
-	# Connect player signals
-	if player:
-		player.died.connect(_on_player_died)
-	
-	# Connect health system to HUD
-	if HealthSystem and hud:
-		# Disconnect any existing connections
-		if HealthSystem.health_changed.is_connected(hud.update_health):
-			HealthSystem.health_changed.disconnect(hud.update_health)
-		
-		HealthSystem.health_changed.connect(hud.update_health)
-		HealthSystem.player_died.connect(_on_game_over)
-		hud.update_health(HealthSystem.get_current_health(), HealthSystem.get_max_health())
-		print("💖 HUD connected to HealthSystem - Current health: ", HealthSystem.get_current_health())
-	
-	# Initialize level manager (handles all reusable components automatically)
-	if level_manager:
-		level_manager.initialize_level("Level01_Simple")
+	# Set current level for persistence (override BaseLevel's Game.current_level)
+	Game.current_level = level_id
 	
 	print("✅ Level 1 systems initialized")
 	print("🎮 LEVEL ELEMENTS:")
@@ -75,22 +29,6 @@ func _ready():
 	print("  🔺 Spikes: ", get_tree().get_nodes_in_group("spikes").size())
 	print("  🦘 Jump Pads: ", get_tree().get_nodes_in_group("jump_pads").size())
 	print("  💀 Death Zones: ", get_tree().get_nodes_in_group("death_zones").size())
-	print("🔧 COLLISION LAYERS:")
-	print("  Player: Layer 2, Mask 1")
-	print("  Ground: Layer 1, Mask 0")
-	print("  Enemies: Layer 4, Mask 3")
-	print("  Collectibles: Layer 8, Mask 2")
-	print("  Interactive: Layer 16, Mask 2")
-	print("  Hazards: Layer 32, Mask 2")
-	print("  Death Zones: Layer 64, Mask 2")
-	print("  Checkpoints: Layer 128, Mask 2")
-	print("  Portals: Layer 256, Mask 2")
-	print("🎮 FEATURES:")
-	print("  ✨ Reusable components with self-contained logic")
-	print("  🎯 Automatic level management and statistics")
-	print("  💥 TNT crates with 3-second countdown")
-	print("  🦘 Bounce crates and jump pads")
-	print("  💔 Damage system with visual feedback")
 	print("🎮 Jump across platforms, collect items, avoid hazards, and reach the portal!")
 
 
@@ -136,14 +74,16 @@ func _on_layer_changed(new_layer: String):
 	
 # Level completion is now handled by the LevelPortal directly
 
-# LEVEL EVENT HANDLERS
+# LEVEL EVENT HANDLERS - BaseLevel handles the core events
+# Override these if you need level-specific behavior
+
 func _on_player_died():
+	super._on_player_died()  # Call BaseLevel's handler
 	print("💀 Player died in Level 1")
 
 func _on_game_over():
 	print("💀 Game Over in Level 1 - restarting level")
-	await get_tree().create_timer(1.0).timeout
-	get_tree().reload_current_scene()
+	super._on_game_over()  # Call BaseLevel's handler
 
 # INPUT HANDLING
 func _input(event):
@@ -157,22 +97,22 @@ func _input(event):
 		print("🔄 Restarting Level 1")
 		get_tree().reload_current_scene()
 	
-	# Debug: Show level stats
-	if Input.is_action_just_pressed("ui_select"):
-		_show_level_stats()
+	# # Debug: Show level stats
+	# if Input.is_action_just_pressed("ui_select"):
+	# 	_show_level_stats()
 
 # UTILITY FUNCTIONS
-func _show_level_stats():
-	if level_manager:
-		var stats = level_manager.get_level_stats()
-		print("📊 LEVEL 1 STATISTICS:")
-		print("  Fruits: ", stats.fruits_collected, "/", stats.total_fruits)
-		print("  Gems: ", stats.gems_collected, "/", stats.total_gems)
-		print("  Enemies defeated: ", stats.enemies_defeated, "/", stats.total_enemies)
-		print("  Crates destroyed: ", stats.crates_destroyed, "/", stats.total_crates)
-		print("  Damage taken: ", stats.damage_taken)
-		print("  Completion: ", level_manager.get_completion_percentage(), "%")
-		print("  Perfect run: ", level_manager.is_perfect_completion())
-		print("  Current score: ", Game.get_score() if Game else 0)
-		print("  Current health: ", HealthSystem.get_current_health() if HealthSystem else 0)
-		print("  Time elapsed: ", stats.completion_time, " seconds")
+# func _show_level_stats():
+# 	if level_manager:
+# 		var stats = level_manager.get_level_stats()
+# 		print("📊 LEVEL 1 STATISTICS:")
+# 		print("  Fruits: ", stats.fruits_collected, "/", stats.total_fruits)
+# 		print("  Gems: ", stats.gems_collected, "/", stats.total_gems)
+# 		print("  Enemies defeated: ", stats.enemies_defeated, "/", stats.total_enemies)
+# 		print("  Crates destroyed: ", stats.crates_destroyed, "/", stats.total_crates)
+# 		print("  Damage taken: ", stats.damage_taken)
+# 		print("  Completion: ", level_manager.get_completion_percentage(), "%")
+# 		print("  Perfect run: ", level_manager.is_perfect_completion())
+# 		print("  Current score: ", Game.get_score() if Game else 0)
+# 		print("  Current health: ", HealthSystem.get_current_health() if HealthSystem else 0)
+# 		print("  Time elapsed: ", stats.completion_time, " seconds")

@@ -184,6 +184,11 @@ func _complete_level():
 		Persistence.complete_level(Game.current_level, completion_data.completion_time, completion_data.score)
 		print("✅ Level completion saved: ", Game.current_level)
 	
+	# Update LevelLoader with completion data and check unlocks
+	if LevelLoader:
+		LevelLoader.check_level_completion(completion_data.score, completion_data.completion_time)
+		print("🔓 Checked level unlock requirements")
+	
 	# Show level results
 	show_level_results(completion_data)
 

@@ -295,6 +295,9 @@ func take_damage(amount: int = 1):
 func is_player_invincible() -> bool:
 	return is_invincible
 
+func is_player() -> bool:
+	return true
+
 func handle_enemy_stomping():
 	# Only check for stomping when falling with sufficient velocity
 	if velocity.y < stomp_detection_threshold:

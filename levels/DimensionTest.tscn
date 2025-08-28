@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://ba1bu5kyx2n8s"]
+
+[ext_resource type="Script" path="res://levels/DimensionTest.gd" id="1"]
+[ext_resource type="PackedScene" path="res://actors/Player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://actors/FlipGate.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://actors/DimensionPlatform.tscn" id="4"]
+
+[node name="DimensionTest" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(100, 500)
+
+[node name="DimensionObjects" type="Node2D" parent="."]
+
+[node name="FlipGate1" parent="DimensionObjects" instance=ExtResource("3")]
+position = Vector2(300, 500)
+
+[node name="DimensionPlatform1" parent="DimensionObjects" instance=ExtResource("4")]
+position = Vector2(500, 400)
+
+[node name="DimensionPlatform2" parent="DimensionObjects" instance=ExtResource("4")]
+position = Vector2(700, 350)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 0.1
+text = "Score: 0"
+horizontal_alignment = 1
+
+[node name="HintLabel" type="Label" parent="UI"]
+layout_mode = 0
+anchor_top = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Master dimension shifting!"
+horizontal_alignment = 1
+vertical_alignment = 1

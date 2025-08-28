@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://f6g7h8i9j0k1l"]
+
+[ext_resource type="Script" path="res://levels/EnemyGauntlet.gd" id="1"]
+[ext_resource type="PackedScene" path="res://actors/Player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://actors/PatrolEnemy.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://actors/EnemyCharger.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://actors/Spike.tscn" id="5"]
+
+[node name="EnemyGauntlet" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(100, 500)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="PatrolEnemy1" parent="Enemies" instance=ExtResource("3")]
+position = Vector2(400, 550)
+
+[node name="EnemyCharger1" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(600, 550)
+
+[node name="PatrolEnemy2" parent="Enemies" instance=ExtResource("3")]
+position = Vector2(800, 550)
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Spike1" parent="Hazards" instance=ExtResource("5")]
+position = Vector2(300, 580)
+
+[node name="Spike2" parent="Hazards" instance=ExtResource("5")]
+position = Vector2(700, 580)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 0.1
+text = "Score: 0"
+horizontal_alignment = 1
+
+[node name="HintLabel" type="Label" parent="UI"]
+layout_mode = 0
+anchor_top = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Defeat all enemies!"
+horizontal_alignment = 1
+vertical_alignment = 1

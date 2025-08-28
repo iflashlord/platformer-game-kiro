@@ -18,7 +18,7 @@ func _ready():
 	create_loading_overlay()
 
 func load_levels_config():
-	var config_path = "res://data/levels.json"
+	var config_path = "res://data/load_levels_config.json"
 	
 	if not FileAccess.file_exists(config_path):
 		print("Warning: levels.json not found, using default configuration")

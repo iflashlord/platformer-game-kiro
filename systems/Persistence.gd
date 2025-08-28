@@ -188,9 +188,10 @@ func set_best_time(level_name: String, time_ms: int):
 			level_data.best_time_ms = time_ms
 			print("New best time for ", level_name, ": ", time_ms, "ms")
 	
-	# Update LevelLoader with the new time
-	var time_seconds = time_ms / 1000.0
-	LevelLoader.update_best_time(level_name, time_seconds)
+	# Update LevelLoader with the new time if available
+	if has_node("/root/LevelLoader") and get_node("/root/LevelLoader").has_method("update_best_time"):
+		var time_seconds = time_ms / 1000.0
+		get_node("/root/LevelLoader").update_best_time(level_name, time_seconds)
 	
 	save_profile()
 
@@ -212,8 +213,9 @@ func set_best_score(level_name: String, score: int):
 			level_data.best_score = score
 			print("New best score for ", level_name, ": ", score)
 	
-	# Update LevelLoader with the new score
-	LevelLoader.update_best_score(level_name, score)
+	# Update LevelLoader with the new score if available
+	if has_node("/root/LevelLoader") and get_node("/root/LevelLoader").has_method("update_best_score"):
+		get_node("/root/LevelLoader").update_best_score(level_name, score)
 	
 	save_profile()
 
@@ -305,7 +307,10 @@ func get_total_score() -> int:
 	return total
 
 func get_completion_percentage() -> float:
-	var total_levels = LevelLoader.get_all_levels().size()
+	var total_levels = 4  # Level00, Level01, Level02, Level03
+	if has_node("/root/LevelLoader") and get_node("/root/LevelLoader").has_method("get_all_levels"):
+		total_levels = get_node("/root/LevelLoader").get_all_levels().size()
+	
 	if total_levels == 0:
 		return 0.0
 	
@@ -386,19 +391,28 @@ func save_level_completion(level_name: String, completion_data: Dictionary):
 	if not "level_completions" in current_profile:
 		current_profile["level_completions"] = {}
 	
+	# Add timestamp to completion data
+	completion_data["timestamp"] = Time.get_unix_time_from_system()
+	completion_data["completed"] = true  # Mark as completed
+	
 	# Store or update completion data
 	var existing_data = current_profile.level_completions.get(level_name, {})
+	var is_first_completion = existing_data.is_empty()
 	
 	# Keep best performance
-	if existing_data.is_empty() or _is_better_completion(completion_data, existing_data):
+	if is_first_completion or _is_better_completion(completion_data, existing_data):
 		current_profile.level_completions[level_name] = completion_data
 		print("💾 New best completion saved for ", level_name)
 	else:
 		print("💾 Completion recorded but not a new best for ", level_name)
 	
-	# Update statistics
-	current_profile.statistics.levels_completed += 1
+	# Update statistics (only if first completion)
+	if is_first_completion:
+		current_profile.statistics.levels_completed += 1
 	current_profile.statistics.total_score += completion_data.get("score", 0)
+	
+	# Check and unlock next levels based on level progression
+	_check_and_unlock_next_levels(level_name, completion_data)
 	
 	save_profile()
 
@@ -441,14 +455,290 @@ func reset_level_progress():
 	print("🔄 All level progress has been reset")
 
 func is_level_unlocked(level_name: String) -> bool:
-	match level_name:
-		"Tutorial":
-			return true
-		"Level01":
-			return get_level_completion("Tutorial").get("completed", false)
-		"Level02":
-			return get_level_completion("Level01").get("completed", false)
-		"Level03":
-			return get_level_completion("Level02").get("completed", false)
-		_:
+	# Load level map config to check unlock requirements
+	var level_config = _load_level_map_config()
+	if level_config.is_empty():
+		# Fallback to simple progression if config not available
+		match level_name:
+			"Level00", "Tutorial":
+				return true
+			"Level01":
+				return get_level_completion("Level00").get("completed", false)
+			"Level02":
+				return get_level_completion("Level01").get("completed", false)
+			"Level03":
+				return get_level_completion("Level02").get("completed", false)
+			_:
+				return false
+	
+	# Find level in config
+	var level_nodes = level_config.get("level_nodes", [])
+	var level_data = null
+	for node in level_nodes:
+		if node.get("id", "") == level_name:
+			level_data = node
+			break
+	
+	if not level_data:
+		return false
+	
+	# Check unlock requirements
+	var requirements = level_data.get("unlock_requirements", {})
+	
+	# No requirements means always unlocked (like tutorial)
+	if requirements.is_empty():
+		return true
+	
+	# Check previous level requirement
+	if "previous_level" in requirements:
+		var prev_level = requirements["previous_level"]
+		var prev_completion = get_level_completion(prev_level)
+		if not prev_completion.get("completed", false):
 			return false
+	
+	# Check minimum score requirement
+	if "min_score" in requirements:
+		var required_score = requirements["min_score"]
+		var prev_level = requirements.get("previous_level", "")
+		if prev_level != "":
+			var prev_completion = get_level_completion(prev_level)
+			var prev_score = prev_completion.get("score", 0)
+			if prev_score < required_score:
+				return false
+	
+	# Check maximum deaths requirement
+	if "deaths_max" in requirements:
+		var max_deaths = requirements["deaths_max"]
+		var prev_level = requirements.get("previous_level", "")
+		if prev_level != "":
+			var prev_completion = get_level_completion(prev_level)
+			var deaths = prev_completion.get("deaths", 999)
+			if deaths > max_deaths:
+				return false
+	
+	# Check relic count requirement
+	if "relic_count" in requirements:
+		var required_relics = requirements["relic_count"]
+		var total_relics = _count_total_relics()
+		if total_relics < required_relics:
+			return false
+	
+	return true
+
+func has_save_data() -> bool:
+	"""Check if player has any meaningful progress saved"""
+	# Check if any levels have been completed
+	if current_profile.statistics.get("levels_completed", 0) > 0:
+		return true
+	
+	# Check if any level has been attempted (has completion data)
+	if not current_profile.level_completions.is_empty():
+		return true
+	
+	# Check if any level has recorded data (old format)
+	for level_name in current_profile.levels:
+		var level_data = current_profile.levels[level_name]
+		if level_data.get("attempts", 0) > 0 or level_data.get("completed", false):
+			return true
+	
+	# Check if total playtime is significant (more than 30 seconds)
+	if current_profile.get("total_playtime", 0.0) > 30.0:
+		return true
+	
+	return false
+
+func get_last_level() -> String:
+	"""Get the path to the last level the player was working on"""
+	var last_level_name = ""
+	var latest_timestamp = 0
+	
+	# Check level data for the most recent last_played timestamp
+	for level_name in current_profile.levels:
+		var level_data = current_profile.levels[level_name]
+		var timestamp = level_data.get("last_played", 0)
+		if timestamp > latest_timestamp:
+			latest_timestamp = timestamp
+			last_level_name = level_name
+	
+	# Also check level completions for recent activity
+	for level_name in current_profile.level_completions:
+		var completion_data = current_profile.level_completions[level_name]
+		var timestamp = completion_data.get("timestamp", 0)
+		if timestamp > latest_timestamp:
+			latest_timestamp = timestamp
+			last_level_name = level_name
+	
+	# Convert level name to scene path
+	if last_level_name != "":
+		return _get_level_scene_path(last_level_name)
+	
+	# Default to first level if no progress found
+	return "res://levels/Level00.tscn"
+
+func _get_level_scene_path(level_name: String) -> String:
+	"""Convert level name to scene file path"""
+	match level_name:
+		"Level00", "Tutorial":
+			return "res://levels/Level00.tscn"
+		"Level01":
+			return "res://levels/Level01.tscn"
+		"Level02":
+			return "res://levels/Level02.tscn"
+		"Level03":
+			return "res://levels/Level03.tscn"
+		"Level01_Simple":
+			return "res://levels/Level01_Simple.tscn"
+		"Level01_Advanced":
+			return "res://levels/Level01_Advanced.tscn"
+		_:
+			# Try to construct path from name
+			var scene_path = "res://levels/" + level_name + ".tscn"
+			if FileAccess.file_exists(scene_path):
+				return scene_path
+			return "res://levels/Level00.tscn"
+
+func get_next_recommended_level() -> String:
+	"""Get the next level the player should play based on their progress"""
+	# If no progress, start with tutorial
+	if not has_save_data():
+		return "res://levels/Level00.tscn"
+	
+	# Check what levels are unlocked and not completed
+	var level_order = ["Level00", "Level01", "Level02", "Level03"]
+	
+	for level_name in level_order:
+		if is_level_unlocked(level_name):
+			var completion_data = get_level_completion(level_name)
+			if not completion_data.get("completed", false):
+				return _get_level_scene_path(level_name)
+	
+	# All levels completed, return the last level
+	return _get_level_scene_path(level_order[-1])
+
+func track_level_start(level_name: String):
+	"""Track when a player starts a level (for last level tracking)"""
+	if not level_name in current_profile.levels:
+		current_profile.levels[level_name] = {
+			"best_time_ms": 999999999,
+			"best_score": 0,
+			"completed": false,
+			"time_trial_completed": false,
+			"attempts": 0,
+			"deaths": 0
+		}
+	
+	# Update last played timestamp
+	current_profile.levels[level_name]["last_played"] = Time.get_unix_time_from_system()
+	
+	# Increment attempts
+	current_profile.levels[level_name].attempts += 1
+	
+	save_profile()
+	print("📍 Level started: ", level_name)
+
+func _check_and_unlock_next_levels(completed_level: String, completion_data: Dictionary):
+	"""Check if completing this level unlocks any new levels"""
+	var level_config = _load_level_map_config()
+	if level_config.is_empty():
+		return
+	
+	var level_nodes = level_config.get("level_nodes", [])
+	var newly_unlocked = []
+	
+	# Check each level to see if it should be unlocked
+	for node in level_nodes:
+		var level_id = node.get("id", "")
+		var requirements = node.get("unlock_requirements", {})
+		
+		# Skip if no requirements or already unlocked
+		if requirements.is_empty() or is_level_unlocked(level_id):
+			continue
+		
+		# Check if this level's requirements are now met
+		var should_unlock = true
+		
+		# Check previous level requirement
+		if "previous_level" in requirements:
+			var prev_level = requirements["previous_level"]
+			if prev_level != completed_level:
+				continue  # This level doesn't depend on the one we just completed
+		
+		# Check all requirements are met
+		if is_level_unlocked(level_id):
+			newly_unlocked.append(level_id)
+	
+	# Notify about newly unlocked levels
+	for level_id in newly_unlocked:
+		print("🔓 Level unlocked: ", level_id)
+		# Emit signal if EventBus is available
+		if EventBus and EventBus.has_signal("level_unlocked"):
+			EventBus.level_unlocked.emit(level_id)
+
+func _load_level_map_config() -> Dictionary:
+	"""Load the level map configuration"""
+	var config_path = "res://data/level_map_config.json"
+	
+	if not FileAccess.file_exists(config_path):
+		print("Warning: level_map_config.json not found")
+		return {}
+	
+	var file = FileAccess.open(config_path, FileAccess.READ)
+	if file == null:
+		print("Error: Could not open level_map_config.json")
+		return {}
+	
+	var json_string = file.get_as_text()
+	file.close()
+	
+	var json = JSON.new()
+	var parse_result = json.parse(json_string)
+	
+	if parse_result != OK:
+		print("Error parsing level_map_config.json: ", json.error_string)
+		return {}
+	
+	return json.data
+
+func _count_total_relics() -> int:
+	"""Count total relics/gems collected across all levels"""
+	var total = 0
+	for level_name in current_profile.level_completions:
+		var completion_data = current_profile.level_completions[level_name]
+		total += completion_data.get("gems_found", 0)
+	return total
+
+func get_next_level_in_progression(current_level: String) -> String:
+	"""Get the next level in the progression sequence"""
+	var level_config = _load_level_map_config()
+	if level_config.is_empty():
+		return ""
+	
+	var level_nodes = level_config.get("level_nodes", [])
+	
+	# Sort by order
+	level_nodes.sort_custom(func(a, b): return a.get("order", 0) < b.get("order", 0))
+	
+	# Find current level and return next
+	for i in range(level_nodes.size()):
+		if level_nodes[i].get("id", "") == current_level:
+			if i + 1 < level_nodes.size():
+				return level_nodes[i + 1].get("id", "")
+			break
+	
+	return ""  # No next level or current level not found
+
+func get_unlocked_levels() -> Array:
+	"""Get list of all unlocked level IDs"""
+	var level_config = _load_level_map_config()
+	if level_config.is_empty():
+		return ["Level00"]  # Fallback
+	
+	var unlocked = []
+	var level_nodes = level_config.get("level_nodes", [])
+	
+	for node in level_nodes:
+		var level_id = node.get("id", "")
+		if level_id != "" and is_level_unlocked(level_id):
+			unlocked.append(level_id)
+	
+	return unlocked

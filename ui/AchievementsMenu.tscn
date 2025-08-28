@@ -1,0 +1,155 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://ui/MainMenuTheme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://ui/AchievementsMenu.gd" id="2_script"]
+
+[node name="AchievementsMenu" type="CanvasLayer"]
+script = ExtResource("2_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.1, 0.2, 1)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_theme")
+
+[node name="MainContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = 50.0
+offset_right = -100.0
+offset_bottom = -50.0
+
+[node name="Header" type="VBoxContainer" parent="UI/MainContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/MainContainer/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "ACHIEVEMENTS"
+horizontal_alignment = 1
+
+[node name="Progress" type="Label" parent="UI/MainContainer/Header"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "0 / 12 Unlocked"
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="UI/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="AchievementsContainer" type="ScrollContainer" parent="UI/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="AchievementsList" type="VBoxContainer" parent="UI/MainContainer/AchievementsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="Achievement1" type="HBoxContainer" parent="UI/MainContainer/AchievementsContainer/AchievementsList"]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🏃"
+
+[node name="Info" type="VBoxContainer" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement1/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "First Steps"
+
+[node name="Description" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement1/Info"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Complete the tutorial level"
+
+[node name="Status" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "🔒"
+
+[node name="Achievement2" type="HBoxContainer" parent="UI/MainContainer/AchievementsContainer/AchievementsList"]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🔄"
+
+[node name="Info" type="VBoxContainer" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement2/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Dimension Shifter"
+
+[node name="Description" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement2/Info"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Use dimension flip 50 times"
+
+[node name="Status" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "🔒"
+
+[node name="Achievement3" type="HBoxContainer" parent="UI/MainContainer/AchievementsContainer/AchievementsList"]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "💎"
+
+[node name="Info" type="VBoxContainer" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement3/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Gem Collector"
+
+[node name="Description" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement3/Info"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Collect 100 gems"
+
+[node name="Status" type="Label" parent="UI/MainContainer/AchievementsContainer/AchievementsList/Achievement3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "🔒"
+
+[node name="Spacer2" type="Control" parent="UI/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="BackButton" type="Button" parent="UI/MainContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "← BACK TO MENU"

@@ -14,6 +14,7 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 script = ExtResource("1_0k8w6")
 
 [node name="DebugBorder" type="Node2D" parent="."]
+visible = false
 script = ExtResource("3_debug")
 
 [node name="GemSprite" type="ColorRect" parent="."]

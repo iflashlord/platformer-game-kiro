@@ -1,0 +1,97 @@
+[gd_scene load_steps=8 format=3 uid="uid://n3pfsjqnx2bd"]
+
+[ext_resource type="Script" uid="uid://d272x8r8342ix" path="res://levels/Chase01.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://cx0yxarkqh5ei" path="res://actors/DimensionPlatform.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://cxvxay8qkqxq" path="res://actors/Fruit.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx8" path="res://actors/Portal.tscn" id="7"]
+
+[node name="Chase01" type="Node2D"]
+script = ExtResource("1")
+chase_speed = null
+level_id = null
+level_name = null
+target_score = null
+time_limit = null
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(248, 293)
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="Platform1" parent="Platforms" instance=ExtResource("3")]
+position = Vector2(300, 450)
+
+[node name="Platform2" parent="Platforms" instance=ExtResource("3")]
+position = Vector2(600, 350)
+
+[node name="Platform3" parent="Platforms" instance=ExtResource("3")]
+position = Vector2(900, 300)
+
+[node name="Platform4" parent="Platforms" instance=ExtResource("3")]
+position = Vector2(1200, 250)
+
+[node name="Platform5" parent="Platforms" instance=ExtResource("3")]
+position = Vector2(1500, 200)
+
+[node name="JumpPads" type="Node2D" parent="."]
+
+[node name="JumpPad1" parent="JumpPads" instance=ExtResource("4")]
+position = Vector2(450, 500)
+
+[node name="JumpPad2" parent="JumpPads" instance=ExtResource("4")]
+position = Vector2(750, 400)
+
+[node name="JumpPad3" parent="JumpPads" instance=ExtResource("4")]
+position = Vector2(1050, 350)
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="Fruit1" parent="Collectibles" instance=ExtResource("5")]
+position = Vector2(300, 400)
+
+[node name="Fruit2" parent="Collectibles" instance=ExtResource("5")]
+position = Vector2(600, 300)
+
+[node name="Fruit3" parent="Collectibles" instance=ExtResource("5")]
+position = Vector2(900, 250)
+
+[node name="HiddenGem1" parent="Collectibles" instance=ExtResource("6")]
+position = Vector2(1200, 150)
+
+[node name="Portal" parent="." instance=ExtResource("7")]
+position = Vector2(1800, 150)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 0.1
+text = "Score: 0"
+horizontal_alignment = 1
+
+[node name="TimeLabel" type="Label" parent="UI"]
+layout_mode = 0
+anchor_left = 0.8
+anchor_right = 1.0
+anchor_bottom = 0.1
+text = "Time: 5:00"
+horizontal_alignment = 1
+
+[node name="ChaseWarning" type="Label" parent="UI"]
+layout_mode = 0
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.2
+text = "THE WALL IS COMING!"
+horizontal_alignment = 1
+vertical_alignment = 1

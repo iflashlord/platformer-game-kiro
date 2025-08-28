@@ -54,6 +54,8 @@ func toggle_pause():
 		game_resumed.emit()
 
 func restart_game():
+	print("🔄 Restarting game...")
+	
 	get_tree().paused = false
 	is_paused = false
 	score = 0
@@ -65,15 +67,27 @@ func restart_game():
 		Persistence.increment_level_attempts(current_level)
 	
 	game_restarted.emit()
+	
+	# Use LevelLoader if available for better restart handling
+	if LevelLoader and LevelLoader.has_method("restart") and current_level != "":
+		print("🔄 Using LevelLoader to restart: ", current_level)
+		LevelLoader.restart()
+	else:
+		# Fallback to scene reload
+		_restart_current_scene()
+
+func _restart_current_scene():
+	"""Restart current scene as fallback"""
 	var current_scene = get_tree().current_scene
 	if current_scene:
-		var scene_path = current_scene.filename
+		var scene_path = current_scene.scene_file_path
 		if scene_path != "":
+			print("🔄 Reloading scene: ", scene_path)
 			get_tree().change_scene_to_file(scene_path)
 		else:
-			print("Error: Current scene path is empty, cannot reload.")
+			print("❌ Current scene path is empty, cannot reload.")
 	else:
-		print("Error: No current scene to reload.")
+		print("❌ No current scene to reload.")
 
 func reset_collectibles():
 	fruit_counts.clear()

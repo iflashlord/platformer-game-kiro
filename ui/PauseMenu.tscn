@@ -1,15 +1,56 @@
-[gd_scene load_steps=2 format=3 uid="uid://dx0yw3rkqiarr"]
+[gd_scene load_steps=4 format=3 uid="uid://dx0yw3rkqiarr"]
 
 [ext_resource type="Script" uid="uid://b83waifjogmuj" path="res://ui/PauseMenu.gd" id="1_pausemenu"]
+[ext_resource type="Theme" path="res://ui/MainMenuTheme.tres" id="2_theme"]
+
+[sub_resource type="Animation" id="Animation_1"]
+resource_name = "slide_in"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("UI/MenuContainer:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(0, -300), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("UI/MenuContainer:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
+_data = {
+"slide_in": SubResource("Animation_1")
+}
 
 [node name="PauseMenu" type="CanvasLayer"]
+layer = 50
 script = ExtResource("1_pausemenu")
 
 [node name="Background" type="ColorRect" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.7)
+color = Color(0, 0, 0, 0.8)
+
+[node name="BlurEffect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.2, 0.4, 0.3)
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -18,6 +59,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_theme")
 
 [node name="MenuContainer" type="VBoxContainer" parent="UI"]
 layout_mode = 1
@@ -26,18 +68,48 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -150.0
-offset_right = 150.0
-offset_bottom = 150.0
+offset_left = -300.0
+offset_top = -300.0
+offset_right = 300.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Title" type="Label" parent="UI/MenuContainer"]
+[node name="Header" type="VBoxContainer" parent="UI/MenuContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "PAUSED"
+
+[node name="Title" type="Label" parent="UI/MenuContainer/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "GAME PAUSED"
 horizontal_alignment = 1
+
+[node name="LevelInfo" type="Label" parent="UI/MenuContainer/Header"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Level: Tutorial"
+horizontal_alignment = 1
+
+[node name="GameStats" type="HBoxContainer" parent="UI/MenuContainer/Header"]
+layout_mode = 2
+alignment = 1
+
+[node name="TimeLabel" type="Label" parent="UI/MenuContainer/Header/GameStats"]
+modulate = Color(0.7, 0.7, 0.7, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Time: 00:00"
+
+[node name="Spacer" type="Control" parent="UI/MenuContainer/Header/GameStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScoreLabel" type="Label" parent="UI/MenuContainer/Header/GameStats"]
+modulate = Color(0.7, 0.7, 0.7, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Score: 0"
 
 [node name="HSeparator" type="HSeparator" parent="UI/MenuContainer"]
 layout_mode = 2
@@ -45,23 +117,58 @@ layout_mode = 2
 [node name="ButtonContainer" type="VBoxContainer" parent="UI/MenuContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 12
 
 [node name="ResumeButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "RESUME"
+theme_override_font_sizes/font_size = 22
+text = "▶ RESUME"
+alignment = 0
 
 [node name="RestartButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "RESTART LEVEL"
+text = "↻ RESTART LEVEL"
+alignment = 0
+
+[node name="SettingsButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "⚙ SETTINGS"
+alignment = 0
 
 [node name="LevelSelectButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "LEVEL SELECT"
+text = "🗺 LEVEL SELECT"
+alignment = 0
 
 [node name="MainMenuButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "MAIN MENU"
+text = "🏠 MAIN MENU"
+alignment = 0
+
+[node name="QuitButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "✕ QUIT GAME"
+alignment = 0
+
+[node name="BottomInfo" type="VBoxContainer" parent="UI/MenuContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="UI/MenuContainer/BottomInfo"]
+layout_mode = 2
+
+[node name="ControlsHint" type="Label" parent="UI/MenuContainer/BottomInfo"]
+modulate = Color(0.6, 0.6, 0.6, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ESC to Resume • WASD to Move • Space to Jump"
+horizontal_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1")
+}

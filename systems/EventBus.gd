@@ -28,7 +28,9 @@ signal enemy_lost_player(enemy: Node)
 # Level events
 signal level_started(level_name: String)
 signal level_completed(level_name: String, time: float, score: int)
+signal level_unlocked(level_name: String)
 signal checkpoint_reached(checkpoint_id: String, position: Vector2)
+signal level_portal_entered()
 
 # UI events
 signal score_changed(new_score: int, change: int)
@@ -56,6 +58,10 @@ signal load_requested()
 
 # Debug events
 signal debug_borders_toggled(enabled: bool)
+
+# Hint system events
+signal hint_requested(message: String, title: String)
+signal hint_dismissed()
 
 func _ready():
 	# Connect to audio system

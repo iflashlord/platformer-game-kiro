@@ -1,0 +1,143 @@
+{
+	"map_config": {
+		"title": "Select Level",
+		"layout": "grid",
+		"grid_columns": 3,
+		"card_size": {"width": 380, "height": 240},
+		"progress_bar": {
+			"show": true,
+			"position": "top",
+			"color_complete": "#4CAF50",
+			"color_incomplete": "#757575"
+		},
+		"dev_mode": {
+			"unlock_all": true,
+			"show_debug_info": true
+		}
+	},
+	"level_nodes": [
+		{
+			"id": "Level00",
+			"display_name": "Tutorial",
+			"description": "Learn the basic controls and mechanics. Master jumping, moving, and basic platforming skills.",
+			"order": 1,
+			"thumbnail": "res://content/thumbnails/tutorial.png",
+			"difficulty": 1,
+			"estimated_time": "2-3 min",
+			"rewards": ["Basic Movement", "Jump Mechanics"],
+			"unlock_requirements": {},
+			"theme_color": "#2196F3"
+		},
+		{
+			"id": "CrateTest",
+			"display_name": "Crate Chaos",
+			"description": "Master the different crate types and their effects. Learn destruction mechanics and timing.",
+			"order": 2,
+			"thumbnail": "res://content/thumbnails/crate_test.png",
+			"difficulty": 2,
+			"estimated_time": "3-4 min",
+			"rewards": ["Crate Mastery", "Destruction Skills"],
+			"unlock_requirements": {"previous_level": "Level00"},
+			"theme_color": "#8D6E63"
+		},
+		{
+			"id": "CollectibleTest",
+			"display_name": "Treasure Hunt",
+			"description": "Collect all fruits and gems to complete the level. Explore every corner for hidden treasures.",
+			"order": 3,
+			"thumbnail": "res://content/thumbnails/collectible_test.png",
+			"difficulty": 2,
+			"estimated_time": "4-5 min",
+			"rewards": ["Collector Badge", "Exploration Skills"],
+			"unlock_requirements": {"previous_level": "CrateTest", "min_score": 50},
+			"theme_color": "#FFD700"
+		},
+		{
+			"id": "DimensionTest",
+			"display_name": "Dimension Shift",
+			"description": "Use dimension shifting to navigate between layers. Master the art of reality manipulation.",
+			"order": 4,
+			"thumbnail": "res://content/thumbnails/dimension_test.png",
+			"difficulty": 3,
+			"estimated_time": "5-6 min",
+			"rewards": ["Dimension Master", "Layer Navigation"],
+			"unlock_requirements": {"previous_level": "CollectibleTest", "min_score": 75},
+			"theme_color": "#9C27B0"
+		},
+		{
+			"id": "EnemyGauntlet",
+			"display_name": "Enemy Gauntlet",
+			"description": "Survive waves of enemies and hazards. Test your combat skills against various foes.",
+			"order": 5,
+			"thumbnail": "res://content/thumbnails/enemy_gauntlet.png",
+			"difficulty": 4,
+			"estimated_time": "6-7 min",
+			"rewards": ["Combat Expert", "Survival Skills"],
+			"unlock_requirements": {"previous_level": "DimensionTest", "deaths_max": 3},
+			"theme_color": "#F44336"
+		},
+		{
+			"id": "Level01",
+			"display_name": "First Steps",
+			"description": "Navigate platforms with dimension gates. Your first real adventure begins here.",
+			"order": 6,
+			"thumbnail": "res://content/thumbnails/level01.png",
+			"difficulty": 3,
+			"estimated_time": "7-8 min",
+			"rewards": ["Platform Master", "Gate Navigation"],
+			"unlock_requirements": {"previous_level": "EnemyGauntlet", "min_score": 100},
+			"theme_color": "#4CAF50"
+		},
+		{
+			"id": "Level02",
+			"display_name": "Forest Canopy",
+			"description": "Swing through the treetops with enemies. Navigate the dangerous forest canopy.",
+			"order": 7,
+			"thumbnail": "res://content/thumbnails/level02.png",
+			"difficulty": 4,
+			"estimated_time": "8-10 min",
+			"rewards": ["Forest Explorer", "Canopy Navigation"],
+			"unlock_requirements": {"previous_level": "Level01", "min_score": 150},
+			"theme_color": "#388E3C"
+		},
+		{
+			"id": "Level03",
+			"display_name": "Crystal Caves",
+			"description": "Navigate dangerous caves with spikes and enemies. Explore the mysterious crystal caverns.",
+			"order": 8,
+			"thumbnail": "res://content/thumbnails/level03.png",
+			"difficulty": 5,
+			"estimated_time": "10-12 min",
+			"rewards": ["Cave Explorer", "Crystal Hunter"],
+			"unlock_requirements": {"previous_level": "Level02", "min_score": 200},
+			"theme_color": "#607D8B"
+		},
+		{
+			"id": "Chase01",
+			"display_name": "The Great Escape",
+			"description": "Escape the pursuing wall in this intense chase level. Speed and precision are key to survival.",
+			"order": 9,
+			"thumbnail": "res://content/thumbnails/chase01.png",
+			"difficulty": 5,
+			"estimated_time": "5-7 min",
+			"rewards": ["Speed Demon", "Escape Artist"],
+			"unlock_requirements": {"previous_level": "Level03", "min_score": 250, "relic_count": 3},
+			"theme_color": "#FF9800"
+		}
+	],
+	"visual_settings": {
+		"card_effects": {
+			"unlock_animation": true,
+			"hover_scale": 1.05,
+			"focus_pulse": true,
+			"completion_glow": true
+		},
+		"colors": {
+			"locked": "#424242",
+			"unlocked": "#FFFFFF",
+			"completed": "#FFC107",
+			"perfect": "#FFD700",
+			"focus_border": "#00BCD4"
+		}
+	}
+}

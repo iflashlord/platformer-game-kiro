@@ -1,0 +1,142 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://ui/MainMenuTheme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://ui/CreditsMenu.gd" id="2_script"]
+
+[node name="CreditsMenu" type="CanvasLayer"]
+script = ExtResource("2_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.1, 0.2, 1)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_theme")
+
+[node name="MainContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = 50.0
+offset_right = -100.0
+offset_bottom = -50.0
+
+[node name="Header" type="VBoxContainer" parent="UI/MainContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/MainContainer/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "CREDITS"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="UI/MainContainer/Header"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Dimension Runner - HTML5 Platformer"
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="UI/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="CreditsContent" type="ScrollContainer" parent="UI/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="CreditsText" type="VBoxContainer" parent="UI/MainContainer/CreditsContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GameDev" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "GAME DEVELOPMENT"
+horizontal_alignment = 1
+
+[node name="DevInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Built with Godot Engine 4.4+
+GDScript Programming
+Web Deployment via Vercel"
+horizontal_alignment = 1
+
+[node name="Spacer2" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+
+[node name="TechStack" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "TECHNOLOGY STACK"
+horizontal_alignment = 1
+
+[node name="TechInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Godot Engine - Game Framework
+HTML5 Export - Web Compatibility
+GL Compatibility Renderer
+GitHub Actions - CI/CD Pipeline"
+horizontal_alignment = 1
+
+[node name="Spacer3" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+
+[node name="Features" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "SPECIAL FEATURES"
+horizontal_alignment = 1
+
+[node name="FeatureInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Dimension Shifting Mechanics
+Advanced Platformer Physics
+Cross-Platform Compatibility
+Progressive Web App Support
+Object Pooling Optimization"
+horizontal_alignment = 1
+
+[node name="Spacer4" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+
+[node name="Thanks" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "SPECIAL THANKS"
+horizontal_alignment = 1
+
+[node name="ThanksInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Godot Community - Engine Development
+Open Source Contributors
+Web Gaming Community
+Platformer Game Enthusiasts"
+horizontal_alignment = 1
+
+[node name="Spacer5" type="Control" parent="UI/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="BackButton" type="Button" parent="UI/MainContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "← BACK TO MENU"
