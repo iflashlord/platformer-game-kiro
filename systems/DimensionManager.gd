@@ -37,7 +37,7 @@ func register_layer_object(obj: Node, layer: String):
 	
 	# Set initial visibility
 	var should_be_visible = (layer == current_layer)
-	obj.visible = should_be_visible
+	_set_object_visibility(obj, should_be_visible)
 	
 	print("🌀 Registered object ", obj.name, " to layer ", layer, " (visible: ", should_be_visible, ")")
 
@@ -58,7 +58,7 @@ func _update_layer_objects():
 		
 		for obj in objects:
 			if is_instance_valid(obj):
-				obj.visible = should_be_visible
+				_set_object_visibility(obj, should_be_visible)
 				print("  - ", obj.name, " visibility set to: ", should_be_visible)
 			else:
 				# Clean up invalid objects
@@ -75,3 +75,15 @@ func toggle_layer():
 
 func get_inactive_layer() -> String:
 	return "B" if current_layer == "A" else "A"
+
+func _set_object_visibility(obj: Node, visible: bool):
+	"""Set visibility for an object, handling different node types"""
+	if obj is DimensionNode:
+		# DimensionNode handles its own visibility logic
+		obj.set_layer_active(visible)
+	elif obj.has_property("visible"):
+		# Standard CanvasItem nodes
+		obj.visible = visible
+	else:
+		# For other node types, we can't control visibility directly
+		print("⚠️ Warning: Cannot set visibility for node type: ", obj.get_class())

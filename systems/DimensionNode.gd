@@ -22,17 +22,27 @@ func _ready():
 	if sprites.size() > 0 and sprites[0].has_method("get") and sprites[0].has_property("modulate"):
 		original_modulate = sprites[0].modulate
 	
-	# Auto-register with DimensionManager if enabled
-	if auto_register:
-		DimensionManager.register_node(self)
+	# Note: DimensionNode uses signal-based approach instead of registration
+	# This avoids conflicts with DimensionManager's visibility control
 	
 	# Set initial state based on current active layer
-	set_layer_active(DimensionManager.get_active_layer() in active_layers)
+	var current_layer_int = 0 if DimensionManager.get_current_layer() == "A" else 1
+	set_layer_active(current_layer_int in active_layers)
+	
+	# Connect to layer change signal
+	if not DimensionManager.layer_changed.is_connected(_on_layer_changed):
+		DimensionManager.layer_changed.connect(_on_layer_changed)
 
 func _exit_tree():
-	# Unregister when node is removed
-	if DimensionManager:
-		DimensionManager.unregister_node(self)
+	# Disconnect signal
+	if DimensionManager and DimensionManager.layer_changed.is_connected(_on_layer_changed):
+		DimensionManager.layer_changed.disconnect(_on_layer_changed)
+	
+	# Note: No need to unregister since we use signal-based approach
+
+func _on_layer_changed(new_layer: String):
+	var current_layer_int = 0 if new_layer == "A" else 1
+	set_layer_active(current_layer_int in active_layers)
 
 func find_collision_shapes(node: Node):
 	if node is CollisionShape2D:
@@ -92,14 +102,16 @@ func add_to_layer(layer: int):
 	if layer not in active_layers:
 		active_layers.append(layer)
 		# Update state if this layer is now active
-		if DimensionManager.get_active_layer() == layer:
+		var current_layer_int = 0 if DimensionManager.get_current_layer() == "A" else 1
+		if current_layer_int == layer:
 			set_layer_active(true)
 
 func remove_from_layer(layer: int):
 	if layer in active_layers:
 		active_layers.erase(layer)
 		# Update state if we removed the currently active layer
-		if DimensionManager.get_active_layer() == layer:
+		var current_layer_int = 0 if DimensionManager.get_current_layer() == "A" else 1
+		if current_layer_int == layer:
 			set_layer_active(false)
 
 func is_active_on_layer(layer: int) -> bool:
