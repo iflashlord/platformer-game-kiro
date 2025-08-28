@@ -1,10 +1,10 @@
-# HTML5 Platformer Game
+# Glitch Dimension
 
-A fast-paced 2D platformer built with Godot 4.3, featuring dimension-shifting mechanics, challenging levels, and smooth web deployment.
+A fast-paced 2D platformer built with Godot 4.4, featuring dimension-shifting mechanics, challenging levels, and smooth web deployment.
 
 ## 🎮 Play Online
 
-**[Play Now on Vercel](https://html5-platformer.vercel.app/)**
+**[Play Now on Vercel](https://glitch-dimension.vercel.app/)**
 
 ## ✨ Features
 
@@ -42,8 +42,8 @@ A fast-paced 2D platformer built with Godot 4.3, featuring dimension-shifting me
 ### Local Development
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/html5-platformer.git
-cd html5-platformer
+git clone https://github.com/yourusername/glitch-dimension.git
+cd glitch-dimension
 
 # Open in Godot
 godot project.godot
@@ -161,6 +161,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
+- **Behrouz Pooladrak**: Game Developer - [www.behrouz.nl](https://www.behrouz.nl)
+- **Kiro IDE**: Development environment for Vibe coding and development
 - **Godot Engine**: Amazing open-source game engine
 - **barichello/godot-ci**: Docker images for CI/CD
 - **Vercel**: Excellent hosting platform
@@ -168,8 +170,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/html5-platformer/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/html5-platformer/discussions)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/glitch-dimension/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/glitch-dimension/discussions)
 - **Documentation**: [docs/](docs/) folder
 
 ## 🎯 Roadmap
@@ -183,4 +185,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ using Godot Engine**
+**Built with ❤️ by Behrouz Pooladrak using Godot Engine and Kiro IDE**

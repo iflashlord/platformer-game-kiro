@@ -1,9 +1,9 @@
-# HTML5 Platformer - Project Overview
+# Glitch Dimension - Project Overview
 
 ## Project Configuration
 
 ### Basic Information
-- **Name**: HTML5 Platformer - Dimension Shift Adventure
+- **Name**: Glitch Dimension
 - **Version**: 1.0.0
 - **Engine**: Godot 4.4
 - **Target Platform**: Web (HTML5) with desktop exports

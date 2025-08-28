@@ -42,7 +42,7 @@ horizontal_alignment = 1
 modulate = Color(0.8, 0.8, 0.8, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Dimension Runner - HTML5 Platformer"
+text = "Glitch Dimension"
 horizontal_alignment = 1
 
 [node name="Spacer1" type="Control" parent="UI/MainContainer"]
@@ -62,13 +62,16 @@ size_flags_horizontal = 3
 [node name="GameDev" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "GAME DEVELOPMENT"
+text = "GAME DEVELOPER"
 horizontal_alignment = 1
 
 [node name="DevInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Built with Godot Engine 4.4+
+text = "Behrouz Pooladrak
+www.behrouz.nl
+
+Built with Godot Engine 4.4+
 GDScript Programming
 Web Deployment via Vercel"
 horizontal_alignment = 1
@@ -80,13 +83,14 @@ custom_minimum_size = Vector2(0, 30)
 [node name="TechStack" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "TECHNOLOGY STACK"
+text = "DEVELOPMENT TOOLS"
 horizontal_alignment = 1
 
 [node name="TechInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Godot Engine - Game Framework
+text = "Kiro IDE - Vibe coding and development
+Godot Engine - Game Framework
 HTML5 Export - Web Compatibility
 GL Compatibility Renderer
 GitHub Actions - CI/CD Pipeline"
@@ -125,7 +129,8 @@ horizontal_alignment = 1
 [node name="ThanksInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Godot Community - Engine Development
+text = "Kiro IDE Team - For the amazing development environment
+Godot Community - Engine Development
 Open Source Contributors
 Web Gaming Community
 Platformer Game Enthusiasts"

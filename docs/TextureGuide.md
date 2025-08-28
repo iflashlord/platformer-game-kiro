@@ -1,4 +1,4 @@
-# Texture Guide for HTML5 Platformer
+# Texture Guide for Glitch Dimension
 
 ## Texture Files Overview
 

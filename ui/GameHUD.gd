@@ -14,7 +14,6 @@ class_name GameHUD
 @onready var heartFive: AnimatedSprite2D = $UI/TopBar/HealthContainer/AnimatedSprite2D_5
 
 var is_paused := false
-var pause_menu: PauseMenu = null
 
 func _ready():
 	print("💖 GameHUD _ready() called")
@@ -34,6 +33,8 @@ func _ready():
 	# Connect to game events
 	if Game:
 		Game.score_changed.connect(_on_score_changed)
+		Game.game_paused.connect(_on_game_paused)
+		Game.game_resumed.connect(_on_game_resumed)
 	
 	# Pause button
 	pause_button.pressed.connect(_on_pause_button_pressed)
@@ -45,12 +46,7 @@ func _ready():
 	_update_time_display(0.0)
 	_update_score_display(0)
 
-	# Instance PauseMenu and add to scene
-	var pause_menu_scene = preload("res://ui/PauseMenu.tscn")
-	pause_menu = pause_menu_scene.instantiate()
-	add_child(pause_menu)
-	pause_menu.visible = false
-	pause_menu.resume_requested.connect(_on_pause_menu_resume) # <-- Connect signal
+	# PauseMenu is now managed by PauseManager singleton
 
 func _setHearts(active: int):
 	var hearts = [heartOne, heartTwo, heartThree, heartFour, heartFive]
@@ -60,35 +56,7 @@ func _setHearts(active: int):
 		else:
 			hearts[i].play("empty")
 
-# func _ready():
-# 	print("💖 GameHUD _ready() called")
- 
-# 	# Initialize heart display
-# 	_update_health_display(5, 5)
-	
-# 	# Connect to health system
-# 	if HealthSystem:
-# 		HealthSystem.health_changed.connect(_on_health_changed)
-# 		HealthSystem.heart_lost.connect(_on_heart_lost)
-	
-# 	# Connect to timer system
-# 	if GameTimer:
-# 		GameTimer.time_updated.connect(_on_time_updated)
-	
-# 	# Connect to game events
-# 	if Game:
-# 		Game.score_changed.connect(_on_score_changed)
-	
-# 	# Pause button
-# 	pause_button.pressed.connect(_on_pause_button_pressed)
-	
-# 	# Hide pause overlay initially
-# 	pause_overlay.visible = false
-	
-# 	# Initialize displays
-# 	_update_health_display(5, 5)
-# 	_update_time_display(0.0)
-# 	_update_score_display(0)
+
 
 func _on_health_changed(current_health: int, max_health: int):
 	_update_health_display(current_health, max_health)
@@ -141,40 +109,47 @@ func _update_score_display(score: int):
 	tween.tween_property(score_display, "scale", Vector2.ONE, 0.1)
 
 func _on_pause_button_pressed():
-	is_paused = not is_paused
-	get_tree().paused = is_paused
-	pause_overlay.visible = is_paused
-	if GameTimer:
-		if is_paused:
-			GameTimer.pause_timer()
-		else:
-			GameTimer.resume_timer()
-	
-	# Show or hide PauseMenu
-	if pause_menu:
-		if is_paused:
-			pause_menu.show_pause_menu()
-		else:
-			pause_menu.hide_pause_menu()
+	# Use Game singleton to handle pause (which will trigger PauseManager)
+	if Game:
+		Game.toggle_pause()
+	else:
+		# Fallback if Game singleton not available
+		is_paused = not is_paused
+		get_tree().paused = is_paused
+		pause_overlay.visible = is_paused
+		if GameTimer:
+			if is_paused:
+				GameTimer.pause_timer()
+			else:
+				GameTimer.resume_timer()
 
-# Resume from PauseMenu
+# Resume from PauseMenu (handled by PauseManager now)
 func resume_game():
 	is_paused = false
 	get_tree().paused = false
 	pause_overlay.visible = false
 	if GameTimer:
 		GameTimer.resume_timer()
-	if pause_menu:
-		pause_menu.hide_pause_menu()
-
-func _on_pause_menu_resume():
-	resume_game()
 
 func show_hud():
 	visible = true
 
 func hide_hud():
 	visible = false
+
+func _on_game_paused():
+	"""Handle game pause event"""
+	is_paused = true
+	pause_overlay.visible = true
+	if GameTimer:
+		GameTimer.pause_timer()
+
+func _on_game_resumed():
+	"""Handle game resume event"""
+	is_paused = false
+	pause_overlay.visible = false
+	if GameTimer:
+		GameTimer.resume_timer()
 
 func update_health(current_health: int, max_health: int = 5):
 	"""Direct method to update health display - can be called from levels"""

@@ -1,6 +1,6 @@
 # Product Overview
 
-## HTML5 Platformer - Dimension Shift Adventure
+## Glitch Dimension
 
 A fast-paced 2D platformer built with Godot 4.4, featuring dimension-shifting mechanics and web deployment.
 
@@ -29,3 +29,8 @@ A fast-paced 2D platformer built with Godot 4.4, featuring dimension-shifting me
 - Primary: Web deployment via Vercel
 - Secondary: Desktop builds for distribution
 - Progressive Web App (PWA) support for mobile
+
+### Credits
+- **Developer**: Behrouz Pooladrak - [www.behrouz.nl](https://www.behrouz.nl)
+- **Development Environment**: Kiro IDE for Vibe coding and development
+- **Game Engine**: Godot 4.4+

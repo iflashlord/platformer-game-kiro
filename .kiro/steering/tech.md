@@ -21,8 +21,8 @@
 
 # Manual export commands:
 godot --headless --export-release "Web" build/web/index.html
-godot --headless --export-release "Windows Desktop" build/windows/html5-platformer.exe
-godot --headless --export-release "Linux/X11" build/linux/html5-platformer.x86_64
+godot --headless --export-release "Windows Desktop" build/windows/glitch-dimension.exe
+godot --headless --export-release "Linux/X11" build/linux/glitch-dimension.x86_64
 ```
 
 ### Deployment

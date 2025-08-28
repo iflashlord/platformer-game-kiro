@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dx0yw3rkqiarr"]
+[gd_scene load_steps=5 format=3 uid="uid://dx0yw3rkqiarr"]
 
 [ext_resource type="Script" uid="uid://b83waifjogmuj" path="res://ui/PauseMenu.gd" id="1_pausemenu"]
-[ext_resource type="Theme" path="res://ui/MainMenuTheme.tres" id="2_theme"]
+[ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="2_theme"]
 
 [sub_resource type="Animation" id="Animation_1"]
 resource_name = "slide_in"
@@ -33,7 +33,7 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
 _data = {
-"slide_in": SubResource("Animation_1")
+&"slide_in": SubResource("Animation_1")
 }
 
 [node name="PauseMenu" type="CanvasLayer"]
@@ -44,13 +44,13 @@ script = ExtResource("1_pausemenu")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.8)
+color = Color(0, 0, 0, 0.85)
 
 [node name="BlurEffect" type="ColorRect" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.1, 0.2, 0.4, 0.3)
+color = Color(0.1, 0.2, 0.4, 0.4)
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -68,10 +68,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -300.0
-offset_right = 300.0
-offset_bottom = 300.0
+offset_left = -350.0
+offset_top = -250.0
+offset_right = 350.0
+offset_bottom = 250.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -117,7 +117,7 @@ layout_mode = 2
 [node name="ButtonContainer" type="VBoxContainer" parent="UI/MenuContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 12
+theme_override_constants/separation = 16
 
 [node name="ResumeButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
@@ -131,12 +131,6 @@ theme_override_font_sizes/font_size = 18
 text = "↻ RESTART LEVEL"
 alignment = 0
 
-[node name="SettingsButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "⚙ SETTINGS"
-alignment = 0
-
 [node name="LevelSelectButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
@@ -147,12 +141,6 @@ alignment = 0
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "🏠 MAIN MENU"
-alignment = 0
-
-[node name="QuitButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "✕ QUIT GAME"
 alignment = 0
 
 [node name="BottomInfo" type="VBoxContainer" parent="UI/MenuContainer"]
@@ -170,5 +158,5 @@ horizontal_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_1")
+&"": SubResource("AnimationLibrary_1")
 }

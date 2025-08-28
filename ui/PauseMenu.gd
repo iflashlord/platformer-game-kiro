@@ -4,10 +4,8 @@ class_name PauseMenu
 # Button references
 @onready var resume_button: Button = $UI/MenuContainer/ButtonContainer/ResumeButton
 @onready var restart_button: Button = $UI/MenuContainer/ButtonContainer/RestartButton
-@onready var settings_button: Button = $UI/MenuContainer/ButtonContainer/SettingsButton
 @onready var level_select_button: Button = $UI/MenuContainer/ButtonContainer/LevelSelectButton
 @onready var main_menu_button: Button = $UI/MenuContainer/ButtonContainer/MainMenuButton
-@onready var quit_button: Button = $UI/MenuContainer/ButtonContainer/QuitButton
 
 # UI elements
 @onready var level_info_label: Label = $UI/MenuContainer/Header/LevelInfo
@@ -18,7 +16,6 @@ class_name PauseMenu
 # Signals
 signal resume_requested
 signal restart_requested
-signal settings_requested
 signal level_select_requested
 signal main_menu_requested
 signal quit_requested
@@ -46,10 +43,8 @@ func _setup_ui():
 	menu_buttons = [
 		resume_button,
 		restart_button,
-		settings_button,
 		level_select_button,
-		main_menu_button,
-		quit_button
+		main_menu_button
 	]
 	
 	# Filter out null buttons
@@ -68,14 +63,10 @@ func _connect_signals():
 		resume_button.pressed.connect(_on_resume_pressed)
 	if restart_button:
 		restart_button.pressed.connect(_on_restart_pressed)
-	if settings_button:
-		settings_button.pressed.connect(_on_settings_pressed)
 	if level_select_button:
 		level_select_button.pressed.connect(_on_level_select_pressed)
 	if main_menu_button:
 		main_menu_button.pressed.connect(_on_main_menu_pressed)
-	if quit_button:
-		quit_button.pressed.connect(_on_quit_pressed)
 	
 	# Connect to game events
 	if Game:
@@ -86,13 +77,7 @@ func _connect_signals():
 
 func _setup_platform_specific():
 	"""Setup platform-specific features"""
-	# Hide quit button on web platforms
-	if OS.get_name() == "Web" and quit_button:
-		quit_button.visible = false
-		# Remove from menu buttons array
-		menu_buttons = menu_buttons.filter(func(btn): return btn != quit_button)
-		# Re-setup navigation after removing button
-		MenuNavigationHelper.setup_button_navigation(menu_buttons)
+	# No platform-specific setup needed since quit button is removed
 
 func _input(event):
 	if not visible or not is_menu_active:
@@ -139,9 +124,12 @@ func _navigate_menu(direction: int):
 
 func _update_button_focus():
 	"""Update visual focus indicators"""
+	if not is_inside_tree():
+		return
+		
 	if selected_button_index >= 0 and selected_button_index < menu_buttons.size():
 		var button = menu_buttons[selected_button_index]
-		if button and button.visible:
+		if button and button.visible and button.is_inside_tree():
 			button.grab_focus()
 
 func _activate_selected_button():
@@ -155,6 +143,10 @@ func show_pause_menu():
 	"""Show the pause menu with animation"""
 	print("🎮 Showing pause menu")
 	
+	if not is_inside_tree():
+		print("⚠️ PauseMenu not in tree, cannot show")
+		return
+	
 	visible = true
 	is_menu_active = true
 	selected_button_index = 0
@@ -162,8 +154,8 @@ func show_pause_menu():
 	# Update game info
 	_update_game_info()
 	
-	# Focus first button
-	_update_button_focus()
+	# Focus first button with delay to ensure UI is ready
+	call_deferred("_update_button_focus")
 	
 	# Play entrance animation
 	if animation_player and animation_player.has_animation("slide_in"):
@@ -216,13 +208,7 @@ func _on_restart_pressed():
 	# Show confirmation dialog for restart
 	_show_restart_confirmation()
 
-func _on_settings_pressed():
-	"""Open settings menu"""
-	_play_ui_sound("ui_select")
-	settings_requested.emit()
-	
-	# For now, just show a message
-	print("ℹ️ Settings menu not implemented yet")
+
 
 func _on_level_select_pressed():
 	"""Go to level select"""
@@ -235,11 +221,6 @@ func _on_main_menu_pressed():
 	_play_ui_sound("ui_select")
 	hide_pause_menu()
 	main_menu_requested.emit()
-
-func _on_quit_pressed():
-	"""Quit the game"""
-	_play_ui_sound("ui_select")
-	quit_requested.emit()
 
 func _show_restart_confirmation():
 	"""Show confirmation dialog for restart"""

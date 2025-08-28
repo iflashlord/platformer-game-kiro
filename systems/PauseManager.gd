@@ -66,7 +66,6 @@ func _connect_pause_menu_signals():
 	
 	current_pause_menu.resume_requested.connect(_on_resume_requested)
 	current_pause_menu.restart_requested.connect(_on_restart_requested)
-	current_pause_menu.settings_requested.connect(_on_settings_requested)
 	current_pause_menu.level_select_requested.connect(_on_level_select_requested)
 	current_pause_menu.main_menu_requested.connect(_on_main_menu_requested)
 	current_pause_menu.quit_requested.connect(_on_quit_requested)
@@ -96,47 +95,16 @@ func _on_restart_requested():
 		current_pause_menu = null
 		is_pause_menu_loaded = false
 	
-	# Restart level using LevelLoader
-	if LevelLoader and LevelLoader.has_method("restart"):
-		var success = LevelLoader.restart()
-		if not success:
-			print("❌ LevelLoader restart failed, trying fallback")
-			_restart_current_scene()
-	elif Game and Game.has_method("restart_game"):
+	# Use Game singleton restart method (most reliable)
+	if Game and Game.has_method("restart_game"):
+		print("🔄 Using Game.restart_game()")
 		Game.restart_game()
 	else:
 		# Fallback: reload current scene
+		print("🔄 Using scene reload fallback")
 		_restart_current_scene()
 
-func _on_settings_requested():
-	"""Handle settings request"""
-	print("🎮 Settings requested")
-	
-	# Load and show settings overlay
-	var settings_scene = preload("res://ui/SettingsOverlay.tscn")
-	if not settings_scene:
-		print("❌ Settings overlay scene not found")
-		return
-	
-	var settings_overlay = settings_scene.instantiate()
-	if not settings_overlay:
-		print("❌ Failed to instantiate settings overlay")
-		return
-	
-	# Connect close signal
-	settings_overlay.settings_closed.connect(_on_settings_closed)
-	
-	# Add to current scene
-	var current_scene = get_tree().current_scene
-	if current_scene:
-		current_scene.add_child(settings_overlay)
-		print("✅ Settings overlay shown")
-	else:
-		print("❌ No current scene to add settings overlay to")
 
-func _on_settings_closed():
-	"""Handle settings overlay closed"""
-	print("🎮 Settings overlay closed")
 
 func _on_level_select_requested():
 	"""Handle level select request"""

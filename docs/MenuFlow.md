@@ -1,4 +1,4 @@
-# Menu Flow - HTML5 Platformer
+# Menu Flow - Glitch Dimension
 
 ## Game Flow Overview
 

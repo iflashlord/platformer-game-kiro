@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Advanced Gameplay Systems enhancement transforms the HTML5 platformer into a production-ready game through three interconnected systems: intelligent enemy AI, strategic collectible mechanics, and sophisticated progression tracking. The design emphasizes modularity, performance, and emergent gameplay while maintaining the game's core platforming feel.
+The Advanced Gameplay Systems enhancement transforms Glitch Dimension into a production-ready game through three interconnected systems: intelligent enemy AI, strategic collectible mechanics, and sophisticated progression tracking. The design emphasizes modularity, performance, and emergent gameplay while maintaining the game's core platforming feel.
 
 The architecture leverages Godot's signal system and autoloaded singletons to create loosely coupled systems that can interact seamlessly. Each system is designed to be independently testable and configurable, allowing for easy balancing and content creation.
 

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This specification outlines the requirements for transforming the existing HTML5 Platformer - Dimension Shift Adventure into a production-ready, creative game with consistent high-quality patterns across all elements. The game currently has a solid foundation with core mechanics, systems, and levels, but needs refinement, consistency improvements, and creative enhancements to reach production quality.
+This specification outlines the requirements for transforming the existing Glitch Dimension into a production-ready, creative game with consistent high-quality patterns across all elements. The game currently has a solid foundation with core mechanics, systems, and levels, but needs refinement, consistency improvements, and creative enhancements to reach production quality.
 
 ## Requirements
 

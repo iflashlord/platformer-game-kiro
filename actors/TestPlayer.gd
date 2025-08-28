@@ -39,7 +39,4 @@ func _on_player_landed():
 func _on_player_died():
 	print("💀 Player died!")
 
-func _input(event):
-	if Input.is_action_just_pressed("ui_cancel"):
-		print("🏠 Returning to main menu...")
-		get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+# Input handling removed - Game singleton handles pause/ESC key

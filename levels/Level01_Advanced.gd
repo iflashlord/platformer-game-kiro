@@ -223,11 +223,7 @@ func _on_level_completed():
 	print("  Perfect run: ", perfect_run)
 
 # INPUT HANDLING
-func _input(event):
-	# ESC to return to menu
-	if Input.is_action_just_pressed("ui_cancel"):
-		print("🏠 Returning to main menu from Advanced Level 1")
-		get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+# Input handling removed - Game singleton handles pause/ESC key
 	
 	# R to restart level
 	if Input.is_action_just_pressed("restart"):

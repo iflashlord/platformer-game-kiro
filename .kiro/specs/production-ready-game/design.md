@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design document outlines the architecture and implementation approach for transforming the` HTML5 Platformer into a production-ready game. The design focuses on establishing consistent patterns, improving code quality, enhancing visual polish, and creating a cohesive, professional gaming experience.
+This design document outlines the architecture and implementation approach for transforming Glitch Dimension into a production-ready game. The design focuses on establishing consistent patterns, improving code quality, enhancing visual polish, and creating a cohesive, professional gaming experience.
 
 ## Architecture
 

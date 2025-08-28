@@ -5,7 +5,6 @@ class_name MainMenu
 @onready var play_button: Button = $UI/MainContainer/RightPanel/MenuContainer/ButtonContainer/PlayButton
 @onready var continue_button: Button = $UI/MainContainer/RightPanel/MenuContainer/ButtonContainer/ContinueButton
 @onready var level_select_button: Button = $UI/MainContainer/RightPanel/MenuContainer/ButtonContainer/LevelSelectButton
-@onready var achievements_button: Button = $UI/MainContainer/RightPanel/MenuContainer/ButtonContainer/AchievementsButton
 @onready var options_button: Button = $UI/MainContainer/RightPanel/MenuContainer/ButtonContainer/OptionsButton
 @onready var credits_button: Button = $UI/MainContainer/RightPanel/MenuContainer/ButtonContainer/CreditsButton
 @onready var quit_button: Button = $UI/MainContainer/RightPanel/MenuContainer/ButtonContainer/QuitButton
@@ -57,8 +56,6 @@ func _connect_signals():
 		continue_button.pressed.connect(_on_continue_pressed)
 	if level_select_button:
 		level_select_button.pressed.connect(_on_level_select_pressed)
-	if achievements_button:
-		achievements_button.pressed.connect(_on_achievements_pressed)
 	if options_button:
 		options_button.pressed.connect(_on_options_pressed)
 	if credits_button:
@@ -110,7 +107,6 @@ func _get_all_buttons() -> Array[Button]:
 		play_button,
 		continue_button,
 		level_select_button,
-		achievements_button,
 		options_button,
 		credits_button,
 		quit_button
@@ -129,7 +125,6 @@ func _validate_button_references():
 	print("  Play button: ", play_button != null)
 	print("  Continue button: ", continue_button != null)
 	print("  Level select button: ", level_select_button != null)
-	print("  Achievements button: ", achievements_button != null)
 	print("  Options button: ", options_button != null)
 	print("  Credits button: ", credits_button != null)
 	print("  Quit button: ", quit_button != null)
@@ -167,14 +162,6 @@ func _on_continue_pressed():
 func _on_level_select_pressed():
 	_play_button_sound()
 	_transition_to_scene("res://ui/LevelMapPro.tscn", "Opening level select...")
-
-func _on_achievements_pressed():
-	_play_button_sound()
-	# Check if achievements screen exists
-	if FileAccess.file_exists("res://ui/AchievementsMenu.tscn"):
-		_transition_to_scene("res://ui/AchievementsMenu.tscn", "Loading achievements...")
-	else:
-		_show_coming_soon("Achievements system coming soon!")
 
 func _on_options_pressed():
 	_play_button_sound()

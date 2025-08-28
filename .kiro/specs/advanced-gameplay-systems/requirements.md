@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This feature enhances the HTML5 platformer with advanced gameplay systems that elevate the player experience through intelligent enemy AI behaviors, diverse collectible mechanics with strategic depth, and a sophisticated level progression system. These systems work together to create engaging moment-to-moment gameplay while providing long-term progression goals that keep players invested.
+This feature enhances Glitch Dimension with advanced gameplay systems that elevate the player experience through intelligent enemy AI behaviors, diverse collectible mechanics with strategic depth, and a sophisticated level progression system. These systems work together to create engaging moment-to-moment gameplay while providing long-term progression goals that keep players invested.
 
 The enhancement focuses on three core pillars: making enemies feel alive and challenging through varied AI behaviors, creating collectibles that offer meaningful choices and rewards, and implementing a progression system that provides clear goals and unlocks that feel rewarding to achieve.
 

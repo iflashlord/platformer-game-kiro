@@ -1,4 +1,4 @@
-# Asset Checklist - HTML5 Platformer
+# Asset Checklist - Glitch Dimension
 
 ## Required Assets Status
 
