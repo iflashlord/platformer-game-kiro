@@ -168,30 +168,22 @@ func _get_next_level(current: String) -> String:
 
 func _setup_next_level_button():
 	"""Setup the next level button based on availability"""
-	print("🔍 Setting up next level button...")
-	print("  Current level: ", current_level)
-	print("  Next level: ", next_level)
+	if ErrorHandler:
+		ErrorHandler.debug("Setting up next level button for: " + current_level + " -> " + next_level)
 	
 	if next_level == "":
 		# No next level - this was the final level
 		next_level_button.text = "🏆 GAME COMPLETE!"
 		next_level_button.disabled = true
 		next_level_button.modulate = Color(0.7, 0.7, 0.7)
-		print("  No next level - game complete")
+		# Add completion glow effect
+		_add_completion_glow()
 	else:
-		# Check if current level is marked as completed
-		if has_node("/root/Persistence"):
-			var current_completion = get_node("/root/Persistence").get_level_completion(current_level)
-			print("  Current level completion data: ", current_completion)
-		
-		# Check if next level is unlocked using Persistence system
+		# Force check unlock status after completion
 		var is_unlocked = false
-		if has_node("/root/Persistence") and get_node("/root/Persistence").has_method("is_level_unlocked"):
-			is_unlocked = get_node("/root/Persistence").is_level_unlocked(next_level)
-			print("  Next level unlock check result: ", is_unlocked)
-		elif has_node("/root/LevelLoader"):
-			is_unlocked = get_node("/root/LevelLoader").is_level_unlocked(next_level)
-			print("  Next level unlock check (LevelLoader): ", is_unlocked)
+		if Persistence:
+			# Refresh unlock status
+			is_unlocked = Persistence.is_level_unlocked(next_level)
 		
 		var next_display_name = _get_level_display_name(next_level)
 		var short_name = next_display_name.split(" ", false, 1)[1] if " " in next_display_name else next_display_name
@@ -202,14 +194,16 @@ func _setup_next_level_button():
 			next_level_button.modulate = Color.WHITE
 			# Make it the primary action (focused by default)
 			selected_button_index = 0
-			print("✅ Next level available: ", next_level)
+			# Add unlock animation
+			_animate_unlock_button()
 		else:
-			next_level_button.text = "🔒 LOCKED: " + short_name
+			# Show requirements for unlock
+			var requirements_text = _get_unlock_requirements_text(next_level)
+			next_level_button.text = "🔒 " + short_name + "\n" + requirements_text
 			next_level_button.disabled = true
 			next_level_button.modulate = Color(0.7, 0.7, 0.7)
-			# Focus level select instead
-			selected_button_index = 2
-			print("🔒 Next level locked: ", next_level)
+			# Focus retry button instead
+			selected_button_index = 1
 
 func _save_completion_data():
 	"""Save completion data to persistence system"""
@@ -262,6 +256,85 @@ func _apply_performance_colors(data: Dictionary):
 	elif score >= 1500:
 		score_color = Color.GREEN
 	score_label.modulate = score_color
+	
+	# Add performance rank display
+	_add_performance_rank(data)
+
+func _add_performance_rank(data: Dictionary):
+	"""Add a performance rank display"""
+	var rank = _calculate_performance_rank(data)
+	var rank_color = _get_rank_color(rank)
+	
+	# Update the title to include rank
+	var title_node = $UI/MenuContainer/Header/Title
+	if title_node:
+		title_node.text = "🎉 LEVEL COMPLETED! 🎉\nRank: " + rank
+		title_node.modulate = rank_color
+
+func _calculate_performance_rank(data: Dictionary) -> String:
+	"""Calculate performance rank based on completion data"""
+	var score = data.get("score", 0)
+	var hearts_remaining = data.get("hearts_remaining", 5)
+	var gems_found = data.get("gems_found", 0)
+	var total_gems = data.get("total_gems", 0)
+	var completion_time = data.get("completion_time", 999.0)
+	
+	var rank_points = 0
+	
+	# Score contribution (0-40 points)
+	if score >= 300:
+		rank_points += 40
+	elif score >= 200:
+		rank_points += 30
+	elif score >= 100:
+		rank_points += 20
+	elif score >= 50:
+		rank_points += 10
+	
+	# Hearts contribution (0-30 points)
+	rank_points += hearts_remaining * 6
+	
+	# Gems contribution (0-20 points)
+	if total_gems > 0:
+		rank_points += (gems_found * 20) / total_gems
+	
+	# Time contribution (0-10 points)
+	if completion_time <= 30:
+		rank_points += 10
+	elif completion_time <= 60:
+		rank_points += 5
+	
+	# Determine rank
+	if rank_points >= 90:
+		return "S+"
+	elif rank_points >= 80:
+		return "S"
+	elif rank_points >= 70:
+		return "A"
+	elif rank_points >= 60:
+		return "B"
+	elif rank_points >= 50:
+		return "C"
+	else:
+		return "D"
+
+func _get_rank_color(rank: String) -> Color:
+	"""Get color for performance rank"""
+	match rank:
+		"S+":
+			return Color.GOLD
+		"S":
+			return Color(1.0, 0.8, 0.0)  # Orange-gold
+		"A":
+			return Color.GREEN
+		"B":
+			return Color.CYAN
+		"C":
+			return Color.YELLOW
+		"D":
+			return Color.WHITE
+		_:
+			return Color.WHITE
 
 # Button callbacks
 func _on_next_level_pressed():
@@ -451,10 +524,72 @@ func _animate_button_scale(button: Button, target_scale: float):
 		tween.set_trans(Tween.TRANS_BACK)
 		tween.tween_property(button, "scale", Vector2(target_scale, target_scale), 0.1)
 
+func _get_unlock_requirements_text(level_id: String) -> String:
+	"""Get text describing unlock requirements"""
+	if not Persistence:
+		return "Complete previous level"
+	
+	# Load level config to check requirements
+	var level_config_path = "res://data/level_map_config.json"
+	if not FileAccess.file_exists(level_config_path):
+		return "Complete previous level"
+	
+	var file = FileAccess.open(level_config_path, FileAccess.READ)
+	if not file:
+		return "Complete previous level"
+	
+	var json_string = file.get_as_text()
+	file.close()
+	
+	var json = JSON.new()
+	if json.parse(json_string) != OK:
+		return "Complete previous level"
+	
+	var config = json.data
+	var level_nodes = config.get("level_nodes", [])
+	
+	# Find the level
+	for node in level_nodes:
+		if node.get("id", "") == level_id:
+			var requirements = node.get("unlock_requirements", {})
+			
+			if "min_score" in requirements:
+				var required_score = requirements["min_score"]
+				return "Need " + str(required_score) + " points"
+			elif "deaths_max" in requirements:
+				var max_deaths = requirements["deaths_max"]
+				return "Max " + str(max_deaths) + " deaths"
+			elif "relic_count" in requirements:
+				var relic_count = requirements["relic_count"]
+				return "Need " + str(relic_count) + " relics"
+			else:
+				return "Complete previous level"
+	
+	return "Complete previous level"
+
+func _add_completion_glow():
+	"""Add a golden glow effect for game completion"""
+	var tween = create_tween()
+	tween.set_loops()
+	tween.tween_property(next_level_button, "modulate", Color(1.2, 1.1, 0.8), 1.0)
+	tween.tween_property(next_level_button, "modulate", Color(0.9, 0.8, 0.6), 1.0)
+
+func _animate_unlock_button():
+	"""Animate the next level button when it's unlocked"""
+	# Start with a slight scale and glow
+	next_level_button.scale = Vector2(0.95, 0.95)
+	next_level_button.modulate = Color(0.8, 1.2, 0.8)
+	
+	var tween = create_tween()
+	tween.parallel().tween_property(next_level_button, "scale", Vector2(1.0, 1.0), 0.3)
+	tween.parallel().tween_property(next_level_button, "modulate", Color.WHITE, 0.3)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_BACK)
+
 func _play_ui_sound(sound_name: String):
 	"""Play UI sound with fallback"""
-	if has_node("/root/Audio") and get_node("/root/Audio").has_method("play_sfx"):
-		get_node("/root/Audio").play_sfx(sound_name)
+	if Audio and Audio.has_method("play_sfx"):
+		Audio.play_sfx(sound_name)
 
 func get_menu_buttons() -> Array[Button]:
 	"""Get array of menu buttons"""

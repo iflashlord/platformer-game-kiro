@@ -471,6 +471,17 @@ func is_level_unlocked(level_name: String) -> bool:
 			_:
 				return false
 	
+	# Check dev mode first - if unlock_all is true, unlock everything
+	var map_config = level_config.get("map_config", {})
+	var dev_mode = map_config.get("dev_mode", {})
+	if dev_mode.get("unlock_all", false):
+		return true
+	
+	# Check if level is in the unlocked_levels array (manually unlocked)
+	var unlocked_levels = current_profile.get("unlocked_levels", [])
+	if level_name in unlocked_levels:
+		return true
+	
 	# Find level in config
 	var level_nodes = level_config.get("level_nodes", [])
 	var level_data = null
@@ -645,13 +656,23 @@ func _check_and_unlock_next_levels(completed_level: String, completion_data: Dic
 	var level_nodes = level_config.get("level_nodes", [])
 	var newly_unlocked = []
 	
-	# Check each level to see if it should be unlocked
+	# Always unlock the immediate next level when completing any level
+	var next_level = get_next_level_in_progression(completed_level)
+	if next_level != "" and not is_level_unlocked(next_level):
+		# Mark as unlocked in profile
+		if not "unlocked_levels" in current_profile:
+			current_profile["unlocked_levels"] = []
+		if not next_level in current_profile.unlocked_levels:
+			current_profile.unlocked_levels.append(next_level)
+		newly_unlocked.append(next_level)
+	
+	# Also check other levels that might be unlocked by meeting requirements
 	for node in level_nodes:
 		var level_id = node.get("id", "")
 		var requirements = node.get("unlock_requirements", {})
 		
-		# Skip if no requirements or already unlocked
-		if requirements.is_empty() or is_level_unlocked(level_id):
+		# Skip if no requirements, already unlocked, or already in newly_unlocked
+		if requirements.is_empty() or is_level_unlocked(level_id) or level_id in newly_unlocked:
 			continue
 		
 		# Check if this level's requirements are now met
@@ -660,11 +681,36 @@ func _check_and_unlock_next_levels(completed_level: String, completion_data: Dic
 		# Check previous level requirement
 		if "previous_level" in requirements:
 			var prev_level = requirements["previous_level"]
-			if prev_level != completed_level:
-				continue  # This level doesn't depend on the one we just completed
+			var prev_completion = get_level_completion(prev_level)
+			if not prev_completion.get("completed", false):
+				should_unlock = false
 		
-		# Check all requirements are met
-		if is_level_unlocked(level_id):
+		# Check minimum score requirement
+		if should_unlock and "min_score" in requirements:
+			var required_score = requirements["min_score"]
+			var prev_level = requirements.get("previous_level", "")
+			if prev_level != "":
+				var prev_completion = get_level_completion(prev_level)
+				var prev_score = prev_completion.get("score", 0)
+				if prev_score < required_score:
+					should_unlock = false
+		
+		# Check maximum deaths requirement
+		if should_unlock and "deaths_max" in requirements:
+			var max_deaths = requirements["deaths_max"]
+			var prev_level = requirements.get("previous_level", "")
+			if prev_level != "":
+				var prev_completion = get_level_completion(prev_level)
+				var deaths = prev_completion.get("deaths", 0)
+				if deaths > max_deaths:
+					should_unlock = false
+		
+		if should_unlock:
+			# Mark as unlocked in profile
+			if not "unlocked_levels" in current_profile:
+				current_profile["unlocked_levels"] = []
+			if not level_id in current_profile.unlocked_levels:
+				current_profile.unlocked_levels.append(level_id)
 			newly_unlocked.append(level_id)
 	
 	# Notify about newly unlocked levels
