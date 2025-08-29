@@ -15,7 +15,7 @@ func _ready():
 		Game.game_paused.connect(_on_game_paused)
 		Game.game_resumed.connect(_on_game_resumed)
 	
-	print("🎮 PauseManager initialized")
+
 
 func _on_game_paused():
 	"""Handle game pause event"""
@@ -33,12 +33,14 @@ func show_pause_menu():
 	
 	# Create pause menu if it doesn't exist
 	if not pause_menu_scene:
-		print("❌ Pause menu scene not loaded")
+		if ErrorHandler:
+			ErrorHandler.error("Pause menu scene not loaded", "PauseManager")
 		return
 	
 	current_pause_menu = pause_menu_scene.instantiate()
 	if not current_pause_menu:
-		print("❌ Failed to instantiate pause menu")
+		if ErrorHandler:
+			ErrorHandler.error("Failed to instantiate pause menu", "PauseManager")
 		return
 	
 	# Connect pause menu signals
@@ -50,9 +52,11 @@ func show_pause_menu():
 		current_scene.add_child(current_pause_menu)
 		current_pause_menu.show_pause_menu()
 		is_pause_menu_loaded = true
-		print("✅ Pause menu shown")
+		if ErrorHandler:
+			ErrorHandler.debug("Pause menu shown successfully", "PauseManager")
 	else:
-		print("❌ No current scene to add pause menu to")
+		if ErrorHandler:
+			ErrorHandler.error("No current scene to add pause menu to", "PauseManager")
 
 func hide_pause_menu():
 	"""Hide the pause menu"""
@@ -73,21 +77,16 @@ func _connect_pause_menu_signals():
 # Signal handlers
 func _on_resume_requested():
 	"""Handle resume request"""
-	print("🎮 Resume requested")
 	if Game:
 		Game.toggle_pause()  # This will unpause and hide menu
 
 func _on_restart_requested():
 	"""Handle restart request"""
-	print("🎮 PauseManager: Restart requested - received signal")
-	
-	# Unpause first
+	# Unpause and clean up
 	if Game:
 		Game.is_paused = false
 		get_tree().paused = false
-		print("🎮 PauseManager: Game unpaused")
 	
-	# Hide pause menu
 	hide_pause_menu()
 	
 	# Clean up pause menu
@@ -95,23 +94,17 @@ func _on_restart_requested():
 		current_pause_menu.queue_free()
 		current_pause_menu = null
 		is_pause_menu_loaded = false
-		print("🎮 PauseManager: Pause menu cleaned up")
 	
-	# Use Game singleton restart method (most reliable)
+	# Restart the game
 	if Game and Game.has_method("restart_game"):
-		print("🔄 PauseManager: Calling Game.restart_game()")
 		Game.restart_game()
 	else:
-		# Fallback: reload current scene
-		print("🔄 PauseManager: Using scene reload fallback")
 		_restart_current_scene()
 
 
 
 func _on_level_select_requested():
 	"""Handle level select request"""
-	print("🎮 Level select requested")
-	
 	# Unpause and go to level select
 	if Game:
 		Game.is_paused = false
@@ -121,8 +114,6 @@ func _on_level_select_requested():
 
 func _on_main_menu_requested():
 	"""Handle main menu request"""
-	print("🎮 Main menu requested")
-	
 	# Unpause and go to main menu
 	if Game:
 		Game.is_paused = false
@@ -132,40 +123,47 @@ func _on_main_menu_requested():
 
 func _on_quit_requested():
 	"""Handle quit request"""
-	print("🎮 Quit requested")
 	get_tree().quit()
 
 # Helper functions
 func _transition_to_scene(scene_path: String):
 	"""Safely transition to a scene"""
-	if not FileAccess.file_exists(scene_path):
-		print("❌ Scene not found: ", scene_path)
-		return
-	
-	# Clean up pause menu
+	# Clean up pause menu first
 	if current_pause_menu:
 		current_pause_menu.queue_free()
 		current_pause_menu = null
 		is_pause_menu_loaded = false
 	
-	# Change scene
-	var result = get_tree().change_scene_to_file(scene_path)
-	if result != OK:
-		print("❌ Failed to load scene: ", scene_path)
+	# Use SceneManager for better transitions
+	if SceneManager:
+		SceneManager.change_scene(scene_path)
+	else:
+		# Fallback
+		if not FileAccess.file_exists(scene_path):
+			if ErrorHandler:
+				ErrorHandler.error("Scene not found: " + scene_path, "PauseManager")
+			return
+		
+		var result = get_tree().change_scene_to_file(scene_path)
+		if result != OK and ErrorHandler:
+			ErrorHandler.report_scene_load_error(scene_path, result)
 
 func _restart_current_scene():
 	"""Restart the current scene as fallback"""
 	var current_scene = get_tree().current_scene
 	if not current_scene:
-		print("❌ No current scene to restart")
+		if ErrorHandler:
+			ErrorHandler.error("No current scene to restart", "PauseManager")
 		return
 	
 	var scene_path = current_scene.scene_file_path
 	if scene_path == "":
-		print("❌ Current scene has no file path")
+		if ErrorHandler:
+			ErrorHandler.error("Current scene has no file path", "PauseManager")
 		return
 	
-	print("🔄 Restarting scene: ", scene_path)
+	if ErrorHandler:
+		ErrorHandler.debug("Restarting scene: " + scene_path, "PauseManager")
 	_transition_to_scene(scene_path)
 
 func cleanup():

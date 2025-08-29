@@ -18,11 +18,6 @@ class_name MainMenu
 var has_save_data: bool = false
 
 func _ready():
-	print("🏠 MainMenu _ready() starting...")
-	
-	# Check if all button references are valid
-	_validate_button_references()
-	
 	_setup_ui()
 	_connect_signals()
 	_setup_platform_specific()
@@ -32,8 +27,6 @@ func _ready():
 	# Start menu music
 	if Audio and Audio.has_method("play_music"):
 		Audio.play_music("menu_theme")
-	
-	print("✅ MainMenu _ready() completed successfully")
 
 func _setup_ui():
 	# Set version from project settings
@@ -121,16 +114,23 @@ func _get_visible_buttons() -> Array[Button]:
 
 func _validate_button_references():
 	"""Validate that all button references are properly set"""
-	print("🔍 Validating button references:")
-	print("  Play button: ", play_button != null)
-	print("  Continue button: ", continue_button != null)
-	print("  Level select button: ", level_select_button != null)
-	print("  Options button: ", options_button != null)
-	print("  Credits button: ", credits_button != null)
-	print("  Quit button: ", quit_button != null)
-	print("  Version label: ", version_label != null)
-	print("  Web info: ", web_info != null)
-	print("  Animation player: ", animation_player != null)
+	if ErrorHandler and OS.is_debug_build():
+		ErrorHandler.debug("Validating MainMenu button references", "MainMenu")
+		var validation_results = {
+			"play_button": play_button != null,
+			"continue_button": continue_button != null,
+			"level_select_button": level_select_button != null,
+			"options_button": options_button != null,
+			"credits_button": credits_button != null,
+			"quit_button": quit_button != null,
+			"version_label": version_label != null,
+			"web_info": web_info != null,
+			"animation_player": animation_player != null
+		}
+		
+		for key in validation_results:
+			if not validation_results[key]:
+				ErrorHandler.warning("Missing UI element: " + key, "MainMenu")
 
 # Button callbacks
 func _on_play_pressed():
@@ -181,18 +181,19 @@ func _on_quit_pressed():
 
 # Helper functions
 func _transition_to_scene(scene_path: String, message: String = ""):
-	if message:
-		print("🎮 ", message)
-	
-	if not FileAccess.file_exists(scene_path):
-		print("❌ Scene not found: ", scene_path)
-		_show_error("Scene not found: " + scene_path.get_file())
-		return
-	
-	var result = get_tree().change_scene_to_file(scene_path)
-	if result != OK:
-		print("❌ Failed to load scene: ", scene_path, " Error: ", result)
-		_show_error("Failed to load scene")
+	if SceneManager:
+		var success = SceneManager.change_scene(scene_path)
+		if not success:
+			_show_error("Failed to load scene: " + scene_path.get_file())
+	else:
+		# Fallback if SceneManager not available
+		if not FileAccess.file_exists(scene_path):
+			_show_error("Scene not found: " + scene_path.get_file())
+			return
+		
+		var result = get_tree().change_scene_to_file(scene_path)
+		if result != OK:
+			_show_error("Failed to load scene")
 
 func _play_button_sound():
 	_play_ui_sound("ui_select")
@@ -250,12 +251,12 @@ func _animate_button_scale(button: Button, target_scale: float):
 		tween.tween_property(button, "scale", Vector2(target_scale, target_scale), 0.1)
 
 func _show_error(message: String):
-	print("❌ Error: ", message)
 	# Could show an error popup here
+	push_error("MainMenu: " + message)
 
 func _show_coming_soon(message: String):
-	print("ℹ️ ", message)
 	# Could show a coming soon popup here
+	pass
 
 # Input handling
 func _input(event):

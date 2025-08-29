@@ -26,7 +26,6 @@ var selected_button_index: int = 0
 var menu_buttons: Array[Button] = []
 
 func _ready():
-	print("🎮 PauseMenu _ready() called")
 	_setup_ui()
 	_connect_signals()
 	_setup_platform_specific()
@@ -34,8 +33,6 @@ func _ready():
 	# Start hidden
 	visible = false
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	
-	print("✅ PauseMenu initialized")
 
 func _setup_ui():
 	"""Setup UI elements and button array"""
@@ -141,10 +138,7 @@ func _activate_selected_button():
 
 func show_pause_menu():
 	"""Show the pause menu with animation"""
-	print("🎮 Showing pause menu")
-	
 	if not is_inside_tree():
-		print("⚠️ PauseMenu not in tree, cannot show")
 		return
 	
 	visible = true
@@ -166,8 +160,6 @@ func show_pause_menu():
 
 func hide_pause_menu():
 	"""Hide the pause menu"""
-	print("🎮 Hiding pause menu")
-	
 	visible = false
 	is_menu_active = false
 
@@ -203,10 +195,7 @@ func _on_resume_pressed():
 
 func _on_restart_pressed():
 	"""Restart the current level"""
-	print("🎮 PauseMenu: Restart button pressed")
 	_play_ui_sound("ui_select")
-	
-	# Show confirmation dialog for restart
 	_show_restart_confirmation()
 
 
@@ -227,7 +216,6 @@ func _show_restart_confirmation():
 	"""Show confirmation dialog for restart"""
 	# For now, just restart immediately
 	# TODO: Add proper confirmation dialog
-	print("🔄 PauseMenu: Emitting restart_requested signal...")
 	hide_pause_menu()
 	restart_requested.emit()
 

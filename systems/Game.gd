@@ -28,11 +28,10 @@ func _ready():
 func _input(event):
 	if Input.is_action_just_pressed("pause"):
 		toggle_pause()
-	elif Input.is_action_just_pressed("debug_toggle"):
-		DebugSettings.toggle_debug_borders()
-		print("Debug borders toggled: ", DebugSettings.show_debug_borders)
 	elif Input.is_action_just_pressed("restart"):
 		restart_game()
+	elif OS.is_debug_build() and Input.is_action_just_pressed("debug_toggle"):
+		DebugSettings.toggle_debug_borders()
 
 func _process(delta):
 	if is_trial_mode and trial_time > 0:
@@ -41,8 +40,7 @@ func _process(delta):
 		
 		if trial_time <= 0:
 			trial_time = 0
-			# Time's up!
-			print("Time's up! Trial failed!")
+			_handle_trial_timeout()
 
 func toggle_pause():
 	is_paused = !is_paused
@@ -54,59 +52,63 @@ func toggle_pause():
 		game_resumed.emit()
 
 func restart_game():
-	print("🔄 Game: restart_game() called")
-	
-	# Unpause first
+	# Unpause and reset game state
 	get_tree().paused = false
 	is_paused = false
-	
-	# Reset game state
 	score = 0
 	trial_time = 0.0
 	reset_collectibles()
-	print("🔄 Game: Basic state reset complete")
 	
-	# Track level attempt
-	if current_level != "":
+	# Track level attempt for analytics
+	if current_level != "" and Persistence:
 		Persistence.increment_level_attempts(current_level)
-		print("🔄 Game: Level attempt tracked for: ", current_level)
 	
 	# Emit signals for UI updates
 	score_changed.emit(score)
 	game_restarted.emit()
-	print("🔄 Game: Signals emitted")
 	
-	# Reset systems
-	if HealthSystem and HealthSystem.has_method("reset_health"):
-		HealthSystem.reset_health()
-		print("🔄 Game: Health reset to full")
+	# Reset core systems
+	_reset_game_systems()
 	
-	if GameTimer and GameTimer.has_method("reset_timer"):
-		GameTimer.reset_timer()
-		print("🔄 Game: Timer reset")
-	
-	# Reload the scene (this will reset player position and level state)
-	print("🔄 Game: Reloading scene to restart level")
+	# Reload the scene to reset level state
 	_restart_current_scene()
 
 func _restart_current_scene():
-	"""Restart current scene as fallback"""
-	print("🔄 Game: _restart_current_scene() called")
+	"""Reload the current scene to reset level state"""
 	var current_scene = get_tree().current_scene
-	print("🔄 Game: Current scene: ", current_scene)
+	if not current_scene:
+		if ErrorHandler:
+			ErrorHandler.error("No current scene to reload", "Game.restart")
+		return
 	
-	if current_scene:
-		var scene_path = current_scene.scene_file_path
-		print("🔄 Game: Scene path: ", scene_path)
-		
-		if scene_path != "":
-			print("🔄 Game: Calling get_tree().change_scene_to_file(", scene_path, ")")
-			var result = get_tree().change_scene_to_file(scene_path)
-			print("🔄 Game: Scene change result: ", result)
-		else:
-			print("❌ Game: Current scene path is empty, cannot reload.")
+	var scene_path = current_scene.scene_file_path
+	if scene_path == "":
+		if ErrorHandler:
+			ErrorHandler.error("Current scene has no file path", "Game.restart")
+		return
+	
+	# Use SceneManager if available, otherwise fallback
+	if SceneManager:
+		SceneManager.change_scene(scene_path, false)
 	else:
-		print("❌ Game: No current scene to reload.")
+		var result = get_tree().change_scene_to_file(scene_path)
+		if result != OK and ErrorHandler:
+			ErrorHandler.report_scene_load_error(scene_path, result)
+
+func _reset_game_systems():
+	"""Reset all game systems to initial state"""
+	if HealthSystem and HealthSystem.has_method("reset_health"):
+		HealthSystem.reset_health()
+	
+	if GameTimer and GameTimer.has_method("reset_timer"):
+		GameTimer.reset_timer()
+
+func _handle_trial_timeout():
+	"""Handle when trial mode time runs out"""
+	# Could show game over screen or restart level
+	# For now, just emit a signal that UI can listen to
+	if current_level != "":
+		show_level_results(current_level, 0.0, score, total_gems, 0)
 
 func reset_collectibles():
 	fruit_counts.clear()
@@ -140,9 +142,8 @@ func collect_fruit(fruit_type: int):
 		fruit_collected.emit(fruit_type, fruit_counts[fruit_type])
 		
 		# Update persistence statistics
-		Persistence.update_statistics("total_collectibles", 1)
-		
-		print("Fruit collected! Type: ", fruit_type, " Total: ", total_fruits)
+		if Persistence:
+			Persistence.update_statistics("total_collectibles", 1)
 
 func collect_gem(gem_type: int):
 	if gem_type in gem_counts:
@@ -151,9 +152,8 @@ func collect_gem(gem_type: int):
 		gem_collected.emit(gem_type, gem_counts[gem_type])
 		
 		# Update persistence statistics
-		Persistence.update_statistics("total_collectibles", 1)
-		
-		print("Gem collected! Type: ", gem_type, " Total: ", total_gems)
+		if Persistence:
+			Persistence.update_statistics("total_collectibles", 1)
 
 func get_fruit_count(fruit_type: int) -> int:
 	return fruit_counts.get(fruit_type, 0)
@@ -203,16 +203,36 @@ func subtract_time(amount: float):
 	if is_trial_mode:
 		trial_time = max(0, trial_time - amount)
 		time_changed.emit(trial_time)
-		print("Time reduced by ", amount, "s! Remaining: ", trial_time, "s")
 
 func get_trial_time() -> float:
 	return trial_time
 
 func show_level_results(level_name: String, time: float, final_score: int, gems: int, total_gems: int):
-	print("Level Results: ", level_name)
-	print("Time: ", time, "s")
-	print("Score: ", final_score)
-	print("Gems: ", gems, "/", total_gems)
+	"""Display level completion results"""
+	# Save completion data
+	if Persistence:
+		var completion_data = {
+			"level_name": level_name,
+			"completion_time": time,
+			"score": final_score,
+			"gems_found": gems,
+			"total_gems": total_gems,
+			"hearts_remaining": HealthSystem.get_current_health() if HealthSystem else 5
+		}
+		Persistence.save_level_completion(level_name, completion_data)
 	
-	# This would typically show a results screen
-	# For now, just print the results
+	# Load results screen
+	var results_scene = preload("res://ui/LevelResults.tscn")
+	if results_scene:
+		var results = results_scene.instantiate()
+		if results and results.has_method("setup_results"):
+			var results_data = {
+				"level_name": level_name,
+				"completion_time": time,
+				"score": final_score,
+				"gems_found": gems,
+				"total_gems": total_gems,
+				"hearts_remaining": HealthSystem.get_current_health() if HealthSystem else 5
+			}
+			results.setup_results(results_data)
+			get_tree().current_scene.add_child(results)

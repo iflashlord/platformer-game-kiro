@@ -26,6 +26,13 @@ buses/default_bus_layout="res://audio/sfx/default_bus_layout.tres"
 
 [autoload]
 
+ErrorHandler="*res://systems/ErrorHandler.gd"
+Settings="*res://systems/Settings.gd"
+PerformanceMonitor="*res://systems/PerformanceMonitor.gd"
+InputManager="*res://systems/InputManager.gd"
+SceneManager="*res://systems/SceneManager.gd"
+Analytics="*res://systems/Analytics.gd"
+ConfigManager="*res://systems/ConfigManager.gd"
 Game="*res://systems/Game.gd"
 LevelLoader="*res://systems/LevelLoader.gd"
 Audio="*res://systems/Audio.gd"
@@ -51,7 +58,6 @@ gdscript/warnings/treat_warnings_as_errors=false
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/mode=3
-window/size/resizable=true
 window/stretch/mode="canvas_items"
 window/handheld/orientation=1
 

@@ -16,8 +16,6 @@ class_name GameHUD
 var is_paused := false
 
 func _ready():
-	print("💖 GameHUD _ready() called")
- 
 	# Initialize heart display
 	_update_health_display(5, 5)
 	
@@ -84,8 +82,6 @@ func _on_heart_lost():
 	
 
 func _update_health_display(current_health: int, max_health: int):
-	print("💖 GameHUD: Updating health display - ", current_health, "/", max_health)
-	
 	_setHearts(current_health)
 	
 
@@ -153,5 +149,4 @@ func _on_game_resumed():
 
 func update_health(current_health: int, max_health: int = 5):
 	"""Direct method to update health display - can be called from levels"""
-	print("💖 Updating health display: ", current_health, "/", max_health)
 	_update_health_display(current_health, max_health)
