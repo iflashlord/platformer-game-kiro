@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=4 uid="uid://do2g5aru41o4q"]
 
-[ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
+[ext_resource type="Script" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
@@ -61,9 +61,6 @@ scale = Vector2(15.952, 0.555505)
 [node name="DeathZone2" parent="InteractiveElements" instance=ExtResource("15_080q8")]
 position = Vector2(1064, 632)
 scale = Vector2(12.36, 1)
-
-[node name="Crate" parent="InteractiveElements" instance=ExtResource("14_svrvc")]
-position = Vector2(197, 245)
 
 [node name="Crate2" parent="InteractiveElements" instance=ExtResource("14_svrvc")]
 position = Vector2(83, 411)
@@ -153,5 +150,4 @@ ESC: Menu | R: Restart | Enter: Stats
 ✨ All components are reusable and self-contained!"
 
 [node name="FlyingEnemy" parent="." instance=ExtResource("16_haklp")]
-position = Vector2(286, 250)
-flight_pattern = "Circular"
+position = Vector2(161, 380)
