@@ -1,9 +1,10 @@
-[gd_scene load_steps=17 format=4 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=18 format=4 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://c8yay2n7m6wqp" path="res://ui/HintDisplay.tscn" id="4_hint"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
@@ -29,6 +30,10 @@ position = Vector2(17, 304)
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="GameHUD" parent="UI" instance=ExtResource("3_hud")]
+
+[node name="HintDisplay" parent="UI" instance=ExtResource("4_hint")]
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="Level" type="Node2D" parent="."]
 
@@ -98,6 +103,23 @@ position = Vector2(679, 372)
 
 [node name="HintArea" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
 position = Vector2(58, 432)
+hint_message = "Welcome to the tutorial! Use WASD or arrow keys to move, SPACE to jump."
+hint_title = "Movement Tutorial"
+
+[node name="HintArea2" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(300, 400)
+hint_message = "Press F to switch between dimensions A and B. Some platforms only exist in one dimension!"
+hint_title = "Dimension Switching"
+
+[node name="HintArea3" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(520, 348)
+hint_message = "This is a checkpoint! When you die, you'll respawn here instead of the beginning."
+hint_title = "Checkpoint"
+
+[node name="HintArea4" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(800, 300)
+hint_message = "Jump on enemies to defeat them! Approach from above to stomp them safely."
+hint_title = "Enemy Combat"
 
 [node name="Enemies" type="Node2D" parent="."]
 

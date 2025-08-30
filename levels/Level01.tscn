@@ -1,12 +1,10 @@
-[gd_scene load_steps=17 format=4 uid="uid://do2g5aru41o4q"]
+[gd_scene load_steps=15 format=4 uid="uid://do2g5aru41o4q"]
 
-[ext_resource type="Script" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
-[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx2" path="res://actors/CollectibleFruit.tscn" id="12_haklp"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
 [ext_resource type="TileSet" uid="uid://bqxvw4rkqh00i" path="res://content/Tileset.tres" id="14_080q8"]
 [ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="15_080q8"]
@@ -18,7 +16,6 @@
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
 
 [node name="Level00" type="Node2D"]
-script = ExtResource("1_simple")
 
 [node name="LevelManager" type="Node" parent="."]
 script = ExtResource("18_level_manager")
@@ -94,14 +91,44 @@ position = Vector2(1160, 350)
 [node name="JumpPad1" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
 position = Vector2(679, 372)
 
-[node name="CollectibleFruit" parent="InteractiveElements" instance=ExtResource("12_haklp")]
+[node name="CollectibleFruit" parent="InteractiveElements"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(49, 380)
+script = null
 
-[node name="CollectibleFruit2" parent="InteractiveElements" instance=ExtResource("12_haklp")]
+[node name="CollectibleFruit2" parent="InteractiveElements"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(104, 290)
+script = null
 
-[node name="CollectibleFruit3" parent="InteractiveElements" instance=ExtResource("12_haklp")]
+[node name="CollectibleFruit3" parent="InteractiveElements"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(179, 204)
+script = null
 
 [node name="Enemies" type="Node2D" parent="."]
 
