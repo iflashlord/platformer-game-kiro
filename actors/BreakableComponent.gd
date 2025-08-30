@@ -103,6 +103,9 @@ func _start_shaking():
 	
 	is_shaking = true
 	shake_started.emit()
+
+	# Start low-level particle emission during shaking
+	_set_particle_emission_level("shaking")
 	
 	print("🫨 Platform started shaking!")
 	
@@ -124,6 +127,10 @@ func _on_shake_timer_timeout():
 	print("🫨 Shake timer finished")
 	is_shaking = false
 	
+	# Stop shaking particles
+	if break_particles:
+		break_particles.emitting = false
+	
 	# Reset position
 	if platform:
 		platform.position = original_position
@@ -141,26 +148,8 @@ func _break_platform():
 	if platform:
 		platform.position = original_position
 	
-	# Configure and emit particles BEFORE hiding platform
-	if break_particles:
-		# Ensure particles are properly configured for current platform size
-		_setup_particles()
-		
-		# Debug: Print detailed positioning info
-		print("🎆 PARTICLE DEBUG:")
-		print("  Platform global position: ", platform.global_position)
-		print("  Platform size: ", Vector2(platform.width, platform.height))
-		print("  Platform NinePatch position: ", platform.nine_patch.position if platform.nine_patch else "N/A")
-		print("  Platform NinePatch size: ", platform.nine_patch.size if platform.nine_patch else "N/A")
-		print("  Particle local position: ", break_particles.position)
-		print("  Particle global position: ", break_particles.global_position)
-		
-		# Make sure particles are visible and restart emission
-		break_particles.emitting = false  # Stop any previous emission
-		break_particles.restart()  # Reset particle system
-		break_particles.emitting = true  # Start new emission
-		
-		print("🎆 Break particles triggered - Amount: ", break_particles.amount, " Position: ", break_particles.position)
+	# No particles during breaking - only visual break effects from platform
+	print("💥 Platform breaking - no particles needed")
 	
 	# Play break sound (if audio system exists)
 	if has_node("/root/Audio"):
@@ -270,30 +259,66 @@ func _setup_particles():
 	if not break_particles or not platform:
 		return
 	
-	# CRITICAL FIX: Position particles at the center of the platform's visual area
-	# The platform's NinePatchRect starts at (0,0) and has size (width, height)
-	# So the center is at (width/2, height/2)
+	# CRITICAL FIX: Position particles at the center of the platform using platform.position
+	# Since platform.position works better, use it directly with platform center offset
 	var particle_center = Vector2(platform.width / 2, platform.height / 2)
-	break_particles.position = particle_center
+	var current_position = platform.position
+	var adjusted_position = platform.position + particle_center  # Adjust for platform center
+	break_particles.position = adjusted_position  # Position relative to platform center
 	
-	# Scale particle amount based on platform size (more particles for bigger platforms)
-	var platform_area = platform.width * platform.height
-	var base_area = 96.0 * 32.0  # Default platform size
-	var particle_scale = platform_area / base_area
-	break_particles.amount = int(50 * particle_scale)  # Scale from base 50 particles
+	# Use platform texture for particles to match the platform material
+	if platform.nine_patch and platform.nine_patch.texture:
+		break_particles.texture = platform.nine_patch.texture
 	
-	# Configure emission shape to cover the platform area
+	# Configure emission shape to match platform dimensions exactly
 	var material = break_particles.process_material as ParticleProcessMaterial
 	if material:
 		# Set emission shape to box to cover platform area
 		material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 		material.emission_box_extents = Vector3(platform.width / 2, platform.height / 2, 0)
 		
-		# Adjust particle spread based on platform size
+		# Configure particles to look like platform pieces
+		material.direction = Vector3(0, -1, 0)
+		material.spread = 45.0
 		material.initial_velocity_min = 30.0
 		material.initial_velocity_max = 100.0
-		material.gravity = Vector3(0, 500, 0)  # Reasonable gravity
-		material.scale_min = 0.3
-		material.scale_max = 1.0
+		material.angular_velocity_min = -180.0
+		material.angular_velocity_max = 180.0
+		material.gravity = Vector3(0, 980, 0)  # Realistic gravity
+		material.scale_min = 0.2
+		material.scale_max = 0.6
+		
+		# Set color to match platform type
+		match platform.platform_type:
+			platform.PlatformType.YELLOW:
+				material.color = Color(1.0, 0.9, 0.6, 1.0)
+			platform.PlatformType.GREEN:
+				material.color = Color(0.6, 1.0, 0.6, 1.0)
+			platform.PlatformType.EMPTY:
+				material.color = Color(0.8, 0.8, 0.8, 1.0)
+			_:
+				material.color = Color.WHITE
 	
-	print("🎆 Particles configured - Platform size: ", Vector2(platform.width, platform.height), " Particle position: ", break_particles.position, " Amount: ", break_particles.amount, " Box extents: ", Vector3(platform.width / 2, platform.height / 2, 0))
+	print("🎆 Particles configured - Platform size: ", Vector2(platform.width, platform.height), " Particle position: ", break_particles.position, " Texture: ", break_particles.texture.resource_path if break_particles.texture else "None")
+
+# Set particle emission for shaking only
+func _set_particle_emission_level(level: String):
+	if not break_particles or not platform:
+		return
+	
+	# Scale particle amount based on platform size
+	var platform_area = platform.width * platform.height
+	var base_area = 96.0 * 32.0  # Default platform size
+	var particle_scale = platform_area / base_area
+	
+	if level == "shaking":
+		# Low emission during shaking - just dust/debris
+		break_particles.amount = int(15 * particle_scale)
+		break_particles.emitting = true
+		var material = break_particles.process_material as ParticleProcessMaterial
+		if material:
+			material.initial_velocity_min = 10.0
+			material.initial_velocity_max = 30.0
+			material.scale_min = 0.1
+			material.scale_max = 0.3
+		print("🫨 Shaking particles started - Dust and debris effect")

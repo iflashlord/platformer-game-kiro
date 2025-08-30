@@ -54,3 +54,4 @@ position = Vector2(400, 300)
 position = Vector2(397, 464)
 width = 200.0
 height = 50.0
+is_breakable = true
