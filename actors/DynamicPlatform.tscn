@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://blwcrdiqapi7b" path="res://actors/BreakableComponent.gd" id="3_breakable_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sn0kv"]
-size = Vector2(96, 57)
+size = Vector2(96, 32)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
 emission_shape = 2
@@ -18,21 +18,19 @@ scale_min = 0.3
 
 [node name="DynamicPlatform" type="StaticBody2D"]
 script = ExtResource("1_script")
-auto_respawn = null
-respawn_delay = null
 
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
 offset_right = 96.0
 offset_bottom = 32.0
 texture = ExtResource("2_texture")
 region_rect = Rect2(0, 0, 64, 64)
-patch_margin_left = 28
-patch_margin_top = 29
-patch_margin_right = 28
-patch_margin_bottom = 28
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(48, 28.5)
+position = Vector2(48, 16)
 shape = SubResource("RectangleShape2D_sn0kv")
 
 [node name="BreakableComponent" type="Node" parent="."]
@@ -47,7 +45,6 @@ one_shot = true
 
 [node name="BreakParticles" type="GPUParticles2D" parent="BreakableComponent"]
 position = Vector2(48, 16)
-emitting = false
-amount = 50
+amount = 20
 lifetime = 2.0
 process_material = SubResource("ParticleProcessMaterial_1")
