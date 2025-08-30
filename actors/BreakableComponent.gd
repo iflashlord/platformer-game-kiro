@@ -9,6 +9,8 @@ signal shake_started
 var platform: DynamicPlatform
 var break_delay: float = 3.0
 var shake_duration: float = 2.0
+var auto_respawn: bool = true
+var respawn_delay: float = 5.0
 var is_breaking: bool = false
 var is_shaking: bool = false
 
@@ -40,10 +42,12 @@ func _ready():
 	
 	print("🔧 BreakableComponent ready")
 
-func setup(parent_platform: DynamicPlatform, delay: float, shake_time: float):
+func setup(parent_platform: DynamicPlatform, delay: float, shake_time: float, should_respawn: bool = true, respawn_time: float = 5.0):
 	platform = parent_platform
 	break_delay = delay
 	shake_duration = shake_time
+	auto_respawn = should_respawn
+	respawn_delay = respawn_time
 	
 	# Store original position for shake effect
 	if platform:
@@ -58,10 +62,11 @@ func setup(parent_platform: DynamicPlatform, delay: float, shake_time: float):
 		shake_timer.wait_time = shake_duration
 		shake_timer.one_shot = true
 	
-	# Configure particles to match platform size
+	# Configure particles to match platform size - wait a frame to ensure platform is fully initialized
+	await get_tree().process_frame
 	_setup_particles()
 	
-	print("🔧 BreakableComponent setup complete - Delay: ", break_delay, "s, Shake: ", shake_duration, "s")
+	print("🔧 BreakableComponent setup complete - Delay: ", break_delay, "s, Shake: ", shake_duration, "s, Auto respawn: ", auto_respawn, " Respawn delay: ", respawn_delay, "s")
 
 # Method to update particles when platform size changes
 func update_particles_for_platform_size():
@@ -141,6 +146,15 @@ func _break_platform():
 		# Ensure particles are properly configured for current platform size
 		_setup_particles()
 		
+		# Debug: Print detailed positioning info
+		print("🎆 PARTICLE DEBUG:")
+		print("  Platform global position: ", platform.global_position)
+		print("  Platform size: ", Vector2(platform.width, platform.height))
+		print("  Platform NinePatch position: ", platform.nine_patch.position if platform.nine_patch else "N/A")
+		print("  Platform NinePatch size: ", platform.nine_patch.size if platform.nine_patch else "N/A")
+		print("  Particle local position: ", break_particles.position)
+		print("  Particle global position: ", break_particles.global_position)
+		
 		# Make sure particles are visible and restart emission
 		break_particles.emitting = false  # Stop any previous emission
 		break_particles.restart()  # Reset particle system
@@ -164,9 +178,13 @@ func _break_platform():
 	
 	print("💥 Platform broken!")
 	
-	# Auto-respawn after a delay (optional)
-	await get_tree().create_timer(5.0).timeout
-	_respawn_platform()
+	# Auto-respawn after a delay (only if enabled)
+	if auto_respawn:
+		print("⏰ Platform will respawn in ", respawn_delay, " seconds")
+		await get_tree().create_timer(respawn_delay).timeout
+		_respawn_platform()
+	else:
+		print("🚫 Platform will not respawn (auto_respawn disabled)")
 
 func _respawn_platform():
 	if not platform:
@@ -183,11 +201,18 @@ func _respawn_platform():
 	if platform.collision_shape:
 		platform.collision_shape.disabled = false
 	
+	# Reset position to original
+	platform.position = original_position
+	
 	# Stop particles
 	if break_particles:
 		break_particles.emitting = false
 	
-	print("✨ Platform respawned!")
+	# Re-enable player detection for breakable platforms
+	if platform.has_method("_setup_player_detection"):
+		platform._setup_player_detection()
+	
+	print("✨ Platform respawned and ready to break again!")
 
 func reset_state():
 	# Reset to initial state (useful for object pooling)
@@ -214,25 +239,42 @@ func reset_state():
 	print("🔄 BreakableComponent reset")
 
 # Method to configure breaking parameters at runtime
-func configure(delay: float, shake_time: float, intensity: float = 2.0):
+func configure(delay: float, shake_time: float, intensity: float = 2.0, should_respawn: bool = true, respawn_time: float = 5.0):
 	break_delay = delay
 	shake_duration = shake_time
 	shake_intensity = intensity
+	auto_respawn = should_respawn
+	respawn_delay = respawn_time
 	
 	if break_timer:
 		break_timer.wait_time = break_delay
 	if shake_timer:
 		shake_timer.wait_time = shake_duration
 	
-	print("🔧 BreakableComponent reconfigured - Delay: ", break_delay, "s, Shake: ", shake_duration, "s, Intensity: ", shake_intensity)
+	print("🔧 BreakableComponent reconfigured - Delay: ", break_delay, "s, Shake: ", shake_duration, "s, Intensity: ", shake_intensity, " Auto respawn: ", auto_respawn, " Respawn delay: ", respawn_delay, "s")
+
+# Public method to manually respawn the platform (useful for level design)
+func manual_respawn():
+	if platform and not platform.visible:
+		_respawn_platform()
+		print("🔄 Platform manually respawned")
+
+# Public method to force break the platform (useful for scripted events)
+func force_break():
+	if not is_breaking:
+		print("💥 Platform force broken!")
+		_break_platform()
 
 # Setup particles to match platform size and position
 func _setup_particles():
 	if not break_particles or not platform:
 		return
 	
-	# Position particles at the center of the platform
-	break_particles.position = Vector2(platform.width / 2, platform.height / 2)
+	# CRITICAL FIX: Position particles at the center of the platform's visual area
+	# The platform's NinePatchRect starts at (0,0) and has size (width, height)
+	# So the center is at (width/2, height/2)
+	var particle_center = Vector2(platform.width / 2, platform.height / 2)
+	break_particles.position = particle_center
 	
 	# Scale particle amount based on platform size (more particles for bigger platforms)
 	var platform_area = platform.width * platform.height
@@ -254,4 +296,4 @@ func _setup_particles():
 		material.scale_min = 0.3
 		material.scale_max = 1.0
 	
-	print("🎆 Particles configured - Position: ", break_particles.position, " Amount: ", break_particles.amount, " Box extents: ", Vector3(platform.width / 2, platform.height / 2, 0))
+	print("🎆 Particles configured - Platform size: ", Vector2(platform.width, platform.height), " Particle position: ", break_particles.position, " Amount: ", break_particles.amount, " Box extents: ", Vector3(platform.width / 2, platform.height / 2, 0))

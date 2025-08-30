@@ -26,12 +26,16 @@ position = Vector2(100, 400)
 
 [node name="RegularPlatform" parent="." instance=ExtResource("1_platform")]
 position = Vector2(200, 450)
+auto_respawn = null
+respawn_delay = null
 
 [node name="BreakablePlatform" parent="." instance=ExtResource("1_platform")]
 position = Vector2(400, 350)
 is_breakable = true
 break_delay = 2.0
 shake_duration = 1.5
+auto_respawn = null
+respawn_delay = null
 
 [node name="BreakablePlatform2" parent="." instance=ExtResource("1_platform")]
 position = Vector2(500, 200)
@@ -41,11 +45,15 @@ platform_type = 2
 is_breakable = true
 break_delay = 1.0
 shake_duration = 0.8
+auto_respawn = null
+respawn_delay = null
 
 [node name="GreenPlatform" parent="." instance=ExtResource("1_platform")]
 position = Vector2(600, 250)
 width = 128.0
 platform_type = 1
+auto_respawn = null
+respawn_delay = null
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(400, 300)
@@ -55,3 +63,5 @@ position = Vector2(411, 456)
 scale = Vector2(1, 0.987918)
 width = 200.0
 height = 40.0
+auto_respawn = null
+respawn_delay = null

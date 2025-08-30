@@ -15,6 +15,10 @@ enum PlatformType {
 @export var is_breakable: bool = false: set = _set_breakable
 @export var break_delay: float = 3.0  # Time before breaking after first touch
 @export var shake_duration: float = 2.0  # Time to shake before breaking
+@export_group("Respawn Settings")
+@export var auto_respawn: bool = true  # Whether platform should respawn after breaking
+@export var respawn_delay: float = 5.0  # Time in seconds before respawning (only if auto_respawn is true)
+@export_group("Dimension")
 @export var target_layer: String = "A"  # For dimension system compatibility
 
 # Node references - using NinePatchRect for proper 9-slice
@@ -130,9 +134,10 @@ func _update_visual_and_collision():
 	
 	# No need for separate detection area updates - using direct collision detection
 	
-	# Update particles to match platform size
+	# Update particles to match platform size (BreakableComponent handles positioning)
+	# Call this after a frame to ensure all size updates are complete
 	if breakable_component and breakable_component.has_method("update_particles_for_platform_size") and not Engine.is_editor_hint():
-		breakable_component.update_particles_for_platform_size()
+		call_deferred("_update_particles_deferred")
 	
 	# Validate that collision shape matches NinePatchRect exactly
 	_validate_collision_alignment()
@@ -152,7 +157,7 @@ func _setup_breakable_component():
 	if breakable_component and breakable_component.has_method("setup"):
 		# Wait a frame to ensure BreakableComponent's _ready() has run
 		await get_tree().process_frame
-		breakable_component.setup(self, break_delay, shake_duration)
+		breakable_component.setup(self, break_delay, shake_duration, auto_respawn, respawn_delay)
 		
 		# Connect to breakable component signals
 		if not breakable_component.break_started.is_connected(_on_break_started):
@@ -162,7 +167,7 @@ func _setup_breakable_component():
 		if not breakable_component.shake_started.is_connected(_on_shake_started):
 			breakable_component.shake_started.connect(_on_shake_started)
 		
-		print("🔧 BreakableComponent setup complete")
+		print("🔧 BreakableComponent setup complete - Auto respawn: ", auto_respawn, " Delay: ", respawn_delay, "s")
 	else:
 		print("⚠️ BreakableComponent not found - disabling breakable functionality")
 		is_breakable = false
@@ -215,6 +220,8 @@ func reset_platform():
 	is_breakable = false
 	break_delay = 3.0
 	shake_duration = 2.0
+	auto_respawn = true
+	respawn_delay = 5.0
 	target_layer = "A"
 	
 	# Reset breakable component if it exists
@@ -247,6 +254,10 @@ func configure_platform(config: Dictionary):
 		break_delay = config.break_delay
 	if config.has("shake_duration"):
 		shake_duration = config.shake_duration
+	if config.has("auto_respawn"):
+		auto_respawn = config.auto_respawn
+	if config.has("respawn_delay"):
+		respawn_delay = config.respawn_delay
 	if config.has("target_layer"):
 		target_layer = config.target_layer
 	
@@ -281,6 +292,13 @@ func _set_breakable(value: bool):
 	is_breakable = value
 	if is_breakable and is_inside_tree() and not Engine.is_editor_hint():
 		_setup_breakable_component()
+
+
+# Deferred particle update to ensure size changes are complete
+func _update_particles_deferred():
+	if breakable_component and breakable_component.has_method("update_particles_for_platform_size"):
+		breakable_component.update_particles_for_platform_size()
+		print("🎆 Particles updated for platform size: ", Vector2(width, height))
 
 # Validation method to ensure collision shape matches NinePatchRect exactly
 func _validate_collision_alignment():

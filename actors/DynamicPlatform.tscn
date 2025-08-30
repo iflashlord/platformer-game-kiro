@@ -8,15 +8,18 @@
 size = Vector2(96, 32)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
+emission_shape = 2
+emission_sphere_radius = 1.0
 direction = Vector3(0, -1, 0)
-initial_velocity_min = 50.0
-initial_velocity_max = 150.0
-gravity = Vector3(0, 980, 0)
-scale_min = 0.5
-scale_max = 1.5
+initial_velocity_min = 30.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 500, 0)
+scale_min = 0.3
 
 [node name="DynamicPlatform" type="StaticBody2D"]
 script = ExtResource("1_script")
+auto_respawn = null
+respawn_delay = null
 
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
 offset_right = 96.0
