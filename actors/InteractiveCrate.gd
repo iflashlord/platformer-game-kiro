@@ -102,6 +102,7 @@ func _on_body_entered(body):
 func interact_with_player(player):
 	match crate_type:
 		"basic":
+			bounce_player(player)
 			destroy_crate()
 		"bounce":
 			bounce_player(player)
@@ -110,7 +111,8 @@ func interact_with_player(player):
 			start_explosion_countdown()
 		"metal":
 			# Metal crates are harder to break
-			destroy_crate()
+			bounce_player(player)
+			#destroy_crate()
 
 func bounce_player(player):
 	# Apply bounce force to player
