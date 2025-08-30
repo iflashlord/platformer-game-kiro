@@ -3,6 +3,12 @@ extends Node
 signal level_completed(level_name: String, completion_data: Dictionary)
 
 func complete_level(level_name: String, completion_time: float, hearts_remaining: int, gems_found: int, total_gems: int):
+	# Pause the game immediately when level is completed
+	if Game:
+		Game.is_paused = true
+		get_tree().paused = true
+		Game.game_paused.emit()
+	
 	# Create completion data
 	var completion_data = {
 		"level_name": level_name,

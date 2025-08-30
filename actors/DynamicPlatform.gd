@@ -9,15 +9,25 @@ enum PlatformType {
 	STRONG,
 	BRIDGE,
 	BRIDGE_LOGS,
-	LAVA
+	LAVA,
+	CHAIN,
+	DIRT_TOP_LEFT,
+	DIRT_TOP_CENTER,
+	DIRT_TOP_RIGHT
 }
 
 # Core platform properties - simple and direct
 @export var width: float = 64.0: set = _set_width
 @export var height: float = 64.0: set = _set_height
-@export var patch_margin_x: float = 23: set = _set_patch_margin_x
-@export var patch_margin_y: float = 23: set = _set_patch_margin_y
+@export_group("Patch Margins")
+@export var patch_margin_left: float = 23: set = _set_patch_margin_left
+@export var patch_margin_right: float = 23: set = _set_patch_margin_right
+@export var patch_margin_top: float = 23: set = _set_patch_margin_top
+@export var patch_margin_bottom: float = 23: set = _set_patch_margin_bottom
 @export var platform_type: PlatformType = PlatformType.YELLOW: set = _set_platform_type
+@export_group("Nine Patch Stretch")
+@export var axis_stretch_horizontal: NinePatchRect.AxisStretchMode = NinePatchRect.AXIS_STRETCH_MODE_STRETCH: set = _set_axis_stretch_horizontal
+@export var axis_stretch_vertical: NinePatchRect.AxisStretchMode = NinePatchRect.AXIS_STRETCH_MODE_STRETCH: set = _set_axis_stretch_vertical
 @export var is_breakable: bool = false: set = _set_breakable
 @export var break_delay: float = 3.0  # Time before breaking after first touch
 @export var shake_duration: float = 2.0  # Time to shake before breaking
@@ -44,7 +54,11 @@ var platform_textures = {
 	PlatformType.STRONG: preload("res://content/Graphics/Sprites/Tiles/Default/block_strong_empty.png"),
 	PlatformType.BRIDGE: preload("res://content/Graphics/Sprites/Tiles/Default/bridge.png"),
 	PlatformType.BRIDGE_LOGS: preload("res://content/Graphics/Sprites/Tiles/Default/bridge_logs.png"),
-	PlatformType.LAVA: preload("res://content/Graphics/Sprites/Tiles/Default/lava.png")
+	PlatformType.LAVA: preload("res://content/Graphics/Sprites/Tiles/Default/lava.png"),
+	PlatformType.CHAIN: preload("res://content/Graphics/Sprites/Tiles/Default/chain.png"),
+	PlatformType.DIRT_TOP_LEFT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_top_left.png"),
+	PlatformType.DIRT_TOP_CENTER: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_top.png"),
+	PlatformType.DIRT_TOP_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_top_right.png")
 }
 
 func _ready():
@@ -120,15 +134,15 @@ func _update_visual_and_collision():
 	# Configure 9-slice margins for proper scaling
 	var texture = nine_patch.texture
 	if texture:
-		var texture_size = texture.get_size()
-		# Use 1/4 of texture size as margins for good 9-slice effect
-		var margin_x = int(patch_margin_x)
-		var margin_y = int(patch_margin_y) 
-		
-		nine_patch.patch_margin_left = margin_x
-		nine_patch.patch_margin_top = margin_y
-		nine_patch.patch_margin_right = margin_x
-		nine_patch.patch_margin_bottom = margin_y
+		# Set individual patch margins for precise control
+		nine_patch.patch_margin_left = int(patch_margin_left)
+		nine_patch.patch_margin_right = int(patch_margin_right)
+		nine_patch.patch_margin_top = int(patch_margin_top)
+		nine_patch.patch_margin_bottom = int(patch_margin_bottom)
+	
+	# Configure axis stretch modes
+	nine_patch.axis_stretch_horizontal = axis_stretch_horizontal
+	nine_patch.axis_stretch_vertical = axis_stretch_vertical
 	
 	# Set size directly using width and height
 	nine_patch.size = Vector2(width, height)
@@ -153,7 +167,7 @@ func _update_visual_and_collision():
 	_validate_collision_alignment()
 	
 	if not Engine.is_editor_hint():
-		print("🧱 Updated platform: Size=", Vector2(width, height), " 9-slice margins=", Vector2(nine_patch.patch_margin_left, nine_patch.patch_margin_top))
+		print("🧱 Updated platform: Size=", Vector2(width, height), " Margins L/R/T/B=", Vector4(nine_patch.patch_margin_left, nine_patch.patch_margin_right, nine_patch.patch_margin_top, nine_patch.patch_margin_bottom))
 
 func _setup_breakable_component():
 	# Only setup breakable mechanics at runtime
@@ -233,6 +247,8 @@ func reset_platform():
 	auto_respawn = true
 	respawn_delay = 5.0
 	target_layer = "A"
+	axis_stretch_horizontal = NinePatchRect.AXIS_STRETCH_MODE_STRETCH
+	axis_stretch_vertical = NinePatchRect.AXIS_STRETCH_MODE_STRETCH
 	
 	# Reset breakable component if it exists
 	if breakable_component and breakable_component.has_method("reset_state"):
@@ -270,6 +286,10 @@ func configure_platform(config: Dictionary):
 		respawn_delay = config.respawn_delay
 	if config.has("target_layer"):
 		target_layer = config.target_layer
+	if config.has("axis_stretch_horizontal"):
+		axis_stretch_horizontal = config.axis_stretch_horizontal
+	if config.has("axis_stretch_vertical"):
+		axis_stretch_vertical = config.axis_stretch_vertical
 	
 	_update_visual_and_collision()
 	
@@ -413,12 +433,50 @@ func _check_for_player():
 				timer[0].stop()
 
 
-func _set_patch_margin_x(value: float):
-	patch_margin_x = value
+func _set_patch_margin_left(value: float):
+	patch_margin_left = value
 	if is_inside_tree():
 		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
 
-func _set_patch_margin_y(value: float):
-	patch_margin_y = value
+func _set_patch_margin_right(value: float):
+	patch_margin_right = value
 	if is_inside_tree():
 		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
+
+func _set_patch_margin_top(value: float):
+	patch_margin_top = value
+	if is_inside_tree():
+		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
+
+func _set_patch_margin_bottom(value: float):
+	patch_margin_bottom = value
+	if is_inside_tree():
+		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
+
+func _set_axis_stretch_horizontal(value: NinePatchRect.AxisStretchMode):
+	axis_stretch_horizontal = value
+	if is_inside_tree():
+		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
+
+func _set_axis_stretch_vertical(value: NinePatchRect.AxisStretchMode):
+	axis_stretch_vertical = value
+	if is_inside_tree():
+		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()

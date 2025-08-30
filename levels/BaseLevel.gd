@@ -109,6 +109,12 @@ func _on_level_completed():
 	var end_time = Time.get_unix_time_from_system()
 	var completion_time = end_time - start_time
 	
+	# Pause the game immediately when level is completed
+	if Game:
+		Game.is_paused = true
+		get_tree().paused = true
+		Game.game_paused.emit()
+	
 	# Prepare completion data
 	var completion_data = {
 		"level_name": level_id if level_id != "" else level_name,

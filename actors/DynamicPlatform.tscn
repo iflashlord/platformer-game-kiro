@@ -21,8 +21,12 @@ size = Vector2(64, 64)
 
 [node name="DynamicPlatform" type="StaticBody2D"]
 script = ExtResource("1_script")
-patch_margin_x = null
-patch_margin_y = null
+patch_margin_left = null
+patch_margin_right = null
+patch_margin_top = null
+patch_margin_bottom = null
+axis_stretch_horizontal = null
+axis_stretch_vertical = null
 
 [node name="BreakableComponent" type="Node" parent="."]
 script = ExtResource("3_breakable_script")

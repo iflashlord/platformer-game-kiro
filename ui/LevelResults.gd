@@ -341,6 +341,9 @@ func _on_next_level_pressed():
 	"""Go to next level"""
 	_play_ui_sound("ui_select")
 	
+	# Unpause the game before transitioning
+	_unpause_game()
+	
 	if next_level == "":
 		# No next level, go to level select to show completion
 		_on_level_select_pressed()
@@ -353,6 +356,10 @@ func _on_retry_pressed():
 	"""Restart the current level"""
 	_play_ui_sound("ui_select")
 	print("🔄 Retrying level: ", current_level)
+	
+	# Unpause the game before restarting
+	_unpause_game()
+	
 	get_tree().reload_current_scene()
 	queue_free()
 
@@ -360,6 +367,10 @@ func _on_level_select_pressed():
 	"""Go to level select"""
 	_play_ui_sound("ui_select")
 	print("🗺 Going to level select")
+	
+	# Unpause the game before transitioning
+	_unpause_game()
+	
 	get_tree().change_scene_to_file("res://ui/LevelMapPro.tscn")
 	queue_free()
 
@@ -367,6 +378,10 @@ func _on_main_menu_pressed():
 	"""Go to main menu"""
 	_play_ui_sound("ui_select")
 	print("🏠 Going to main menu")
+	
+	# Unpause the game before transitioning
+	_unpause_game()
+	
 	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
 	queue_free()
 
@@ -412,6 +427,8 @@ func _load_level(level_id: String):
 	
 	if scene_path != "" and FileAccess.file_exists(scene_path):
 		print("✅ Loading level scene: ", scene_path)
+		# Unpause the game before loading new level
+		_unpause_game()
 		get_tree().change_scene_to_file(scene_path)
 		queue_free()
 	else:
@@ -590,6 +607,13 @@ func _play_ui_sound(sound_name: String):
 	"""Play UI sound with fallback"""
 	if Audio and Audio.has_method("play_sfx"):
 		Audio.play_sfx(sound_name)
+
+func _unpause_game():
+	"""Unpause the game when leaving results screen"""
+	if Game:
+		Game.is_paused = false
+		get_tree().paused = false
+		Game.game_resumed.emit()
 
 func get_menu_buttons() -> Array[Button]:
 	"""Get array of menu buttons"""

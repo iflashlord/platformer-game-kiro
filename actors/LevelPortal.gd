@@ -145,6 +145,12 @@ func _play_completion_effects():
 func _complete_level():
 	print("🎉 Level completed via portal!")
 	
+	# Pause the game immediately when level is completed
+	if Game:
+		Game.is_paused = true
+		get_tree().paused = true
+		Game.game_paused.emit()
+	
 	# Collect completion data
 	var completion_data = {
 		"level_name": Game.current_level,
