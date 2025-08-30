@@ -58,7 +58,14 @@ func setup(parent_platform: DynamicPlatform, delay: float, shake_time: float):
 		shake_timer.wait_time = shake_duration
 		shake_timer.one_shot = true
 	
+	# Configure particles to match platform size
+	_setup_particles()
+	
 	print("🔧 BreakableComponent setup complete - Delay: ", break_delay, "s, Shake: ", shake_duration, "s")
+
+# Method to update particles when platform size changes
+func update_particles_for_platform_size():
+	_setup_particles()
 
 # Method called by platform when player lands on it
 func player_landed_on_platform():
@@ -129,9 +136,17 @@ func _break_platform():
 	if platform:
 		platform.position = original_position
 	
-	# Emit particles
+	# Configure and emit particles BEFORE hiding platform
 	if break_particles:
-		break_particles.emitting = true
+		# Ensure particles are properly configured for current platform size
+		_setup_particles()
+		
+		# Make sure particles are visible and restart emission
+		break_particles.emitting = false  # Stop any previous emission
+		break_particles.restart()  # Reset particle system
+		break_particles.emitting = true  # Start new emission
+		
+		print("🎆 Break particles triggered - Amount: ", break_particles.amount, " Position: ", break_particles.position)
 	
 	# Play break sound (if audio system exists)
 	if has_node("/root/Audio"):
@@ -139,7 +154,7 @@ func _break_platform():
 		if audio.has_method("play_sfx"):
 			audio.play_sfx("platform_break")
 	
-	# Hide platform and disable collision
+	# Hide platform and disable collision AFTER particles start
 	if platform:
 		platform.visible = false
 		if platform.collision_shape:
@@ -210,3 +225,33 @@ func configure(delay: float, shake_time: float, intensity: float = 2.0):
 		shake_timer.wait_time = shake_duration
 	
 	print("🔧 BreakableComponent reconfigured - Delay: ", break_delay, "s, Shake: ", shake_duration, "s, Intensity: ", shake_intensity)
+
+# Setup particles to match platform size and position
+func _setup_particles():
+	if not break_particles or not platform:
+		return
+	
+	# Position particles at the center of the platform
+	break_particles.position = Vector2(platform.width / 2, platform.height / 2)
+	
+	# Scale particle amount based on platform size (more particles for bigger platforms)
+	var platform_area = platform.width * platform.height
+	var base_area = 96.0 * 32.0  # Default platform size
+	var particle_scale = platform_area / base_area
+	break_particles.amount = int(50 * particle_scale)  # Scale from base 50 particles
+	
+	# Configure emission shape to cover the platform area
+	var material = break_particles.process_material as ParticleProcessMaterial
+	if material:
+		# Set emission shape to box to cover platform area
+		material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+		material.emission_box_extents = Vector3(platform.width / 2, platform.height / 2, 0)
+		
+		# Adjust particle spread based on platform size
+		material.initial_velocity_min = 30.0
+		material.initial_velocity_max = 100.0
+		material.gravity = Vector3(0, 500, 0)  # Reasonable gravity
+		material.scale_min = 0.3
+		material.scale_max = 1.0
+	
+	print("🎆 Particles configured - Position: ", break_particles.position, " Amount: ", break_particles.amount, " Box extents: ", Vector3(platform.width / 2, platform.height / 2, 0))

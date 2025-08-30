@@ -120,17 +120,22 @@ func _update_visual_and_collision():
 	nine_patch.size = Vector2(width, height)
 	nine_patch.position = Vector2.ZERO
 	
-	# Update collision shape to match exactly
-	var shape = collision_shape.shape as RectangleShape2D
-	if not shape:
-		shape = RectangleShape2D.new()
-		collision_shape.shape = shape
+	# CRITICAL FIX: Always create a new RectangleShape2D instance to avoid shared resources
+	var shape = RectangleShape2D.new()
+	collision_shape.shape = shape
 	
-	# Set collision size to match visual dimensions exactly
-	shape.size = Vector2(width, height)
-	collision_shape.position = Vector2(width / 2, height / 2)
+	# CRITICAL: Collision shape must ALWAYS match NinePatchRect size exactly
+	shape.size = Vector2(width, height)  # Exact same size as visual
+	collision_shape.position = Vector2(width / 2, height / 2)  # Centered on visual
 	
 	# No need for separate detection area updates - using direct collision detection
+	
+	# Update particles to match platform size
+	if breakable_component and breakable_component.has_method("update_particles_for_platform_size") and not Engine.is_editor_hint():
+		breakable_component.update_particles_for_platform_size()
+	
+	# Validate that collision shape matches NinePatchRect exactly
+	_validate_collision_alignment()
 	
 	if not Engine.is_editor_hint():
 		print("🧱 Updated platform: Size=", Vector2(width, height), " 9-slice margins=", Vector2(nine_patch.patch_margin_left, nine_patch.patch_margin_top))
@@ -276,6 +281,31 @@ func _set_breakable(value: bool):
 	is_breakable = value
 	if is_breakable and is_inside_tree() and not Engine.is_editor_hint():
 		_setup_breakable_component()
+
+# Validation method to ensure collision shape matches NinePatchRect exactly
+func _validate_collision_alignment():
+	if not nine_patch or not collision_shape:
+		return
+	
+	var shape = collision_shape.shape as RectangleShape2D
+	if not shape:
+		return
+	
+	# Ensure collision shape size matches NinePatchRect size exactly
+	var nine_patch_size = nine_patch.size
+	var collision_size = shape.size
+	
+	if not nine_patch_size.is_equal_approx(collision_size):
+		push_warning("DynamicPlatform: Collision shape size mismatch! NinePatch: " + str(nine_patch_size) + " vs Collision: " + str(collision_size))
+		# Force correction
+		shape.size = nine_patch_size
+	
+	# Ensure collision shape is centered on NinePatchRect
+	var expected_position = Vector2(nine_patch_size.x / 2, nine_patch_size.y / 2)
+	if not collision_shape.position.is_equal_approx(expected_position):
+		push_warning("DynamicPlatform: Collision shape position mismatch! Expected: " + str(expected_position) + " vs Actual: " + str(collision_shape.position))
+		# Force correction
+		collision_shape.position = expected_position
 
 # Validation method to ensure platform is properly configured
 func _validate_configuration():

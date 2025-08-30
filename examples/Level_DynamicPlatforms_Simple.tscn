@@ -35,6 +35,8 @@ shake_duration = 1.5
 
 [node name="BreakablePlatform2" parent="." instance=ExtResource("1_platform")]
 position = Vector2(500, 200)
+width = 160.0
+height = 48.0
 platform_type = 2
 is_breakable = true
 break_delay = 1.0
@@ -47,3 +49,9 @@ platform_type = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(400, 300)
+
+[node name="DynamicPlatform" parent="." instance=ExtResource("1_platform")]
+position = Vector2(411, 456)
+scale = Vector2(1, 0.987918)
+width = 200.0
+height = 40.0
