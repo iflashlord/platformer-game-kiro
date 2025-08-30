@@ -135,6 +135,12 @@ func start_explosion_countdown():
 	
 	print("💣 TNT countdown started! Explosion radius: ", explosion_radius)
 	
+	# Play break sound (if audio system exists)
+	if has_node("/root/Audio"):
+		var audio = get_node("/root/Audio")
+		if audio.has_method("play_sfx"):
+			audio.play_sfx("count_down")
+
 	# Create visual explosion radius indicator
 	create_explosion_radius_indicator()
 	
@@ -161,6 +167,12 @@ func detonate():
 		return
 	
 	print("💥 TNT EXPLOSION!")
+
+	# Play break sound (if audio system exists)
+	if has_node("/root/Audio"):
+		var audio = get_node("/root/Audio")
+		if audio.has_method("play_sfx"):
+			audio.play_sfx("explosion")
 	
 	# Check for player in explosion radius
 	var player = get_tree().get_first_node_in_group("player")

@@ -70,10 +70,10 @@ func _play_heart_loss_effects():
 		print("⚠️ FX system not available")
 	
 	# Audio feedback with error handling
-	if Audio:
-		Audio.play_sfx("disappear")
-	else:
-		print("⚠️ Audio system not available")
+	# if Audio:
+	# 	Audio.play_sfx("disappear")
+	# else:
+	# 	print("⚠️ Audio system not available")
 
 func gain_heart():
 	if current_health < max_health:

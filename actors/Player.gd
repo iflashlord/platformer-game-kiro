@@ -277,6 +277,10 @@ func take_damage(amount: int = 1):
 		return
 	
 	print("💔 Player taking ", amount, " damage")
+
+	# Audio feedback
+	if Audio:
+		Audio.play_sfx("player_hurt")
 	
 	character_sprite.play("hit")
 	

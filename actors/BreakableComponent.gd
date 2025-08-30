@@ -107,7 +107,7 @@ func _start_shaking():
 	is_shaking = true
 	shake_started.emit()
 
-		# Play break sound (if audio system exists)
+	# Play break sound (if audio system exists)
 	if has_node("/root/Audio"):
 		var audio = get_node("/root/Audio")
 		if audio.has_method("play_sfx"):

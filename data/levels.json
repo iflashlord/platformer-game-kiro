@@ -29,7 +29,7 @@
 			"unlocked": true
 		},
 		"Level00": {
-			"best_score": 250,
+			"best_score": 675,
 			"best_time": 0.0,
 			"name": "Tutorial",
 			"scene_path": "res://levels/Level00.tscn",

@@ -120,6 +120,27 @@ horizontal_alignment = 1
 layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
 
+[node name="Assets" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "GAME ASSETS"
+horizontal_alignment = 1
+
+[node name="AssetsInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Game assets provided by Kenney
+https://kenney.nl/
+
+Sprites, Textures, and UI Elements
+High-quality 2D game assets
+Creative Commons Licensed"
+horizontal_alignment = 1
+
+[node name="Spacer5" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+
 [node name="Thanks" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
@@ -129,14 +150,15 @@ horizontal_alignment = 1
 [node name="ThanksInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Kiro IDE Team - For the amazing development environment
+text = "Kenney - For providing amazing game assets
+Kiro IDE Team - For the amazing development environment
 Godot Community - Engine Development
 Open Source Contributors
 Web Gaming Community
 Platformer Game Enthusiasts"
 horizontal_alignment = 1
 
-[node name="Spacer5" type="Control" parent="UI/MainContainer"]
+[node name="Spacer6" type="Control" parent="UI/MainContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.2

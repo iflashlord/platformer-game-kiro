@@ -34,3 +34,4 @@ A fast-paced 2D platformer built with Godot 4.4, featuring dimension-shifting me
 - **Developer**: Behrouz Pooladrak - [www.behrouz.nl](https://www.behrouz.nl)
 - **Development Environment**: Kiro IDE for Vibe coding and development
 - **Game Engine**: Godot 4.4+
+- **Assets**: Game assets provided by Kenney - [https://kenney.nl/](https://kenney.nl/)
