@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://dx0yw0rkqh6fi"]
+[gd_scene load_steps=3 format=3 uid="uid://dp3qp3h57kst2"]
 
 [ext_resource type="Script" uid="uid://b7mskwqthxt0g" path="res://systems/DimensionNode.gd" id="1_dimension"]
 

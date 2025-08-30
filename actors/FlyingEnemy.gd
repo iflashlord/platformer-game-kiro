@@ -19,6 +19,14 @@ signal player_damaged(enemy: FlyingEnemy, player: Node2D, damage: int)
 @export var pattern_frequency: float = 2.0   # Speed of pattern oscillation
 @export var patrol_distance: float = 200.0   # Distance to travel before turning around
 
+# AI Enhancement settings
+@export_group("AI Behavior")
+@export var pathfinding_attempts: int = 3  # Maximum pathfinding attempts before fallback
+@export var obstacle_avoidance_sensitivity: float = 32.0  # Detection range for obstacles
+@export var chase_detection_radius_multiplier: float = 5.0  # Multiplier for chase detection radius
+@export var patrol_speed: float = 80.0  # Speed during patrol mode
+@export var ai_update_frequency: float = 30.0  # AI update frequency in FPS
+
 var start_position: Vector2
 var direction: int = 1
 var is_alive: bool = true

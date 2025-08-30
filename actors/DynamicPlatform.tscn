@@ -1,11 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bvq8j5x8qwxpd"]
+[gd_scene load_steps=6 format=3 uid="uid://bvq8j5x8qwxpd"]
 
-[ext_resource type="Script" path="res://actors/DynamicPlatform.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://cb4u3qu5ytatm" path="res://actors/DynamicPlatform.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://c4vexcf71vflk" path="res://content/Graphics/Sprites/Tiles/Default/block_yellow.png" id="2_texture"]
-[ext_resource type="Script" path="res://actors/BreakableComponent.gd" id="3_breakable"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(96, 32)
+size = Vector2(96, 46)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
 size = Vector2(96, 8)
@@ -23,19 +22,18 @@ script = ExtResource("1_script")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
 offset_right = 96.0
-offset_bottom = 32.0
+offset_bottom = 45.0
 texture = ExtResource("2_texture")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+patch_margin_left = 23
+patch_margin_top = 23
+patch_margin_right = 23
+patch_margin_bottom = 22
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(48, 16)
+position = Vector2(48, 23)
 shape = SubResource("RectangleShape2D_1")
 
 [node name="BreakableComponent" type="Node" parent="."]
-script = ExtResource("3_breakable")
 
 [node name="PlayerDetector" type="Area2D" parent="BreakableComponent"]
 
@@ -44,7 +42,6 @@ position = Vector2(48, -4)
 shape = SubResource("RectangleShape2D_2")
 
 [node name="BreakTimer" type="Timer" parent="BreakableComponent"]
-wait_time = 1.0
 one_shot = true
 
 [node name="ShakeTimer" type="Timer" parent="BreakableComponent"]
@@ -55,5 +52,5 @@ one_shot = true
 position = Vector2(48, 16)
 emitting = false
 amount = 50
-process_material = SubResource("ParticleProcessMaterial_1")
 lifetime = 2.0
+process_material = SubResource("ParticleProcessMaterial_1")

@@ -361,6 +361,11 @@ func _handle_stomp_effects(enemy):
 	_squash_sprite()
 
 func die():
+	# Prevent multiple death processing
+	if not is_physics_processing():
+		print("💀 Player already dead - ignoring duplicate death")
+		return
+		
 	print("💀 Player.die() called")
 	died.emit()
 	
@@ -385,6 +390,11 @@ func die():
 	# Wait for HealthSystem to process the death
 	print("⏱️ Waiting for HealthSystem to process death...")
 	await get_tree().create_timer(0.2).timeout
+	
+	# Check if game is paused (game over screen) - if so, don't respawn
+	if get_tree().paused:
+		print("🎮 Game is paused (game over screen) - not respawning")
+		return
 	
 	# Only respawn if still have health, otherwise HealthSystem handles game over
 	if HealthSystem and HealthSystem.is_alive():

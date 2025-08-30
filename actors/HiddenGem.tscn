@@ -8,7 +8,9 @@
 radius = 16.0
 
 [sub_resource type="Gradient" id="Gradient_1"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.574627, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.93228, 0.792932, 0.33209, 1, 1, 1, 0)
 
 [node name="HiddenGem" type="Area2D"]
 script = ExtResource("1_0k8w6")
@@ -28,20 +30,6 @@ color = Color(0.9, 0.1, 0.9, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(1.22, 1.22857)
 shape = SubResource("CircleShape2D_1")
-
-[node name="GlowParticles" type="CPUParticles2D" parent="."]
-amount = 15
-lifetime = 1.5
-emission_shape = 1
-emission_sphere_radius = 20.0
-direction = Vector2(0, -1)
-spread = 360.0
-gravity = Vector2(0, -10)
-initial_velocity_min = 10.0
-initial_velocity_max = 30.0
-scale_amount_min = 0.3
-scale_amount_max = 0.8
-color_ramp = SubResource("Gradient_1")
 
 [node name="CollectParticles" type="CPUParticles2D" parent="."]
 emitting = false
@@ -63,3 +51,19 @@ position = Vector2(-26, 1)
 scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AAABAP7/EgEBAAIAAAABAP//EgEBAAMAAAABAAAAEgEBAAQAAAACAP3/EgECAAEAAAACAP7/EgECAAIAAAACAP//EgECAAMAAAACAAAAEgECAAQAAAACAAEAEgECAAUAAAADAP3/EgEDAAEAAAADAP7/EgEDAAIAAAADAP//EgEDAAMAAAADAAAAEgEDAAQAAAADAAEAEgEDAAUAAAADAAIAEgEDAAYAAAAEAP3/EgEEAAEAAAAEAP7/EgEEAAIAAAAEAP//EgEEAAMAAAAEAAAAEgEEAAQAAAAEAAEAEgEEAAUAAAAEAAIAEgEEAAYAAAAFAP3/EgEFAAEAAAAFAP7/EgEFAAIAAAAFAP//EgEFAAMAAAAFAAAAEgEFAAQAAAAFAAEAEgEFAAUAAAAGAP7/EgEGAAIAAAAGAP//EgEGAAMAAAAGAAAAEgEGAAQAAAA=")
 tile_set = ExtResource("3_qhaff")
+
+[node name="GlowParticles" type="CPUParticles2D" parent="."]
+amount = 10
+lifetime = 1.68
+preprocess = 0.61
+speed_scale = 0.8
+randomness = 0.03
+emission_shape = 1
+emission_sphere_radius = 9.47
+direction = Vector2(0, -1)
+spread = 360.0
+gravity = Vector2(0, -10)
+initial_velocity_max = 11.01
+scale_amount_min = 0.0
+scale_amount_max = 3.16
+color_ramp = SubResource("Gradient_1")

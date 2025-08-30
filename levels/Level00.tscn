@@ -1,23 +1,24 @@
-[gd_scene load_steps=16 format=4 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=17 format=4 uid="uid://dwp014ul6yvbf"]
 
-[ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
+[ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
+[ext_resource type="PackedScene" uid="uid://bvq8x7y2n8wqr" path="res://actors/HintArea.tscn" id="12_ll6ei"]
 [ext_resource type="TileSet" uid="uid://bqxvw4rkqh00i" path="res://content/Tileset.tres" id="14_080q8"]
-[ext_resource type="PackedScene" uid="uid://bx0yw1rkqh7aa" path="res://actors/Crate.tscn" id="14_svrvc"]
 [ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="15_080q8"]
 [ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="16_6oto5"]
+[ext_resource type="PackedScene" uid="uid://00mkiltltuwb" path="res://actors/FlyingEnemy.tscn" id="16_ll6ei"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
 
 [node name="Level00" type="Node2D"]
-script = ExtResource("1_simple")
+script = ExtResource("1_level00")
 
 [node name="LevelManager" type="Node" parent="."]
 script = ExtResource("18_level_manager")
@@ -61,15 +62,8 @@ scale = Vector2(15.952, 0.555505)
 position = Vector2(1064, 632)
 scale = Vector2(12.36, 1)
 
-[node name="Crate" parent="InteractiveElements" instance=ExtResource("14_svrvc")]
-position = Vector2(197, 245)
-
-[node name="Crate2" parent="InteractiveElements" instance=ExtResource("14_svrvc")]
-position = Vector2(130, 266)
-health = 5
-
 [node name="TeleportGate" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(80, 394)
+position = Vector2(140, 272)
 teleport_target = NodePath("../TeleportGate2")
 
 [node name="TeleportGate2" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
@@ -85,6 +79,8 @@ pad_type = "horizontal"
 
 [node name="BasicCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(367, 268)
+scale = Vector2(1, 0.997519)
+crate_type = "metal"
 
 [node name="BounceCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(598, 319)
@@ -99,6 +95,9 @@ position = Vector2(1160, 350)
 
 [node name="JumpPad1" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
 position = Vector2(679, 372)
+
+[node name="HintArea" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(58, 432)
 
 [node name="Enemies" type="Node2D" parent="."]
 
@@ -150,3 +149,7 @@ WASD/Arrows: Move | Space: Jump
 ESC: Menu | R: Restart | Enter: Stats
 
 ✨ All components are reusable and self-contained!"
+
+[node name="FlyingEnemy" parent="." instance=ExtResource("16_ll6ei")]
+position = Vector2(288, 313)
+flight_pattern = "Chase Player"

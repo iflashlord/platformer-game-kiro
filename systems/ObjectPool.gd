@@ -1,36 +1,19 @@
 extends Node
 
 # Object pools for performance optimization
-var shard_pool: Array[Node] = []
 var fruit_pool: Array[Node] = []
 var explosion_pool: Array[Node] = []
 
 const MAX_POOL_SIZE = 50
-const SHARD_SCENE = preload("res://actors/CrateShard.tscn")
 const FRUIT_SCENE = preload("res://actors/Fruit.tscn")
 const EXPLOSION_SCENE = preload("res://actors/Explosion.tscn")
 
 func _ready():
 	# Pre-populate pools
 	for i in range(10):
-		create_shard()
 		create_fruit()
 		create_explosion()
 
-func get_shard() -> Node:
-	if shard_pool.is_empty():
-		return create_shard()
-	
-	var shard = shard_pool.pop_back()
-	shard.reset()
-	return shard
-
-func return_shard(shard: Node):
-	if shard_pool.size() < MAX_POOL_SIZE:
-		shard.get_parent().remove_child(shard)
-		shard_pool.append(shard)
-	else:
-		shard.queue_free()
 
 func get_fruit() -> Node:
 	if fruit_pool.is_empty():
@@ -62,10 +45,6 @@ func return_explosion(explosion: Node):
 	else:
 		explosion.queue_free()
 
-func create_shard() -> Node:
-	var shard = SHARD_SCENE.instantiate()
-	return shard
-
 func create_fruit() -> Node:
 	var fruit = FRUIT_SCENE.instantiate()
 	return fruit
@@ -73,13 +52,6 @@ func create_fruit() -> Node:
 func create_explosion() -> Node:
 	var explosion = EXPLOSION_SCENE.instantiate()
 	return explosion
-
-func spawn_shards(position: Vector2, count: int = 6, color: Color = Color.WHITE):
-	for i in range(count):
-		var shard = get_shard()
-		get_tree().current_scene.add_child(shard)
-		shard.global_position = position
-		shard.setup(color, Vector2(randf_range(-200, 200), randf_range(-300, -100)))
 
 func spawn_fruit(position: Vector2, fruit_type: String = "apple"):
 	var fruit = get_fruit()
