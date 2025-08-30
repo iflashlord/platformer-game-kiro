@@ -1,13 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bvq8j5x8qwxpd"]
+[gd_scene load_steps=5 format=3 uid="uid://bvq8j5x8qwxpd"]
 
 [ext_resource type="Script" uid="uid://cb4u3qu5ytatm" path="res://actors/DynamicPlatform.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://c4vexcf71vflk" path="res://content/Graphics/Sprites/Tiles/Default/block_yellow.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://blwcrdiqapi7b" path="res://actors/BreakableComponent.gd" id="3_breakable_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(96, 32)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
-size = Vector2(96, 8)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
 direction = Vector3(0, -1, 0)
@@ -34,12 +32,7 @@ position = Vector2(48, 16)
 shape = SubResource("RectangleShape2D_1")
 
 [node name="BreakableComponent" type="Node" parent="."]
-
-[node name="PlayerDetector" type="Area2D" parent="BreakableComponent"]
-
-[node name="DetectionCollision" type="CollisionShape2D" parent="BreakableComponent/PlayerDetector"]
-position = Vector2(48, -4)
-shape = SubResource("RectangleShape2D_2")
+script = ExtResource("3_breakable_script")
 
 [node name="BreakTimer" type="Timer" parent="BreakableComponent"]
 one_shot = true

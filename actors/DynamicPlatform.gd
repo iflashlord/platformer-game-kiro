@@ -46,6 +46,10 @@ func _ready():
 		if is_breakable:
 			_setup_breakable_component()
 		
+		# Add simple collision detection for breakable platforms
+		if is_breakable:
+			_setup_player_detection()
+		
 		print("🧱 DynamicPlatform created - Type: ", PlatformType.keys()[platform_type], " Size: ", Vector2(width, height), " Breakable: ", is_breakable)
 	else:
 		# Editor setup - ensure platform is visible and properly configured
@@ -126,12 +130,7 @@ func _update_visual_and_collision():
 	shape.size = Vector2(width, height)
 	collision_shape.position = Vector2(width / 2, height / 2)
 	
-	# Update breakable component detection area if it exists
-	if breakable_component and breakable_component.has_method("update_detection_area"):
-		breakable_component.update_detection_area()
-	elif is_breakable and breakable_component:
-		# Ensure breakable component knows about size changes
-		breakable_component.platform_size_changed(Vector2(width, height))
+	# No need for separate detection area updates - using direct collision detection
 	
 	if not Engine.is_editor_hint():
 		print("🧱 Updated platform: Size=", Vector2(width, height), " 9-slice margins=", Vector2(nine_patch.patch_margin_left, nine_patch.patch_margin_top))
@@ -149,6 +148,15 @@ func _setup_breakable_component():
 		# Wait a frame to ensure BreakableComponent's _ready() has run
 		await get_tree().process_frame
 		breakable_component.setup(self, break_delay, shake_duration)
+		
+		# Connect to breakable component signals
+		if not breakable_component.break_started.is_connected(_on_break_started):
+			breakable_component.break_started.connect(_on_break_started)
+		if not breakable_component.break_completed.is_connected(_on_break_completed):
+			breakable_component.break_completed.connect(_on_break_completed)
+		if not breakable_component.shake_started.is_connected(_on_shake_started):
+			breakable_component.shake_started.connect(_on_shake_started)
+		
 		print("🔧 BreakableComponent setup complete")
 	else:
 		print("⚠️ BreakableComponent not found - disabling breakable functionality")
@@ -296,3 +304,52 @@ func refresh_platform():
 		# Force editor update
 		if Engine.is_editor_hint():
 			notify_property_list_changed()
+
+# Signal handlers for breakable component
+func _on_break_started():
+	print("🧱 Platform break sequence started")
+	# Could add visual effects, sound, etc.
+
+func _on_shake_started():
+	print("🧱 Platform started shaking")
+	# Could add screen shake, sound effects, etc.
+
+func _on_break_completed():
+	print("🧱 Platform break completed")
+	# Platform is now broken and invisible
+
+# Simple player detection for breakable platforms using collision detection
+func _setup_player_detection():
+	# Use a timer to periodically check if player is on this platform
+	var detection_timer = Timer.new()
+	detection_timer.wait_time = 0.05  # Check every 0.05 seconds for better responsiveness
+	detection_timer.timeout.connect(_check_for_player)
+	add_child(detection_timer)
+	detection_timer.start()
+
+func _check_for_player():
+	if not is_breakable or not breakable_component:
+		return
+	
+	# Get the player
+	var player = get_tree().get_first_node_in_group("player")
+	if not player or not player.is_on_floor():
+		return
+	
+	# Use the actual NinePatchRect bounds for accurate detection
+	var player_pos = player.global_position
+	var platform_rect = Rect2(global_position, Vector2(width, height))
+	
+	# Check if player is standing on top of the platform
+	# Player should be within horizontal bounds and just above the platform surface
+	var horizontal_overlap = player_pos.x >= platform_rect.position.x - 5 and player_pos.x <= platform_rect.position.x + platform_rect.size.x + 5
+	var vertical_overlap = player_pos.y >= platform_rect.position.y - 20 and player_pos.y <= platform_rect.position.y + 10
+	
+	if horizontal_overlap and vertical_overlap:
+		# Player is on the platform! Trigger breaking
+		if breakable_component.has_method("player_landed_on_platform"):
+			breakable_component.player_landed_on_platform()
+			# Stop the detection timer to prevent multiple triggers
+			var timer = get_children().filter(func(child): return child is Timer and child.timeout.is_connected(_check_for_player))
+			if timer.size() > 0:
+				timer[0].stop()
