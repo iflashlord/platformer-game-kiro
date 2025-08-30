@@ -33,6 +33,9 @@ func _ready():
 	if not break_particles:
 		break_particles = get_node("BreakParticles") if has_node("BreakParticles") else null
 	
+	# move break_particles to back layer
+	break_particles.set_z_index(-1)
+
 	# Connect timer signals
 	if break_timer:
 		break_timer.timeout.connect(_on_break_timer_timeout)
@@ -103,6 +106,12 @@ func _start_shaking():
 	
 	is_shaking = true
 	shake_started.emit()
+
+		# Play break sound (if audio system exists)
+	if has_node("/root/Audio"):
+		var audio = get_node("/root/Audio")
+		if audio.has_method("play_sfx"):
+			audio.play_sfx("platform_shake")
 
 	# Start low-level particle emission during shaking
 	_set_particle_emission_level("shaking")
