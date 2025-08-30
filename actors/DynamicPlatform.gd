@@ -9,8 +9,10 @@ enum PlatformType {
 }
 
 # Core platform properties - simple and direct
-@export var width: float = 96.0: set = _set_width
-@export var height: float = 32.0: set = _set_height
+@export var width: float = 64.0: set = _set_width
+@export var height: float = 64.0: set = _set_height
+@export var patch_margin_x: float = 23: set = _set_patch_margin_x
+@export var patch_margin_y: float = 23: set = _set_patch_margin_y
 @export var platform_type: PlatformType = PlatformType.YELLOW: set = _set_platform_type
 @export var is_breakable: bool = false: set = _set_breakable
 @export var break_delay: float = 3.0  # Time before breaking after first touch
@@ -112,8 +114,8 @@ func _update_visual_and_collision():
 	if texture:
 		var texture_size = texture.get_size()
 		# Use 1/4 of texture size as margins for good 9-slice effect
-		var margin_x = int(texture_size.x / 4)
-		var margin_y = int(texture_size.y / 4)
+		var margin_x = int(patch_margin_x)
+		var margin_y = int(patch_margin_y) 
 		
 		nine_patch.patch_margin_left = margin_x
 		nine_patch.patch_margin_top = margin_y
@@ -401,3 +403,15 @@ func _check_for_player():
 			var timer = get_children().filter(func(child): return child is Timer and child.timeout.is_connected(_check_for_player))
 			if timer.size() > 0:
 				timer[0].stop()
+
+
+func _set_patch_margin_x(value: float):
+	patch_margin_x = value
+	if is_inside_tree():
+		_update_visual_and_collision()
+
+func _set_patch_margin_y(value: float):
+	patch_margin_y = value
+	if is_inside_tree():
+		_update_visual_and_collision()
+		

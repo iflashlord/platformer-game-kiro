@@ -1,10 +1,11 @@
-[gd_scene load_steps=18 format=4 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=19 format=4 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" uid="uid://c8yay2n7m6wqp" path="res://ui/HintDisplay.tscn" id="4_hint"]
+[ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="7_8bey8"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
@@ -175,3 +176,12 @@ ESC: Menu | R: Restart | Enter: Stats
 [node name="FlyingEnemy" parent="." instance=ExtResource("16_ll6ei")]
 position = Vector2(288, 313)
 flight_pattern = "Chase Player"
+
+[node name="DynamicPlatform" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-348, 444)
+width = 250.0
+height = 40.0
+patch_margin_x = 23.0
+patch_margin_y = 23.0
+platform_type = 1
+is_breakable = true
