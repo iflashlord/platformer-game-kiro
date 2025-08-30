@@ -5,7 +5,11 @@ class_name DynamicPlatform
 enum PlatformType {
 	YELLOW,
 	GREEN,
-	EMPTY
+	EMPTY,
+	STRONG,
+	BRIDGE,
+	BRIDGE_LOGS,
+	LAVA
 }
 
 # Core platform properties - simple and direct
@@ -36,7 +40,11 @@ var is_active_in_current_layer: bool = true
 var platform_textures = {
 	PlatformType.YELLOW: preload("res://content/Graphics/Sprites/Tiles/Default/block_yellow.png"),
 	PlatformType.GREEN: preload("res://content/Graphics/Sprites/Tiles/Default/block_green.png"),
-	PlatformType.EMPTY: preload("res://content/Graphics/Sprites/Tiles/Default/block_empty.png")
+	PlatformType.EMPTY: preload("res://content/Graphics/Sprites/Tiles/Default/block_strong_empty.png"),
+	PlatformType.STRONG: preload("res://content/Graphics/Sprites/Tiles/Default/block_strong_empty.png"),
+	PlatformType.BRIDGE: preload("res://content/Graphics/Sprites/Tiles/Default/bridge.png"),
+	PlatformType.BRIDGE_LOGS: preload("res://content/Graphics/Sprites/Tiles/Default/bridge_logs.png"),
+	PlatformType.LAVA: preload("res://content/Graphics/Sprites/Tiles/Default/lava.png")
 }
 
 func _ready():
@@ -414,4 +422,3 @@ func _set_patch_margin_y(value: float):
 	patch_margin_y = value
 	if is_inside_tree():
 		_update_visual_and_collision()
-		
