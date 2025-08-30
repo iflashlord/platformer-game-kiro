@@ -29,7 +29,7 @@
 			"theme_color": "#2196F3"
 		},
 		{
-			"id": "CrateTest",
+			"id": "Level01",
 			"display_name": "Crate Chaos",
 			"description": "Master the different crate types and their effects. Learn destruction mechanics and timing.",
 			"order": 2,

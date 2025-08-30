@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://do2g5aru41o4q"]
+[gd_scene load_steps=17 format=4 uid="uid://do2g5aru41o4q"]
 
 [ext_resource type="Script" uid="uid://dssyhankd0sj5" path="res://levels/Level01_Simple.gd" id="1_simple"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bx0yw1rkqh7aa" path="res://actors/Crate.tscn" id="14_svrvc"]
 [ext_resource type="PackedScene" path="res://actors/DeathZone.tscn" id="15_080q8"]
 [ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="16_6oto5"]
+[ext_resource type="PackedScene" uid="uid://00mkiltltuwb" path="res://actors/FlyingEnemy.tscn" id="16_haklp"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
@@ -150,3 +151,7 @@ WASD/Arrows: Move | Space: Jump
 ESC: Menu | R: Restart | Enter: Stats
 
 ✨ All components are reusable and self-contained!"
+
+[node name="FlyingEnemy" parent="." instance=ExtResource("16_haklp")]
+position = Vector2(286, 250)
+flight_pattern = "Circular"
