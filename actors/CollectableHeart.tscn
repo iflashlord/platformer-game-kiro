@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cgrshje24m0s0"]
 
 [ext_resource type="Script" uid="uid://cchc4mmbisjpl" path="res://actors/CollectableHeart.gd" id="1_heart"]
-[ext_resource type="Texture2D" uid="uid://e16uy7dd4x1y" path="res://content/Graphics/Sprites/Tiles/Default/heart.png" id="2_va5su"]
+[ext_resource type="Texture2D" uid="uid://chl5cewadbnoh" path="res://content/Graphics/Sprites/Tiles/Double/heart.png" id="2_va5su"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_heart"]
 radius = 18.0
@@ -44,4 +44,5 @@ vertical_alignment = 1
 shape = SubResource("CircleShape2D_heart")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_64l6x")

@@ -18,7 +18,10 @@ var players_in_zone: Array[Node2D] = []
 var visual_indicator: ColorRect = null
 
 func _ready():
-	# Skip setup in editor mode
+	# Always setup visuals for editor preview
+	call_deferred("_setup_visuals")
+	
+	# Skip runtime setup in editor mode
 	if Engine.is_editor_hint():
 		return
 		
@@ -35,14 +38,8 @@ func _ready():
 	# Set collision layers
 	collision_layer = 64  # Death zone layer
 	collision_mask = 2    # Player layer
-	
-	# Wait for scene to be fully loaded before setting up visuals
-	call_deferred("_setup_visuals")
 
 func _setup_visuals():
-	if Engine.is_editor_hint():
-		return
-		
 	# Create visual indicator if none exists
 	if not has_node("VisualIndicator"):
 		create_visual_indicator()
@@ -219,12 +216,13 @@ func _update_visual_and_collision():
 		visual_indicator.size = Vector2(width, height)
 		visual_indicator.position = Vector2(0, -height/2)
 	
-	# Update collision shape
-	if collision_shape and is_instance_valid(collision_shape) and collision_shape.shape:
-		if collision_shape.shape is RectangleShape2D:
-			var rect_shape = collision_shape.shape as RectangleShape2D
-			rect_shape.size = Vector2(width, height)
-			collision_shape.position = Vector2(width/2, 0)
+	# Update collision shape - create unique shape to avoid affecting other instances
+	if collision_shape and is_instance_valid(collision_shape):
+		# Create a unique shape for this instance
+		var rect_shape = RectangleShape2D.new()
+		rect_shape.size = Vector2(width, height)
+		collision_shape.shape = rect_shape
+		collision_shape.position = Vector2(width/2, 30)
 	
 func set_zone_type(new_type: String):
 	zone_type = new_type

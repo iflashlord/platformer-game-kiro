@@ -152,11 +152,15 @@ func create_collection_effect():
 	effect_label.position = global_position + Vector2(-15, -30)
 	get_tree().current_scene.add_child(effect_label)
 	
-	# Animate the text effect with proper cleanup
-	var text_tween = create_tween()
+	# Animate the text effect with proper cleanup - create tween on scene tree
+	var text_tween = get_tree().create_tween()
 	text_tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 0.8)
 	text_tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 0.8)
 	text_tween.tween_callback(effect_label.queue_free)
+
+	# Audio feedback
+	if Audio:
+		Audio.play_sfx("collect_heart")
 	
 	# Animate the heart disappearing with smoother movement
 	var item_tween = create_tween()

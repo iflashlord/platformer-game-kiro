@@ -490,7 +490,7 @@ axis_stretch_vertical = 1
 background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_blrwf"), SubResource("Resource_ax175")])
 
 [node name="DynamicPlatform21" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(152, 592)
+position = Vector2(152, 568)
 scale = Vector2(0.5, 0.5)
 width = 300.0
 height = 400.0
@@ -506,6 +506,16 @@ axis_stretch_vertical = 1
 position = Vector2(152, 560)
 scale = Vector2(0.5, 0.5)
 width = 300
+
+[node name="DeathZone2" parent="." instance=ExtResource("15_080q8")]
+position = Vector2(696, 536)
+scale = Vector2(0.5, 0.5)
+width = 198
+
+[node name="DeathZone3" parent="." instance=ExtResource("15_080q8")]
+position = Vector2(832, 536)
+scale = Vector2(0.5, 0.5)
+width = 198
 
 [node name="CollectableHeart" parent="." instance=ExtResource("23_ax175")]
 position = Vector2(552, 464)
