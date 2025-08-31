@@ -13,7 +13,22 @@ enum PlatformType {
 	CHAIN,
 	DIRT_TOP_LEFT,
 	DIRT_TOP_CENTER,
-	DIRT_TOP_RIGHT
+	DIRT_TOP_RIGHT,
+	DIRT_MIDDLE_CENTER,
+	DIRT_MIDDLE_LEFT,
+	DIRT_MIDDLE_RIGHT,
+	DIRT_BOTTOM_LEFT,
+	DIRT_BOTTOM_CENTER,
+	DIRT_BOTTOM_RIGHT,
+	GRASS_TOP_LEFT,
+	GRASS_TOP_CENTER,
+	GRASS_TOP_RIGHT,
+	GRASS_MIDDLE_CENTER,
+	GRASS_MIDDLE_LEFT,
+	GRASS_MIDDLE_RIGHT,
+	GRASS_BOTTOM_LEFT,
+	GRASS_BOTTOM_CENTER,
+	GRASS_BOTTOM_RIGHT
 }
 
 # Core platform properties - simple and direct
@@ -58,7 +73,22 @@ var platform_textures = {
 	PlatformType.CHAIN: preload("res://content/Graphics/Sprites/Tiles/Default/chain.png"),
 	PlatformType.DIRT_TOP_LEFT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_top_left.png"),
 	PlatformType.DIRT_TOP_CENTER: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_top.png"),
-	PlatformType.DIRT_TOP_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_top_right.png")
+	PlatformType.DIRT_TOP_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_top_right.png"),
+	PlatformType.DIRT_MIDDLE_CENTER: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_center.png"),
+	PlatformType.DIRT_MIDDLE_LEFT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_left.png"),
+	PlatformType.DIRT_MIDDLE_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_right.png"),
+	PlatformType.DIRT_BOTTOM_CENTER: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_bottom.png"),
+	PlatformType.DIRT_BOTTOM_LEFT:preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_bottom_left.png"),
+	PlatformType.DIRT_BOTTOM_RIGHT:preload("res://content/Graphics/Sprites/Tiles/Default/terrain_dirt_block_bottom_right.png"),
+	PlatformType.GRASS_TOP_LEFT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_top_left.png"),
+	PlatformType.GRASS_TOP_CENTER: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_top.png"),
+	PlatformType.GRASS_TOP_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_top_right.png"),
+	PlatformType.GRASS_MIDDLE_CENTER: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_center.png"),
+	PlatformType.GRASS_MIDDLE_LEFT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_left.png"),
+	PlatformType.GRASS_MIDDLE_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_right.png"),
+	PlatformType.GRASS_BOTTOM_CENTER: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_bottom.png"),
+	PlatformType.GRASS_BOTTOM_LEFT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_bottom_left.png"),
+	PlatformType.GRASS_BOTTOM_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_bottom_right.png")
 }
 
 func _ready():
