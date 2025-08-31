@@ -171,6 +171,65 @@ position = Vector2(360, 440)
 hint_message = "Jump on enemies to defeat them! Approach from above to stomp them safely."
 hint_title = "Enemy Combat"
 
+[node name="Signs" type="Node2D" parent="."]
+show_behind_parent = true
+
+[node name="DynamicPlatform43" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(1280, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform46" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(600, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform47" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(456, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform50" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(312, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform48" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(8, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform44" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(1472, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform45" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(1640, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform49" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(1816, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="GoblinPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
@@ -473,11 +532,13 @@ visible_in_both_dimensions = true
 position = Vector2(1192, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 17
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform34" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1192, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 23
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform35" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1192, 520)
@@ -490,6 +551,7 @@ patch_margin_bottom = 0.0
 platform_type = 21
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform36" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1208, 488)
@@ -501,6 +563,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 9
 axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform37" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1208, 488)
@@ -512,6 +575,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 18
 axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform38" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1224, 720)
@@ -523,6 +587,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 24
 axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform39" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1208, 520)
@@ -536,16 +601,19 @@ patch_margin_bottom = 0.0
 platform_type = 20
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform40" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(2008, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 19
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform41" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(2008, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 25
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform42" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(2008, 520)
@@ -557,6 +625,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 22
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="ParallaxBackgroundSystem" parent="." instance=ExtResource("19_88x2b")]
 background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_blrwf"), SubResource("Resource_ax175")])
@@ -591,8 +660,6 @@ axis_stretch_vertical = 1
 position = Vector2(152, 560)
 scale = Vector2(0.5, 0.5)
 width = 300
-target_layer = "A"
-visible_in_both_dimensions = false
 
 [node name="DeathZone3" parent="." instance=ExtResource("15_080q8")]
 position = Vector2(-584, 904)
@@ -605,8 +672,6 @@ visible_in_both_dimensions = true
 position = Vector2(696, 536)
 scale = Vector2(0.5, 0.5)
 width = 1000
-target_layer = "A"
-visible_in_both_dimensions = false
 
 [node name="CollectableHeart2" parent="." instance=ExtResource("23_ax175")]
 position = Vector2(1872, 448)
@@ -624,4 +689,5 @@ height = 50.0
 platform_type = 5
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+is_breakable = true
 target_layer = "B"

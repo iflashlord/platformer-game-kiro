@@ -38,8 +38,8 @@ func _on_body_entered(body: Node2D):
 		return
 
 	# Audio feedback
-	if Audio:
-		Audio.play_sfx("hint")
+	# if Audio:
+	# 	Audio.play_sfx("hint")
 	
 		
 	_show_hint()

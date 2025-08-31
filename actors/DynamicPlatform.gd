@@ -28,7 +28,15 @@ enum PlatformType {
 	GRASS_MIDDLE_RIGHT,
 	GRASS_BOTTOM_LEFT,
 	GRASS_BOTTOM_CENTER,
-	GRASS_BOTTOM_RIGHT
+	GRASS_BOTTOM_RIGHT,
+	SIGN_EXIT,
+	SIGN_LEFT,
+	SIGN_RIGHT,
+	SIGN,
+	CACTUS,
+	BUSH,
+	BRICKS_BROWN,
+	BRICKS_GREY
 }
 
 # Core platform properties - simple and direct
@@ -44,6 +52,7 @@ enum PlatformType {
 @export var axis_stretch_horizontal: NinePatchRect.AxisStretchMode = NinePatchRect.AXIS_STRETCH_MODE_STRETCH: set = _set_axis_stretch_horizontal
 @export var axis_stretch_vertical: NinePatchRect.AxisStretchMode = NinePatchRect.AXIS_STRETCH_MODE_STRETCH: set = _set_axis_stretch_vertical
 @export var is_breakable: bool = false: set = _set_breakable
+@export var collision_disabled: bool = false: set = _set_collision_disabled  # Make platform visual-only (no collision)
 @export var break_delay: float = 3.0  # Time before breaking after first touch
 @export var shake_duration: float = 2.0  # Time to shake before breaking
 @export_group("Respawn Settings")
@@ -89,7 +98,15 @@ var platform_textures = {
 	PlatformType.GRASS_MIDDLE_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_right.png"),
 	PlatformType.GRASS_BOTTOM_CENTER: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_bottom.png"),
 	PlatformType.GRASS_BOTTOM_LEFT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_bottom_left.png"),
-	PlatformType.GRASS_BOTTOM_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_bottom_right.png")
+	PlatformType.GRASS_BOTTOM_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/terrain_grass_block_bottom_right.png"),
+	PlatformType.SIGN_EXIT: preload("res://content/Graphics/Sprites/Tiles/Default/sign_exit.png"),
+	PlatformType.SIGN_LEFT: preload("res://content/Graphics/Sprites/Tiles/Default/sign_left.png"),
+	PlatformType.SIGN_RIGHT: preload("res://content/Graphics/Sprites/Tiles/Default/sign_right.png"),
+	PlatformType.SIGN: preload("res://content/Graphics/Sprites/Tiles/Default/sign.png"),
+	PlatformType.CACTUS: preload("res://content/Graphics/Sprites/Tiles/Default/cactus.png"),
+	PlatformType.BUSH: preload("res://content/Graphics/Sprites/Tiles/Default/bush.png"),
+	PlatformType.BRICKS_BROWN: preload("res://content/Graphics/Sprites/Tiles/Default/bricks_brown.png"),
+	PlatformType.BRICKS_GREY: preload("res://content/Graphics/Sprites/Tiles/Default/bricks_grey.png"),
 }
 
 func _ready():
@@ -109,7 +126,7 @@ func _ready():
 		if is_breakable:
 			_setup_player_detection()
 		
-		print("🧱 DynamicPlatform created - Type: ", PlatformType.keys()[platform_type], " Size: ", Vector2(width, height), " Breakable: ", is_breakable)
+		print("🧱 DynamicPlatform created - Type: ", PlatformType.keys()[platform_type], " Size: ", Vector2(width, height), " Breakable: ", is_breakable, " Collision: ", "Disabled" if collision_disabled else "Enabled")
 	else:
 		# Editor setup - ensure platform is visible and properly configured
 		_update_visual_and_collision()
@@ -187,6 +204,9 @@ func _update_visual_and_collision():
 	shape.size = Vector2(width, height)  # Exact same size as visual
 	collision_shape.position = Vector2(width / 2, height / 2)  # Centered on visual
 	
+	# Handle collision disabled state
+	collision_shape.disabled = collision_disabled
+	
 	# No need for separate detection area updates - using direct collision detection
 	
 	# Update particles to match platform size (BreakableComponent handles positioning)
@@ -198,7 +218,7 @@ func _update_visual_and_collision():
 	_validate_collision_alignment()
 	
 	if not Engine.is_editor_hint():
-		print("🧱 Updated platform: Size=", Vector2(width, height), " Margins L/R/T/B=", Vector4(nine_patch.patch_margin_left, nine_patch.patch_margin_right, nine_patch.patch_margin_top, nine_patch.patch_margin_bottom))
+		print("🧱 Updated platform: Size=", Vector2(width, height), " Margins L/R/T/B=", Vector4(nine_patch.patch_margin_left, nine_patch.patch_margin_right, nine_patch.patch_margin_top, nine_patch.patch_margin_bottom), " Collision: ", "Disabled" if collision_disabled else "Enabled")
 
 func _setup_breakable_component():
 	# Only setup breakable mechanics at runtime
@@ -251,11 +271,20 @@ func _update_for_layer(current_layer: String):
 	
 	# Update visibility and collision based on layer
 	visible = is_active_in_current_layer
-	collision_layer = 1 if is_active_in_current_layer else 0
-	collision_mask = 1 if is_active_in_current_layer else 0
 	
-	if collision_shape:
-		collision_shape.disabled = not is_active_in_current_layer
+	# Handle collision layers - respect collision_disabled setting
+	if collision_disabled:
+		collision_layer = 0  # No collision when disabled
+		collision_mask = 0   # No collision when disabled
+		if collision_shape:
+			collision_shape.disabled = true
+	else:
+		collision_layer = 1 if is_active_in_current_layer else 0
+		collision_mask = 1 if is_active_in_current_layer else 0
+		if collision_shape:
+			collision_shape.disabled = not is_active_in_current_layer
+	
+
 
 # Public methods for runtime configuration
 func set_platform_type(new_type: PlatformType):
@@ -274,6 +303,7 @@ func reset_platform():
 	width = 96.0
 	height = 32.0
 	is_breakable = false
+	collision_disabled = false
 	break_delay = 3.0
 	shake_duration = 2.0
 	auto_respawn = true
@@ -309,6 +339,8 @@ func configure_platform(config: Dictionary):
 		height = config.height
 	if config.has("breakable"):
 		is_breakable = config.breakable
+	if config.has("collision_disabled"):
+		collision_disabled = config.collision_disabled
 	if config.has("break_delay"):
 		break_delay = config.break_delay
 	if config.has("shake_duration"):
@@ -357,6 +389,14 @@ func _set_breakable(value: bool):
 	is_breakable = value
 	if is_breakable and is_inside_tree() and not Engine.is_editor_hint():
 		_setup_breakable_component()
+
+func _set_collision_disabled(value: bool):
+	collision_disabled = value
+	if is_inside_tree():
+		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
 
 
 # Deferred particle update to ensure size changes are complete
