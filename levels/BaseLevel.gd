@@ -42,6 +42,10 @@ func _ready():
 	# Reset score
 	if Game:
 		Game.score = 0
+
+	# Audio feedback
+	if Audio:
+		Audio.play_music(level_id, 0.4)
 	
 	# Connect health system to HUD
 	if HealthSystem and hud and hud.has_method("update_health"):

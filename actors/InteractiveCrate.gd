@@ -100,6 +100,8 @@ func _on_body_entered(body):
 		print("📦 Invalid collision or already destroyed")
 
 func interact_with_player(player):
+
+	
 	match crate_type:
 		"basic":
 			bounce_player(player)
@@ -108,6 +110,7 @@ func interact_with_player(player):
 			bounce_player(player)
 			destroy_crate()
 		"tnt":
+			bounce_player(player)
 			start_explosion_countdown()
 		"metal":
 			# Metal crates are harder to break
@@ -123,6 +126,10 @@ func bounce_player(player):
 	
 	# Emit signal
 	player_bounced.emit(self, player)
+
+	# Audio feedback
+	if Audio && crate_type !="tnt":
+		Audio.play_sfx("interactive_crate")
 	
 	print("🦘 Player bounced with force: ", bounce_force)
 

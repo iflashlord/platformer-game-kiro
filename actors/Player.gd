@@ -372,6 +372,10 @@ func die():
 		
 	print("💀 Player.die() called")
 	died.emit()
+
+	# Audio feedback
+	if Audio:
+		Audio.play_sfx("die")
 	
 	character_sprite.play("hit")
 	

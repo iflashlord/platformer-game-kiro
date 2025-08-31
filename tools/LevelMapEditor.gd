@@ -6,7 +6,6 @@ extends EditorScript
 
 func _run():
 	print("🛠️ Level Map Editor - Configuration Helper")
-	print("=" * 50)
 	
 	# Example usage - modify these values and run the script
 	var config_updates = {

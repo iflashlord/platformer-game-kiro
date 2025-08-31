@@ -206,7 +206,7 @@ func create_death_effect(player):
 		tween.tween_callback(death_effect.queue_free)
 
 func _update_visual_and_collision():
-	# Update visual graphics
+	# Update visual graphics (NinePatchRect)
 	if visual_graphics and is_instance_valid(visual_graphics):
 		visual_graphics.size = Vector2(width, height)
 		visual_graphics.position = Vector2(0, -height/2)
@@ -216,13 +216,20 @@ func _update_visual_and_collision():
 		visual_indicator.size = Vector2(width, height)
 		visual_indicator.position = Vector2(0, -height/2)
 	
-	# Update collision shape - create unique shape to avoid affecting other instances
+	# CRITICAL FIX: Always create a new RectangleShape2D instance to avoid shared resources
 	if collision_shape and is_instance_valid(collision_shape):
-		# Create a unique shape for this instance
-		var rect_shape = RectangleShape2D.new()
-		rect_shape.size = Vector2(width, height)
-		collision_shape.shape = rect_shape
-		collision_shape.position = Vector2(width/2, 30)
+		var shape = RectangleShape2D.new()
+		collision_shape.shape = shape
+		
+		# CRITICAL: Collision shape must match visual size exactly
+		shape.size = Vector2(width, height)  # Exact same size as visual
+		collision_shape.position = Vector2(width / 2, height / 2)  # Centered on visual
+	
+	# Validate that collision shape matches visuals exactly
+	_validate_collision_alignment()
+	
+	if not Engine.is_editor_hint():
+		print("💀 Updated DeathZone: Size=", Vector2(width, height), " Type=", zone_type)
 	
 func set_zone_type(new_type: String):
 	zone_type = new_type
@@ -237,14 +244,68 @@ func set_damage_amount(amount: int):
 
 func set_width(new_width: int):
 	width = maxf(new_width, 8.0)  # Minimum width of 8 pixels 
-	_update_visual_and_collision()
-	# Force update in editor
-	if Engine.is_editor_hint():
-		notify_property_list_changed()
+	if is_inside_tree():
+		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
 
 func set_height(new_height: int):
 	height = maxf(new_height, 8.0)  # Minimum height of 8 pixels 
-	_update_visual_and_collision()
-	# Force update in editor
-	if Engine.is_editor_hint():
-		notify_property_list_changed()
+	if is_inside_tree():
+		_update_visual_and_collision()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
+
+# Validation method to ensure collision shape matches visuals exactly
+func _validate_collision_alignment():
+	if not visual_graphics or not collision_shape:
+		return
+	
+	var shape = collision_shape.shape as RectangleShape2D
+	if not shape:
+		return
+	
+	# Ensure collision shape size matches visual size exactly
+	var visual_size = visual_graphics.size
+	var collision_size = shape.size
+	
+	if not visual_size.is_equal_approx(collision_size):
+		push_warning("DeathZone: Collision shape size mismatch! Visual: " + str(visual_size) + " vs Collision: " + str(collision_size))
+		# Force correction
+		shape.size = visual_size
+	
+	# Ensure collision shape is centered on visual
+	var expected_position = Vector2(visual_size.x / 2, visual_size.y / 2)
+	if not collision_shape.position.is_equal_approx(expected_position):
+		push_warning("DeathZone: Collision shape position mismatch! Expected: " + str(expected_position) + " vs Actual: " + str(collision_shape.position))
+		# Force correction
+		collision_shape.position = expected_position
+
+# Validation method to ensure DeathZone is properly configured
+func _validate_configuration():
+	if not collision_shape:
+		push_error("DeathZone: CollisionShape2D node not found!")
+		return false
+	
+	if not visual_graphics:
+		push_error("DeathZone: NinePatchRect node not found!")
+		return false
+	
+	if width <= 0 or height <= 0:
+		push_warning("DeathZone: Invalid size: " + str(Vector2(width, height)))
+		width = 200
+		height = 50
+	
+	return true
+
+# Method to refresh the entire DeathZone (useful for editor changes)
+func refresh_death_zone():
+	if _validate_configuration():
+		_update_visual_and_collision()
+		setup_zone_appearance()
+		
+		# Force editor update
+		if Engine.is_editor_hint():
+			notify_property_list_changed()

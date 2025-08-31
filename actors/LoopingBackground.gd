@@ -82,7 +82,7 @@ func _setup_background():
 	_texture_size = current_texture.get_size() * scale_factor
 	
 	# Calculate how many sprites we need for seamless looping
-	var viewport_size = (get_viewport().get_visible_rect().size * 3)
+	var viewport_size = (get_viewport().get_visible_rect().size * 5)
 	var sprites_needed_x = max(3, ceil(viewport_size.x / _texture_size.x) + 2)
 	var sprites_needed_y = max(3, ceil(viewport_size.y / _texture_size.y) + 2) if scroll_speed.y != 0 else 1
 	

@@ -36,6 +36,11 @@ func _on_body_entered(body: Node2D):
 		
 	if show_once_only and _has_been_shown:
 		return
+
+	# Audio feedback
+	if Audio:
+		Audio.play_sfx("hint")
+	
 		
 	_show_hint()
 	_has_been_shown = true

@@ -57,6 +57,9 @@ func _ready():
 	# Set appearance based on enemy type
 	setup_enemy_appearance()
 	
+	# Set initial sprite direction
+	update_sprite_direction()
+	
 	# Setup detection area
 	setup_detection_area()
 	

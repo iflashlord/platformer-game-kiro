@@ -85,12 +85,6 @@ func _load_level(level_name: String):
 			scene_path = \"res://levels/Tutorial.tscn\"
 		\"Level01\":
 			scene_path = \"res://levels/Level01.tscn\"
-		\"Level01Simple\":
-			scene_path = \"res://levels/Level01_Simple.tscn\"
-		\"Level01Test\":
-			scene_path = \"res://levels/Level01_Test.tscn\"
-		\"PortalTest\":
-			scene_path = \"res://levels/PortalTest.tscn\"
 		_:
 			print(\"❌ Unknown level: \", level_name)
 			return

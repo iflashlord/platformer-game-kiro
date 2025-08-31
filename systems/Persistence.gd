@@ -597,10 +597,6 @@ func _get_level_scene_path(level_name: String) -> String:
 			return "res://levels/Level02.tscn"
 		"Level03":
 			return "res://levels/Level03.tscn"
-		"Level01_Simple":
-			return "res://levels/Level01_Simple.tscn"
-		"Level01_Advanced":
-			return "res://levels/Level01_Advanced.tscn"
 		_:
 			# Try to construct path from name
 			var scene_path = "res://levels/" + level_name + ".tscn"
