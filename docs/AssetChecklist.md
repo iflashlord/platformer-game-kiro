@@ -15,7 +15,7 @@
 ### 🔄 Placeholder Assets (Need Replacement)
 
 #### Graphics Assets
-- [ ] **icon.svg** - Game icon (128x128 SVG)
+- [ ] **icon.png ** - Game icon (128x128)
   - Current: Basic placeholder SVG
   - Needed: Professional game logo/icon
   
