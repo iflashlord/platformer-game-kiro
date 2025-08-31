@@ -452,6 +452,9 @@ class LevelCard extends Control:
 	func activate():
 		if is_unlocked:
 			level_selected.emit(level_id)
+		else:
+			# Play locked sound or show message for locked levels
+			print("🔒 Cannot select locked level: ", level_id)
 	
 	func _exit_tree():
 		# Clean up tweens when card is destroyed
@@ -647,8 +650,32 @@ func _create_level_card(node_data: Dictionary):
 func _setup_keyboard_navigation():
 	"""Setup keyboard navigation"""
 	if created_level_cards.size() > 0:
-		selected_index = 0
+		# Find the first uncompleted but unlocked level to auto-select
+		selected_index = _find_next_recommended_level()
 		_update_focus_display()
+		_scroll_to_selected()
+
+func _find_next_recommended_level() -> int:
+	"""Find the first uncompleted but unlocked level to auto-select"""
+	# First, try to find the first uncompleted but unlocked level
+	for i in range(created_level_cards.size()):
+		var card = created_level_cards[i]
+		if card and is_instance_valid(card):
+			if card.is_unlocked and not card.is_completed:
+				print("🎯 Auto-selecting next uncompleted level: ", card.level_id, " at index ", i)
+				return i
+	
+	# If all unlocked levels are completed, select the first unlocked level
+	for i in range(created_level_cards.size()):
+		var card = created_level_cards[i]
+		if card and is_instance_valid(card):
+			if card.is_unlocked:
+				print("🎯 Auto-selecting first unlocked level: ", card.level_id, " at index ", i)
+				return i
+	
+	# Fallback to first level if nothing is unlocked (shouldn't happen normally)
+	print("🎯 Fallback: Auto-selecting first level at index 0")
+	return 0
 
 func _update_focus_display():
 	"""Update visual focus indicators"""
@@ -793,9 +820,17 @@ func _on_dev_pressed():
 	if dev_button:
 		dev_button.text = "DEV: ON" if dev_mode else "DEV: OFF"
 	
-	# Refresh grid
+	# Refresh grid and selection
 	_create_level_grid()
 	_setup_keyboard_navigation()
+	
+	# If we switched to normal mode and current selection is locked, find a valid selection
+	if not dev_mode:
+		var current_card = created_level_cards[selected_index] if selected_index < created_level_cards.size() else null
+		if current_card and not current_card.is_unlocked:
+			selected_index = _find_next_recommended_level()
+			_update_focus_display()
+			_scroll_to_selected()
 
 func _on_level_selected(level_id: String):
 	"""Handle level selection"""
@@ -860,12 +895,32 @@ func _navigate_selection(direction: int):
 	if created_level_cards.is_empty():
 		return
 	
-	var new_index = selected_index + direction
+	var new_index = selected_index
+	var attempts = 0
+	var max_attempts = created_level_cards.size()
 	
-	# Clamp to valid range
-	new_index = clamp(new_index, 0, created_level_cards.size() - 1)
+	# Keep moving in the direction until we find an unlocked level or reach the end
+	while attempts < max_attempts:
+		new_index += direction
+		
+		# Wrap around or clamp to valid range
+		if new_index < 0:
+			new_index = created_level_cards.size() - 1
+		elif new_index >= created_level_cards.size():
+			new_index = 0
+		
+		# Check if this level is selectable
+		var card = created_level_cards[new_index]
+		if card and is_instance_valid(card):
+			# In dev mode, all levels are selectable
+			# In normal mode, only unlocked levels are selectable
+			if dev_mode or card.is_unlocked:
+				break
+		
+		attempts += 1
 	
-	if new_index != selected_index:
+	# If we found a valid level, select it
+	if new_index != selected_index and attempts < max_attempts:
 		selected_index = new_index
 		_update_focus_display()
 		_scroll_to_selected()
@@ -873,6 +928,10 @@ func _navigate_selection(direction: int):
 		# Play navigation sound
 		if Audio and Audio.has_method("play_sfx"):
 			Audio.play_sfx("ui_focus")
+	else:
+		# Play error sound if no valid level found
+		if Audio and Audio.has_method("play_sfx"):
+			Audio.play_sfx("ui_error")
 
 func _scroll_to_selected():
 	"""Scroll to keep selected item visible"""
