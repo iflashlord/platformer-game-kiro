@@ -36,6 +36,8 @@ var damage_cooldown_time: float = 0.5
 var time_elapsed: float = 0.0
 var player_target: Node2D = null
 var chase_speed: float = 100.0
+var turn_around_cooldown: float = 0.0
+var turn_around_cooldown_time: float = 0.2
 
 @onready var label: Label = $EnemyLabel
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -79,6 +81,10 @@ func _physics_process(delta):
 	if damage_cooldown > 0:
 		damage_cooldown -= delta
 	
+	# Update turn around cooldown
+	if turn_around_cooldown > 0:
+		turn_around_cooldown -= delta
+	
 	time_elapsed += delta
 	
 	# Calculate movement based on flight pattern
@@ -102,10 +108,13 @@ func _move_horizontal(delta):
 	velocity.x = flight_speed * direction
 	velocity.y = 0
 	
-	# Check if we've traveled too far from start position
+	# Check if we've traveled too far from start position and are still moving away
 	var distance_from_start = abs(global_position.x - start_position.x)
-	if distance_from_start > patrol_distance:
-		turn_around()
+	if distance_from_start > patrol_distance and turn_around_cooldown <= 0:
+		# Only turn around if we're moving away from start position
+		var moving_away_from_start = (global_position.x - start_position.x) * direction > 0
+		if moving_away_from_start:
+			turn_around()
 
 func _move_sine_wave(delta):
 	"""Sine wave flight pattern"""
@@ -121,8 +130,11 @@ func _move_sine_wave(delta):
 	
 	# Check horizontal boundaries
 	var distance_from_start = abs(global_position.x - start_position.x)
-	if distance_from_start > patrol_distance:
-		turn_around()
+	if distance_from_start > patrol_distance and turn_around_cooldown <= 0:
+		# Only turn around if we're moving away from start position
+		var moving_away_from_start = (global_position.x - start_position.x) * direction > 0
+		if moving_away_from_start:
+			turn_around()
 
 func _move_circular(delta):
 	"""Circular flight pattern"""
@@ -157,10 +169,13 @@ func _move_vertical(delta):
 	velocity.x = 0
 	velocity.y = flight_speed * direction
 	
-	# Check if we've traveled too far from start position
+	# Check if we've traveled too far from start position and are still moving away
 	var distance_from_start = abs(global_position.y - start_position.y)
-	if distance_from_start > patrol_distance:
-		turn_around()
+	if distance_from_start > patrol_distance and turn_around_cooldown <= 0:
+		# Only turn around if we're moving away from start position
+		var moving_away_from_start = (global_position.y - start_position.y) * direction > 0
+		if moving_away_from_start:
+			turn_around()
 
 func setup_enemy_appearance():
 	"""Setup enemy appearance and stats based on type"""
@@ -219,6 +234,7 @@ func setup_detection_area():
 func turn_around():
 	"""Turn around and flip sprite"""
 	direction *= -1
+	turn_around_cooldown = turn_around_cooldown_time
 	update_sprite_direction()
 	
 	if ErrorHandler:
