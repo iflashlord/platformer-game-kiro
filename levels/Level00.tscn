@@ -145,7 +145,8 @@ position = Vector2(1160, 350)
 position = Vector2(679, 372)
 
 [node name="HintArea" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(58, 432)
+position = Vector2(72, 440)
+scale = Vector2(1.23398, 1.04371)
 hint_message = "Welcome to the tutorial! Use WASD or arrow keys to move, SPACE to jump."
 hint_title = "Movement Tutorial"
 
@@ -155,7 +156,7 @@ hint_message = "Press F to switch between dimensions A and B. Some platforms onl
 hint_title = "Dimension Switching"
 
 [node name="HintArea3" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(520, 348)
+position = Vector2(600, 392)
 hint_message = "This is a checkpoint! When you die, you'll respawn here instead of the beginning."
 hint_title = "Checkpoint"
 
@@ -217,7 +218,6 @@ ESC: Menu | R: Restart | Enter: Stats
 
 [node name="FlyingEnemy" parent="." instance=ExtResource("16_ll6ei")]
 position = Vector2(264, 416)
-flight_pattern = "Chase Player"
 
 [node name="DynamicPlatform" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-432, 472)

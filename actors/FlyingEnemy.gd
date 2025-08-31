@@ -17,7 +17,7 @@ signal player_damaged(enemy: FlyingEnemy, player: Node2D, damage: int)
 @export_enum("Horizontal", "Sine Wave", "Circular", "Chase Player", "Vertical") var flight_pattern: String = "Horizontal"
 @export var pattern_amplitude: float = 50.0  # For sine wave and circular patterns
 @export var pattern_frequency: float = 2.0   # Speed of pattern oscillation
-@export var patrol_distance: float = 200.0   # Distance to travel before turning around
+@export var patrol_distance: float = 300.0   # Distance to travel before turning around
 
 # AI Enhancement settings
 @export_group("AI Behavior")
@@ -167,7 +167,7 @@ func setup_enemy_appearance():
 	match enemy_type:
 		"bee":
 			enemy_sprite.play("bee")
-			flight_speed = 80.0
+			flight_speed = 70.0
 			points_value = 200
 			damage_amount = 1
 			enemy_sprite.modulate = Color.YELLOW
@@ -227,9 +227,9 @@ func turn_around():
 func update_sprite_direction():
 	"""Update sprite direction based on movement"""
 	if direction > 0:
-		enemy_sprite.scale.x = abs(enemy_sprite.scale.x)
-	else:
 		enemy_sprite.scale.x = -abs(enemy_sprite.scale.x)
+	else:
+		enemy_sprite.scale.x = abs(enemy_sprite.scale.x)
 
 func _on_detection_area_entered(body):
 	"""Handle player detection"""

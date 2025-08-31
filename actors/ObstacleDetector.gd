@@ -31,21 +31,7 @@ var is_detection_active: bool = true
 # Parent reference
 var flying_enemy: FlyingEnemy
 
-# Obstacle information structure
-class ObstacleInfo:
-	var position: Vector2
-	var direction: Vector2
-	var distance: float
-	var surface_normal: Vector2
-	var detection_time: float
-	var is_cached: bool = false
-	
-	func _init(pos: Vector2, dir: Vector2, dist: float, normal: Vector2 = Vector2.ZERO):
-		position = pos
-		direction = dir.normalized()
-		distance = dist
-		surface_normal = normal.normalized()
-		detection_time = Time.get_time_dict_from_system().hour * 3600 + Time.get_time_dict_from_system().minute * 60 + Time.get_time_dict_from_system().second
+# Using global ObstacleInfo class
 
 func _ready():
 	# Get parent reference

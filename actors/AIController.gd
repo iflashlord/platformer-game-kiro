@@ -34,8 +34,6 @@ var last_transition_time: float = 0.0
 # References to parent and components
 var flying_enemy: FlyingEnemy
 var obstacle_detector: ObstacleDetector
-var chase_detector: ChaseDetector
-var movement_controller: MovementController
 
 # State timing and performance
 var state_duration: float = 0.0
@@ -68,19 +66,18 @@ func _connect_component_signals():
 	"""Connect to component signals for AI coordination"""
 	# Get component references
 	obstacle_detector = flying_enemy.get_node_or_null("ObstacleDetector")
-	chase_detector = flying_enemy.get_node_or_null("ChaseDetector")
-	movement_controller = flying_enemy.get_node_or_null("MovementController")
 	
 	# Connect obstacle detector signals
 	if obstacle_detector:
-		obstacle_detector.obstacle_detected.connect(_on_obstacle_detected)
-		obstacle_detector.path_blocked.connect(_on_path_blocked)
+		if obstacle_detector.has_signal("obstacle_detected"):
+			obstacle_detector.obstacle_detected.connect(_on_obstacle_detected)
+		if obstacle_detector.has_signal("path_blocked"):
+			obstacle_detector.path_blocked.connect(_on_path_blocked)
 	
-	# Connect chase detector signals
-	if chase_detector:
-		chase_detector.player_entered_range.connect(_on_player_entered_range)
-		chase_detector.player_exited_range.connect(_on_player_exited_range)
-		chase_detector.chase_timeout.connect(_on_chase_timeout)
+	# Connect to FlyingEnemy's existing detection signals
+	if flying_enemy:
+		if flying_enemy.has_signal("player_detected"):
+			flying_enemy.player_detected.connect(_on_player_detected)
 
 func update_ai(delta: float) -> void:
 	"""Main AI update function called by FlyingEnemy"""
@@ -108,37 +105,45 @@ func update_ai(delta: float) -> void:
 func _update_patrol_state(delta: float) -> void:
 	"""Update patrol behavior"""
 	# Check if we should transition to chase (if allowed)
-	if can_chase() and chase_detector and chase_detector.get_closest_player():
+	if can_chase() and flying_enemy and flying_enemy.player_target:
 		transition_to_state(AIState.CHASE)
 		return
 	
 	# Check if we need to avoid obstacles
-	if should_avoid_obstacles() and obstacle_detector and obstacle_detector.detect_obstacles().size() > 0:
-		transition_to_state(AIState.AVOIDANCE)
-		return
+	if should_avoid_obstacles() and obstacle_detector and obstacle_detector.has_method("detect_obstacles"):
+		var obstacles = obstacle_detector.detect_obstacles()
+		if obstacles.size() > 0:
+			transition_to_state(AIState.AVOIDANCE)
+			return
 	
 	# Continue normal patrol behavior (handled by FlyingEnemy movement methods)
 
 func _update_chase_state(delta: float) -> void:
 	"""Update chase behavior"""
 	# Check if we still have a valid target
-	if not chase_detector or not chase_detector.get_closest_player():
+	if not flying_enemy or not flying_enemy.player_target:
 		transition_to_state(AIState.PATROL)
 		return
 	
 	# Check if we need to avoid obstacles while chasing
-	if should_avoid_obstacles() and obstacle_detector and obstacle_detector.detect_obstacles().size() > 0:
-		transition_to_state(AIState.AVOIDANCE)
-		return
+	if should_avoid_obstacles() and obstacle_detector and obstacle_detector.has_method("detect_obstacles"):
+		var obstacles = obstacle_detector.detect_obstacles()
+		if obstacles.size() > 0:
+			transition_to_state(AIState.AVOIDANCE)
+			return
 	
-	# Continue chase behavior (handled by chase detector and movement controller)
+	# Continue chase behavior (handled by FlyingEnemy's chase logic)
 
 func _update_avoidance_state(delta: float) -> void:
 	"""Update obstacle avoidance behavior"""
 	# Check if obstacles are cleared
-	if not obstacle_detector or obstacle_detector.detect_obstacles().size() == 0:
+	var obstacles_cleared = true
+	if obstacle_detector and obstacle_detector.has_method("detect_obstacles"):
+		obstacles_cleared = obstacle_detector.detect_obstacles().size() == 0
+	
+	if obstacles_cleared:
 		# Return to previous state (chase or patrol)
-		if previous_state == AIState.CHASE and can_chase() and chase_detector and chase_detector.get_closest_player():
+		if previous_state == AIState.CHASE and can_chase() and flying_enemy and flying_enemy.player_target:
 			transition_to_state(AIState.CHASE)
 		else:
 			transition_to_state(AIState.PATROL)
@@ -150,10 +155,12 @@ func _update_idle_state(delta: float) -> void:
 	"""Update idle behavior for performance optimization"""
 	# Check periodically if we should become active again
 	if state_duration > 1.0:  # Check every second in idle
-		if can_chase() and chase_detector and chase_detector.get_closest_player():
+		if can_chase() and flying_enemy and flying_enemy.player_target:
 			transition_to_state(AIState.CHASE)
-		elif should_avoid_obstacles() and obstacle_detector and obstacle_detector.detect_obstacles().size() > 0:
-			transition_to_state(AIState.AVOIDANCE)
+		elif should_avoid_obstacles() and obstacle_detector and obstacle_detector.has_method("detect_obstacles"):
+			var obstacles = obstacle_detector.detect_obstacles()
+			if obstacles.size() > 0:
+				transition_to_state(AIState.AVOIDANCE)
 		else:
 			transition_to_state(AIState.PATROL)
 
@@ -165,9 +172,8 @@ func transition_to_state(new_state: AIState) -> void:
 		return
 	
 	# Check transition cooldown to prevent rapid state changes
-	var current_time = Time.get_time_dict_from_system()
-	var time_since_last = (current_time.hour * 3600 + current_time.minute * 60 + current_time.second) - last_transition_time
-	if time_since_last < state_transition_cooldown:
+	var current_time = Time.get_ticks_msec() / 1000.0
+	if current_time - last_transition_time < state_transition_cooldown:
 		return
 	
 	# Perform state transition
@@ -175,7 +181,7 @@ func transition_to_state(new_state: AIState) -> void:
 	previous_state = current_state
 	current_state = new_state
 	state_duration = 0.0
-	last_transition_time = current_time.hour * 3600 + current_time.minute * 60 + current_time.second
+	last_transition_time = current_time
 	
 	# Emit state change signal
 	state_changed.emit(old_state, new_state)
@@ -195,14 +201,13 @@ func _on_state_entered(new_state: AIState, old_state: AIState) -> void:
 	match new_state:
 		AIState.PATROL:
 			# Reset to normal patrol behavior
-			if movement_controller:
-				movement_controller.set_target_speed(flying_enemy.patrol_speed if flying_enemy else 80.0)
+			if flying_enemy:
+				flying_enemy.flight_speed = flying_enemy.patrol_speed
 		
 		AIState.CHASE:
 			# Increase speed for chase
-			if movement_controller:
-				var chase_speed = flying_enemy.chase_speed if flying_enemy else 120.0
-				movement_controller.set_target_speed(chase_speed)
+			if flying_enemy:
+				flying_enemy.flight_speed = flying_enemy.chase_speed
 		
 		AIState.AVOIDANCE:
 			# Maintain current speed but focus on obstacle avoidance
@@ -232,7 +237,7 @@ func set_ai_mode(new_mode: AIMode) -> void:
 				transition_to_state(AIState.PATROL)
 		AIMode.CHASE_ONLY:
 			if current_state == AIState.PATROL:
-				if chase_detector and chase_detector.get_closest_player():
+				if flying_enemy and flying_enemy.player_target:
 					transition_to_state(AIState.CHASE)
 
 func set_update_frequency(frequency: float) -> void:
@@ -258,21 +263,11 @@ func _on_path_blocked() -> void:
 	if current_state != AIState.AVOIDANCE:
 		transition_to_state(AIState.AVOIDANCE)
 
-func _on_player_entered_range(player: Node2D) -> void:
-	"""Handle player entering detection range"""
+func _on_player_detected(enemy: FlyingEnemy, player: Node2D) -> void:
+	"""Handle player detection from FlyingEnemy"""
 	if can_chase():
 		target_acquired.emit(player)
 		transition_to_state(AIState.CHASE)
-
-func _on_player_exited_range(player: Node2D) -> void:
-	"""Handle player exiting detection range"""
-	target_lost.emit(player)
-	# Don't immediately transition - let chase timeout handle it
-
-func _on_chase_timeout() -> void:
-	"""Handle chase timeout"""
-	if current_state == AIState.CHASE:
-		transition_to_state(AIState.PATROL)
 
 # Debug and utility functions
 func get_state_name(state: AIState) -> String:
