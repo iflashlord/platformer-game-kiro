@@ -14,6 +14,8 @@ class_name BackgroundLayerConfig
 @export var parallax_factor: Vector2 = Vector2(0.5, 0.5)
 @export var auto_scroll: bool = true
 @export var loop_seamlessly: bool = true
+@export var horizontal_gap: int = 0
+@export var vertical_gap: int = 0
 
 @export_group("Visual Settings")
 @export var modulate_color: Color = Color.WHITE

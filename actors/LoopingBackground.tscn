@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bqxvn8y7qkr8w"]
 
-[ext_resource type="Script" path="res://actors/LoopingBackground.gd" id="1_0x8vn"]
+[ext_resource type="Script" uid="uid://b8ck377vv8qd6" path="res://actors/LoopingBackground.gd" id="1_0x8vn"]
 
 [node name="LoopingBackground" type="Node2D"]
 script = ExtResource("1_0x8vn")

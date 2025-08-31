@@ -69,7 +69,9 @@ func _setup_background_layers():
 		bg.modulate_color = config.modulate_color
 		bg.z_index = config.z_index
 		bg.scale_factor = config.scale_factor
-		
+		bg.horizontal_gap =  config.horizontal_gap
+		bg.vertical_gap = config.vertical_gap
+
 		# Layer-specific textures
 		bg.layer_a_texture = config.layer_a_texture
 		bg.layer_b_texture = config.layer_b_texture

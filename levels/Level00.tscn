@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=27 format=4 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -15,9 +15,65 @@
 [ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="16_6oto5"]
 [ext_resource type="PackedScene" uid="uid://00mkiltltuwb" path="res://actors/FlyingEnemy.tscn" id="16_ll6ei"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
+[ext_resource type="PackedScene" uid="uid://c8y7qkr8wbqxv" path="res://actors/ParallaxBackgroundSystem.tscn" id="19_88x2b"]
+[ext_resource type="Script" uid="uid://bxm5g8u8h5004" path="res://actors/BackgroundLayerConfig.gd" id="20_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
+[ext_resource type="Texture2D" uid="uid://dg8la8ddwnn1b" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_desert.png" id="21_w2yij"]
+[ext_resource type="Texture2D" uid="uid://d3fraue0q6a8j" path="res://content/Graphics/Sprites/Tiles/Default/bush.png" id="22_88x2b"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
+[ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="23_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
+
+[sub_resource type="Resource" id="Resource_88x2b"]
+script = ExtResource("20_blrwf")
+texture = ExtResource("21_w2yij")
+use_different_textures_per_layer = false
+scroll_speed = Vector2(-50, 0)
+parallax_factor = Vector2(0.5, 0.5)
+auto_scroll = true
+loop_seamlessly = true
+horizontal_gap = -100
+vertical_gap = 0
+modulate_color = Color(1, 1, 1, 1)
+z_index = -10
+scale_factor = Vector2(1, 1)
+layer_name = ""
+description = ""
+metadata/_custom_type_script = "uid://bxm5g8u8h5004"
+
+[sub_resource type="Resource" id="Resource_blrwf"]
+script = ExtResource("20_blrwf")
+texture = ExtResource("22_88x2b")
+use_different_textures_per_layer = false
+scroll_speed = Vector2(-50, 0)
+parallax_factor = Vector2(0.5, 0.5)
+auto_scroll = true
+loop_seamlessly = true
+horizontal_gap = 0
+vertical_gap = 0
+modulate_color = Color(1, 1, 1, 1)
+z_index = -10
+scale_factor = Vector2(1, 1)
+layer_name = ""
+description = ""
+metadata/_custom_type_script = "uid://bxm5g8u8h5004"
+
+[sub_resource type="Resource" id="Resource_ax175"]
+script = ExtResource("20_blrwf")
+texture = ExtResource("23_blrwf")
+use_different_textures_per_layer = false
+scroll_speed = Vector2(-50, 0)
+parallax_factor = Vector2(0.5, 0.5)
+auto_scroll = true
+loop_seamlessly = true
+horizontal_gap = -300
+vertical_gap = -400
+modulate_color = Color(1, 1, 1, 1)
+z_index = -10
+scale_factor = Vector2(1, 1)
+layer_name = ""
+description = ""
+metadata/_custom_type_script = "uid://bxm5g8u8h5004"
 
 [node name="Level00" type="Node2D"]
 script = ExtResource("1_level00")
@@ -207,3 +263,6 @@ patch_margin_bottom = 23.0
 platform_type = 10
 axis_stretch_horizontal = 0
 axis_stretch_vertical = 0
+
+[node name="ParallaxBackgroundSystem" parent="." instance=ExtResource("19_88x2b")]
+background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_blrwf"), SubResource("Resource_ax175")])

@@ -29,7 +29,7 @@ func _setup_simple_background():
 		simple_background.texture = bg_texture
 		simple_background.scroll_speed = Vector2(-30, 0)
 		simple_background.parallax_factor = Vector2(0.2, 0.2)
-		simple_background.z_index = -20
+		#simple_background.z_index = -20
 		print("🖼️ Simple background configured")
 
 func _setup_parallax_system():

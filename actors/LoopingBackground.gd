@@ -12,6 +12,8 @@ signal background_looped
 @export var parallax_factor: Vector2 = Vector2(0.5, 0.5)  # 0.0 = no movement, 1.0 = same as camera
 @export var auto_scroll: bool = true
 @export var loop_seamlessly: bool = true
+@export var horizontal_gap: int = 0
+@export var vertical_gap: int = 0
 
 @export_group("Layer Settings")
 @export var layer_a_texture: Texture2D
@@ -20,7 +22,7 @@ signal background_looped
 
 @export_group("Visual Settings")
 @export var modulate_color: Color = Color.WHITE
-@export var z_index: int = -10  # Behind other objects by default
+#@export var z_index: int = -10  # Behind other objects by default
 @export var scale_factor: Vector2 = Vector2.ONE
 
 # Internal variables
@@ -80,7 +82,7 @@ func _setup_background():
 	_texture_size = current_texture.get_size() * scale_factor
 	
 	# Calculate how many sprites we need for seamless looping
-	var viewport_size = get_viewport().get_visible_rect().size
+	var viewport_size = (get_viewport().get_visible_rect().size * 3)
 	var sprites_needed_x = max(3, ceil(viewport_size.x / _texture_size.x) + 2)
 	var sprites_needed_y = max(3, ceil(viewport_size.y / _texture_size.y) + 2) if scroll_speed.y != 0 else 1
 	
@@ -99,6 +101,11 @@ func _setup_background():
 			)
 			
 			add_child(sprite)
+
+			# start from - 500 to avoid flickering on start
+			var viewport_width = get_viewport().get_visible_rect().size.x
+			sprite.position -=  Vector2(viewport_width, 0)
+			
 			_sprites.append(sprite)
 	
 	print("🖼️ Created ", _sprites.size(), " background sprites")
@@ -108,15 +115,26 @@ func _process(delta):
 		return
 	
 	# Update scroll offset
-	_current_offset += scroll_speed * delta
+	# _current_offset += scroll_speed * delta
 	
 	# Apply parallax if camera exists
 	if _camera:
 		var camera_pos = _camera.global_position
 		var parallax_offset = camera_pos * parallax_factor
+		# add random parallax offset to avoid jittering
+		# parallax_offset += Vector2(randf(), randf()) * 0.01
 		global_position = -parallax_offset + _current_offset
+		
+		# move background by the size of viewport down to keep it in view
+		global_position.y += get_viewport().get_visible_rect().size.y
+
+		# add gap
+		global_position.x += horizontal_gap
+		global_position.y += vertical_gap
+		
 	else:
 		global_position = _current_offset
+ 
 	
 	# Handle looping
 	if loop_seamlessly:
@@ -125,7 +143,7 @@ func _process(delta):
 func _handle_looping():
 	"""Reset position when we've scrolled far enough to maintain seamless loop"""
 	var loop_threshold = _texture_size
-	
+
 	# Horizontal looping
 	if abs(_current_offset.x) >= loop_threshold.x:
 		var loops = floor(abs(_current_offset.x) / loop_threshold.x)
