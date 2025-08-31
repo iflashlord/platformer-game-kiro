@@ -284,6 +284,10 @@ func _update_for_layer(current_layer: String):
 		if collision_shape:
 			collision_shape.disabled = not is_active_in_current_layer
 	
+	# Notify breakable component about dimension change (for particle visibility)
+	if breakable_component and breakable_component.has_method("_on_dimension_changed"):
+		breakable_component._on_dimension_changed(is_active_in_current_layer)
+	
 
 
 # Public methods for runtime configuration
@@ -489,17 +493,26 @@ func _check_for_player():
 	if not player or not player.is_on_floor():
 		return
 	
-	# Use the actual NinePatchRect bounds for accurate detection
-	var player_pos = player.global_position
-	var platform_rect = Rect2(global_position, Vector2(width, height))
+	# Use physics query to check if player is actually standing on this platform
+	var space_state = get_world_2d().direct_space_state
+	var player_body = player as CharacterBody2D
+	if not player_body:
+		return
 	
-	# Check if player is standing on top of the platform
-	# Player should be within horizontal bounds and just above the platform surface
-	var horizontal_overlap = player_pos.x >= platform_rect.position.x - 5 and player_pos.x <= platform_rect.position.x + platform_rect.size.x + 5
-	var vertical_overlap = player_pos.y >= platform_rect.position.y - 20 and player_pos.y <= platform_rect.position.y + 10
+	# Cast a ray down from the player to see what they're standing on
+	var ray_start = player.global_position
+	var ray_end = ray_start + Vector2(0, 32)  # Ray down 32 pixels
 	
-	if horizontal_overlap and vertical_overlap:
-		# Player is on the platform! Trigger breaking
+	var query = PhysicsRayQueryParameters2D.create(ray_start, ray_end)
+	query.collision_mask = 1  # Platform collision layer
+	query.exclude = [player_body]  # Don't hit the player themselves
+	
+	var result = space_state.intersect_ray(query)
+	
+	# Check if the ray hit this specific platform
+	if result and result.collider == self:
+		# Player is standing directly on this platform!
+		print("Player is standing on this platform! Trigger breaking")
 		if breakable_component.has_method("player_landed_on_platform"):
 			breakable_component.player_landed_on_platform()
 			# Stop the detection timer to prevent multiple triggers

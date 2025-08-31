@@ -246,6 +246,38 @@ patrol_distance = 80.0
 [node name="BounceCrate" parent="Enemies" instance=ExtResource("9_ub75y")]
 position = Vector2(1688, 352)
 
+[node name="DeathZones" type="Node2D" parent="."]
+show_behind_parent = true
+
+[node name="DynamicPlatform32" parent="DeathZones" instance=ExtResource("7_8bey8")]
+position = Vector2(696, 552)
+scale = Vector2(0.5, 0.5)
+width = 1000.0
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 6
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="DeathZone2" parent="DeathZones/DynamicPlatform32" instance=ExtResource("15_080q8")]
+position = Vector2(0, -16)
+width = 1000
+
+[node name="DeathZone" parent="DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(152, 560)
+scale = Vector2(0.5, 0.5)
+width = 300
+
+[node name="DeathZone3" parent="DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(-584, 904)
+scale = Vector2(0.5, 0.5)
+zone_type = "void"
+width = 6000
+visible_in_both_dimensions = true
+
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
 position = Vector2(1984, 440)
 portal_name = "Level 1 Complete"
@@ -643,36 +675,6 @@ platform_type = 6
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="DynamicPlatform32" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(696, 552)
-scale = Vector2(0.5, 0.5)
-width = 1000.0
-height = 400.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 6
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-
-[node name="DeathZone" parent="." instance=ExtResource("15_080q8")]
-position = Vector2(152, 560)
-scale = Vector2(0.5, 0.5)
-width = 300
-
-[node name="DeathZone3" parent="." instance=ExtResource("15_080q8")]
-position = Vector2(-584, 904)
-scale = Vector2(0.5, 0.5)
-zone_type = "void"
-width = 6000
-visible_in_both_dimensions = true
-
-[node name="DeathZone2" parent="." instance=ExtResource("15_080q8")]
-position = Vector2(696, 536)
-scale = Vector2(0.5, 0.5)
-width = 1000
-
 [node name="CollectableHeart2" parent="." instance=ExtResource("23_ax175")]
 position = Vector2(1872, 448)
 scale = Vector2(0.864163, 0.864163)
@@ -682,12 +684,49 @@ position = Vector2(-136, 456)
 scale = Vector2(0.864163, 0.864163)
 
 [node name="DynamicPlatform9" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(816, 464)
+position = Vector2(728, 480)
 scale = Vector2(0.5, 0.5)
-width = 500.0
-height = 50.0
+width = 211.0
+height = 30.0
+patch_margin_left = 0.0
+patch_margin_right = 2.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
 platform_type = 5
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 is_breakable = true
+respawn_delay = 3.0
+target_layer = "B"
+
+[node name="DynamicPlatform14" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(888, 480)
+scale = Vector2(0.5, 0.5)
+width = 211.0
+height = 30.0
+patch_margin_left = 0.0
+patch_margin_right = 2.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 5
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+is_breakable = true
+respawn_delay = 3.0
+target_layer = "B"
+
+[node name="DynamicPlatform43" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1048, 480)
+scale = Vector2(0.5, 0.5)
+width = 211.0
+height = 30.0
+patch_margin_left = 0.0
+patch_margin_right = 2.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 5
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+is_breakable = true
+respawn_delay = 3.0
 target_layer = "B"

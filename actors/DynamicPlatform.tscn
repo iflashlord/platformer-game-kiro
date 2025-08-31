@@ -33,7 +33,7 @@ wait_time = 2.0
 one_shot = true
 
 [node name="BreakParticles" type="GPUParticles2D" parent="BreakableComponent"]
-position = Vector2(48, 16)
+position = Vector2(1, 1)
 emitting = false
 amount = 20
 lifetime = 2.0

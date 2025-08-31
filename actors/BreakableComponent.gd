@@ -45,6 +45,22 @@ func _ready():
 	
 	print("🔧 BreakableComponent ready")
 
+# Called by DynamicPlatform when dimension changes
+func _on_dimension_changed(is_active: bool):
+	if not break_particles:
+		return
+	
+	# Hide particles if platform is not active in current dimension
+	if not is_active and break_particles.emitting:
+		break_particles.emitting = false
+		break_particles.visible = false
+		print("🫨 Particles hidden - dimension changed, platform not active")
+	elif is_active and is_shaking:
+		# Re-show particles if platform becomes active during shaking
+		break_particles.visible = true
+		break_particles.emitting = true
+		print("🫨 Particles restored - dimension changed, platform now active")
+
 func setup(parent_platform: DynamicPlatform, delay: float, shake_time: float, should_respawn: bool = true, respawn_time: float = 5.0):
 	platform = parent_platform
 	break_delay = delay
@@ -166,9 +182,10 @@ func _break_platform():
 		if audio.has_method("play_sfx"):
 			audio.play_sfx("platform_break")
 	
-	# Hide platform and disable collision AFTER particles start
+	# Hide platform and disable collision - respect dimension system
 	if platform:
 		platform.visible = false
+		# Handle collision based on dimension and collision_disabled state
 		if platform.collision_shape:
 			platform.collision_shape.disabled = true
 	
@@ -194,10 +211,17 @@ func _respawn_platform():
 	is_breaking = false
 	is_shaking = false
 	
-	# Show platform and enable collision
-	platform.visible = true
-	if platform.collision_shape:
-		platform.collision_shape.disabled = false
+	# Restore platform visibility and collision based on dimension system
+	# Don't directly set visibility - let the dimension system handle it
+	if platform.dimension_manager:
+		# Update for current layer to respect dimension visibility
+		var current_layer = platform.dimension_manager.get_current_layer()
+		platform._update_for_layer(current_layer)
+	else:
+		# Fallback: restore visibility and collision if no dimension manager
+		platform.visible = true
+		if platform.collision_shape:
+			platform.collision_shape.disabled = platform.collision_disabled
 	
 	# Reset position to original
 	platform.position = original_position
@@ -315,6 +339,13 @@ func _set_particle_emission_level(level: String):
 	if not break_particles or not platform:
 		return
 	
+	# Check if platform is active in current dimension before showing particles
+	if not platform.is_active_in_current_layer:
+		break_particles.emitting = false
+		break_particles.visible = false
+		print("🫨 Particles disabled - platform not active in current dimension")
+		return
+	
 	# Scale particle amount based on platform size
 	var platform_area = platform.width * platform.height
 	var base_area = 96.0 * 32.0  # Default platform size
@@ -323,6 +354,7 @@ func _set_particle_emission_level(level: String):
 	if level == "shaking":
 		# Low emission during shaking - just dust/debris
 		break_particles.amount = int(15 * particle_scale)
+		break_particles.visible = true
 		break_particles.emitting = true
 		var material = break_particles.process_material as ParticleProcessMaterial
 		if material:
