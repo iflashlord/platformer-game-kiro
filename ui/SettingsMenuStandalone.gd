@@ -7,6 +7,7 @@ extends CanvasLayer
 @onready var music_label: Label = $UI/SettingsContainer/MusicVolume/ValueLabel
 @onready var sfx_label: Label = $UI/SettingsContainer/SFXVolume/ValueLabel
 @onready var test_sfx_button: Button = $UI/SettingsContainer/TestSFX
+@onready var reset_progress_button: Button = $UI/SettingsContainer/ResetProgress
 @onready var back_button: Button = $UI/BackButton
 
 func _ready():
@@ -17,6 +18,7 @@ func _ready():
 	
 	# Connect button signals
 	test_sfx_button.pressed.connect(_on_test_sfx_pressed)
+	reset_progress_button.pressed.connect(_on_reset_progress_pressed)
 	back_button.pressed.connect(_on_back_pressed)
 	
 	# Load current settings
@@ -52,6 +54,72 @@ func _on_sfx_volume_changed(value: float):
 func _on_test_sfx_pressed():
 	# Play a test sound effect
 	Audio.play_sfx("ui_cancel")
+
+func _on_reset_progress_pressed():
+	# Show confirmation dialog
+	_show_reset_confirmation()
+
+func _show_reset_confirmation():
+	# Create confirmation dialog
+	var dialog = AcceptDialog.new()
+	dialog.title = "Reset All Progress"
+	dialog.dialog_text = "Are you sure you want to reset ALL game progress?\n\nThis will delete:\n• All level completions\n• All scores and times\n• All unlocked levels\n• All statistics\n\nThis action cannot be undone!"
+	
+	# Add custom buttons
+	dialog.add_cancel_button("Cancel")
+	var confirm_button = dialog.add_button("RESET ALL PROGRESS", true, "confirm")
+	confirm_button.modulate = Color.RED  # Make it red to indicate danger
+	
+	# Connect signals
+	dialog.custom_action.connect(_on_reset_confirmed)
+	dialog.confirmed.connect(_on_reset_confirmed)
+	
+	# Add to scene and show
+	add_child(dialog)
+	dialog.popup_centered()
+
+func _on_reset_confirmed(action: String = ""):
+	# Only proceed if this is the confirm action or confirmed signal
+	if action == "confirm" or action == "":
+		print("🔄 Resetting all game progress...")
+		
+		# Reset all persistent data
+		if Persistence:
+			# Reset level progress
+			Persistence.reset_level_progress()
+			
+			# Reset profile to defaults (this will clear everything)
+			Persistence.reset_profile()
+			
+			print("✅ All game progress has been reset")
+			
+			# Show success message
+			_show_reset_success()
+		else:
+			print("❌ Persistence system not available")
+			_show_reset_error()
+
+func _show_reset_success():
+	var dialog = AcceptDialog.new()
+	dialog.title = "Reset Complete"
+	dialog.dialog_text = "All game progress has been successfully reset.\n\nYou can now start fresh from the beginning!"
+	
+	add_child(dialog)
+	dialog.popup_centered()
+	
+	# Auto-close after showing
+	dialog.confirmed.connect(func(): dialog.queue_free())
+
+func _show_reset_error():
+	var dialog = AcceptDialog.new()
+	dialog.title = "Reset Failed"
+	dialog.dialog_text = "Failed to reset game progress.\n\nPlease try again or restart the game."
+	
+	add_child(dialog)
+	dialog.popup_centered()
+	
+	# Auto-close after showing
+	dialog.confirmed.connect(func(): dialog.queue_free())
 
 func _on_back_pressed():
 	# Return to main menu

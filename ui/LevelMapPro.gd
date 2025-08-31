@@ -192,15 +192,28 @@ class LevelCard extends Control:
 		# Update lock overlay
 		lock_overlay.visible = !unlocked
 		
-		# Update score display
+		# Get completion data from Persistence
+		var completion_data = {}
 		var best_score = level_info.get("best_score", 0)
+		
+		if Persistence and Persistence.has_method("get_level_completion"):
+			completion_data = Persistence.get_level_completion(level_id)
+			# Use the score from completion data if available, otherwise fallback to level_info
+			if completion_data.get("score", 0) > 0:
+				best_score = completion_data.get("score", 0)
+		
+		# Update score display with latest and best
 		if best_score > 0:
-			score_label.text = "Score: " + str(best_score)
+			var latest_score = completion_data.get("score", best_score)
+			if latest_score == best_score:
+				score_label.text = "Best: " + str(best_score)
+			else:
+				score_label.text = "Latest: " + str(latest_score) + " • Best: " + str(best_score)
 		else:
 			score_label.text = "Not Completed"
 		
-		# Update hearts display (simulate hearts based on performance)
-		_update_hearts_display()
+		# Update hearts display with actual completion data
+		_update_hearts_display(completion_data)
 		
 		# Update visual effects
 		if perfect:
@@ -213,27 +226,59 @@ class LevelCard extends Control:
 		else:
 			main_panel.modulate = Color(0.6, 0.6, 0.6)  # Dimmed
 	
-	func _update_hearts_display():
+	func _update_hearts_display(completion_data: Dictionary = {}):
 		# Clear existing hearts
 		for child in hearts_container.get_children():
 			child.queue_free()
 		
-		# Calculate hearts based on score/performance
-		var hearts_earned = _calculate_hearts_earned()
-		var max_hearts = 3
+		# Get hearts remaining from latest completion
+		var hearts_remaining = completion_data.get("hearts_remaining", -1)
+		var max_hearts = 5  # Game uses 5 hearts
 		
-		for i in range(max_hearts):
-			var heart_label = Label.new()
-			heart_label.add_theme_font_size_override("font_size", 16)
+		# If we have completion data, show hearts remaining from latest run
+		if hearts_remaining >= 0:
+			# Show hearts remaining from latest completion using actual heart assets
+			for i in range(max_hearts):
+				var heart_sprite = TextureRect.new()
+				heart_sprite.custom_minimum_size = Vector2(16, 16)
+				heart_sprite.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+				heart_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				
+				if i < hearts_remaining:
+					# Full heart
+					heart_sprite.texture = load("res://content/Graphics/Sprites/Tiles/Double/hud_heart.png")
+				else:
+					# Empty heart
+					heart_sprite.texture = load("res://content/Graphics/Sprites/Tiles/Double/hud_heart_empty.png")
+				
+				hearts_container.add_child(heart_sprite)
 			
-			if i < hearts_earned:
-				heart_label.text = "❤️"
-				heart_label.add_theme_color_override("font_color", Color.RED)
-			else:
-				heart_label.text = "🤍"
-				heart_label.add_theme_color_override("font_color", Color.GRAY)
+			# Add text label showing hearts remaining
+			var hearts_text = Label.new()
+			hearts_text.text = " " + str(hearts_remaining) + "/5"
+			hearts_text.add_theme_font_size_override("font_size", 12)
+			hearts_text.add_theme_color_override("font_color", Color.WHITE)
+			hearts_container.add_child(hearts_text)
+		else:
+			# Fallback: show 5 empty hearts to match the main game (no completion data available)
+			for i in range(max_hearts):
+				var heart_sprite = TextureRect.new()
+				heart_sprite.custom_minimum_size = Vector2(16, 16)
+				heart_sprite.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+				heart_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				
+				# Show all hearts as empty since no completion data is available
+				heart_sprite.texture = load("res://content/Graphics/Sprites/Tiles/Double/hud_heart_empty.png")
+				heart_sprite.modulate = Color.GRAY
+				
+				hearts_container.add_child(heart_sprite)
 			
-			hearts_container.add_child(heart_label)
+			# Add text label showing no completion data
+			var hearts_text = Label.new()
+			hearts_text.text = " --/5"
+			hearts_text.add_theme_font_size_override("font_size", 12)
+			hearts_text.add_theme_color_override("font_color", Color.GRAY)
+			hearts_container.add_child(hearts_text)
 	
 	func _calculate_hearts_earned() -> int:
 		var best_score = level_info.get("best_score", 0)
@@ -578,8 +623,14 @@ func _create_level_card(node_data: Dictionary):
 	
 	# Update status based on game progress
 	var is_unlocked = _is_level_unlocked(level_id, node_data)
-	var is_completed = level_info.get("best_score", 0) > 0
-	var is_perfect = _is_level_perfect(level_info)
+	
+	# Get completion data from Persistence for more accurate status
+	var completion_data = {}
+	if Persistence and Persistence.has_method("get_level_completion"):
+		completion_data = Persistence.get_level_completion(level_id)
+	
+	var is_completed = completion_data.get("completed", false) or level_info.get("best_score", 0) > 0
+	var is_perfect = _is_level_perfect(level_info, completion_data)
 	
 	level_card.update_status(is_unlocked, is_completed, is_perfect)
 	
@@ -652,13 +703,27 @@ func _is_level_unlocked(level_id: String, node_data: Dictionary) -> bool:
 	print("✅ Level ", level_id, " requirements met - unlocked")
 	return true
 
-func _is_level_perfect(level_info: Dictionary) -> bool:
+func _is_level_perfect(level_info: Dictionary, completion_data: Dictionary = {}) -> bool:
 	"""Check if level was completed perfectly"""
-	var best_score = level_info.get("best_score", 0)
-	var relic_thresholds = level_info.get("relic_thresholds", {})
-	var gold_threshold = relic_thresholds.get("gold", 999999)
+	# Check completion data first for more accurate information
+	var best_score = completion_data.get("score", level_info.get("best_score", 0))
+	var hearts_remaining = completion_data.get("hearts_remaining", -1)
+	var gems_found = completion_data.get("gems_found", 0)
+	var total_gems = completion_data.get("total_gems", 0)
 	
-	return best_score > 0 and best_score >= gold_threshold
+	# Perfect completion criteria:
+	# 1. High score (above gold threshold)
+	# 2. All or most hearts remaining (4-5 hearts)
+	# 3. All gems collected (if any gems exist)
+	
+	var relic_thresholds = level_info.get("relic_thresholds", {})
+	var gold_threshold = relic_thresholds.get("gold", 250)  # Default gold threshold
+	
+	var has_good_score = best_score >= gold_threshold
+	var has_good_hearts = hearts_remaining >= 4 or hearts_remaining == -1  # -1 means no data, assume good
+	var has_all_gems = total_gems == 0 or gems_found >= total_gems
+	
+	return best_score > 0 and has_good_score and has_good_hearts and has_all_gems
 
 func _update_progress():
 	"""Update overall progress display"""
@@ -666,17 +731,32 @@ func _update_progress():
 	var completed_levels = 0
 	var perfect_levels = 0
 	var total_score = 0
+	var total_hearts_remaining = 0
+	var levels_with_heart_data = 0
 	
 	for node_data in level_nodes_data:
 		var level_id = node_data.get("id", "")
 		var level_info = levels_data.get(level_id, {})
-		var best_score = level_info.get("best_score", 0)
 		
-		if best_score > 0:
+		# Get completion data from Persistence
+		var completion_data = {}
+		if Persistence and Persistence.has_method("get_level_completion"):
+			completion_data = Persistence.get_level_completion(level_id)
+		
+		var best_score = completion_data.get("score", level_info.get("best_score", 0))
+		var is_completed = completion_data.get("completed", false) or best_score > 0
+		
+		if is_completed:
 			completed_levels += 1
 			total_score += best_score
 			
-			if _is_level_perfect(level_info):
+			# Track hearts data if available
+			var hearts_remaining = completion_data.get("hearts_remaining", -1)
+			if hearts_remaining >= 0:
+				total_hearts_remaining += hearts_remaining
+				levels_with_heart_data += 1
+			
+			if _is_level_perfect(level_info, completion_data):
 				perfect_levels += 1
 	
 	# Update progress label with more detail
@@ -686,6 +766,9 @@ func _update_progress():
 			progress_text += " • %d Perfect" % perfect_levels
 		if total_score > 0:
 			progress_text += " • Total Score: %d" % total_score
+		if levels_with_heart_data > 0:
+			var avg_hearts = float(total_hearts_remaining) / float(levels_with_heart_data)
+			progress_text += " • Avg Hearts: %.1f/5" % avg_hearts
 		progress_label.text = progress_text
 	
 	# Update progress bar with smooth animation
@@ -871,8 +954,14 @@ func _refresh_level_status():
 		# Update card status
 		var level_info = levels_data.get(level_id, {})
 		var is_unlocked = _is_level_unlocked(level_id, node_data)
-		var is_completed = level_info.get("best_score", 0) > 0
-		var is_perfect = _is_level_perfect(level_info)
+		
+		# Get completion data from Persistence
+		var completion_data = {}
+		if Persistence and Persistence.has_method("get_level_completion"):
+			completion_data = Persistence.get_level_completion(level_id)
+		
+		var is_completed = completion_data.get("completed", false) or level_info.get("best_score", 0) > 0
+		var is_perfect = _is_level_perfect(level_info, completion_data)
 		
 		card.update_status(is_unlocked, is_completed, is_perfect)
 	

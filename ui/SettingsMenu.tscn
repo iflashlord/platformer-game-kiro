@@ -124,6 +124,14 @@ text = "Test SFX"
 [node name="HSeparator3" type="HSeparator" parent="Panel/VBox"]
 layout_mode = 2
 
+[node name="ResetProgress" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+text = "⚠️ Reset All Progress"
+
+[node name="HSeparator4" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
 [node name="BackButton" type="Button" parent="Panel/VBox"]
 layout_mode = 2
 text = "Back"

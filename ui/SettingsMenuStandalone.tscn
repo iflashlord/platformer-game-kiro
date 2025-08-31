@@ -106,6 +106,15 @@ layout_mode = 2
 text = "Test Sound Effect"
 theme_override_font_sizes/font_size = 16
 
+[node name="HSeparator2b" type="HSeparator" parent="UI/SettingsContainer"]
+layout_mode = 2
+
+[node name="ResetProgress" type="Button" parent="UI/SettingsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+text = "⚠️ Reset All Progress"
+theme_override_font_sizes/font_size = 16
+
 [node name="HSeparator3" type="HSeparator" parent="UI"]
 layout_mode = 2
 

@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqxvn8y7qkr8w"]
+
+[ext_resource type="Script" path="res://examples/BackgroundExample.gd" id="1_0x8vn"]
+[ext_resource type="PackedScene" uid="uid://bqxvn8y7qkr8w" path="res://actors/LoopingBackground.tscn" id="2_1x9vo"]
+[ext_resource type="PackedScene" uid="uid://c8y7qkr8wbqxv" path="res://actors/ParallaxBackgroundSystem.tscn" id="3_2y0wp"]
+
+[node name="BackgroundExample" type="Node2D"]
+script = ExtResource("1_0x8vn")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="SimpleBackground" parent="." instance=ExtResource("2_1x9vo")]
+
+[node name="ParallaxBackgroundSystem" parent="." instance=ExtResource("3_2y0wp")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="UI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -120.0
+offset_right = 400.0
+offset_bottom = -20.0
+text = "Background System Test
+Arrow Keys: Move camera
+Space: Toggle dimension layer
+Enter: Pause/Resume scrolling"
+vertical_alignment = 2
