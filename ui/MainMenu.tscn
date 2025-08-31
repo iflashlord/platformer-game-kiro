@@ -36,7 +36,7 @@ color = Color(0.05, 0.1, 0.2, 1)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.1, 0.15, 0.25, 0.3)
+color = Color(0.177468, 0.251061, 0.39803, 0.3)
 
 [node name="ParticleSystem" type="CPUParticles2D" parent="."]
 position = Vector2(640, 360)

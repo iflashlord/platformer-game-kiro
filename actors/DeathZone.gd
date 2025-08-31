@@ -8,10 +8,13 @@ signal player_killed(death_zone: DeathZone, player: Node2D)
 @export var instant_kill: bool = true
 @export var zone_type: String = "pit"
 @export var respawn_player: bool = true
+@export var width: int = 200 : set = set_width
+@export var height: int = 50 : set = set_height
 
 var players_in_zone: Array[Node2D] = []
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var visual_graphics: NinePatchRect = $NinePatchRect
 var visual_indicator: ColorRect = null
 
 func _ready():
@@ -21,6 +24,7 @@ func _ready():
 		
 	add_to_group("death_zones")
 	add_to_group("hazards")
+
 	
 	# Set up collision detection
 	if not body_entered.is_connected(_on_body_entered):
@@ -45,6 +49,9 @@ func _setup_visuals():
 	else:
 		visual_indicator = $VisualIndicator
 	
+	# Update all components with proper positioning
+	_update_visual_and_collision()
+
 	# Set appearance based on zone type
 	setup_zone_appearance()
 
@@ -54,23 +61,11 @@ func create_visual_indicator():
 	
 	visual_indicator = ColorRect.new()
 	visual_indicator.name = "VisualIndicator"
+
 	
-	# Get the collision shape size to match visual
-	if collision_shape and collision_shape.shape:
-		var shape = collision_shape.shape
-		if shape is RectangleShape2D:
-			var rect_shape = shape as RectangleShape2D
-			visual_indicator.size = rect_shape.size
-			visual_indicator.position = -rect_shape.size / 2
-		elif shape is CircleShape2D:
-			var circle_shape = shape as CircleShape2D
-			var diameter = circle_shape.radius * 2
-			visual_indicator.size = Vector2(diameter, diameter)
-			visual_indicator.position = Vector2(-circle_shape.radius, -circle_shape.radius)
-	else:
-		# Default size
-		visual_indicator.size = Vector2(100, 50)
-		visual_indicator.position = Vector2(-50, -25)
+	# Just create the visual indicator, positioning will be handled by _update_visual_and_collision()
+	visual_indicator.size = Vector2(width, height)
+	visual_indicator.position = Vector2(0, -height/2)
 	
 	# Add to scene tree safely
 	add_child(visual_indicator)
@@ -213,6 +208,24 @@ func create_death_effect(player):
 		tween.parallel().tween_property(death_effect, "modulate:a", 0.0, 0.5)
 		tween.tween_callback(death_effect.queue_free)
 
+func _update_visual_and_collision():
+	# Update visual graphics
+	if visual_graphics and is_instance_valid(visual_graphics):
+		visual_graphics.size = Vector2(width, height)
+		visual_graphics.position = Vector2(0, -height/2)
+	
+	# Update visual indicator
+	if visual_indicator and is_instance_valid(visual_indicator):
+		visual_indicator.size = Vector2(width, height)
+		visual_indicator.position = Vector2(0, -height/2)
+	
+	# Update collision shape
+	if collision_shape and is_instance_valid(collision_shape) and collision_shape.shape:
+		if collision_shape.shape is RectangleShape2D:
+			var rect_shape = collision_shape.shape as RectangleShape2D
+			rect_shape.size = Vector2(width, height)
+			collision_shape.position = Vector2(width/2, 0)
+	
 func set_zone_type(new_type: String):
 	zone_type = new_type
 	setup_zone_appearance()
@@ -223,3 +236,17 @@ func set_instant_kill(enabled: bool):
 func set_damage_amount(amount: int):
 	damage_amount = amount
 	instant_kill = false  # If setting damage, assume not instant kill
+
+func set_width(new_width: int):
+	width = maxf(new_width, 8.0)  # Minimum width of 8 pixels 
+	_update_visual_and_collision()
+	# Force update in editor
+	if Engine.is_editor_hint():
+		notify_property_list_changed()
+
+func set_height(new_height: int):
+	height = maxf(new_height, 8.0)  # Minimum height of 8 pixels 
+	_update_visual_and_collision()
+	# Force update in editor
+	if Engine.is_editor_hint():
+		notify_property_list_changed()

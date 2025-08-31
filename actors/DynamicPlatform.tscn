@@ -21,12 +21,6 @@ size = Vector2(64, 64)
 
 [node name="DynamicPlatform" type="StaticBody2D"]
 script = ExtResource("1_script")
-patch_margin_left = null
-patch_margin_right = null
-patch_margin_top = null
-patch_margin_bottom = null
-axis_stretch_horizontal = null
-axis_stretch_vertical = null
 
 [node name="BreakableComponent" type="Node" parent="."]
 script = ExtResource("3_breakable_script")
@@ -52,10 +46,10 @@ offset_right = 64.0
 offset_bottom = 64.0
 texture = ExtResource("2_texture")
 region_rect = Rect2(0, 0, 64, 64)
-patch_margin_left = 18
-patch_margin_top = 20
-patch_margin_right = 18
-patch_margin_bottom = 17
+patch_margin_left = 23
+patch_margin_top = 23
+patch_margin_right = 23
+patch_margin_bottom = 23
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(32, 32)

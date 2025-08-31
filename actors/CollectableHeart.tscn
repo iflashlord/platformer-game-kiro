@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgrshje24m0s0"]
+
+[ext_resource type="Script" uid="uid://cchc4mmbisjpl" path="res://actors/CollectableHeart.gd" id="1_heart"]
+[ext_resource type="Texture2D" uid="uid://e16uy7dd4x1y" path="res://content/Graphics/Sprites/Tiles/Default/heart.png" id="2_va5su"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_heart"]
+radius = 18.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_64l6x"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_va5su")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="CollectableHeart" type="Area2D"]
+z_index = 10
+script = ExtResource("1_heart")
+
+[node name="HeartSprite" type="ColorRect" parent="."]
+visible = false
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.862745, 0.196078, 0.184314, 1)
+
+[node name="HeartLabel" type="Label" parent="."]
+visible = false
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 20
+text = "♥"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_heart")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_64l6x")
