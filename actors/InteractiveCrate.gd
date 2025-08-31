@@ -9,6 +9,9 @@ signal player_bounced(crate: InteractiveCrate, player: Node2D)
 @export var bounce_force: float = 500.0
 @export var explosion_radius: float = 100.0
 @export var explosion_countdown: int = 3
+@export_group("Dimension")
+@export var target_layer: String = "A"  # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
 
 @onready var interactive_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -16,6 +19,10 @@ signal player_bounced(crate: InteractiveCrate, player: Node2D)
 var is_destroyed: bool = false
 var is_exploding: bool = false
 var explosion_timer: float = 0.0
+
+# Dimension system compatibility
+var dimension_manager: Node
+var is_active_in_current_layer: bool = true
 
 @onready var sprite: ColorRect = $CrateSprite
 @onready var label: Label = $CrateLabel
@@ -45,6 +52,10 @@ func _ready():
 	# Set collision layers
 	collision_layer = 16  # Interactive layer
 	collision_mask = 2    # Player layer
+	
+	# Setup dimension system
+	if not Engine.is_editor_hint():
+		_setup_dimension_system()
 
 func _process(delta):
 	if is_exploding and crate_type == "tnt":
@@ -315,3 +326,30 @@ func create_explosion_effect():
 	# Screen shake effect
 	if FX and FX.has_method("shake"):
 		FX.shake(100)  # Increased shake for explosion
+
+# Dimension system methods
+func _setup_dimension_system():
+	# Only setup dimension system at runtime
+	if Engine.is_editor_hint():
+		return
+		
+	# Find dimension manager
+	dimension_manager = get_tree().get_first_node_in_group("dimension_managers")
+	if not dimension_manager and has_node("/root/DimensionManager"):
+		dimension_manager = get_node("/root/DimensionManager")
+	
+	if dimension_manager:
+		dimension_manager.layer_changed.connect(_on_layer_changed)
+		_update_for_layer(dimension_manager.get_current_layer())
+
+func _on_layer_changed(new_layer: String):
+	_update_for_layer(new_layer)
+
+func _update_for_layer(current_layer: String):
+	# If visible in both dimensions, always active. Otherwise check target layer.
+	is_active_in_current_layer = visible_in_both_dimensions or (current_layer == target_layer)
+	
+	# Update visibility and collision based on layer
+	visible = is_active_in_current_layer
+	collision_layer = 16 if is_active_in_current_layer else 0
+	collision_mask = 2 if is_active_in_current_layer else 0

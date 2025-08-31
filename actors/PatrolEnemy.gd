@@ -13,6 +13,9 @@ signal player_damaged(enemy: PatrolEnemy, player: Node2D, damage: int)
 @export var points_value: int = 150
 @export var health: int = 1
 @export var detection_range: float = 90.0
+@export_group("Dimension")
+@export var target_layer: String = "A"  # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
 
 var start_position: Vector2
 var direction: int = 1
@@ -20,6 +23,10 @@ var is_alive: bool = true
 var current_health: int
 var damage_cooldown: float = 0.0
 var damage_cooldown_time: float = 0.5  # Prevent rapid damage
+
+# Dimension system compatibility
+var dimension_manager: Node
+var is_active_in_current_layer: bool = true
 
 @onready var label: Label = $EnemyLabel
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -56,6 +63,10 @@ func _ready():
 		damage_area.body_exited.connect(_on_damage_area_exited)
 	
 	print("👹 Enemy initialized: ", enemy_type, " at ", global_position)
+	
+	# Setup dimension system
+	if not Engine.is_editor_hint():
+		_setup_dimension_system()
 
 func _physics_process(delta):
 	if not is_alive:
@@ -263,10 +274,7 @@ func _on_detection_area_exited(body):
 
 func _on_damage_area_entered(body):
 	print("👹 🚨 DAMAGE AREA ENTERED - Body: ", body.name, " Groups: ", body.get_groups())
-	
-	
-	
-	
+	 
 	if not body.is_in_group("player") or not is_alive:
 		print("👹 Not player or enemy dead - ignoring")
 		return
@@ -474,3 +482,38 @@ func set_enemy_stats(new_type: String, new_health: int = 1, new_speed: float = 7
 	current_health = new_health
 	patrol_speed = new_speed
 	setup_enemy_appearance()
+
+# Dimension system methods
+func _setup_dimension_system():
+	# Only setup dimension system at runtime
+	if Engine.is_editor_hint():
+		return
+		
+	# Find dimension manager
+	dimension_manager = get_tree().get_first_node_in_group("dimension_managers")
+	if not dimension_manager and has_node("/root/DimensionManager"):
+		dimension_manager = get_node("/root/DimensionManager")
+	
+	if dimension_manager:
+		dimension_manager.layer_changed.connect(_on_layer_changed)
+		_update_for_layer(dimension_manager.get_current_layer())
+
+func _on_layer_changed(new_layer: String):
+	_update_for_layer(new_layer)
+
+func _update_for_layer(current_layer: String):
+	# If visible in both dimensions, always active. Otherwise check target layer.
+	is_active_in_current_layer = visible_in_both_dimensions or (current_layer == target_layer)
+	
+	# Update visibility and collision based on layer
+	visible = is_active_in_current_layer
+	collision_layer = 4 if is_active_in_current_layer else 0  # Enemy layer is 4
+	collision_mask = 1 if is_active_in_current_layer else 0   # Collide with world layer 1
+	
+	# Also update detection and damage areas
+	if detection_area:
+		detection_area.collision_layer = 32 if is_active_in_current_layer else 0
+		detection_area.collision_mask = 2 if is_active_in_current_layer else 0
+	if damage_area:
+		damage_area.collision_layer = 8 if is_active_in_current_layer else 0
+		damage_area.collision_mask = 2 if is_active_in_current_layer else 0

@@ -26,6 +26,9 @@ signal player_damaged(enemy: FlyingEnemy, player: Node2D, damage: int)
 @export var chase_detection_radius_multiplier: float = 5.0  # Multiplier for chase detection radius
 @export var patrol_speed: float = 80.0  # Speed during patrol mode
 @export var ai_update_frequency: float = 30.0  # AI update frequency in FPS
+@export_group("Dimension")
+@export var target_layer: String = "A"  # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
 
 var start_position: Vector2
 var direction: int = 1
@@ -38,6 +41,10 @@ var player_target: Node2D = null
 var chase_speed: float = 100.0
 var turn_around_cooldown: float = 0.0
 var turn_around_cooldown_time: float = 0.2
+
+# Dimension system compatibility
+var dimension_manager: Node
+var is_active_in_current_layer: bool = true
 
 @onready var label: Label = $EnemyLabel
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -75,6 +82,10 @@ func _ready():
 	
 	if ErrorHandler:
 		ErrorHandler.debug("Flying enemy initialized: " + enemy_type + " at " + str(global_position))
+	
+	# Setup dimension system
+	if not Engine.is_editor_hint():
+		_setup_dimension_system()
 
 func _physics_process(delta):
 	if not is_alive:
@@ -472,3 +483,38 @@ func set_chase_behavior(enable_chase: bool, chase_spd: float = 100.0):
 		chase_speed = chase_spd
 	else:
 		flight_pattern = "Horizontal"
+
+# Dimension system methods
+func _setup_dimension_system():
+	# Only setup dimension system at runtime
+	if Engine.is_editor_hint():
+		return
+		
+	# Find dimension manager
+	dimension_manager = get_tree().get_first_node_in_group("dimension_managers")
+	if not dimension_manager and has_node("/root/DimensionManager"):
+		dimension_manager = get_node("/root/DimensionManager")
+	
+	if dimension_manager:
+		dimension_manager.layer_changed.connect(_on_layer_changed)
+		_update_for_layer(dimension_manager.get_current_layer())
+
+func _on_layer_changed(new_layer: String):
+	_update_for_layer(new_layer)
+
+func _update_for_layer(current_layer: String):
+	# If visible in both dimensions, always active. Otherwise check target layer.
+	is_active_in_current_layer = visible_in_both_dimensions or (current_layer == target_layer)
+	
+	# Update visibility and collision based on layer
+	visible = is_active_in_current_layer
+	collision_layer = 4 if is_active_in_current_layer else 0  # Enemy layer is 4
+	collision_mask = 1 if is_active_in_current_layer else 0   # Collide with world layer 1
+	
+	# Also update detection and damage areas
+	if detection_area:
+		detection_area.collision_layer = 32 if is_active_in_current_layer else 0
+		detection_area.collision_mask = 2 if is_active_in_current_layer else 0
+	if damage_area:
+		damage_area.collision_layer = 8 if is_active_in_current_layer else 0
+		damage_area.collision_mask = 2 if is_active_in_current_layer else 0

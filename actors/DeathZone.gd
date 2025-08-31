@@ -10,8 +10,15 @@ signal player_killed(death_zone: DeathZone, player: Node2D)
 @export var respawn_player: bool = true
 @export var width: int = 200 : set = set_width
 @export var height: int = 50 : set = set_height
+@export_group("Dimension")
+@export var target_layer: String = "A"  # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
 
 var players_in_zone: Array[Node2D] = []
+
+# Dimension system compatibility
+var dimension_manager: Node
+var is_active_in_current_layer: bool = true
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var visual_graphics: NinePatchRect = $NinePatchRect
@@ -38,6 +45,9 @@ func _ready():
 	# Set collision layers
 	collision_layer = 64  # Death zone layer
 	collision_mask = 2    # Player layer
+	
+	# Setup dimension system
+	_setup_dimension_system()
 
 func _setup_visuals():
 	# Create visual indicator if none exists
@@ -309,3 +319,30 @@ func refresh_death_zone():
 		# Force editor update
 		if Engine.is_editor_hint():
 			notify_property_list_changed()
+
+# Dimension system methods
+func _setup_dimension_system():
+	# Only setup dimension system at runtime
+	if Engine.is_editor_hint():
+		return
+		
+	# Find dimension manager
+	dimension_manager = get_tree().get_first_node_in_group("dimension_managers")
+	if not dimension_manager and has_node("/root/DimensionManager"):
+		dimension_manager = get_node("/root/DimensionManager")
+	
+	if dimension_manager:
+		dimension_manager.layer_changed.connect(_on_layer_changed)
+		_update_for_layer(dimension_manager.get_current_layer())
+
+func _on_layer_changed(new_layer: String):
+	_update_for_layer(new_layer)
+
+func _update_for_layer(current_layer: String):
+	# If visible in both dimensions, always active. Otherwise check target layer.
+	is_active_in_current_layer = visible_in_both_dimensions or (current_layer == target_layer)
+	
+	# Update visibility and collision based on layer
+	visible = is_active_in_current_layer
+	collision_layer = 64 if is_active_in_current_layer else 0
+	collision_mask = 2 if is_active_in_current_layer else 0

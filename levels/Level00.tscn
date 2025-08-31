@@ -176,6 +176,7 @@ hint_title = "Enemy Combat"
 [node name="GoblinPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
 position = Vector2(360, 472)
 patrol_distance = 100.0
+visible_in_both_dimensions = true
 
 [node name="OrcPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
 position = Vector2(1424, 280)
@@ -194,24 +195,25 @@ portal_name = "Level 1 Complete"
 
 [node name="FlyingEnemy" parent="." instance=ExtResource("16_ll6ei")]
 position = Vector2(208, 416)
+visible_in_both_dimensions = true
 
 [node name="DimentionB" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
 
 [node name="DynamicPlatform" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(8, 760)
+position = Vector2(-208, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 8
 target_layer = "B"
 
 [node name="DynamicPlatform10" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(8, 992)
+position = Vector2(-208, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 14
 target_layer = "B"
 
 [node name="DynamicPlatform5" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(8, 792)
+position = Vector2(-208, 520)
 scale = Vector2(0.5, 0.5)
 height = 400.0
 patch_margin_left = 0.0
@@ -224,7 +226,7 @@ axis_stretch_vertical = 1
 target_layer = "B"
 
 [node name="DynamicPlatform2" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(24, 760)
+position = Vector2(-192, 488)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 patch_margin_left = 0.0
@@ -236,7 +238,7 @@ axis_stretch_horizontal = 1
 target_layer = "B"
 
 [node name="DynamicPlatform8" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(40, 992)
+position = Vector2(-176, 720)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 patch_margin_left = 0.0
@@ -248,7 +250,7 @@ axis_stretch_horizontal = 1
 target_layer = "B"
 
 [node name="DynamicPlatform4" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(24, 792)
+position = Vector2(-192, 520)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 height = 400.0
@@ -262,19 +264,19 @@ axis_stretch_vertical = 1
 target_layer = "B"
 
 [node name="DynamicPlatform3" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(120, 760)
+position = Vector2(-96, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 10
 target_layer = "B"
 
 [node name="DynamicPlatform7" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(120, 992)
+position = Vector2(-96, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 16
 target_layer = "B"
 
 [node name="DynamicPlatform6" parent="DimentionB" instance=ExtResource("7_8bey8")]
-position = Vector2(120, 792)
+position = Vector2(-96, 520)
 scale = Vector2(0.5, 0.5)
 height = 400.0
 patch_margin_left = 0.0
@@ -289,11 +291,13 @@ target_layer = "B"
 position = Vector2(8, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 17
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform12" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(8, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 23
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform13" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(8, 520)
@@ -306,6 +310,7 @@ patch_margin_bottom = 0.0
 platform_type = 21
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform15" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(32, 488)
@@ -317,6 +322,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 18
 axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform16" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(40, 720)
@@ -328,6 +334,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 24
 axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform17" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(24, 520)
@@ -341,16 +348,19 @@ patch_margin_bottom = 0.0
 platform_type = 20
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform18" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(120, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 19
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform19" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(120, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 25
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform20" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(120, 520)
@@ -362,6 +372,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 22
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform22" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(300, 488)
@@ -574,12 +585,25 @@ axis_stretch_vertical = 1
 position = Vector2(152, 560)
 scale = Vector2(0.5, 0.5)
 width = 300
+target_layer = "A"
+visible_in_both_dimensions = false
+
+[node name="DeathZone3" parent="." instance=ExtResource("15_080q8")]
+position = Vector2(-584, 904)
+scale = Vector2(0.5, 0.5)
+width = 6000
 
 [node name="DeathZone2" parent="." instance=ExtResource("15_080q8")]
 position = Vector2(696, 536)
 scale = Vector2(0.5, 0.5)
 width = 1000
+target_layer = "A"
+visible_in_both_dimensions = false
 
 [node name="CollectableHeart2" parent="." instance=ExtResource("23_ax175")]
-position = Vector2(1880, 448)
+position = Vector2(1872, 448)
+scale = Vector2(0.864163, 0.864163)
+
+[node name="CollectableHeart3" parent="." instance=ExtResource("23_ax175")]
+position = Vector2(-136, 456)
 scale = Vector2(0.864163, 0.864163)

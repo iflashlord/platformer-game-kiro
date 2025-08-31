@@ -51,6 +51,7 @@ enum PlatformType {
 @export var respawn_delay: float = 5.0  # Time in seconds before respawning (only if auto_respawn is true)
 @export_group("Dimension")
 @export var target_layer: String = "A"  # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
 
 # Node references - using NinePatchRect for proper 9-slice
 @onready var nine_patch: NinePatchRect = $NinePatchRect
@@ -245,7 +246,8 @@ func _on_layer_changed(new_layer: String):
 	_update_for_layer(new_layer)
 
 func _update_for_layer(current_layer: String):
-	is_active_in_current_layer = (current_layer == target_layer)
+	# If visible in both dimensions, always active. Otherwise check target layer.
+	is_active_in_current_layer = visible_in_both_dimensions or (current_layer == target_layer)
 	
 	# Update visibility and collision based on layer
 	visible = is_active_in_current_layer
@@ -277,6 +279,7 @@ func reset_platform():
 	auto_respawn = true
 	respawn_delay = 5.0
 	target_layer = "A"
+	visible_in_both_dimensions = false
 	axis_stretch_horizontal = NinePatchRect.AXIS_STRETCH_MODE_STRETCH
 	axis_stretch_vertical = NinePatchRect.AXIS_STRETCH_MODE_STRETCH
 	
@@ -316,6 +319,8 @@ func configure_platform(config: Dictionary):
 		respawn_delay = config.respawn_delay
 	if config.has("target_layer"):
 		target_layer = config.target_layer
+	if config.has("visible_in_both_dimensions"):
+		visible_in_both_dimensions = config.visible_in_both_dimensions
 	if config.has("axis_stretch_horizontal"):
 		axis_stretch_horizontal = config.axis_stretch_horizontal
 	if config.has("axis_stretch_vertical"):
