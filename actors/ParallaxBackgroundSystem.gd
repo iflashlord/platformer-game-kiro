@@ -77,6 +77,10 @@ func _setup_background_layers():
 		bg.layer_b_texture = config.layer_b_texture
 		bg.use_different_textures_per_layer = config.use_different_textures_per_layer
 		
+		# Dimension settings
+		bg.target_layer = config.target_layer
+		bg.visible_in_both_dimensions = config.visible_in_both_dimensions
+		
 		add_child(bg)
 		_background_instances.append(bg)
 		

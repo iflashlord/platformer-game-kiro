@@ -26,6 +26,10 @@ class_name BackgroundLayerConfig
 @export var layer_name: String = ""
 @export var description: String = ""
 
+@export_group("Dimension")
+@export var target_layer: String = "A"  # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
+
 func _init():
 	# Set default values
 	pass
@@ -51,6 +55,9 @@ func duplicate_config() -> BackgroundLayerConfig:
 	
 	new_config.layer_name = layer_name
 	new_config.description = description
+	
+	new_config.target_layer = target_layer
+	new_config.visible_in_both_dimensions = visible_in_both_dimensions
 	
 	return new_config
 

@@ -39,6 +39,8 @@ z_index = -10
 scale_factor = Vector2(1, 1)
 layer_name = ""
 description = ""
+target_layer = "A"
+visible_in_both_dimensions = false
 metadata/_custom_type_script = "uid://bxm5g8u8h5004"
 
 [sub_resource type="Resource" id="Resource_blrwf"]
@@ -56,6 +58,8 @@ z_index = -10
 scale_factor = Vector2(1, 1)
 layer_name = ""
 description = ""
+target_layer = "B"
+visible_in_both_dimensions = false
 metadata/_custom_type_script = "uid://bxm5g8u8h5004"
 
 [sub_resource type="Resource" id="Resource_ax175"]
@@ -73,6 +77,8 @@ z_index = -10
 scale_factor = Vector2(1, 1)
 layer_name = ""
 description = ""
+target_layer = "A"
+visible_in_both_dimensions = true
 metadata/_custom_type_script = "uid://bxm5g8u8h5004"
 
 [node name="Level00" type="Node2D"]

@@ -25,12 +25,17 @@ signal background_looped
 #@export var z_index: int = -10  # Behind other objects by default
 @export var scale_factor: Vector2 = Vector2.ONE
 
+@export_group("Dimension")
+@export var target_layer: String = "A"  # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
+
 # Internal variables
 var _sprites: Array[Sprite2D] = []
 var _camera: Camera2D
 var _texture_size: Vector2
 var _current_offset: Vector2 = Vector2.ZERO
 var _current_layer: String = "A"
+var is_active_in_current_layer: bool = true
 
 @onready var _dimension_manager: Node = get_node("/root/DimensionManager")
 
@@ -42,6 +47,7 @@ func _ready():
 	if _dimension_manager:
 		_dimension_manager.layer_changed.connect(_on_layer_changed)
 		_current_layer = _dimension_manager.get_current_layer()
+		_update_for_layer(_current_layer)
 	
 	# Find the camera
 	_find_camera()
@@ -172,11 +178,21 @@ func _get_current_texture() -> Texture2D:
 func _on_layer_changed(new_layer: String):
 	"""Handle dimension layer changes"""
 	_current_layer = new_layer
+	_update_for_layer(new_layer)
+
+func _update_for_layer(current_layer: String):
+	"""Update visibility and texture based on dimension layer"""
+	# If visible in both dimensions, always active. Otherwise check target layer.
+	is_active_in_current_layer = visible_in_both_dimensions or (current_layer == target_layer)
 	
-	if use_different_textures_per_layer:
+	# Update visibility based on layer
+	visible = is_active_in_current_layer
+	
+	# Update texture if using different textures per layer
+	if use_different_textures_per_layer and is_active_in_current_layer:
 		# Recreate background with new texture
 		_setup_background()
-		print("🖼️ Background updated for layer: ", new_layer)
+		print("🖼️ Background updated for layer: ", current_layer, " (active: ", is_active_in_current_layer, ")")
 
 # Public API
 func set_scroll_speed(new_speed: Vector2):
