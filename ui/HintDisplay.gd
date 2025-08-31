@@ -75,6 +75,7 @@ func _show_hint():
 	tween.tween_property(self, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(_on_show_complete)
 
+  
 func _hide_hint():
 	if not _is_showing:
 		return

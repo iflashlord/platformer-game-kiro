@@ -106,11 +106,11 @@ checkpoint_name = "First Platform"
 [node name="InteractiveElements" type="Node2D" parent="."]
 
 [node name="TeleportGate" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(672, 392)
+position = Vector2(648, 392)
 teleport_target = NodePath("../TeleportGate2")
 
 [node name="TeleportGate2" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(1232, 384)
+position = Vector2(1248, 384)
 teleport_target = NodePath("../TeleportGate")
 
 [node name="HiddenGem" parent="InteractiveElements" instance=ExtResource("16_6oto5")]
@@ -197,22 +197,19 @@ portal_name = "Level 1 Complete"
 position = Vector2(208, 416)
 visible_in_both_dimensions = true
 
-[node name="DimentionB" type="CanvasLayer" parent="."]
-follow_viewport_enabled = true
-
-[node name="DynamicPlatform" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-208, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 8
 target_layer = "B"
 
-[node name="DynamicPlatform10" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform10" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-208, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 14
 target_layer = "B"
 
-[node name="DynamicPlatform5" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform5" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-208, 520)
 scale = Vector2(0.5, 0.5)
 height = 400.0
@@ -225,7 +222,7 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 target_layer = "B"
 
-[node name="DynamicPlatform2" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform2" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-192, 488)
 scale = Vector2(0.5, 0.5)
 width = 200.0
@@ -237,7 +234,7 @@ platform_type = 9
 axis_stretch_horizontal = 1
 target_layer = "B"
 
-[node name="DynamicPlatform8" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform8" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-176, 720)
 scale = Vector2(0.5, 0.5)
 width = 200.0
@@ -249,7 +246,7 @@ platform_type = 15
 axis_stretch_horizontal = 1
 target_layer = "B"
 
-[node name="DynamicPlatform4" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform4" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-192, 520)
 scale = Vector2(0.5, 0.5)
 width = 200.0
@@ -263,19 +260,19 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 target_layer = "B"
 
-[node name="DynamicPlatform3" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform3" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-96, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 10
 target_layer = "B"
 
-[node name="DynamicPlatform7" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform7" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-96, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 16
 target_layer = "B"
 
-[node name="DynamicPlatform6" parent="DimentionB" instance=ExtResource("7_8bey8")]
+[node name="DynamicPlatform6" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-96, 520)
 scale = Vector2(0.5, 0.5)
 height = 400.0
@@ -378,11 +375,13 @@ visible_in_both_dimensions = true
 position = Vector2(300, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 17
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform23" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(300, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 23
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform24" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(300, 520)
@@ -395,6 +394,7 @@ patch_margin_bottom = 0.0
 platform_type = 21
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform25" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(316, 488)
@@ -417,6 +417,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 18
 axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform27" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(332, 720)
@@ -428,6 +429,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 24
 axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform28" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(316, 520)
@@ -441,16 +443,19 @@ patch_margin_bottom = 0.0
 platform_type = 20
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform29" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(664, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 19
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform30" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(664, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 25
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform31" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(664, 520)
@@ -462,6 +467,7 @@ patch_margin_top = 0.0
 patch_margin_bottom = 0.0
 platform_type = 22
 axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform33" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1192, 488)
@@ -591,7 +597,9 @@ visible_in_both_dimensions = false
 [node name="DeathZone3" parent="." instance=ExtResource("15_080q8")]
 position = Vector2(-584, 904)
 scale = Vector2(0.5, 0.5)
+zone_type = "void"
 width = 6000
+visible_in_both_dimensions = true
 
 [node name="DeathZone2" parent="." instance=ExtResource("15_080q8")]
 position = Vector2(696, 536)
@@ -607,3 +615,13 @@ scale = Vector2(0.864163, 0.864163)
 [node name="CollectableHeart3" parent="." instance=ExtResource("23_ax175")]
 position = Vector2(-136, 456)
 scale = Vector2(0.864163, 0.864163)
+
+[node name="DynamicPlatform9" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(816, 464)
+scale = Vector2(0.5, 0.5)
+width = 500.0
+height = 50.0
+platform_type = 5
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+target_layer = "B"
