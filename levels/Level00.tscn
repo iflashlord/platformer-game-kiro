@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=26 format=3 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="7_8bey8"]
 [ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
+[ext_resource type="PackedScene" uid="uid://dt4gkyxqmr5ws" path="res://actors/DimensionSwitch.tscn" id="12_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
 [ext_resource type="PackedScene" uid="uid://bvq8x7y2n8wqr" path="res://actors/HintArea.tscn" id="12_ll6ei"]
 [ext_resource type="PackedScene" uid="uid://1i32l3lwnelj" path="res://actors/DeathZone.tscn" id="15_080q8"]
@@ -92,11 +93,11 @@ checkpoint_name = "First Platform"
 [node name="InteractiveElements" type="Node2D" parent="."]
 
 [node name="TeleportGate" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(648, 392)
+position = Vector2(1416, 360)
 teleport_target = NodePath("../TeleportGate2")
 
 [node name="TeleportGate2" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(1248, 384)
+position = Vector2(1648, 360)
 teleport_target = NodePath("../TeleportGate")
 
 [node name="HiddenGem" parent="InteractiveElements" instance=ExtResource("16_6oto5")]
@@ -107,14 +108,14 @@ position = Vector2(1464, 216)
 crate_type = "bounce"
 
 [node name="TNTCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(1336, 472)
+position = Vector2(1848, 472)
 crate_type = "tnt"
 
 [node name="BasicCrate2" parent="InteractiveElements" instance=ExtResource("21_crate")]
 position = Vector2(1360, 240)
 
 [node name="JumpPad1" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
-position = Vector2(1528, 480)
+position = Vector2(2048, 480)
 
 [node name="HintArea" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
 position = Vector2(72, 440)
@@ -127,28 +128,33 @@ position = Vector2(520, 440)
 hint_message = "This is a checkpoint! When you die, you'll respawn here instead of the beginning."
 hint_title = "Checkpoint"
 
+[node name="HintArea10" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(640, 440)
+hint_message = "You can travel back and forthto different dimension, some elements only available in one dimension!"
+hint_title = "Dimension Switch!"
+
 [node name="HintArea8" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(648, 440)
+position = Vector2(1416, 440)
 hint_message = "Entering teleport gate allows you go back and forth between two gates!"
 hint_title = "Teleport Gate"
 
 [node name="HintArea5" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(1872, 440)
+position = Vector2(2384, 440)
 hint_message = "Recharge your hearts by collection red hearts!"
 hint_title = "Health"
 
 [node name="HintArea6" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(1528, 440)
+position = Vector2(2048, 440)
 hint_message = "You can jump on the jupming platforms which help you for jumps!"
 hint_title = "Jump"
 
 [node name="HintArea9" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(1696, 440)
+position = Vector2(2248, 440)
 hint_message = "Jump on or below crates to get pints!"
 hint_title = "Crates"
 
 [node name="HintArea7" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(1336, 440)
+position = Vector2(1848, 440)
 hint_message = "You only have 3 second to run after toching it!"
 hint_title = "TNT"
 
@@ -157,18 +163,21 @@ position = Vector2(360, 440)
 hint_message = "Jump on enemies to defeat them! Approach from above to stomp them safely."
 hint_title = "Enemy Combat"
 
+[node name="DimensionSwitch" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
+position = Vector2(648, 457)
+
 [node name="Signs" type="Node2D" parent="."]
 show_behind_parent = true
 
 [node name="DynamicPlatform43" parent="Signs" instance=ExtResource("7_8bey8")]
-position = Vector2(1280, 456)
+position = Vector2(1792, 456)
 scale = Vector2(0.5, 0.5)
 platform_type = 29
 collision_disabled = true
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform46" parent="Signs" instance=ExtResource("7_8bey8")]
-position = Vector2(600, 456)
+position = Vector2(1376, 456)
 scale = Vector2(0.5, 0.5)
 platform_type = 29
 collision_disabled = true
@@ -176,6 +185,13 @@ visible_in_both_dimensions = true
 
 [node name="DynamicPlatform47" parent="Signs" instance=ExtResource("7_8bey8")]
 position = Vector2(456, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform51" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(576, 456)
 scale = Vector2(0.5, 0.5)
 platform_type = 29
 collision_disabled = true
@@ -196,21 +212,21 @@ collision_disabled = true
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform44" parent="Signs" instance=ExtResource("7_8bey8")]
-position = Vector2(1472, 456)
+position = Vector2(1992, 456)
 scale = Vector2(0.5, 0.5)
 platform_type = 29
 collision_disabled = true
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform45" parent="Signs" instance=ExtResource("7_8bey8")]
-position = Vector2(1640, 456)
+position = Vector2(2192, 456)
 scale = Vector2(0.5, 0.5)
 platform_type = 29
 collision_disabled = true
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform49" parent="Signs" instance=ExtResource("7_8bey8")]
-position = Vector2(1816, 456)
+position = Vector2(2320, 456)
 scale = Vector2(0.5, 0.5)
 platform_type = 29
 collision_disabled = true
@@ -230,7 +246,7 @@ patrol_speed = 50.0
 patrol_distance = 80.0
 
 [node name="BounceCrate" parent="Enemies" instance=ExtResource("9_ub75y")]
-position = Vector2(1688, 352)
+position = Vector2(2240, 352)
 
 [node name="DeathZones" type="Node2D" parent="."]
 show_behind_parent = true
@@ -261,11 +277,11 @@ width = 300
 position = Vector2(-584, 904)
 scale = Vector2(0.5, 0.5)
 zone_type = "void"
-width = 6000
+width = 8000
 visible_in_both_dimensions = true
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
-position = Vector2(1984, 440)
+position = Vector2(2552, 432)
 portal_name = "Level 1 Complete"
 
 [node name="Instructions" type="CanvasLayer" parent="."]
@@ -586,7 +602,7 @@ visible_in_both_dimensions = true
 [node name="DynamicPlatform37" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1208, 488)
 scale = Vector2(0.5, 0.5)
-width = 1600.0
+width = 2800.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
@@ -598,7 +614,7 @@ visible_in_both_dimensions = true
 [node name="DynamicPlatform38" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1224, 720)
 scale = Vector2(0.5, 0.5)
-width = 1600.0
+width = 2800.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
@@ -610,7 +626,7 @@ visible_in_both_dimensions = true
 [node name="DynamicPlatform39" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1208, 520)
 scale = Vector2(0.5, 0.5)
-width = 1600.0
+width = 2800.0
 height = 400.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
@@ -622,19 +638,19 @@ axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform40" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(2008, 488)
+position = Vector2(2602, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 19
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform41" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(2008, 720)
+position = Vector2(2602, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 25
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform42" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(2008, 520)
+position = Vector2(2602, 520)
 scale = Vector2(0.5, 0.5)
 height = 400.0
 patch_margin_left = 0.0
@@ -662,7 +678,7 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
 [node name="CollectableHeart2" parent="." instance=ExtResource("23_ax175")]
-position = Vector2(1872, 448)
+position = Vector2(2384, 456)
 scale = Vector2(0.864163, 0.864163)
 
 [node name="CollectableHeart3" parent="." instance=ExtResource("23_ax175")]

@@ -227,7 +227,8 @@ func handle_sprite_flip():
 	# Handle dimension flip input
 	if Input.is_action_just_pressed("dimension_flip"):
 		# Dimension flip with VFX
-		if DimensionManager.toggle_layer():
+		if DimensionManager and DimensionManager.can_switch_dimension():
+			DimensionManager.toggle_layer()
 			print("Player triggered dimension flip")
 		
 	# Debug shake test
