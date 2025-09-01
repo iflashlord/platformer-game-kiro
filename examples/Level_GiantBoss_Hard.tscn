@@ -1,7 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://bgcuda48r17cw"]
+[gd_scene load_steps=7 format=3]
 
-[ext_resource type="Script" uid="uid://c23i2yb0ofc8v" path="res://examples/SimpleBossLevel.gd" id="1_boss_level"]
-[ext_resource type="PackedScene" path="res://actors/GiantBoss.tscn" id="2_giant_boss"]
+[ext_resource type="Script" path="res://examples/SimpleBossLevel.gd" id="1_boss_level"]
+[ext_resource type="PackedScene" uid="uid://bvxqm8y7n8qkr_clean" path="res://actors/GiantBoss.tscn" id="2_giant_boss"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="3_player"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
@@ -15,7 +15,7 @@ font_size = 32
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
-[node name="Level_GiantBoss_Simple" type="Node2D"]
+[node name="Level_GiantBoss_Hard" type="Node2D"]
 script = ExtResource("1_boss_level")
 
 [node name="Ground" type="StaticBody2D" parent="."]
@@ -48,22 +48,23 @@ shape = SubResource("RectangleShape2D_2")
 [node name="Instructions" type="Label" parent="UI"]
 offset_left = 20.0
 offset_top = 20.0
-offset_right = 400.0
+offset_right = 500.0
 offset_bottom = 120.0
-text = "BOSS FIGHT!
+text = "💀 HARD BOSS FIGHT! 💀
 
 Controls:
 WASD/Arrows - Move
 Space - Jump
 Jump on the boss to damage it!
 
-The boss has 5 phases as health decreases"
+⚠️ WARNING: 150% health, 140% speed
+Double damage, more enemies!"
 label_settings = SubResource("LabelSettings_1")
 horizontal_alignment = 1
 
 [node name="GiantBoss" parent="." instance=ExtResource("2_giant_boss")]
 position = Vector2(800, 600)
-difficulty = "Easy"
+difficulty = "Hard"
 
 [node name="Player" parent="." instance=ExtResource("3_player")]
 position = Vector2(200, 600)
