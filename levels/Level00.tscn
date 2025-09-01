@@ -93,12 +93,14 @@ checkpoint_name = "First Platform"
 [node name="InteractiveElements" type="Node2D" parent="."]
 
 [node name="TeleportGate" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(1416, 360)
+position = Vector2(1344, 360)
 teleport_target = NodePath("../TeleportGate2")
+target_layer = "B"
 
 [node name="TeleportGate2" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(1648, 360)
+position = Vector2(1712, 352)
 teleport_target = NodePath("../TeleportGate")
+target_layer = "B"
 
 [node name="HiddenGem" parent="InteractiveElements" instance=ExtResource("16_6oto5")]
 position = Vector2(1648, 152)
@@ -137,8 +139,8 @@ hint_title = "Dimension Switch!"
 target_layer = "Both"
 
 [node name="HintArea8" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(1416, 440)
-hint_message = "Entering teleport gate allows you go back and forth between two gates!"
+position = Vector2(1344, 440)
+hint_message = "Press F to change dimension and see the gates! Entering teleport gate allows you go back and forth between two gates!"
 hint_title = "Teleport Gate"
 target_layer = "Both"
 
@@ -173,7 +175,13 @@ hint_title = "Enemy Combat"
 target_layer = "Both"
 
 [node name="DimensionSwitch" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
-position = Vector2(648, 457)
+position = Vector2(656, 456)
+
+[node name="DimensionSwitch2" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
+position = Vector2(1224, 456)
+
+[node name="DimensionSwitch3" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
+position = Vector2(1720, 456)
 
 [node name="Signs" type="Node2D" parent="."]
 show_behind_parent = true
@@ -186,7 +194,7 @@ collision_disabled = true
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform46" parent="Signs" instance=ExtResource("7_8bey8")]
-position = Vector2(1376, 456)
+position = Vector2(1304, 456)
 scale = Vector2(0.5, 0.5)
 platform_type = 29
 collision_disabled = true
@@ -249,7 +257,7 @@ patrol_distance = 100.0
 visible_in_both_dimensions = true
 
 [node name="OrcPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
-position = Vector2(1424, 280)
+position = Vector2(1472, 376)
 enemy_type = "orc"
 patrol_speed = 50.0
 patrol_distance = 80.0
@@ -575,6 +583,66 @@ visible_in_both_dimensions = true
 position = Vector2(1192, 488)
 scale = Vector2(0.5, 0.5)
 platform_type = 17
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform44" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform45" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 424)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform46" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 392)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform47" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 360)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform48" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 328)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform49" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 296)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform50" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 264)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform51" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 232)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform52" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 200)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform53" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 168)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform34" parent="." instance=ExtResource("7_8bey8")]
