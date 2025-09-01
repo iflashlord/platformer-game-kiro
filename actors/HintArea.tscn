@@ -10,6 +10,7 @@ collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_0x8y9")
 hint_message = "This is a hint message!"
+target_layer = "A"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_1")

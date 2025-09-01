@@ -72,6 +72,7 @@ sprite_frames = SubResource("SpriteFrames_jt3jt")
 animation = &"bounce_idle"
 
 [node name="CrateLabel" type="Label" parent="."]
+visible = false
 offset_left = -16.0
 offset_top = -8.0
 offset_right = 16.0

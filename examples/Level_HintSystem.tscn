@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://fkee53xdx1d3"]
+[gd_scene load_steps=8 format=3 uid="uid://fkee53xdx1d3"]
 
 [ext_resource type="PackedScene" uid="uid://bvq8x7y2n8wqr" path="res://actors/HintArea.tscn" id="1_hintarea"]
-[ext_resource type="PackedScene" uid="uid://b8x7y6z5w4v3u" path="res://actors/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://3l4c2ub6a411" path="res://ui/GameUI.tscn" id="3_gameui"]
+[ext_resource type="PackedScene" uid="uid://dt4gkyxqmr5ws" path="res://actors/DimensionSwitch.tscn" id="4_dimensionswitch"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(800, 50)
@@ -10,11 +11,13 @@ size = Vector2(800, 50)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
 size = Vector2(200, 100)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(80, 80)
+
 [node name="Level_HintSystem" type="Node2D"]
 
 [node name="Ground" type="StaticBody2D" parent="."]
 position = Vector2(400, 550)
-collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
 shape = SubResource("RectangleShape2D_1")
@@ -33,7 +36,6 @@ color = Color(0.4, 0.2, 0.1, 1)
 
 [node name="Platform" type="StaticBody2D" parent="."]
 position = Vector2(600, 400)
-collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
 shape = SubResource("RectangleShape2D_2")
@@ -71,3 +73,130 @@ position = Vector2(600, 300)
 hint_message = "Great! You can jump on platforms. Try exploring more areas."
 hint_title = "Well Done!"
 show_once_only = true
+
+[node name="DimensionSwitch" parent="." instance=ExtResource("4_dimensionswitch")]
+position = Vector2(300, 500)
+
+[node name="DimensionHintA" parent="." instance=ExtResource("1_hintarea")]
+position = Vector2(500, 450)
+hint_message = "You are in Dimension A! This hint only appears in this dimension. Press F near the switch to change dimensions."
+hint_title = "Dimension A"
+
+[node name="DimensionHintB" parent="." instance=ExtResource("1_hintarea")]
+position = Vector2(500, 450)
+hint_message = "Welcome to Dimension B! This is a completely different hint that only shows in this dimension. The hint system now supports dimension-specific content!"
+hint_title = "Dimension B"
+target_layer = "B"
+
+[node name="LongTextHint" parent="." instance=ExtResource("1_hintarea")]
+position = Vector2(700, 450)
+hint_message = "This is a demonstration of the new dynamic hint display system! The hint box will automatically adjust its size to accommodate longer text content. You can write much longer hints now without worrying about text being cut off or looking cramped. The system intelligently calculates the required width and height based on your content, ensuring optimal readability while maintaining the beautiful visual design. Try walking around to see different hint lengths in action!"
+hint_title = "Dynamic Sizing Demo"
+
+[node name="ShortHint" parent="." instance=ExtResource("1_hintarea")]
+position = Vector2(700, 450)
+hint_message = "Short hint!"
+hint_title = "Compact"
+target_layer = "B"
+
+[node name="BothDimensionsHint" parent="." instance=ExtResource("1_hintarea")]
+position = Vector2(400, 350)
+hint_message = "This hint appears in BOTH dimensions! It's always visible regardless of which layer you're in. Perfect for universal instructions or important information."
+hint_title = "Universal Hint"
+target_layer = "Both"
+
+[node name="DimensionAIndicator" type="StaticBody2D" parent="."]
+position = Vector2(500, 400)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DimensionAIndicator"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="ColorRect" type="ColorRect" parent="DimensionAIndicator"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.2, 0.6, 1, 0.7)
+
+[node name="Label" type="Label" parent="DimensionAIndicator"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 20.0
+offset_bottom = 10.0
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DimensionBIndicator" type="StaticBody2D" parent="."]
+position = Vector2(700, 400)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DimensionBIndicator"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="ColorRect" type="ColorRect" parent="DimensionBIndicator"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(1, 0.4, 0.6, 0.7)
+
+[node name="Label" type="Label" parent="DimensionBIndicator"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 20.0
+offset_bottom = 10.0
+text = "B"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BothDimensionsIndicator" type="StaticBody2D" parent="."]
+position = Vector2(400, 300)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BothDimensionsIndicator"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="ColorRect" type="ColorRect" parent="BothDimensionsIndicator"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.8, 0.6, 1, 0.7)
+
+[node name="Label" type="Label" parent="BothDimensionsIndicator"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 20.0
+offset_bottom = 10.0
+text = "A+B"
+horizontal_alignment = 1
+vertical_alignment = 1

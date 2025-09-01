@@ -128,8 +128,14 @@ func _set_object_visibility(obj: Node, visible: bool):
 	if obj is DimensionNode:
 		# DimensionNode handles its own visibility logic
 		obj.set_layer_active(visible)
-	elif obj.has_property("visible"):
+	elif obj.has_method("set") and "visible" in obj:
 		# Standard CanvasItem nodes
+		obj.visible = visible
+	elif obj is CanvasItem:
+		# Direct CanvasItem check
+		obj.visible = visible
+	elif obj is Node2D:
+		# Node2D nodes also have visibility
 		obj.visible = visible
 	else:
 		# For other node types, we can't control visibility directly
