@@ -101,6 +101,10 @@ func consume_fruit():
 		fruits_remaining -= 1
 		update_display()
 		
+		# Audio feedback
+		if Audio:
+			Audio.play_sfx("collect_gem")
+
 		# Add score
 		if has_node("/root/Game"):
 			Game.add_score(points_per_fruit)
@@ -157,11 +161,36 @@ func create_collection_effect():
 	effect_label.position = global_position + Vector2(-15, -30)
 	get_tree().current_scene.add_child(effect_label)
 	
+	# Create a separate tween node to avoid issues with parent removal
+	var tween_node = Node.new()
+	get_tree().current_scene.add_child(tween_node)
+	var tween = tween_node.create_tween()
+	
 	# Animate the effect
-	var tween = create_tween()
 	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
 	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
-	tween.tween_callback(effect_label.queue_free)
+	
+	# Clean up both the label and tween node when animation completes
+	tween.finished.connect(func(): 
+		if is_instance_valid(effect_label):
+			effect_label.queue_free()
+		if is_instance_valid(tween_node):
+			tween_node.queue_free()
+	)
+	
+	# Backup cleanup with timer in case tween fails
+	var cleanup_timer = Timer.new()
+	cleanup_timer.wait_time = 1.5  # Slightly longer than tween duration
+	cleanup_timer.one_shot = true
+	get_tree().current_scene.add_child(cleanup_timer)
+	cleanup_timer.start()
+	cleanup_timer.timeout.connect(func():
+		if is_instance_valid(effect_label):
+			effect_label.queue_free()
+		if is_instance_valid(tween_node):
+			tween_node.queue_free()
+		cleanup_timer.queue_free()
+	)
  
 	# Screen flash effect (with fallback if FX singleton doesn't exist)
 	if has_node("/root/FX") and FX.has_method("flash_screen"):

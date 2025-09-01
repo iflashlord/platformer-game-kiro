@@ -89,7 +89,10 @@ func create_bounce_effect():
 		_:
 			spring_sprite.play("jump")
 	
-	
+	# Audio feedback
+	if Audio:
+		Audio.play_sfx("spring")
+
 	# Visual bounce animation
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1.2, 0.8), 0.1)
