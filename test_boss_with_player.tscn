@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://test_boss_with_player"]
+
+[ext_resource type="Script" path="res://test_boss_with_player.gd" id="1"]
+
+[node name="TestBossWithPlayer" type="Node2D"]
+script = ExtResource("1")

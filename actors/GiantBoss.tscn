@@ -1,0 +1,179 @@
+[gd_scene load_steps=19 format=3 uid="uid://bvxqm8y7n8qkr_clean"]
+
+[ext_resource type="Script" path="res://actors/GiantBoss.gd" id="1_boss"]
+[ext_resource type="PackedScene" path="res://actors/InteractiveCrate.tscn" id="2_tnt"]
+[ext_resource type="PackedScene" path="res://actors/Explosion.tscn" id="3_explosion"]
+[ext_resource type="PackedScene" path="res://actors/FlyingEnemy.tscn" id="4_flying"]
+[ext_resource type="PackedScene" path="res://actors/PatrolEnemy.tscn" id="5_patrol"]
+[ext_resource type="PackedScene" path="res://actors/InteractiveCrate.tscn" id="6_crate"]
+[ext_resource type="Script" path="res://actors/ScreenShakeComponent.gd" id="7_shake"]
+
+[ext_resource type="Texture2D" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_walk_a.png" id="10_walk_a"]
+[ext_resource type="Texture2D" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_walk_b.png" id="11_walk_b"]
+[ext_resource type="Texture2D" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_jump.png" id="12_jump"]
+[ext_resource type="Texture2D" path="res://content/Graphics/Sprites/Enemies/Default/slime_fire_walk_a.png" id="13_charge_a"]
+[ext_resource type="Texture2D" path="res://content/Graphics/Sprites/Enemies/Default/slime_fire_walk_b.png" id="14_charge_b"]
+[ext_resource type="Texture2D" path="res://content/Graphics/Sprites/Enemies/Default/fly_a.png" id="15_fly_a"]
+[ext_resource type="Texture2D" path="res://content/Graphics/Sprites/Enemies/Default/fly_b.png" id="16_fly_b"]
+[ext_resource type="Texture2D" path="res://content/Graphics/Sprites/Enemies/Default/slime_normal_flat.png" id="17_defeat"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(128, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(140, 140)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(100, 20)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_walk_a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_walk_b")
+}],
+"loop": true,
+"name": "walk",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_jump")
+}],
+"loop": true,
+"name": "jump",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_charge_a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_charge_b")
+}],
+"loop": true,
+"name": "charge",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_fly_a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_fly_b")
+}],
+"loop": true,
+"name": "fly",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_defeat")
+}],
+"loop": false,
+"name": "defeat",
+"speed": 4.0
+}]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 98, 0)
+scale_min = 0.5
+scale_max = 1.5
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2"]
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 50.0
+gravity = Vector3(0, 98, 0)
+scale_min = 0.3
+scale_max = 0.8
+
+[node name="GiantBoss" type="CharacterBody2D" groups=["boss", "enemy"]]
+script = ExtResource("1_boss")
+tnt_scene = ExtResource("2_tnt")
+explosion_scene = ExtResource("3_explosion")
+flying_enemy_scene = ExtResource("4_flying")
+patrol_enemy_scene = ExtResource("5_patrol")
+interactive_crate_scene = ExtResource("6_crate")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_1")
+animation = &"walk"
+
+[node name="DamageArea" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="StompDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StompDetector"]
+position = Vector2(0, -70)
+shape = SubResource("RectangleShape2D_3")
+
+[node name="WallDetector" type="RayCast2D" parent="."]
+position = Vector2(70, 0)
+target_position = Vector2(20, 0)
+collision_mask = 1
+
+[node name="GroundDetector" type="RayCast2D" parent="."]
+position = Vector2(70, 64)
+target_position = Vector2(0, 20)
+collision_mask = 1
+
+[node name="HitEffect" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_1")
+one_shot = true
+
+[node name="DustEffect" type="GPUParticles2D" parent="."]
+position = Vector2(0, 64)
+emitting = false
+amount = 30
+process_material = SubResource("ParticleProcessMaterial_2")
+one_shot = true
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -64.0
+offset_top = -100.0
+offset_right = 64.0
+offset_bottom = -80.0
+value = 100.0
+show_percentage = false
+
+[node name="PhaseIndicator" type="Label" parent="."]
+offset_left = -50.0
+offset_top = -120.0
+offset_right = 50.0
+offset_bottom = -100.0
+text = "WALKING"
+horizontal_alignment = 1
+
+[node name="DamageTimer" type="Timer" parent="."]
+wait_time = 1.0
+one_shot = true
+
+[node name="TNTTimer" type="Timer" parent="."]
+wait_time = 3.0
+
+[node name="StateMachine" type="Node" parent="."]
+
+[node name="AudioPlayer" type="AudioStreamPlayer2D" parent="."]
+
+[node name="ScreenShakeComponent" type="Node" parent="."]
+script = ExtResource("7_shake")

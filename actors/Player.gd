@@ -49,6 +49,20 @@ var blink_frequency: float = 0.15  # How fast to blink during invincibility
 
 @onready var character_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
+# Boss stomping bounce method
+func bounce(bounce_force: float = -300.0):
+	velocity.y = bounce_force
+	current_jumps = 0  # Reset jumps when bouncing
+	double_jump_available = true
+	is_jumping = true
+	has_jumped = true
+	
+	# Play bounce effect
+	if dust_particles:
+		dust_particles.emitting = true
+	
+	jumped.emit()
+
 # Visual effects
 var original_sprite_scale: Vector2
 var is_squashing: bool = false

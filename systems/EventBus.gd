@@ -63,6 +63,12 @@ signal debug_borders_toggled(enabled: bool)
 signal hint_requested(message: String, title: String)
 signal hint_dismissed()
 
+# Boss events
+signal boss_health_changed(health: int, max_health: int)
+signal boss_defeated
+signal boss_phase_changed(phase: String)
+signal boss_tnt_placed(position: Vector2)
+
 func _ready():
 	# Connect to audio system
 	music_requested.connect(_on_music_requested)
