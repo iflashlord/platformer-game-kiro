@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=29 format=3 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://dg8la8ddwnn1b" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_desert.png" id="21_w2yij"]
 [ext_resource type="Texture2D" uid="uid://d3fraue0q6a8j" path="res://content/Graphics/Sprites/Tiles/Default/bush.png" id="22_88x2b"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
+[ext_resource type="Texture2D" uid="uid://bto37igimafvt" path="res://content/Graphics/Sprites/Backgrounds/Double/background_solid_sky.png" id="23_53pyl"]
 [ext_resource type="PackedScene" uid="uid://cgrshje24m0s0" path="res://actors/CollectableHeart.tscn" id="23_ax175"]
 [ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="23_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
@@ -79,6 +80,25 @@ layer_name = ""
 description = ""
 target_layer = "A"
 visible_in_both_dimensions = true
+metadata/_custom_type_script = "uid://bxm5g8u8h5004"
+
+[sub_resource type="Resource" id="Resource_mjv5a"]
+script = ExtResource("20_blrwf")
+texture = ExtResource("23_53pyl")
+use_different_textures_per_layer = false
+scroll_speed = Vector2(-50, 0)
+parallax_factor = Vector2(0.5, 0.5)
+auto_scroll = true
+loop_seamlessly = true
+horizontal_gap = -300
+vertical_gap = -400
+modulate_color = Color(1, 1, 1, 1)
+z_index = -10
+scale_factor = Vector2(1, 1)
+layer_name = ""
+description = ""
+target_layer = "B"
+visible_in_both_dimensions = false
 metadata/_custom_type_script = "uid://bxm5g8u8h5004"
 
 [node name="Level00" type="Node2D"]
@@ -666,7 +686,7 @@ axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
 [node name="ParallaxBackgroundSystem" parent="." instance=ExtResource("19_88x2b")]
-background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_blrwf"), SubResource("Resource_ax175")])
+background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_blrwf"), SubResource("Resource_ax175"), SubResource("Resource_mjv5a")])
 
 [node name="DynamicPlatform21" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(152, 568)
