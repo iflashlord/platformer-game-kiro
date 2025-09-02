@@ -1,9 +1,59 @@
-[gd_scene load_steps=8 format=3 uid="uid://dadxe0f1g2hij"]
+[gd_scene load_steps=24 format=3 uid="uid://dadxe0f1g2hij"]
 
 [ext_resource type="Script" uid="uid://c0hksh4nrb6ui" path="res://examples/Level_GiantBoss.gd" id="1_boss_level"]
 [ext_resource type="PackedScene" uid="uid://kuwc58wcfuui" path="res://actors/GiantBoss.tscn" id="2_giant_boss"]
 [ext_resource type="PackedScene" uid="uid://b8vxnan0p1qrs" path="res://ui/BossHealthUI.tscn" id="3_boss_ui"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="4_player"]
+[ext_resource type="PackedScene" uid="uid://55cwdroiextm" path="res://actors/Explosion.tscn" id="5_bomb_scene"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="6_hud"]
+[ext_resource type="PackedScene" uid="uid://c8yay2n7m6wqp" path="res://ui/HintDisplay.tscn" id="7_hint"]
+[ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="8_level_manager"]
+[ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="9_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://bvq8x7y2n8wqr" path="res://actors/HintArea.tscn" id="10_hint_area"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="11_crate"]
+[ext_resource type="PackedScene" uid="uid://cgrshje24m0s0" path="res://actors/CollectableHeart.tscn" id="12_heart"]
+[ext_resource type="PackedScene" uid="uid://1i32l3lwnelj" path="res://actors/DeathZone.tscn" id="13_death_zone"]
+[ext_resource type="PackedScene" uid="uid://c8y7qkr8wbqxv" path="res://actors/ParallaxBackgroundSystem.tscn" id="14_background"]
+[ext_resource type="Script" uid="uid://bxm5g8u8h5004" path="res://actors/BackgroundLayerConfig.gd" id="15_bg_config"]
+[ext_resource type="Texture2D" uid="uid://dg8la8ddwnn1b" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_desert.png" id="16_bg_texture1"]
+[ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="17_bg_texture2"]
+[ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="18_platform"]
+
+[sub_resource type="Resource" id="Resource_bg1"]
+script = ExtResource("15_bg_config")
+texture = ExtResource("16_bg_texture1")
+use_different_textures_per_layer = false
+scroll_speed = Vector2(-30, 0)
+parallax_factor = Vector2(0.3, 0.3)
+auto_scroll = true
+loop_seamlessly = true
+horizontal_gap = -100
+vertical_gap = 0
+modulate_color = Color(0.8, 0.8, 1, 0.7)
+z_index = -20
+scale_factor = Vector2(1.2, 1.2)
+layer_name = "Desert Background"
+description = "Boss arena desert background"
+target_layer = "A"
+visible_in_both_dimensions = true
+
+[sub_resource type="Resource" id="Resource_bg2"]
+script = ExtResource("15_bg_config")
+texture = ExtResource("17_bg_texture2")
+use_different_textures_per_layer = false
+scroll_speed = Vector2(-20, 0)
+parallax_factor = Vector2(0.2, 0.2)
+auto_scroll = true
+loop_seamlessly = true
+horizontal_gap = -200
+vertical_gap = -100
+modulate_color = Color(1, 1, 1, 0.5)
+z_index = -15
+scale_factor = Vector2(1, 1)
+layer_name = "Clouds"
+description = "Atmospheric clouds"
+target_layer = "A"
+visible_in_both_dimensions = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1280, 64)
@@ -18,6 +68,12 @@ outline_color = Color(0, 0, 0, 1)
 
 [node name="Level_GiantBoss" type="Node2D"]
 script = ExtResource("1_boss_level")
+
+[node name="LevelManager" type="Node" parent="."]
+script = ExtResource("8_level_manager")
+
+[node name="ParallaxBackgroundSystem" parent="." instance=ExtResource("14_background")]
+background_layers = Array[ExtResource("15_bg_config")]([SubResource("Resource_bg1"), SubResource("Resource_bg2")])
 
 [node name="Ground" type="StaticBody2D" parent="."]
 position = Vector2(640, 680)
@@ -46,11 +102,23 @@ shape = SubResource("RectangleShape2D_2")
 
 [node name="GiantBoss" parent="." instance=ExtResource("2_giant_boss")]
 position = Vector2(640, 550)
+difficulty = "Easy"
+bomb_scene = ExtResource("5_bomb_scene")
+phase1_max_bombs = 15
+phase2_max_bombs = 5
+phase3_max_bombs = 4
+phase4_max_bombs = 5
 
 [node name="Player" parent="." instance=ExtResource("4_player")]
 position = Vector2(200, 600)
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="GameHUD" parent="UI" instance=ExtResource("6_hud")]
+
+[node name="HintDisplay" parent="UI" instance=ExtResource("7_hint")]
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="BossHealthUI" parent="UI" instance=ExtResource("3_boss_ui")]
 grow_horizontal = 2
@@ -97,12 +165,135 @@ offset_left = 20.0
 offset_top = 20.0
 offset_right = 400.0
 offset_bottom = 120.0
-text = "BOSS FIGHT!
+text = "🏆 GIANT BOSS ARENA 🏆
 
-Jump on the boss's head 5 times to defeat it!
-Avoid the TNT crates it drops!
+• Jump on boss head 5 times to win!
+• ⚠️ Watch for RED WARNING FLASHES! 
+• 💣 Bombs get stronger each phase
+• 💥 Chain reactions can help or hurt
+• 🏥 Collect hearts to heal
+• 📍 Use checkpoints as safe spots
 
-Controls:
-WASD/Arrows - Move
-Space - Jump"
+Phase Progression:
+1. Walking → 2. Jumping → 3. Charging → 4. Flying
+
+Controls: WASD/Arrows + Space"
 horizontal_alignment = 1
+
+[node name="Level" type="Node2D" parent="."]
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="Checkpoint1" parent="Checkpoints" instance=ExtResource("9_checkpoint")]
+position = Vector2(100, 600)
+checkpoint_id = "boss_fight_start"
+checkpoint_name = "Boss Arena Entry"
+
+[node name="Checkpoint2" parent="Checkpoints" instance=ExtResource("9_checkpoint")]
+position = Vector2(1180, 600)
+checkpoint_id = "boss_fight_mid"
+checkpoint_name = "Mid Arena"
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="CollectableHeart1" parent="Collectibles" instance=ExtResource("12_heart")]
+position = Vector2(50, 500)
+scale = Vector2(0.8, 0.8)
+
+[node name="CollectableHeart2" parent="Collectibles" instance=ExtResource("12_heart")]
+position = Vector2(1209, 417)
+scale = Vector2(0.8, 0.8)
+
+[node name="CollectableHeart3" parent="Collectibles" instance=ExtResource("12_heart")]
+position = Vector2(1117, 489)
+scale = Vector2(0.8, 0.8)
+
+[node name="CollectableHeart4" parent="Collectibles" instance=ExtResource("12_heart")]
+position = Vector2(685, 374)
+scale = Vector2(0.8, 0.8)
+
+[node name="InteractiveElements" type="Node2D" parent="."]
+
+[node name="TNTCrate1" parent="InteractiveElements" instance=ExtResource("11_crate")]
+position = Vector2(300, 600)
+crate_type = "tnt"
+
+[node name="TNTCrate2" parent="InteractiveElements" instance=ExtResource("11_crate")]
+position = Vector2(980, 600)
+crate_type = "tnt"
+
+[node name="BounceCrate1" parent="InteractiveElements" instance=ExtResource("11_crate")]
+position = Vector2(150, 580)
+crate_type = "bounce"
+
+[node name="HintArea1" parent="InteractiveElements" instance=ExtResource("10_hint_area")]
+position = Vector2(150, 620)
+hint_message = "This is the boss arena! Jump on the boss's head to damage it. Watch out for warning messages before attacks!"
+hint_title = "Boss Fight Tutorial"
+target_layer = "Both"
+
+[node name="HintArea2" parent="InteractiveElements" instance=ExtResource("10_hint_area")]
+position = Vector2(640, 620)
+hint_message = "The boss drops TNT and bombs that get more powerful each phase. Use them strategically or avoid them!"
+hint_title = "Boss Attack Patterns"
+target_layer = "Both"
+
+[node name="HintArea3" parent="InteractiveElements" instance=ExtResource("10_hint_area")]
+position = Vector2(1100, 620)
+hint_message = "Watch for red warning flashes on the boss - this means an attack is coming! Get ready to dodge!"
+hint_title = "Attack Warnings"
+target_layer = "Both"
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="Platform1" parent="Platforms" instance=ExtResource("18_platform")]
+position = Vector2(225, 495)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 4
+axis_stretch_horizontal = 1
+
+[node name="Platform5" parent="Platforms" instance=ExtResource("18_platform")]
+position = Vector2(426, 536)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 4
+axis_stretch_horizontal = 1
+
+[node name="Platform4" parent="Platforms" instance=ExtResource("18_platform")]
+position = Vector2(340, 439)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 4
+axis_stretch_horizontal = 1
+
+[node name="Platform2" parent="Platforms" instance=ExtResource("18_platform")]
+position = Vector2(1080, 520)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+
+[node name="Platform3" parent="Platforms" instance=ExtResource("18_platform")]
+position = Vector2(640, 400)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+platform_type = 1
+
+[node name="SafeZones" type="Node2D" parent="."]
+
+[node name="SafePlatformLeft" parent="SafeZones" instance=ExtResource("18_platform")]
+position = Vector2(103, 436)
+scale = Vector2(0.5, 0.5)
+width = 120.0
+platform_type = 3
+
+[node name="SafePlatformRight" parent="SafeZones" instance=ExtResource("18_platform")]
+position = Vector2(1180, 450)
+scale = Vector2(0.5, 0.5)
+width = 120.0
+platform_type = 10
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="DeathZone1" parent="Hazards" instance=ExtResource("13_death_zone")]
+position = Vector2(-630, 830)
+scale = Vector2(20, 1)

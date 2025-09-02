@@ -12,57 +12,62 @@ signal tnt_placed(position: Vector2)
 @export var fly_speed: float = 80.0
 @export var jump_force: float = -400.0
 @export var tnt_scene: PackedScene
-@export var explosion_scene: PackedScene
+@export var bomb_scene: PackedScene # New bomb system
+
 @export var flying_enemy_scene: PackedScene
 @export var patrol_enemy_scene: PackedScene
-@export var interactive_crate_scene: PackedScene
+
 @export var damage_amount: int = 1
 
 # Dimension system properties
-@export var target_layer: String = "A"  # For dimension system compatibility
-@export var visible_in_both_dimensions: bool = true  # Boss should be visible in both dimensions
+@export var target_layer: String = "A" # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = true # Boss should be visible in both dimensions
 
 # Enemy behavior configuration per phase
 @export_group("Phase 1 - Walking")
 @export var phase1_patrol_speed: float = 65.0
-@export var phase1_patrol_jump_limit: int = 0  # No jumping in walking phase
+@export var phase1_patrol_jump_limit: int = 0 # No jumping in walking phase
 @export var phase1_patrol_detection_range: float = 90.0
-@export var phase1_spawn_limit: int = 0  # No enemies in walking phase
+@export var phase1_spawn_limit: int = 0 # No enemies in walking phase
 @export var phase1_max_tnt_crates: int = 10
+@export var phase1_max_bombs: int = 5
 @export var phase1_max_patrol_enemies: int = 0
 @export var phase1_max_flying_enemies: int = 0
 
-@export_group("Phase 2 - Jumping") 
+@export_group("Phase 2 - Jumping")
 @export var phase2_patrol_speed: float = 75.0
-@export var phase2_patrol_jump_limit: int = 3  # Limited jumping for ground enemies
+@export var phase2_patrol_jump_limit: int = 3 # Limited jumping for ground enemies
 @export var phase2_patrol_detection_range: float = 120.0
 @export var phase2_spawn_limit: int = 2
 @export var phase2_max_tnt_crates: int = 8
+@export var phase2_max_bombs: int = 8
 @export var phase2_max_patrol_enemies: int = 4
 @export var phase2_max_flying_enemies: int = 0
 
 @export_group("Phase 3 - Charging")
 @export var phase3_patrol_speed: float = 85.0
-@export var phase3_patrol_jump_limit: int = 5  # More jumping when charging
+@export var phase3_patrol_jump_limit: int = 5 # More jumping when charging
 @export var phase3_patrol_detection_range: float = 150.0
 @export var phase3_spawn_limit: int = 3
 @export var phase3_flying_speed: float = 60.0
-@export var phase3_flying_altitude_limit: float = 200.0  # How high they can fly
+@export var phase3_flying_altitude_limit: float = 200.0 # How high they can fly
 @export var phase3_flying_spawn_limit: int = 1
 @export var phase3_max_tnt_crates: int = 6
+@export var phase3_max_bombs: int = 12
 @export var phase3_max_patrol_enemies: int = 6
 @export var phase3_max_flying_enemies: int = 2
 
 @export_group("Phase 4 - Flying")
 @export var phase4_patrol_speed: float = 90.0
-@export var phase4_patrol_jump_limit: int = 8  # Maximum ground jumping
+@export var phase4_patrol_jump_limit: int = 8 # Maximum ground jumping
 @export var phase4_patrol_detection_range: float = 180.0
 @export var phase4_spawn_limit: int = 2
 @export var phase4_flying_speed: float = 80.0
 @export var phase4_flying_altitude_limit: float = 300.0
 @export var phase4_flying_spawn_limit: int = 3
-@export var phase4_flying_chase_range: float = 250.0  # How close they stay to player
+@export var phase4_flying_chase_range: float = 250.0 # How close they stay to player
 @export var phase4_max_tnt_crates: int = 4
+@export var phase4_max_bombs: int = 15
 @export var phase4_max_patrol_enemies: int = 4
 @export var phase4_max_flying_enemies: int = 6
 
@@ -86,24 +91,36 @@ var current_health: int
 var current_phase: MovementPhase = MovementPhase.WALKING
 var direction: int = 1
 var can_be_damaged: bool = true
-var damage_immunity_time: float = 2.0  # 2 seconds of invincibility
+var damage_immunity_time: float = 2.0 # 2 seconds of invincibility
 var is_invincible: bool = false
 var invincibility_flash_timer: float = 0.0
-var invincibility_flash_interval: float = 0.1  # Flash every 0.1 seconds
+var invincibility_flash_interval: float = 0.1 # Flash every 0.1 seconds
 var tnt_drop_timer: float = 0.0
 var tnt_drop_interval: float = 3.0
 # Enhanced AI variables
 var enemy_spawn_timer: float = 0.0
 var enemy_spawn_interval: float = 5.0
-var crate_drop_timer: float = 0.0
-var crate_drop_interval: float = 4.0
+
 var flying_enemies_spawned: int = 0
 var max_flying_enemies_per_phase: int = 2
 
 # Current phase item counters
 var current_tnt_crates_dropped: int = 0
+var current_bombs_dropped: int = 0
 var current_patrol_enemies_spawned: int = 0
 var current_flying_enemies_spawned: int = 0
+
+# Warning system for professional game feel
+var attack_warning_timer: float = 0.0
+var attack_warning_duration: float = 1.0  # 1 second warning
+var is_warning_active: bool = false
+var warning_ui: Control = null
+
+# Professional game features
+var attack_telegraph_indicators: Array[Node2D] = []
+var combo_streak: int = 0
+var enrage_visual_intensity: float = 1.0
+var phase_transition_cooldown: float = 0.0
 
 # Smart AI tracking
 var player_last_position: Vector2
@@ -125,6 +142,7 @@ var current_waypoint: int = 0
 var is_circling_player: bool = false
 var circle_angle: float = 0.0
 var terrain_knowledge: Array[Vector2] = []
+var was_in_air: bool = false  # Track if boss was airborne for landing detection
 
 # Dimension system compatibility
 var dimension_manager: Node
@@ -142,31 +160,34 @@ var is_active_in_current_layer: bool = true
 @onready var damage_timer: Timer = $DamageTimer
 @onready var tnt_timer: Timer = get_node_or_null("TNTTimer")
 @onready var state_machine: Node = get_node_or_null("StateMachine")
+@onready var attack_warning_timer_node: Timer = get_node_or_null("AttackWarningTimer")
 
 # Animation and effects
 @onready var hit_effect: GPUParticles2D = get_node_or_null("HitEffect")
 @onready var dust_effect: GPUParticles2D = get_node_or_null("DustEffect")
-@onready var screen_shake_component: Node = get_node_or_null("ScreenShakeComponent")
 
 func _ready():
 	# Setup difficulty first
 	_setup_difficulty()
 	
 	current_health = int(max_health * difficulty_health_multiplier)
-	max_health = current_health  # Update max_health for calculations
+	max_health = current_health # Update max_health for calculations
 	
 	_setup_connections()
 	_update_health_display()
 	_setup_phase(MovementPhase.WALKING)
 	
 	# Configure collision layers (using bit positions)
-	collision_layer = 4  # Enemy layer (bit 2)
-	collision_mask = 1   # World layer (bit 0)
+	collision_layer = 4 # Enemy layer (bit 2)
+	collision_mask = 1 # World layer (bit 0) - but we'll exclude platforms
+	
+	# Setup platform passthrough for boss mobility
+	_setup_platform_passthrough()
 	
 	# Setup damage area
 	if damage_area:
-		damage_area.collision_layer = 8  # Hazard layer (bit 3)
-		damage_area.collision_mask = 2   # Player layer (bit 1)
+		damage_area.collision_layer = 8 # Hazard layer (bit 3)
+		damage_area.collision_mask = 2 # Player layer (bit 1)
 	
 	# Initialize AI
 	_initialize_ai_system()
@@ -176,7 +197,11 @@ func _ready():
 	_setup_boss_dimensions()
 	_setup_dimension_system()
 	
-	print("🏆 GiantBoss initialized with difficulty: ", difficulty)
+	# Setup professional warning system connections
+	if attack_warning_timer_node:
+		attack_warning_timer_node.timeout.connect(_hide_attack_warning)
+	
+	print("🏆 GiantBoss initialized with difficulty: ", difficulty, " - Health: ", current_health)
 
 func _setup_connections():
 	stomp_detector.body_entered.connect(_on_stomp_detector_body_entered)
@@ -199,46 +224,53 @@ func _physics_process(delta):
 	_handle_smart_movement(delta)
 	_handle_intelligent_attacks(delta)
 	_handle_enemy_spawning(delta)
-	_handle_crate_dropping(delta)
+	
+	# Update professional game systems
+	_update_enrage_effects()
+	_update_phase_transition_cooldown(delta)
+
 	_update_detectors()
 	
 	move_and_slide()
+	
+	# Check for collisions after movement
+	_handle_movement_collisions()
 
 func _setup_difficulty():
 	match difficulty:
 		"Easy":
-			difficulty_health_multiplier = 0.6  # 60% health (3 hearts instead of 5)
-			difficulty_speed_multiplier = 0.7   # 70% speed
-			difficulty_attack_frequency = 0.5   # 50% attack frequency (longer intervals)
-			difficulty_enemy_spawn_rate = 0.6   # 60% enemy spawn rate
-			difficulty_damage_multiplier = 1.0   # Normal damage to player
+			difficulty_health_multiplier = 0.6 # 60% health (3 hearts instead of 5)
+			difficulty_speed_multiplier = 0.7 # 70% speed
+			difficulty_attack_frequency = 0.5 # 50% attack frequency (longer intervals)
+			difficulty_enemy_spawn_rate = 0.6 # 60% enemy spawn rate
+			difficulty_damage_multiplier = 1.0 # Normal damage to player
 			max_flying_enemies_per_phase = 1
-			enemy_spawn_interval = 8.0  # Longer spawn intervals
-			tnt_drop_interval = 5.0     # Longer TNT intervals
+			enemy_spawn_interval = 8.0 # Longer spawn intervals
+			tnt_drop_interval = 5.0 # Longer TNT intervals
 			print("⭐ Easy Mode: Reduced health, slower attacks, fewer enemies")
 			
 		"Medium":
-			difficulty_health_multiplier = 1.0  # Normal health (5 hearts)
-			difficulty_speed_multiplier = 1.0   # Normal speed
-			difficulty_attack_frequency = 1.0   # Normal attack frequency
-			difficulty_enemy_spawn_rate = 1.0   # Normal enemy spawn rate
-			difficulty_damage_multiplier = 1.0   # Normal damage
+			difficulty_health_multiplier = 1.0 # Normal health (5 hearts)
+			difficulty_speed_multiplier = 1.0 # Normal speed
+			difficulty_attack_frequency = 1.0 # Normal attack frequency
+			difficulty_enemy_spawn_rate = 1.0 # Normal enemy spawn rate
+			difficulty_damage_multiplier = 1.0 # Normal damage
 			max_flying_enemies_per_phase = 2
 			enemy_spawn_interval = 5.0
 			tnt_drop_interval = 3.0
 			print("⚖️ Medium Mode: Balanced experience")
 			
 		"Hard":
-			difficulty_health_multiplier = 1.5  # 150% health (7-8 hearts)
-			difficulty_speed_multiplier = 1.4   # 140% speed
-			difficulty_attack_frequency = 1.8   # 180% attack frequency (faster attacks)
-			difficulty_enemy_spawn_rate = 1.6   # 160% enemy spawn rate
-			difficulty_damage_multiplier = 1.0   # Normal damage (could increase to 2)
+			difficulty_health_multiplier = 1.5 # 150% health (7-8 hearts)
+			difficulty_speed_multiplier = 1.4 # 140% speed
+			difficulty_attack_frequency = 1.8 # 180% attack frequency (faster attacks)
+			difficulty_enemy_spawn_rate = 1.6 # 160% enemy spawn rate
+			difficulty_damage_multiplier = 1.0 # Normal damage (could increase to 2)
 			max_flying_enemies_per_phase = 4
-			enemy_spawn_interval = 3.0  # Shorter spawn intervals
-			tnt_drop_interval = 1.8     # Faster TNT drops
+			enemy_spawn_interval = 3.0 # Shorter spawn intervals
+			tnt_drop_interval = 1.8 # Faster TNT drops
 			# Additional hard mode features
-			damage_amount = 2  # Double damage to player
+			damage_amount = 2 # Double damage to player
 			print("💀 Hard Mode: Increased health, faster attacks, more enemies, double damage!")
 	
 	# Apply speed multipliers to base values
@@ -248,7 +280,7 @@ func _setup_difficulty():
 func _initialize_ai_system():
 	# Initialize AI variables
 	player_velocity_history.clear()
-	player_velocity_history.resize(10)  # Track last 10 frames
+	player_velocity_history.resize(10) # Track last 10 frames
 	target_position = global_position
 	movement_target = global_position
 	print("🧠 Boss AI System Initialized")
@@ -263,7 +295,7 @@ func _learn_terrain_layout():
 		for y in range(-200, 200, 50):
 			var test_pos = global_position + Vector2(x, y)
 			var query = PhysicsRayQueryParameters2D.create(test_pos, test_pos + Vector2(0, 100))
-			query.collision_mask = 1  # World layer
+			query.collision_mask = 1 # World layer
 			var result = space_state.intersect_ray(query)
 			if result:
 				terrain_knowledge.append(result.position)
@@ -304,20 +336,20 @@ func _predict_player_movement():
 	# Predict position 0.5 seconds ahead
 	predicted_player_position = player_last_position + (avg_velocity * 0.5)
 
-func _update_ai_state(delta):
+func _update_ai_state(_delta):
 	# Check for enrage conditions
 	var health_ratio = float(current_health) / max_health
-	is_enraged = health_ratio <= 0.4  # Enrage at 40% health
+	is_enraged = health_ratio <= 0.4 # Enrage at 40% health
 	
 	# Check if player is being too aggressive (defensive mode)
-	if Time.get_ticks_msec() - last_player_damage_time < 3000:  # 3 seconds
+	if Time.get_ticks_msec() - last_player_damage_time < 3000: # 3 seconds
 		consecutive_hits += 1
 		if consecutive_hits >= 2:
 			defensive_mode = true
 			ai_state_timer = 0.0
 	else:
 		consecutive_hits = 0
-		if ai_state_timer > 5.0:  # Exit defensive mode after 5 seconds
+		if ai_state_timer > 5.0: # Exit defensive mode after 5 seconds
 			defensive_mode = false
 
 func _handle_smart_movement(delta):
@@ -336,7 +368,7 @@ func _handle_smart_movement(delta):
 		MovementPhase.FLYING:
 			_handle_intelligent_flying(delta)
 
-func _handle_intelligent_walking(delta):
+func _handle_intelligent_walking(_delta):
 	var player = get_tree().get_first_node_in_group("player")
 	if not player:
 		return
@@ -373,7 +405,7 @@ func _handle_intelligent_walking(delta):
 	sprite.play("walk")
 	_update_detector_positions()
 
-func _handle_intelligent_jumping(delta):
+func _handle_intelligent_jumping(_delta):
 	var player = get_tree().get_first_node_in_group("player")
 	if not player:
 		return
@@ -381,22 +413,29 @@ func _handle_intelligent_jumping(delta):
 	var distance_to_player = global_position.distance_to(player.global_position)
 	var player_above = player.global_position.y < global_position.y - 50
 	
+	# Track if boss is airborne
+	if not is_on_floor():
+		was_in_air = true
+	
 	# Smart jumping strategy
 	if player_above and distance_to_player < 150:
 		# Player is above, jump more frequently to reach them
-		if is_on_floor() and randf() < 0.08:  # 8% chance per frame
+		if is_on_floor() and randf() < 0.08: # 8% chance per frame
 			velocity.y = jump_force
 			sprite.play("jump")
 			_create_dust_effect()
+			was_in_air = true
 	elif distance_to_player > 300:
 		# Player is far, jump to close distance
-		if is_on_floor() and randf() < 0.05:  # 5% chance per frame
+		if is_on_floor() and randf() < 0.05: # 5% chance per frame
 			velocity.y = jump_force * 0.8
 			sprite.play("jump")
+			was_in_air = true
 	elif is_on_floor() and randf() < 0.03:
 		# Normal jumping
 		velocity.y = jump_force * 1.2
 		sprite.play("jump")
+		was_in_air = true
 	
 	# Horizontal movement toward predicted position
 	var target_x = predicted_player_position.x
@@ -410,10 +449,19 @@ func _handle_intelligent_jumping(delta):
 	sprite.flip_h = direction < 0
 	_update_detector_positions()
 	
-	if is_on_floor() and not sprite.animation == "jump":
+	# Landing detection with screen shake
+	if is_on_floor() and was_in_air:
+		sprite.play("walk")
+		# Screen shake on landing during jumping phase
+		if FX:
+			FX.shake(100) # Strong shake intensity for boss landing
+		_create_dust_effect()
+		was_in_air = false  # Reset airborne state
+		print("💥 Boss landed with MASSIVE impact - screen shake 200!")
+	elif is_on_floor() and sprite.animation != "jump":
 		sprite.play("walk")
 
-func _handle_intelligent_charging(delta):
+func _handle_intelligent_charging(_delta):
 	var player = get_tree().get_first_node_in_group("player")
 	if not player:
 		return
@@ -433,9 +481,7 @@ func _handle_intelligent_charging(delta):
 	if wall_detector.is_colliding():
 		direction *= -1
 		_create_screen_shake(1.5)
-		# Spawn debris or extra effects on wall hit
-		if randf() < 0.5:
-			_drop_interactive_crate()
+		# Create screen shake on wall hit
 	
 	var speed_multiplier = 3.0 if is_enraged else 2.5
 	if defensive_mode:
@@ -469,18 +515,18 @@ func _handle_intelligent_flying(delta):
 func _handle_circle_flight(player: Node2D, delta: float):
 	var center = player.global_position
 	var radius = 200.0
-	circle_angle += 2.0 * delta  # Circle speed
+	circle_angle += 2.0 * delta # Circle speed
 	
 	var target_pos = center + Vector2(
 		cos(circle_angle) * radius,
-		sin(circle_angle) * radius - 50  # Slightly above player
+		sin(circle_angle) * radius - 50 # Slightly above player
 	)
 	
 	var direction_to_target = (target_pos - global_position).normalized()
 	velocity = direction_to_target * fly_speed * 1.2
 	sprite.flip_h = direction_to_target.x < 0
 
-func _handle_aggressive_flight(player: Node2D):
+func _handle_aggressive_flight(_player: Node2D):
 	# Direct aggressive approach to predicted position
 	var target = predicted_player_position
 	var direction_to_target = (target - global_position).normalized()
@@ -538,7 +584,7 @@ func _handle_jumping_movement(_delta):
 	velocity.x = walk_speed * 1.5 * direction
 	
 	# Jump periodically
-	if is_on_floor() and randf() < 0.02:  # 2% chance per frame
+	if is_on_floor() and randf() < 0.02: # 2% chance per frame
 		velocity.y = jump_force
 		sprite.play("jump")
 		_create_dust_effect()
@@ -590,11 +636,16 @@ func _handle_intelligent_attacks(delta):
 		
 		# Apply difficulty modifier
 		base_interval /= difficulty_attack_frequency
-		tnt_drop_interval = max(0.5, base_interval)  # Minimum 0.5s for hard mode
+		tnt_drop_interval = max(0.5, base_interval) # Minimum 0.5s for hard mode
 	
 	# Combo attacks when not in cooldown
 	if attack_cooldown <= 0.0:
 		_try_combo_attack()
+	
+	# Execute special combo attacks in later phases when enraged
+	if is_enraged and current_phase in [MovementPhase.CHARGING, MovementPhase.FLYING]:
+		if randf() < 0.02:  # 2% chance per frame when enraged
+			_execute_combo_attack()
 
 func _execute_smart_tnt_attack():
 	if not tnt_scene or not is_on_floor():
@@ -620,11 +671,29 @@ func _execute_smart_tnt_attack():
 	
 	for i in can_drop:
 		var pos = drop_positions[i]
-		var tnt_instance = tnt_scene.instantiate()
-		get_parent().add_child(tnt_instance)
-		tnt_instance.global_position = pos
-		tnt_placed.emit(pos)
-		current_tnt_crates_dropped += 1
+		
+		# Choose between TNT and Bomb for strategic placement
+		var use_bomb = bomb_scene and randf() < 0.3 # 30% chance for bombs in strategic placement
+		
+		if use_bomb:
+			var bomb_instance = bomb_scene.instantiate()
+			get_parent().add_child(bomb_instance)
+			bomb_instance.global_position = pos
+			
+			# Set bomb power based on phase for strategic placement
+			var bomb_power = _get_bomb_power_for_phase()
+			if bomb_instance.has_method("setup"):
+				bomb_instance.setup(bomb_power)
+				
+			tnt_placed.emit(pos)
+			current_tnt_crates_dropped += 1
+		elif tnt_scene:
+			var tnt_instance = tnt_scene.instantiate()
+			tnt_instance.crate_type = "tnt"
+			get_parent().add_child(tnt_instance)
+			tnt_instance.global_position = pos
+			tnt_placed.emit(pos)
+			current_tnt_crates_dropped += 1
 	
 	print("💣 Smart TNT: ", can_drop, " dropped (", current_tnt_crates_dropped, "/", max_tnt, ")")
 	
@@ -686,8 +755,7 @@ func _execute_dive_bomb_combo():
 		velocity = (player.global_position - global_position).normalized() * fly_speed * 2.0
 		_create_screen_shake(0.5)
 		
-		# Drop TNT while diving
-		_drop_interactive_crate()
+		# Enhanced diving effect
 
 func _execute_charge_slam_combo():
 	combo_attack_count = 2
@@ -706,22 +774,423 @@ func _execute_ranged_assault_combo():
 	
 	# Rapid enemy spawning
 	_spawn_flying_enemy()
-	_drop_interactive_crate()
 	
 	# Increase aggression temporarily
 	fly_speed *= 1.3
 
 func _drop_tnt():
-	if tnt_scene and is_on_floor():
+	if not is_on_floor():
+		return
+		
+	# Check TNT limit for current phase
+	var phase_config = _get_current_phase_config()
+	var max_tnt = phase_config.get("max_tnt_crates", 999)
+	
+	if current_tnt_crates_dropped >= max_tnt:
+		print("🚫 TNT limit reached for current phase: ", current_tnt_crates_dropped, "/", max_tnt)
+		return
+	
+	# Randomly choose between TNT and Bomb (60/40 chance favoring bombs)
+	var use_bomb = bomb_scene and randf() < 0.6
+	
+	if use_bomb:
+		_drop_bomb()
+	elif tnt_scene:
+		# Start attack warning (professional game telegraphing)
+		_show_attack_warning("💥 TNT INCOMING!")
+		
+		# Wait for warning duration
+		await get_tree().create_timer(attack_warning_duration).timeout
+		
+		# Double-check after delay
+		if not tnt_scene or current_tnt_crates_dropped >= max_tnt:
+			_hide_attack_warning()
+			return
+		
 		var tnt_instance = tnt_scene.instantiate()
 		get_parent().add_child(tnt_instance)
-		tnt_instance.global_position = global_position + Vector2(0, 32)
+		
+		# Wait for TNT to be ready
+		await get_tree().process_frame
+		
+		# Set to TNT type (for InteractiveCrate)
+		if "crate_type" in tnt_instance:
+			tnt_instance.crate_type = "tnt"
+		
+		# Start TNT from boss center and throw it
+		tnt_instance.global_position = global_position
+		_throw_item_from_boss(tnt_instance, Vector2(direction * randf_range(60, 120), 40))
+		
+		# Hide warning when TNT is dropped
+		_hide_attack_warning()
+		
+		# Increment counter
+		current_tnt_crates_dropped += 1
 		
 		tnt_placed.emit(tnt_instance.global_position)
 		
 		# Audio feedback
 		if Audio:
 			Audio.play_sfx("spring")
+		
+		print("💥 Boss dropped TNT crate! (", current_tnt_crates_dropped, "/", max_tnt, ")")
+
+func _drop_bomb():
+	if not bomb_scene:
+		return
+	
+	# Check bomb limit for current phase
+	var phase_config = _get_current_phase_config()
+	var max_bombs = phase_config.get("max_bombs", 999)
+	
+	if current_bombs_dropped >= max_bombs:
+		print("🚫 Bomb limit reached for current phase: ", current_bombs_dropped, "/", max_bombs)
+		return
+	
+	# Start attack warning (professional game telegraphing)
+	_show_attack_warning("💣 BOMB INCOMING!")
+	
+	# Wait for warning duration, then drop bomb
+	await get_tree().create_timer(attack_warning_duration).timeout
+	
+	# Double-check bomb scene still exists after delay
+	if not bomb_scene or current_bombs_dropped >= max_bombs:
+		_hide_attack_warning()
+		return
+		
+	var bomb_instance = bomb_scene.instantiate()
+	get_parent().add_child(bomb_instance)
+	
+	# Start bomb from boss center
+	bomb_instance.global_position = global_position
+	
+	# Set bomb power based on phase
+	var bomb_power = _get_bomb_power_for_phase()
+	if bomb_instance.has_method("setup"):
+		bomb_instance.setup(bomb_power)
+	
+	# Calculate target position and throw bomb there
+	var target_offset = Vector2(direction * randf_range(80, 150), randf_range(40, 80))
+	_throw_item_from_boss(bomb_instance, target_offset)
+	
+	# Hide warning when bomb is dropped
+	_hide_attack_warning()
+	
+	# Increment bomb counter
+	current_bombs_dropped += 1
+	
+	tnt_placed.emit(bomb_instance.global_position)
+	
+	# Audio feedback
+	if Audio:
+		Audio.play_sfx("whoosh")
+	
+	print("💣 Boss dropped ", _get_bomb_power_name(bomb_power), " bomb! (", current_bombs_dropped, "/", max_bombs, ")")
+
+func _get_bomb_power_for_phase() -> Bomb.BombPower:
+	# Get bomb power enum based on boss phase  
+	match current_phase:
+		MovementPhase.WALKING:
+			return Bomb.BombPower.LOW
+		MovementPhase.JUMPING:
+			return Bomb.BombPower.LOW
+		MovementPhase.CHARGING:
+			return Bomb.BombPower.MEDIUM
+		MovementPhase.FLYING:
+			return Bomb.BombPower.HIGH
+		_:
+			return Bomb.BombPower.MEDIUM # Default to MEDIUM
+
+func _get_bomb_power_name(power: Bomb.BombPower) -> String:
+	match power:
+		Bomb.BombPower.LOW: return "low-power"
+		Bomb.BombPower.MEDIUM: return "medium-power"
+		Bomb.BombPower.HIGH: return "high-power"
+		_: return "unknown-power"
+
+func _throw_item_from_boss(item: Node, target_offset: Vector2):
+	if not item or not is_instance_valid(item):
+		return
+	
+	# Calculate target position
+	var target_position = global_position + target_offset
+	
+	# Handle RigidBody2D items (like bombs)
+	if item is RigidBody2D:
+		# Calculate throw velocity needed to reach target
+		var distance = target_offset
+		var throw_force = 300.0 # Base throwing strength
+		
+		# Calculate trajectory (simple parabolic throw)
+		var velocity_x = distance.x * 3.0 # Horizontal component
+		var velocity_y = -abs(distance.x) * 2.0 - 150.0 # Upward arc based on distance
+		
+		var throw_velocity = Vector2(velocity_x, velocity_y)
+		item.linear_velocity = throw_velocity
+		
+		# Add some spin for visual effect
+		if item.has_method("set_angular_velocity"):
+			item.angular_velocity = randf_range(-5.0, 5.0)
+		elif "angular_velocity" in item:
+			item.angular_velocity = randf_range(-5.0, 5.0)
+			
+		print("🎯 Boss threw item with velocity: ", throw_velocity)
+	
+	# Handle other items (like TNT crates) with tween animation
+	else:
+		var throw_tween = create_tween()
+		throw_tween.set_parallel(true)
+		
+		# Animate position with arc trajectory
+		var arc_height = 60.0
+		var mid_position = Vector2(
+			global_position.x + target_offset.x * 0.5,
+			global_position.y - arc_height
+		)
+		
+		# Create arc motion using two tweens
+		throw_tween.tween_method(_update_item_arc_position.bind(item, global_position, mid_position, target_position), 0.0, 1.0, 0.8)
+		
+		# Add rotation for visual effect
+		throw_tween.tween_property(item, "rotation", randf_range(-2.0, 2.0), 0.8)
+		
+		print("🎯 Boss threw item to position: ", target_position)
+
+func _update_item_arc_position(item: Node, start_pos: Vector2, mid_pos: Vector2, end_pos: Vector2, progress: float):
+	if not is_instance_valid(item):
+		return
+	
+	# Quadratic Bezier curve for arc trajectory
+	var pos1 = start_pos.lerp(mid_pos, progress)
+	var pos2 = mid_pos.lerp(end_pos, progress)
+	item.global_position = pos1.lerp(pos2, progress)
+
+# Professional attack warning system
+func _show_attack_warning(warning_text: String):
+	is_warning_active = true
+	
+	# Create warning UI if it doesn't exist
+	if not warning_ui:
+		warning_ui = _create_warning_ui()
+	
+	if warning_ui:
+		warning_ui.visible = true
+		var warning_label = warning_ui.get_node_or_null("WarningLabel")
+		if warning_label:
+			warning_label.text = warning_text
+	
+	# Visual warning on boss (flash red)
+	var flash_tween = create_tween()
+	flash_tween.set_loops(int(attack_warning_duration * 5))  # Flash 5 times per second
+	flash_tween.tween_property(sprite, "modulate", Color.RED, 0.1)
+	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
+	
+	# Audio warning
+	if Audio:
+		Audio.play_sfx("warning")
+
+func _hide_attack_warning():
+	is_warning_active = false
+	
+	if warning_ui:
+		warning_ui.visible = false
+	
+	# Reset boss sprite color
+	sprite.modulate = Color.WHITE
+
+func _create_warning_ui() -> Control:
+	# Create a simple warning overlay
+	var canvas_layer = CanvasLayer.new()
+	canvas_layer.layer = 100  # High layer to show above everything
+	get_tree().current_scene.add_child(canvas_layer)
+	
+	var warning_control = Control.new()
+	warning_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	canvas_layer.add_child(warning_control)
+	
+	var warning_label = Label.new()
+	warning_label.name = "WarningLabel"
+	warning_label.text = "⚠️ WARNING!"
+	warning_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	warning_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	warning_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	warning_label.add_theme_font_size_override("font_size", 48)
+	warning_label.add_theme_color_override("font_color", Color.RED)
+	warning_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	warning_label.add_theme_constant_override("shadow_offset_x", 3)
+	warning_label.add_theme_constant_override("shadow_offset_y", 3)
+	warning_control.add_child(warning_label)
+	
+	return warning_control
+
+# Platform passthrough system for boss mobility
+func _setup_platform_passthrough():
+	# Use a timer to periodically add collision exceptions for platforms
+	var platform_timer = Timer.new()
+	platform_timer.wait_time = 0.5
+	platform_timer.timeout.connect(_refresh_platform_exceptions)
+	add_child(platform_timer)
+	platform_timer.start()
+	
+	# Initial setup
+	_refresh_platform_exceptions()
+	
+	print("🚫 Boss platform passthrough enabled - Boss can move through DynamicPlatforms")
+
+func _refresh_platform_exceptions():
+	# Find all DynamicPlatforms and add them to collision exceptions
+	var platforms = get_tree().get_nodes_in_group("dynamic_platforms")
+	var exceptions_added = 0
+	
+	for platform in platforms:
+		if platform is StaticBody2D and is_instance_valid(platform):
+			add_collision_exception_with(platform)
+			exceptions_added += 1
+	
+	# Also find platforms by class type in case they're not grouped yet
+	var all_nodes = get_tree().get_nodes_in_group("platforms")
+	for node in all_nodes:
+		if node.has_method("_set_platform_type"):  # Duck typing to identify DynamicPlatforms
+			if node is StaticBody2D and is_instance_valid(node):
+				add_collision_exception_with(node)
+				exceptions_added += 1
+	
+	if exceptions_added > 0:
+		print("🚫 Added ", exceptions_added, " platform collision exceptions for boss mobility")
+
+# Professional game attack telegraphing
+func _create_attack_telegraph(attack_position: Vector2, attack_type: String = "bomb"):
+	var telegraph = Node2D.new()
+	get_parent().add_child(telegraph)
+	telegraph.global_position = attack_position
+	
+	# Create visual indicator
+	var indicator_sprite = Sprite2D.new()
+	telegraph.add_child(indicator_sprite)
+	
+	# Different indicators for different attack types
+	match attack_type:
+		"bomb":
+			indicator_sprite.modulate = Color.RED
+		"tnt":
+			indicator_sprite.modulate = Color.ORANGE
+		"charge":
+			indicator_sprite.modulate = Color.YELLOW
+	
+	# Scale animation for telegraph
+	var scale_tween = create_tween()
+	scale_tween.set_loops(-1)
+	scale_tween.tween_property(indicator_sprite, "scale", Vector2(1.5, 1.5), 0.5)
+	scale_tween.tween_property(indicator_sprite, "scale", Vector2(1.0, 1.0), 0.5)
+	
+	# Store reference for cleanup
+	attack_telegraph_indicators.append(telegraph)
+	
+	# Auto cleanup after warning duration
+	get_tree().create_timer(attack_warning_duration).timeout.connect(
+		func(): 
+			if is_instance_valid(telegraph):
+				telegraph.queue_free()
+			attack_telegraph_indicators.erase(telegraph)
+	)
+
+# Advanced enrage system
+func _update_enrage_effects():
+	if is_enraged:
+		enrage_visual_intensity = min(enrage_visual_intensity + 0.02, 2.0)
+		
+		# Visual enrage effects
+		sprite.modulate = Color(1.0, 1.0 - (enrage_visual_intensity - 1.0) * 0.5, 1.0 - (enrage_visual_intensity - 1.0) * 0.5)
+		
+		# Particle effects for enrage
+		if hit_effect:
+			hit_effect.amount = int(50 * enrage_visual_intensity)
+	else:
+		enrage_visual_intensity = max(enrage_visual_intensity - 0.01, 1.0)
+		sprite.modulate = Color.WHITE
+
+# Professional combo system
+func _execute_combo_attack():
+	combo_streak += 1
+	var combo_name = ""
+	
+	match combo_streak:
+		1:
+			combo_name = "Triple Bomb Barrage"
+			_triple_bomb_attack()
+		2:
+			combo_name = "TNT Rain"
+			_tnt_rain_attack()
+		3:
+			combo_name = "Devastating Blast"
+			_devastating_blast_attack()
+			combo_streak = 0  # Reset combo
+	
+	print("🔥 Boss executing combo: ", combo_name, " (streak: ", combo_streak, ")")
+
+func _triple_bomb_attack():
+	_show_attack_warning("💣💣💣 TRIPLE BOMB BARRAGE!")
+	
+	for i in range(3):
+		var delay = i * 0.3
+		get_tree().create_timer(attack_warning_duration + delay).timeout.connect(
+			func(): 
+				if bomb_scene:
+					var bomb = bomb_scene.instantiate()
+					get_parent().add_child(bomb)
+					bomb.global_position = global_position + Vector2(direction * (50 + i * 30), 32)
+					if bomb.has_method("setup"):
+						bomb.setup(_get_bomb_power_for_phase())
+					current_bombs_dropped += 1
+		)
+
+func _tnt_rain_attack():
+	_show_attack_warning("💥💥 TNT RAIN INCOMING!")
+	
+	for i in range(4):
+		var delay = i * 0.4
+		get_tree().create_timer(attack_warning_duration + delay).timeout.connect(
+			func():
+				if tnt_scene:
+					var tnt = tnt_scene.instantiate()
+					get_parent().add_child(tnt)
+					tnt.global_position = global_position + Vector2(randf_range(-100, 100), -100 + i * 20)
+					await get_tree().process_frame
+					if tnt.has_method("set_crate_type"):
+						tnt.set_crate_type("tnt")
+					current_tnt_crates_dropped += 1
+		)
+
+func _devastating_blast_attack():
+	_show_attack_warning("🌋 DEVASTATING BLAST - TAKE COVER!")
+	
+	get_tree().create_timer(attack_warning_duration * 1.5).timeout.connect(
+		func():
+			# Screen shake
+			FX.shake(300);
+			
+			# Multiple bombs in pattern
+			var positions = [
+				global_position + Vector2(-150, 32),
+				global_position + Vector2(150, 32),
+				global_position + Vector2(0, -50),
+				global_position + Vector2(-75, 32),
+				global_position + Vector2(75, 32)
+			]
+			
+			for pos in positions:
+				if bomb_scene:
+					var bomb = bomb_scene.instantiate()
+					get_parent().add_child(bomb)
+					bomb.global_position = pos
+					if bomb.has_method("setup"):
+						bomb.setup(Bomb.BombPower.HIGH)
+					current_bombs_dropped += 1
+	)
+
+func _update_phase_transition_cooldown(delta):
+	if phase_transition_cooldown > 0:
+		phase_transition_cooldown -= delta
 
 func _handle_enemy_spawning(delta):
 	enemy_spawn_timer += delta
@@ -734,16 +1203,6 @@ func _handle_enemy_spawning(delta):
 			_drop_flying_enemies()
 		enemy_spawn_timer = 0.0
 
-func _handle_crate_dropping(delta):
-	crate_drop_timer += delta
-	var drop_interval = crate_drop_interval / difficulty_attack_frequency
-	
-	if crate_drop_timer >= drop_interval:
-		# Random chance to drop crate in any phase
-		var drop_chance = 0.7 * difficulty_attack_frequency  # Higher chance in harder difficulties
-		if randf() < drop_chance:
-			_drop_interactive_crate()
-		crate_drop_timer = 0.0
 
 func _spawn_enemies():
 	var player = get_tree().get_first_node_in_group("player")
@@ -779,6 +1238,7 @@ func _get_current_phase_config() -> Dictionary:
 				"flying_spawn_limit": 0,
 				"chase_range": 0.0,
 				"max_tnt_crates": phase1_max_tnt_crates,
+				"max_bombs": phase1_max_bombs,
 				"max_patrol_enemies": phase1_max_patrol_enemies,
 				"max_flying_enemies": phase1_max_flying_enemies
 			}
@@ -793,6 +1253,7 @@ func _get_current_phase_config() -> Dictionary:
 				"flying_spawn_limit": 0,
 				"chase_range": 0.0,
 				"max_tnt_crates": phase2_max_tnt_crates,
+				"max_bombs": phase2_max_bombs,
 				"max_patrol_enemies": phase2_max_patrol_enemies,
 				"max_flying_enemies": phase2_max_flying_enemies
 			}
@@ -807,6 +1268,7 @@ func _get_current_phase_config() -> Dictionary:
 				"flying_spawn_limit": phase3_flying_spawn_limit,
 				"chase_range": 150.0,
 				"max_tnt_crates": phase3_max_tnt_crates,
+				"max_bombs": phase3_max_bombs,
 				"max_patrol_enemies": phase3_max_patrol_enemies,
 				"max_flying_enemies": phase3_max_flying_enemies
 			}
@@ -821,6 +1283,7 @@ func _get_current_phase_config() -> Dictionary:
 				"flying_spawn_limit": phase4_flying_spawn_limit,
 				"chase_range": phase4_flying_chase_range,
 				"max_tnt_crates": phase4_max_tnt_crates,
+				"max_bombs": phase4_max_bombs,
 				"max_patrol_enemies": phase4_max_patrol_enemies,
 				"max_flying_enemies": phase4_max_flying_enemies
 			}
@@ -867,7 +1330,7 @@ func _spawn_tactical_ground_enemies(player: Node2D, config: Dictionary = {}):
 	
 	print("🏃 Spawned ", can_spawn, " tactical patrol enemies (", current_patrol_enemies_spawned, "/", max_patrol, ")")
 
-func _spawn_aggressive_ground_enemies(player: Node2D, config: Dictionary = {}):
+func _spawn_aggressive_ground_enemies(_player: Node2D, config: Dictionary = {}):
 	var max_patrol = config.get("max_patrol_enemies", 999)
 	if not patrol_enemy_scene or config.get("spawn_limit", 0) <= 0 or current_patrol_enemies_spawned >= max_patrol:
 		if current_patrol_enemies_spawned >= max_patrol:
@@ -919,8 +1382,8 @@ func _spawn_air_support_enemies(player: Node2D, config: Dictionary = {}):
 		var player_pos = player.global_position
 		var altitude_limit = config.get("altitude_limit", 200.0)
 		var spawn_positions = [
-			player_pos + Vector2(-200, -min(150, altitude_limit)),  # Left high
-			player_pos + Vector2(200, -min(150, altitude_limit)),   # Right high
+			player_pos + Vector2(-200, -min(150, altitude_limit)), # Left high
+			player_pos + Vector2(200, -min(150, altitude_limit)), # Right high
 			global_position + Vector2(0, -min(200, altitude_limit)) # Above boss
 		]
 		
@@ -946,9 +1409,9 @@ func _configure_patrol_enemy(patrol_instance, config: Dictionary):
 	var enemy_types = []
 	match current_phase:
 		MovementPhase.JUMPING:
-			enemy_types = ["mouse", "snail"]  # Fast, agile enemies
+			enemy_types = ["mouse", "snail"] # Fast, agile enemies
 		MovementPhase.CHARGING:
-			enemy_types = ["worm", "snail"]   # Aggressive enemies
+			enemy_types = ["worm", "snail"] # Aggressive enemies
 		_:
 			enemy_types = ["mouse", "snail", "worm"]
 	
@@ -973,9 +1436,9 @@ func _configure_flying_enemy(flying_instance, config: Dictionary, index: int):
 	
 	# Set different behavior patterns for variety
 	var behavior_patterns = [
-		"Chase Player",   # Direct aggressive chase
-		"Sine Wave",      # Wave pattern around player
-		"Circular"        # Circular pattern
+		"Chase Player", # Direct aggressive chase
+		"Sine Wave", # Wave pattern around player
+		"Circular" # Circular pattern
 	]
 	
 	var enemy_types = ["bee", "fly", "ladybug"]
@@ -993,11 +1456,11 @@ func _configure_flying_enemy(flying_instance, config: Dictionary, index: int):
 			flying_instance.set_flight_pattern("Chase Player", min(30.0, altitude * 0.15), 3.0)
 			# Enable chase behavior with limited range
 			if flying_instance.has_method("set_chase_behavior"):
-				var chase_speed = min(config.get("flying_speed", 70.0), 100.0)  # Cap chase speed
+				var chase_speed = min(config.get("flying_speed", 70.0), 100.0) # Cap chase speed
 				flying_instance.set_chase_behavior(true, chase_speed)
 		elif pattern == "Sine Wave":
 			flying_instance.set_flight_pattern("Sine Wave", min(40.0, altitude * 0.2), 2.5)
-		else:  # Circular
+		else: # Circular
 			flying_instance.set_flight_pattern("Circular", min(60.0, altitude * 0.3), 1.5)
 	
 	# Set patrol area to limit flight range
@@ -1059,7 +1522,7 @@ func _drop_flying_enemies():
 	match difficulty:
 		"Easy":
 			drop_count = 1
-		"Medium": 
+		"Medium":
 			drop_count = randi_range(1, 2)
 		"Hard":
 			drop_count = randi_range(2, 3)
@@ -1099,12 +1562,12 @@ func _configure_dropped_flying_enemy(flying_instance, index: int):
 	
 	print("💧 Configured dropped flying enemy with phase limits")
 
-func _create_enemy_drop_effect(position: Vector2):
+func _create_enemy_drop_effect(drop_position: Vector2):
 	# Create multiple visual effects for dramatic impact
 	if hit_effect:
 		var temp_effect = hit_effect.duplicate()
 		get_parent().add_child(temp_effect)
-		temp_effect.global_position = position
+		temp_effect.global_position = drop_position
 		temp_effect.emitting = true
 		# Remove after effect finishes
 		await get_tree().create_timer(2.0).timeout
@@ -1125,50 +1588,6 @@ func _create_enemy_drop_effect(position: Vector2):
 		if dust_copy:
 			dust_copy.queue_free()
 
-func _drop_interactive_crate():
-	# Check TNT limits first
-	var phase_config = _get_current_phase_config()
-	var max_tnt = phase_config.get("max_tnt_crates", 999)
-	
-	if not interactive_crate_scene or current_tnt_crates_dropped >= max_tnt:
-		if current_tnt_crates_dropped >= max_tnt:
-			print("🚫 TNT crate limit reached: ", current_tnt_crates_dropped, "/", max_tnt)
-		return
-	
-	var crate_instance = interactive_crate_scene.instantiate()
-	get_parent().add_child(crate_instance)
-	
-	# Wait for crate to be ready
-	await get_tree().process_frame
-	
-	# ALWAYS set crate type to TNT as requested
-	if crate_instance.has_method("set_crate_type"):
-		crate_instance.set_crate_type("tnt")
-	else:
-		# Direct property assignment
-		crate_instance.crate_type = "tnt"
-	
-	# Make crate visible in both dimensions
-	if "visible_in_both_dimensions" in crate_instance:
-		crate_instance.visible_in_both_dimensions = true
-	else:
-		crate_instance.set("visible_in_both_dimensions", true)
-	
-	if "target_layer" in crate_instance:
-		crate_instance.target_layer = "A"
-	
-	# Force update for current dimension
-	if crate_instance.has_method("_update_for_layer") and dimension_manager:
-		crate_instance._update_for_layer(dimension_manager.get_current_layer())
-	
-	# Drop crate near boss with some randomness
-	var drop_offset = Vector2(randf_range(-100, 100), -50)
-	crate_instance.global_position = global_position + drop_offset
-	
-	# Increment counter
-	current_tnt_crates_dropped += 1
-	
-	print("📦 Boss dropped TNT crate (", current_tnt_crates_dropped, "/", max_tnt, ") - visible in both dimensions!")
 
 func _setup_boss_dimensions():
 	# Add to boss group for dimension system
@@ -1209,7 +1628,7 @@ func _setup_spawned_enemies_dimensions():
 	# Apply dimension settings to all spawned enemies
 	var all_enemies = get_tree().get_nodes_in_group("enemies")
 	for enemy in all_enemies:
-		if enemy != self:  # Don't apply to boss itself
+		if enemy != self: # Don't apply to boss itself
 			_setup_enemy_dimensions(enemy)
 
 func _update_detectors():
@@ -1237,10 +1656,131 @@ func _on_damage_area_body_entered(body):
 		if body.has_method("take_damage"):
 			body.take_damage(damage_amount)
 		
-		# Push player away from boss by modifying their velocity directly
-		var push_direction = (body.global_position - global_position).normalized()
-		var push_force = 300.0
-		body.velocity += push_direction * push_force
+		# Enhanced knockback based on boss movement and phase
+		_apply_player_knockback(body)
+		
+		# Screen shake and effects
+		if FX:
+			FX.shake(100)
+		
+		print("🥊 Boss hit player - applying knockback!")
+	
+	# Check for TNT crate collision
+	if body.is_in_group("crates"):
+		_handle_crate_collision(body)
+
+func _apply_player_knockback(player: Node2D):
+	# Calculate knockback direction based on boss movement direction and position
+	var push_direction = (player.global_position - global_position).normalized()
+	
+	# Base knockback force varies by phase
+	var base_force = 300.0
+	match current_phase:
+		MovementPhase.WALKING:
+			base_force = 350.0
+		MovementPhase.JUMPING:
+			base_force = 400.0
+		MovementPhase.CHARGING:
+			base_force = 500.0 # Stronger knockback when charging
+		MovementPhase.FLYING:
+			base_force = 450.0
+	
+	# Add boss movement velocity to knockback (if boss is moving fast, stronger knockback)
+	var movement_bonus = velocity.length() * 0.3
+	var total_force = base_force + movement_bonus
+	
+	# Apply difficulty multiplier
+	total_force *= difficulty_damage_multiplier
+	
+	# Apply knockback based on boss direction for more realistic physics
+	var boss_direction_bonus = Vector2(direction * 100, -50) # Add horizontal push in boss direction + slight upward
+	var final_knockback = push_direction * total_force + boss_direction_bonus
+	
+	# Apply the knockback
+	if player.has_method("set_velocity"):
+		player.velocity += final_knockback
+	elif "velocity" in player:
+		player.velocity += final_knockback
+	
+	# Add slight screen shake based on knockback strength
+	if FX:
+		var shake_intensity = min(total_force / 10, 120)
+		FX.shake(shake_intensity)
+	
+	print("💨 Applied knockback force: ", total_force, " in direction: ", push_direction)
+
+func _handle_crate_collision(crate: Node2D):
+	# Check if it's a TNT crate
+	if crate.has_method("start_explosion_countdown") and "crate_type" in crate:
+		if crate.crate_type == "tnt" and not crate.is_exploding:
+			print("💥 Boss triggered TNT crate!")
+			crate.start_explosion_countdown()
+			
+			# Audio feedback
+			if Audio:
+				Audio.play_sfx("click")
+			
+			# Small screen shake for impact
+			if FX:
+				FX.shake(60)
+	
+	# Check if it's a Bomb (new bomb system)
+	elif crate.is_in_group("bombs") and crate.has_method("explode"):
+		if not crate.has_exploded:
+			print("💣 Boss triggered bomb!")
+			crate.explode()
+			
+			# Audio feedback  
+			if Audio:
+				Audio.play_sfx("impact")
+			
+			# Small screen shake for impact
+			if FX:
+				FX.shake(70)
+	
+	# Also handle regular InteractiveCrate collision (push them around)
+	elif crate.is_in_group("interactive"):
+		var push_direction = (crate.global_position - global_position).normalized()
+		var push_force = 200.0
+		
+		# If crate has physics, push it
+		if crate is RigidBody2D:
+			crate.apply_central_impulse(push_direction * push_force)
+		elif "velocity" in crate:
+			crate.velocity += push_direction * push_force
+
+func _handle_movement_collisions():
+	# Check collisions that occurred during movement using get_slide_collision
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		
+		if not collider:
+			continue
+		
+		# Skip DynamicPlatforms - boss should pass through them
+		if collider.is_in_group("dynamic_platforms") or collider.is_in_group("platforms"):
+			continue
+			
+		# Handle TNT crate collision during movement
+		if collider.is_in_group("crates"):
+			_handle_crate_collision(collider)
+			
+		# Handle other interactive objects
+		elif collider.is_in_group("interactive"):
+			_handle_interactive_collision(collider)
+
+func _handle_interactive_collision(object: Node2D):
+	# Push interactive objects out of the way
+	var push_direction = (object.global_position - global_position).normalized()
+	var push_force = 150.0 * difficulty_damage_multiplier
+	
+	if object is RigidBody2D:
+		object.apply_central_impulse(push_direction * push_force)
+	elif "velocity" in object:
+		object.velocity += push_direction * push_force
+	
+	print("🚧 Boss pushed interactive object: ", object.name)
 
 func _take_damage():
 	if not can_be_damaged or is_invincible:
@@ -1279,7 +1819,7 @@ func _take_damage():
 
 func _advance_phase_intelligently():
 	# Smart phase transitions based on AI state
-	var player = get_tree().get_first_node_in_group("player")
+	var _player = get_tree().get_first_node_in_group("player")
 	var next_phase = MovementPhase.WALKING
 	
 	match current_health:
@@ -1329,6 +1869,7 @@ func _setup_phase(phase: MovementPhase):
 	# Reset all counters for new phase
 	flying_enemies_spawned = 0
 	current_tnt_crates_dropped = 0
+	current_bombs_dropped = 0
 	current_patrol_enemies_spawned = 0
 	current_flying_enemies_spawned = 0
 	
@@ -1359,7 +1900,7 @@ func _defeat_boss():
 	velocity = Vector2.ZERO
 	
 	# End any invincibility and prevent further damage
-	is_invincible = true  # Permanently invincible when defeated
+	is_invincible = true # Permanently invincible when defeated
 	can_be_damaged = false
 	sprite.modulate = Color.WHITE
 	sprite.modulate.a = 1.0
@@ -1372,7 +1913,6 @@ func _defeat_boss():
 	boss_defeated.emit()
 	
 	# Create victory effect
-	_create_explosion_effect()
 	_create_screen_shake(2.0)
 	
 	print("💀 Boss defeated! No longer takes damage.")
@@ -1391,22 +1931,16 @@ func _create_hit_effect():
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate", Color.RED, 0.1)
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
-	tween.tween_property(sprite, "modulate", Color.YELLOW, 0.1)  # Additional flash
+	tween.tween_property(sprite, "modulate", Color.YELLOW, 0.1) # Additional flash
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
 
 func _create_dust_effect():
 	if dust_effect:
 		dust_effect.emitting = true
 
-func _create_explosion_effect():
-	if explosion_scene:
-		var explosion = explosion_scene.instantiate()
-		get_parent().add_child(explosion)
-		explosion.global_position = global_position
 
 func _create_screen_shake(intensity: float = 1.0):
-	if screen_shake_component:
-		screen_shake_component.shake(intensity)
+	FX.shake(intensity * 100)
 
 func _update_invincibility(delta):
 	if is_invincible:
@@ -1432,13 +1966,13 @@ func _start_invincibility():
 	
 	# Update phase indicator to show invincibility
 	if phase_indicator:
-		var original_text = phase_indicator.text
+		var _original_text = phase_indicator.text
 		phase_indicator.text = "🛡️ INVINCIBLE"
 		phase_indicator.modulate = Color.CYAN
 		
 		# Restore original text after invincibility
 		await damage_timer.timeout
-		if phase_indicator and not is_invincible:  # Check if still exists and not invincible again
+		if phase_indicator and not is_invincible: # Check if still exists and not invincible again
 			_update_phase_indicator_for_current_phase()
 	
 	print("🛡️ Boss invincibility started for ", damage_immunity_time, " seconds")
@@ -1463,7 +1997,9 @@ func _end_invincibility():
 func _update_phase_indicator_for_current_phase():
 	if not phase_indicator:
 		return
-		
+	
+	FX.shake(300)
+
 	match current_phase:
 		MovementPhase.WALKING:
 			phase_indicator.text = "WALKING"
@@ -1514,12 +2050,12 @@ func _update_for_layer(current_layer: String):
 	
 	# Update visibility and collision
 	visible = is_active_in_current_layer
-	set_collision_layer_value(3, is_active_in_current_layer)  # Boss collision layer (bit 2, value 4)
+	set_collision_layer_value(3, is_active_in_current_layer) # Boss collision layer (bit 2, value 4)
 	
 	# Update damage area
 	if damage_area:
 		damage_area.monitoring = is_active_in_current_layer
-		damage_area.set_collision_layer_value(4, is_active_in_current_layer)  # Hazard layer (bit 3, value 8)
+		damage_area.set_collision_layer_value(4, is_active_in_current_layer) # Hazard layer (bit 3, value 8)
 	
 	# Update stomp detector
 	if stomp_detector:

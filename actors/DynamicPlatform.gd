@@ -110,6 +110,10 @@ var platform_textures = {
 }
 
 func _ready():
+	# Add to platform group for boss collision exceptions
+	add_to_group("dynamic_platforms")
+	add_to_group("platforms")
+	
 	# Setup platform (works in both editor and runtime)
 	_setup_platform()
 	

@@ -386,7 +386,7 @@ func defeat(from_stomp: bool = false):
 	
 	# Screen shake
 	if FX and FX.has_method("shake"):
-		FX.shake(80)
+		FX.shake(110)
 	
 	# Add score
 	if Game:

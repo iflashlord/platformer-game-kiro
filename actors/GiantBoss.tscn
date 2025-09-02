@@ -1,11 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://kuwc58wcfuui"]
+[gd_scene load_steps=19 format=3 uid="uid://kuwc58wcfuui"]
 
 [ext_resource type="Script" uid="uid://c66rtrym5d67x" path="res://actors/GiantBoss.gd" id="1_boss"]
-[ext_resource type="PackedScene" uid="uid://55cwdroiextm" path="res://actors/Explosion.tscn" id="3_explosion"]
 [ext_resource type="PackedScene" uid="uid://00mkiltltuwb" path="res://actors/FlyingEnemy.tscn" id="4_flying"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="5_patrol"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="6_crate"]
-[ext_resource type="Script" uid="uid://jv7vstw1mwq6" path="res://actors/ScreenShakeComponent.gd" id="7_shake"]
 [ext_resource type="Texture2D" uid="uid://ciommnr67cf81" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_walk_a.png" id="10_walk_a"]
 [ext_resource type="Texture2D" uid="uid://qbbp2h475peq" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_walk_b.png" id="11_walk_b"]
 [ext_resource type="Texture2D" uid="uid://ihd5vm35mvdy" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_jump.png" id="12_jump"]
@@ -95,10 +93,8 @@ scale_max = 0.8
 [node name="GiantBoss" type="CharacterBody2D" groups=["boss", "dimension_objects", "enemy"]]
 script = ExtResource("1_boss")
 tnt_scene = ExtResource("6_crate")
-explosion_scene = ExtResource("3_explosion")
 flying_enemy_scene = ExtResource("4_flying")
 patrol_enemy_scene = ExtResource("5_patrol")
-interactive_crate_scene = ExtResource("6_crate")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_1")
@@ -167,6 +163,3 @@ one_shot = true
 wait_time = 3.0
 
 [node name="StateMachine" type="Node" parent="."]
-
-[node name="ScreenShakeComponent" type="Node" parent="."]
-script = ExtResource("7_shake")

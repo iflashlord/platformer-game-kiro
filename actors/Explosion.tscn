@@ -1,40 +1,75 @@
-[gd_scene load_steps=4 format=3 uid="uid://d5kzwx9z8o9plm"]
+[gd_scene load_steps=9 format=3 uid="uid://55cwdroiextm"]
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
+[ext_resource type="Script" uid="uid://b5xf4278ik3ca" path="res://actors/Explosion.gd" id="1_2x9f3"]
+[ext_resource type="Texture2D" uid="uid://ciommnr67cf81" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_walk_a.png" id="2_bomb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2"]
+radius = 24.0
+
+[sub_resource type="Gradient" id="Gradient_explosion"]
+colors = PackedColorArray(1, 1, 0, 1, 1, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_explosion"]
+gradient = SubResource("Gradient_explosion")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_explosion"]
 direction = Vector3(0, -1, 0)
-initial_velocity_min = 100.0
-initial_velocity_max = 200.0
-gravity = Vector3(0, 98, 0)
-scale_min = 0.8
-scale_max = 2.0
+initial_velocity_min = 30.0
+initial_velocity_max = 60.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+gravity = Vector3(0, 200, 0)
+scale_min = 0.2
+scale_max = 0.8
+color = Color(1, 0.5, 0, 1)
 
-[sub_resource type="AudioStream" id="AudioStream_1"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_smoke"]
+direction = Vector3(0, -1, 0)
+spread = 30.0
+initial_velocity_min = 15.0
+initial_velocity_max = 30.0
+gravity = Vector3(0, -50, 0)
+color = Color(0.5, 0.5, 0.5, 0.8)
 
-[sub_resource type="GDScript" id="GDScript_1"]
-script/source = "extends Node2D
+[node name="Bomb" type="RigidBody2D"]
+script = ExtResource("1_2x9f3")
 
-func _ready():
-	# Auto-remove after particles finish
-	var timer = Timer.new()
-	add_child(timer)
-	timer.wait_time = 2.0
-	timer.one_shot = true
-	timer.timeout.connect(queue_free)
-	timer.start()
-	
-	# Start explosion effect
-	$Particles.emitting = true
-	$AudioPlayer.play()
-"
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_bomb")
 
-[node name="Explosion" type="Node2D"]
-script = SubResource("GDScript_1")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1")
 
-[node name="Particles" type="GPUParticles2D" parent="."]
+[node name="ExplosionArea" type="Area2D" parent="."]
+monitoring = false
+
+[node name="ExplosionCollisionShape2D" type="CollisionShape2D" parent="ExplosionArea"]
+shape = SubResource("CircleShape2D_2")
+
+[node name="ExplosionParticles" type="GPUParticles2D" parent="."]
 emitting = false
-amount = 100
-process_material = SubResource("ParticleProcessMaterial_1")
+amount = 20
+texture = SubResource("GradientTexture1D_explosion")
 one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_explosion")
 
-[node name="AudioPlayer" type="AudioStreamPlayer2D" parent="."]
-stream = SubResource("AudioStream_1")
+[node name="SmokeParticles" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 10
+lifetime = 2.0
+one_shot = true
+explosiveness = 0.8
+process_material = SubResource("ParticleProcessMaterial_smoke")
+
+[node name="ExplosionLight" type="PointLight2D" parent="."]
+enabled = false
+color = Color(1, 0.8, 0.4, 1)
+energy = 2.0
+range_z_min = -100
+range_z_max = 100
+texture = SubResource("GradientTexture1D_explosion")

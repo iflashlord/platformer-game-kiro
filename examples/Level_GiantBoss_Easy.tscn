@@ -1,7 +1,7 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=7 format=3 uid="uid://ffx4qwhj683f"]
 
-[ext_resource type="Script" path="res://examples/SimpleBossLevel.gd" id="1_boss_level"]
-[ext_resource type="PackedScene" uid="uid://bvxqm8y7n8qkr_clean" path="res://actors/GiantBoss.tscn" id="2_giant_boss"]
+[ext_resource type="Script" uid="uid://c23i2yb0ofc8v" path="res://examples/SimpleBossLevel.gd" id="1_boss_level"]
+[ext_resource type="PackedScene" uid="uid://kuwc58wcfuui" path="res://actors/GiantBoss.tscn" id="2_giant_boss"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="3_player"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
