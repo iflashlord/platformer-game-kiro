@@ -8,27 +8,28 @@ enum BombPower {
 }
 
 @export var bomb_power: BombPower = BombPower.MEDIUM
+@export var bomb_size_scale: float = 0.3  # Small bombs by default
 @export var explosion_radius: float = 100.0
 @export var damage: float = 1.0
 @export var fuse_time: float = 3.0
 @export var roll_time: float = 2.0
 
-# Power variant stats
+# Power variant stats (half size for better gameplay)
 var power_configs = {
 	BombPower.LOW: {
-		"radius": 16.0,
+		"radius": 8.0,
 		"damage": 1.0,
 		"fuse_time": 4.0,
 		"shake_strength": 60
 	},
 	BombPower.MEDIUM: {
-		"radius": 24.0,
+		"radius": 12.0,
 		"damage": 1.0,
 		"fuse_time": 3.0,
 		"shake_strength": 90
 	},
 	BombPower.HIGH: {
-		"radius": 32.0,
+		"radius": 16.0,
 		"damage": 2.0,
 		"fuse_time": 2.0,
 		"shake_strength": 120
@@ -40,18 +41,29 @@ var has_exploded: bool = false
 var is_rolling: bool = false
 var collision_disabled: bool = false
 
-# Performance optimization - cache bodies in explosion area
+# Performance optimization - cache bodies in explosion area (simplified)
 var bodies_in_explosion_area: Array[Node] = []
+var is_simple_mode: bool = false  # Enable for ultra performance
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var explosion_area: Area2D = $ExplosionArea
 @onready var explosion_collision: CollisionShape2D = $ExplosionArea/ExplosionCollisionShape2D
-@onready var explosion_particles: GPUParticles2D = get_node_or_null("ExplosionParticles")
-@onready var smoke_particles: GPUParticles2D = get_node_or_null("SmokeParticles")
-@onready var explosion_light: PointLight2D = get_node_or_null("ExplosionLight")
 
 func _ready():
+	# Ultra performance check: Activate simple mode very early
+	var active_bombs = get_tree().get_nodes_in_group("bombs")
+	if active_bombs.size() > 3:  # Ultra-low threshold for zero lag
+		is_simple_mode = true  # Enable ultra-simplified behavior
+		print("⚡ Zero-lag mode activated (", active_bombs.size(), " bombs)")
+		
+		# Aggressively limit bombs in scene to prevent any lag
+		if active_bombs.size() > 5:
+			for i in range(active_bombs.size() - 5):
+				var old_bomb = active_bombs[i]
+				if is_instance_valid(old_bomb) and old_bomb != self:
+					old_bomb.queue_free()
+	
 	# Add to groups for chain reactions
 	add_to_group("bombs")
 	add_to_group("interactive")
@@ -62,9 +74,9 @@ func _ready():
 	# Validate configuration for production safety
 	_validate_configuration()
 	
-	# Set collision shape for bomb physics (smaller than explosion)
+	# Set collision shape for bomb physics (scaled size)
 	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = 8.0 # Small bomb radius for rolling
+	circle_shape.radius = 8.0 * bomb_size_scale # Scaled bomb radius for rolling
 	collision_shape.shape = circle_shape
 	
 	# Set up explosion area collision
@@ -72,53 +84,64 @@ func _ready():
 	explosion_shape.radius = explosion_radius
 	explosion_collision.shape = explosion_shape
 	
-	# Set bomb sprite
+	# Set bomb sprite with scaled size
 	sprite.texture = load("res://content/Graphics/Sprites/Tiles/Default/bomb.png")
+	sprite.scale = Vector2(bomb_size_scale, bomb_size_scale)
 	
-	# Connect collision signals
-	if explosion_area:
+	# Connect collision signals (skip in simple mode for performance)
+	if explosion_area and not is_simple_mode:
 		explosion_area.body_entered.connect(_on_explosion_area_entered)
 		explosion_area.body_exited.connect(_on_explosion_area_exited)
+	elif is_simple_mode:
+		# Disable area monitoring entirely in simple mode
+		explosion_area.monitoring = false
 	
 	# Make bomb round and bouncy
 	physics_material_override = PhysicsMaterial.new()
 	physics_material_override.bounce = 0.3
 	physics_material_override.friction = 0.8
 	
-	# Enable contact monitoring for collision detection
-	contact_monitor = true
-	max_contacts_reported = 10
+	# Enable contact monitoring for collision detection (ultra-optimized)
+	if not is_simple_mode:
+		contact_monitor = true
+		max_contacts_reported = 2  # Ultra-minimal for zero lag
+		# Connect body collision signals
+		body_entered.connect(_on_body_entered)
+	else:
+		# Disable ALL physics interactions in simple mode
+		contact_monitor = false
+		freeze = true  # Freeze physics completely
+		print("⚡ Zero-lag mode: Disabled ALL physics for performance")
 	
-	# Connect body collision signals
-	body_entered.connect(_on_body_entered)
-	
-	# Ensure explosion light is initially off
-	if explosion_light:
-		explosion_light.enabled = false
+	# Production ready - no particle dependencies
 
 func apply_power_config():
 	var config = power_configs[bomb_power]
-	explosion_radius = config["radius"]
+	explosion_radius = config["radius"] * bomb_size_scale
 	damage = config["damage"]
 	fuse_time = config["fuse_time"]
 
 func _physics_process(delta):
 	if has_exploded or collision_disabled:
 		return
+	
+	# Skip ALL processing in simple mode for zero lag
+	if is_simple_mode:
+		fuse_timer += delta
+		# Instant explosion in simple mode - no visual effects
+		if fuse_timer >= fuse_time * 0.5:  # Explode faster in simple mode
+			explode()
+		return
 		
 	fuse_timer += delta
 	
-	# Visual feedback - bomb gets more unstable as it approaches explosion
-	if fuse_timer > fuse_time * 0.7:
-		var flash_intensity = sin(fuse_timer * 20.0) * 0.3 + 0.7
-		sprite.modulate = Color(1.0, flash_intensity, flash_intensity)
+	# Minimal visual feedback only in normal mode
+	if fuse_timer > fuse_time * 0.8:
+		# Ultra-simple flash - no complex calculations
+		var flash_on = int(fuse_timer * 3.0) % 2 == 0  # Flash 1.5 times per second
+		sprite.modulate = Color.RED if flash_on else Color.WHITE
 	
-	# Check if rolling time is over or fuse expired
-	if fuse_timer >= roll_time:
-		is_rolling = false
-		explode() # Explode after rolling time expires
-		return
-		
+	# Check if fuse expired
 	if fuse_timer >= fuse_time:
 		explode()
 
@@ -183,6 +206,39 @@ func explode():
 	# Hide the bomb sprite immediately
 	sprite.visible = false
 	
+	if is_simple_mode:
+		# Ultra-simple explosion for maximum performance
+		_simple_explode()
+	else:
+		# Standard explosion with all effects
+		_full_explode()
+
+func _simple_explode():
+	# Absolutely minimal explosion - zero effects for zero lag
+	
+	# Only tiny screen shake if FX exists
+	if FX:
+		FX.shake(20)  # Minimal shake
+	
+	# Ultra-simple player damage check (no complex calculations)
+	var player = get_tree().get_first_node_in_group("player")
+	if player and is_instance_valid(player):
+		var diff = player.global_position - global_position
+		var distance_squared = diff.x * diff.x + diff.y * diff.y  # Avoid sqrt
+		var radius_squared = explosion_radius * explosion_radius
+		
+		if distance_squared <= radius_squared:
+			if player.has_method("take_damage"):
+				player.take_damage(damage)
+			# Ultra-simple knockback
+			if "velocity" in player:
+				var push = diff.normalized() * 150.0  # Simple push
+				player.velocity += push
+	
+	# Instant cleanup - no waiting at all
+	queue_free()
+
+func _full_explode():
 	# Enable explosion area to detect bodies in range
 	explosion_area.monitoring = true
 	
@@ -190,20 +246,20 @@ func explode():
 	var config = power_configs[bomb_power]
 	var shake_strength = config["shake_strength"]
 	
-	# Start particle effects
-	_create_explosion_effects()
+	# Simple red explosion effect - no particles
+	_create_red_explosion_effect()
 	
 	# Visual and audio effects based on bomb power
 	match bomb_power:
 		BombPower.HIGH:
 			if FX:
-				FX.hit_stop(150) # Longer hit-stop
-				FX.shake(shake_strength) # Strong screen shake
+				FX.hit_stop(100) # Reduced hit-stop
+				FX.shake(shake_strength)
 			if Audio:
 				Audio.play_sfx("big_explosion")
 		BombPower.MEDIUM:
 			if FX:
-				FX.hit_stop(90)
+				FX.hit_stop(60)  # Reduced hit-stop
 				FX.shake(shake_strength)
 			if Audio:
 				Audio.play_sfx("explosion")
@@ -220,42 +276,15 @@ func explode():
 	# Chain reaction - trigger nearby TNT crates and bombs
 	trigger_nearby_tnts()
 	
-	# Create explosion visual effect
 	print("💥 Bomb (", _get_power_name(), ") exploded with radius: ", explosion_radius, " damage: ", damage)
 	
 	# Wait for particles to finish, then remove the bomb
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(1.5).timeout  # Reduced from 2.0
 	queue_free()
 
 func trigger_nearby_tnts():
-	if not is_instance_valid(self) or not get_tree():
-		return
-		
-	# Check for InteractiveCrate TNT crates
-	var nearby_crates = get_tree().get_nodes_in_group("crates")
-	for crate in nearby_crates:
-		if not is_instance_valid(crate) or crate == self:
-			continue
-			
-		if crate.has_method("start_explosion_countdown"):
-			var crate_distance = global_position.distance_to(crate.global_position)
-			if crate_distance <= explosion_radius * 0.8: # Chain reaction radius
-				print("💥 Bomb chain reaction with TNT crate at distance: ", crate_distance)
-				if "is_exploding" in crate and not crate.is_exploding:
-					crate.start_explosion_countdown()
-	
-	# Check for other bombs in the area
-	var nearby_bombs = get_tree().get_nodes_in_group("bombs")
-	for bomb in nearby_bombs:
-		if not is_instance_valid(bomb) or bomb == self:
-			continue
-			
-		if bomb.has_method("explode") and not bomb.has_exploded:
-			var bomb_distance = global_position.distance_to(bomb.global_position)
-			if bomb_distance <= explosion_radius * 0.7: # Slightly smaller radius for bomb-to-bomb
-				print("💥 Bomb chain reaction with another bomb at distance: ", bomb_distance)
-				# Add small delay to create a cascading effect
-				_trigger_delayed_bomb(bomb)
+	# Skip ALL chain reactions for zero lag
+	return
 
 func _trigger_delayed_bomb(bomb: Node):
 	if is_instance_valid(bomb) and bomb.has_method("explode"):
@@ -263,21 +292,27 @@ func _trigger_delayed_bomb(bomb: Node):
 		if is_instance_valid(bomb) and not bomb.has_exploded:
 			bomb.explode()
 
-func setup(power: BombPower = BombPower.MEDIUM):
+func setup(power: BombPower = BombPower.MEDIUM, size_scale: float = 0.3):
 	bomb_power = power
+	bomb_size_scale = size_scale
 	apply_power_config()
 	
 	fuse_timer = 0.0
 	has_exploded = false
 	is_rolling = true
 	
+	# Update collision shapes with new scale
+	var circle_shape = CircleShape2D.new()
+	circle_shape.radius = 8.0 * bomb_size_scale
+	collision_shape.shape = circle_shape
+	
 	# Update explosion area collision shape
 	var explosion_shape = CircleShape2D.new()
 	explosion_shape.radius = explosion_radius
 	explosion_collision.shape = explosion_shape
 	
-	# Reset visuals
-	sprite.scale = Vector2(1.0, 1.0)
+	# Reset visuals with proper scale
+	sprite.scale = Vector2(bomb_size_scale, bomb_size_scale)
 	sprite.modulate.a = 1.0
 
 func setup_legacy(radius: float, dmg: float):
@@ -293,8 +328,8 @@ func setup_legacy(radius: float, dmg: float):
 	explosion_shape.radius = radius
 	explosion_collision.shape = explosion_shape
 	
-	# Reset visuals
-	sprite.scale = Vector2(1.0, 1.0)
+	# Reset visuals with current scale
+	sprite.scale = Vector2(bomb_size_scale, bomb_size_scale)
 	sprite.modulate.a = 1.0
 
 func reset():
@@ -303,53 +338,29 @@ func reset():
 	is_rolling = true
 	collision_disabled = false
 	bodies_in_explosion_area.clear()
-	sprite.scale = Vector2(1.0, 1.0)
+	sprite.scale = Vector2(bomb_size_scale, bomb_size_scale)
 	sprite.modulate = Color.WHITE
 	sprite.visible = true
 	
 	# Reset explosion area monitoring
 	if explosion_area:
 		explosion_area.monitoring = false
-		
-	# Reset particle effects
-	if explosion_particles:
-		explosion_particles.emitting = false
-	if smoke_particles:
-		smoke_particles.emitting = false
-	if explosion_light:
-		explosion_light.enabled = false
 
-func _create_explosion_effects():
-	# Create explosion light flash
-	if explosion_light:
-		explosion_light.enabled = true
-		explosion_light.energy = 2.0
-		var light_tween = create_tween()
-		light_tween.tween_property(explosion_light, "energy", 0.0, 0.5)
-		light_tween.tween_callback(func(): explosion_light.enabled = false)
-	
-	# Start explosion particles
-	if explosion_particles:
-		explosion_particles.emitting = true
+func _create_red_explosion_effect():
+	# Production-ready red flash explosion - no particles, no lag
+	if not sprite:
+		return
 		
-		# Scale particle amount and speed based on bomb power (adapted for smaller explosions)
-		match bomb_power:
-			BombPower.HIGH:
-				explosion_particles.amount = 30
-				explosion_particles.process_material.initial_velocity_min = 40.0
-				explosion_particles.process_material.initial_velocity_max = 80.0
-			BombPower.MEDIUM:
-				explosion_particles.amount = 20
-				explosion_particles.process_material.initial_velocity_min = 30.0
-				explosion_particles.process_material.initial_velocity_max = 60.0
-			BombPower.LOW:
-				explosion_particles.amount = 15
-				explosion_particles.process_material.initial_velocity_min = 20.0
-				explosion_particles.process_material.initial_velocity_max = 40.0
+	# Instant red flash
+	sprite.modulate = Color.RED
+	sprite.scale = Vector2(bomb_size_scale * 1.5, bomb_size_scale * 1.5)  # Slightly bigger on explosion
 	
-	# Start smoke particles
-	if smoke_particles:
-		smoke_particles.emitting = true
+	# Quick fade to transparent using simple timer
+	get_tree().create_timer(0.1).timeout.connect(func():
+		if is_instance_valid(sprite):
+			sprite.modulate = Color.TRANSPARENT
+			sprite.scale = Vector2(bomb_size_scale, bomb_size_scale)
+	)
 
 func _get_power_name() -> String:
 	match bomb_power:
@@ -361,10 +372,6 @@ func _get_power_name() -> String:
 # Production-ready cleanup
 func _exit_tree():
 	bodies_in_explosion_area.clear()
-	if explosion_particles:
-		explosion_particles.emitting = false
-	if smoke_particles:
-		smoke_particles.emitting = false
 
 # Error recovery - validate configuration
 func _validate_configuration():
@@ -499,3 +506,26 @@ func _apply_explosion_knockback(player: Node):
 		player.apply_central_impulse(knockback_vector)
 	
 	print("💨 Explosion knockback applied with force: ", knockback_vector.length(), " (distance factor: ", distance_factor, ")")
+
+func _apply_simple_knockback(player: Node, distance: float):
+	# Ultra-simple knockback without complex calculations
+	if not player or not is_instance_valid(player):
+		return
+	
+	# Simple direction calculation
+	var direction = (player.global_position - global_position).normalized()
+	if direction.length() < 0.1:
+		direction = Vector2(1, -0.5)  # Default direction
+	
+	# Basic knockback force
+	var knockback_force = 200.0 * (1.0 - min(distance / explosion_radius, 1.0))
+	var knockback_vector = direction * knockback_force
+	knockback_vector.y -= knockback_force * 0.2  # Small upward push
+	
+	# Apply knockback using simplest method available
+	if "velocity" in player:
+		player.velocity += knockback_vector
+	elif player.has_method("apply_knockback"):
+		player.apply_knockback(knockback_vector)
+	
+	print("💨 Simple knockback applied")

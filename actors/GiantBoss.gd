@@ -29,8 +29,8 @@ signal tnt_placed(position: Vector2)
 @export var phase1_patrol_jump_limit: int = 0 # No jumping in walking phase
 @export var phase1_patrol_detection_range: float = 90.0
 @export var phase1_spawn_limit: int = 0 # No enemies in walking phase
-@export var phase1_max_tnt_crates: int = 10
-@export var phase1_max_bombs: int = 5
+@export var phase1_max_tnt_crates: int = 6
+@export var phase1_max_bombs: int = 3
 @export var phase1_max_patrol_enemies: int = 0
 @export var phase1_max_flying_enemies: int = 0
 
@@ -39,8 +39,8 @@ signal tnt_placed(position: Vector2)
 @export var phase2_patrol_jump_limit: int = 3 # Limited jumping for ground enemies
 @export var phase2_patrol_detection_range: float = 120.0
 @export var phase2_spawn_limit: int = 2
-@export var phase2_max_tnt_crates: int = 8
-@export var phase2_max_bombs: int = 8
+@export var phase2_max_tnt_crates: int = 5
+@export var phase2_max_bombs: int = 4
 @export var phase2_max_patrol_enemies: int = 4
 @export var phase2_max_flying_enemies: int = 0
 
@@ -52,8 +52,8 @@ signal tnt_placed(position: Vector2)
 @export var phase3_flying_speed: float = 60.0
 @export var phase3_flying_altitude_limit: float = 200.0 # How high they can fly
 @export var phase3_flying_spawn_limit: int = 1
-@export var phase3_max_tnt_crates: int = 6
-@export var phase3_max_bombs: int = 12
+@export var phase3_max_tnt_crates: int = 4
+@export var phase3_max_bombs: int = 6
 @export var phase3_max_patrol_enemies: int = 6
 @export var phase3_max_flying_enemies: int = 2
 
@@ -66,8 +66,8 @@ signal tnt_placed(position: Vector2)
 @export var phase4_flying_altitude_limit: float = 300.0
 @export var phase4_flying_spawn_limit: int = 3
 @export var phase4_flying_chase_range: float = 250.0 # How close they stay to player
-@export var phase4_max_tnt_crates: int = 4
-@export var phase4_max_bombs: int = 15
+@export var phase4_max_tnt_crates: int = 3
+@export var phase4_max_bombs: int = 8
 @export var phase4_max_patrol_enemies: int = 4
 @export var phase4_max_flying_enemies: int = 6
 
@@ -143,6 +143,10 @@ var is_circling_player: bool = false
 var circle_angle: float = 0.0
 var terrain_knowledge: Array[Vector2] = []
 var was_in_air: bool = false  # Track if boss was airborne for landing detection
+
+# Enemy spawn tracking to avoid overlaps
+var enemy_spawn_positions: Array[Vector2] = []
+var min_spawn_distance: float = 80.0  # Minimum distance between spawned enemies
 
 # Dimension system compatibility
 var dimension_manager: Node
@@ -790,8 +794,9 @@ func _drop_tnt():
 		print("🚫 TNT limit reached for current phase: ", current_tnt_crates_dropped, "/", max_tnt)
 		return
 	
-	# Randomly choose between TNT and Bomb (60/40 chance favoring bombs)
-	var use_bomb = bomb_scene and randf() < 0.6
+	# Reduce bomb frequency during enraged phase to prevent lag
+	var bomb_chance = 0.4 if is_enraged else 0.6  # Lower chance when enraged
+	var use_bomb = bomb_scene and randf() < bomb_chance
 	
 	if use_bomb:
 		_drop_bomb()
@@ -964,6 +969,36 @@ func _update_item_arc_position(item: Node, start_pos: Vector2, mid_pos: Vector2,
 	var pos1 = start_pos.lerp(mid_pos, progress)
 	var pos2 = mid_pos.lerp(end_pos, progress)
 	item.global_position = pos1.lerp(pos2, progress)
+
+func _find_valid_spawn_position(base_position: Vector2, range_x: float, range_y: float = 0) -> Vector2:
+	var max_attempts = 10
+	var attempt = 0
+	
+	while attempt < max_attempts:
+		var spawn_position = Vector2(
+			base_position.x + randf_range(-range_x, range_x),
+			base_position.y + randf_range(-range_y, range_y)
+		)
+		
+		# Check if position is far enough from existing spawns
+		var too_close = false
+		for existing_pos in enemy_spawn_positions:
+			if spawn_position.distance_to(existing_pos) < min_spawn_distance:
+				too_close = true
+				break
+		
+		if not too_close:
+			enemy_spawn_positions.append(spawn_position)
+			# Keep only recent spawn positions (last 10)
+			if enemy_spawn_positions.size() > 10:
+				enemy_spawn_positions.pop_front()
+			return spawn_position
+		
+		attempt += 1
+	
+	# If we can't find a valid position, use the base position
+	print("⚠️ Could not find valid spawn position, using base position")
+	return base_position
 
 # Professional attack warning system
 func _show_attack_warning(warning_text: String):
@@ -1434,11 +1469,13 @@ func _configure_patrol_enemy(patrol_instance, config: Dictionary):
 func _configure_flying_enemy(flying_instance, config: Dictionary, index: int):
 	await get_tree().process_frame
 	
-	# Set different behavior patterns for variety
+	# Set different behavior patterns for variety (all types)
 	var behavior_patterns = [
+		"Horizontal", # Side-to-side movement
+		"Sine Wave", # Wave pattern around player  
+		"Circular", # Circular pattern
 		"Chase Player", # Direct aggressive chase
-		"Sine Wave", # Wave pattern around player
-		"Circular" # Circular pattern
+		"Vertical" # Up-down movement
 	]
 	
 	var enemy_types = ["bee", "fly", "ladybug"]
@@ -1452,16 +1489,21 @@ func _configure_flying_enemy(flying_instance, config: Dictionary, index: int):
 	
 	if flying_instance.has_method("set_flight_pattern"):
 		var altitude = config.get("altitude_limit", 200.0)
-		if pattern == "Chase Player":
-			flying_instance.set_flight_pattern("Chase Player", min(30.0, altitude * 0.15), 3.0)
-			# Enable chase behavior with limited range
-			if flying_instance.has_method("set_chase_behavior"):
-				var chase_speed = min(config.get("flying_speed", 70.0), 100.0) # Cap chase speed
-				flying_instance.set_chase_behavior(true, chase_speed)
-		elif pattern == "Sine Wave":
-			flying_instance.set_flight_pattern("Sine Wave", min(40.0, altitude * 0.2), 2.5)
-		else: # Circular
-			flying_instance.set_flight_pattern("Circular", min(60.0, altitude * 0.3), 1.5)
+		match pattern:
+			"Chase Player":
+				flying_instance.set_flight_pattern("Chase Player", min(30.0, altitude * 0.15), 3.0)
+				# Enable chase behavior with limited range
+				if flying_instance.has_method("set_chase_behavior"):
+					var chase_speed = min(config.get("flying_speed", 70.0), 100.0) # Cap chase speed
+					flying_instance.set_chase_behavior(true, chase_speed)
+			"Sine Wave":
+				flying_instance.set_flight_pattern("Sine Wave", min(40.0, altitude * 0.2), 2.5)
+			"Circular":
+				flying_instance.set_flight_pattern("Circular", min(60.0, altitude * 0.3), 1.5)
+			"Horizontal":
+				flying_instance.set_flight_pattern("Horizontal", min(50.0, altitude * 0.25), 2.0)
+			"Vertical":
+				flying_instance.set_flight_pattern("Vertical", min(45.0, altitude * 0.225), 2.2)
 	
 	# Set patrol area to limit flight range
 	var player = get_tree().get_first_node_in_group("player")
@@ -1475,9 +1517,8 @@ func _spawn_patrol_enemy():
 	var patrol_instance = patrol_enemy_scene.instantiate()
 	get_parent().add_child(patrol_instance)
 	
-	# Spawn to left or right of boss
-	var spawn_offset = Vector2(randf_range(-200, 200), 0)
-	patrol_instance.global_position = global_position + spawn_offset
+	# Find valid spawn position to avoid overlaps
+	patrol_instance.global_position = _find_valid_spawn_position(global_position, 200.0, 0)
 	
 	# Set random enemy type
 	var enemy_types = ["mouse", "snail", "worm"]
@@ -1491,9 +1532,9 @@ func _spawn_flying_enemy():
 	var flying_instance = flying_enemy_scene.instantiate()
 	get_parent().add_child(flying_instance)
 	
-	# Spawn above the boss area
-	var spawn_offset = Vector2(randf_range(-300, 300), randf_range(-200, -100))
-	flying_instance.global_position = global_position + spawn_offset
+	# Find valid spawn position above boss area to avoid overlaps
+	var base_air_position = global_position + Vector2(0, -150)  # 150 pixels above boss
+	flying_instance.global_position = _find_valid_spawn_position(base_air_position, 300.0, 100.0)
 	
 	# Set different enemy types for variety
 	var enemy_types = ["bee", "fly", "ladybug"]
@@ -1536,10 +1577,9 @@ func _drop_flying_enemies():
 		var flying_instance = flying_enemy_scene.instantiate()
 		get_parent().add_child(flying_instance)
 		
-		# Drop close to player position but from above
-		var player_pos = player.global_position
-		var drop_offset = Vector2(randf_range(-100, 100), randf_range(-250, -150))
-		flying_instance.global_position = player_pos + drop_offset
+		# Drop close to player position but from above using valid positioning
+		var drop_base_position = player.global_position + Vector2(0, -200)  # 200 pixels above player
+		flying_instance.global_position = _find_valid_spawn_position(drop_base_position, 100.0, 100.0)
 		
 		# Configure enemy behavior after instantiation
 		_configure_dropped_flying_enemy(flying_instance, i)
@@ -1834,13 +1874,13 @@ func _advance_phase_intelligently():
 			print("🦅 Boss entering FLYING phase - Air superiority mode!")
 		1:
 			next_phase = MovementPhase.FLYING
-			# Final desperate phase
+			# Final desperate phase (reduced intensity to prevent lag)
 			is_enraged = true
-			fly_speed *= 1.8
-			walk_speed *= 1.5
-			tnt_drop_interval *= 0.4
-			max_flying_enemies_per_phase = 4
-			print("💀 Boss entering FINAL PHASE - EXTREME DANGER!")
+			fly_speed *= 1.4  # Reduced from 1.8
+			walk_speed *= 1.3  # Reduced from 1.5
+			tnt_drop_interval *= 0.8  # Reduced from 0.4 (less frequent drops)
+			max_flying_enemies_per_phase = 3  # Reduced from 4
+			print("💀 Boss entering FINAL PHASE - INCREASED DANGER!")
 	
 	_setup_phase(next_phase)
 	
