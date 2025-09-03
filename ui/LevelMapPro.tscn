@@ -56,7 +56,7 @@ alignment = 1
 [node name="BackButton" type="Button" parent="UI/Header/TitleContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "🏠 BACK"
+text = "  BACK  "
 
 [node name="Spacer" type="Control" parent="UI/Header/TitleContainer"]
 layout_mode = 2
@@ -138,7 +138,7 @@ layout_mode = 2
 modulate = Color(0.7, 0.7, 0.7, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "🔒 Locked  •  🟢 Available  •  🟡 Completed  •  ⭐ Perfect"
+text = "   🔒 Locked  •  🟢 Available  •  🟡 Completed  •  ⭐ Perfect"
 
 [node name="Spacer" type="Control" parent="UI/Footer"]
 layout_mode = 2

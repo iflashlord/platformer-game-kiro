@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cxvxay8qkqx0"]
 
-[ext_resource type="Script" path="res://ui/SettingsMenuStandalone.gd" id="1_settings"]
+[ext_resource type="Script" uid="uid://cq5dwbddijvcy" path="res://ui/SettingsMenuStandalone.gd" id="1_settings"]
 [ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="2_theme"]
 
 [node name="SettingsMenuStandalone" type="CanvasLayer"]
@@ -58,22 +58,22 @@ layout_mode = 2
 [node name="Label" type="Label" parent="UI/MainContainer/SettingsContainer/MasterVolume"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "🔊 Master Volume:"
 theme_override_font_sizes/font_size = 18
+text = "🔊 Master Volume:"
 
 [node name="Slider" type="HSlider" parent="UI/MainContainer/SettingsContainer/MasterVolume"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(200, 0)
 max_value = 1.0
 step = 0.01
 value = 1.0
 
 [node name="ValueLabel" type="Label" parent="UI/MainContainer/SettingsContainer/MasterVolume"]
-layout_mode = 2
 custom_minimum_size = Vector2(60, 0)
-text = "100%"
+layout_mode = 2
 theme_override_font_sizes/font_size = 18
+text = "100%"
 horizontal_alignment = 2
 
 [node name="MusicVolume" type="HBoxContainer" parent="UI/MainContainer/SettingsContainer"]
@@ -82,22 +82,22 @@ layout_mode = 2
 [node name="Label" type="Label" parent="UI/MainContainer/SettingsContainer/MusicVolume"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "🎵 Music Volume:"
 theme_override_font_sizes/font_size = 18
+text = "🎵 Music Volume:"
 
 [node name="Slider" type="HSlider" parent="UI/MainContainer/SettingsContainer/MusicVolume"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(200, 0)
 max_value = 1.0
 step = 0.01
 value = 0.8
 
 [node name="ValueLabel" type="Label" parent="UI/MainContainer/SettingsContainer/MusicVolume"]
-layout_mode = 2
 custom_minimum_size = Vector2(60, 0)
-text = "80%"
+layout_mode = 2
 theme_override_font_sizes/font_size = 18
+text = "80%"
 horizontal_alignment = 2
 
 [node name="SFXVolume" type="HBoxContainer" parent="UI/MainContainer/SettingsContainer"]
@@ -106,22 +106,22 @@ layout_mode = 2
 [node name="Label" type="Label" parent="UI/MainContainer/SettingsContainer/SFXVolume"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "🔉 SFX Volume:"
 theme_override_font_sizes/font_size = 18
+text = "🔉 SFX Volume:"
 
 [node name="Slider" type="HSlider" parent="UI/MainContainer/SettingsContainer/SFXVolume"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(200, 0)
 max_value = 1.0
 step = 0.01
 value = 1.0
 
 [node name="ValueLabel" type="Label" parent="UI/MainContainer/SettingsContainer/SFXVolume"]
-layout_mode = 2
 custom_minimum_size = Vector2(60, 0)
-text = "100%"
+layout_mode = 2
 theme_override_font_sizes/font_size = 18
+text = "100%"
 horizontal_alignment = 2
 
 [node name="HSeparator2" type="HSeparator" parent="UI/MainContainer/SettingsContainer"]
@@ -135,21 +135,22 @@ alignment = 1
 [node name="TestSFX" type="Button" parent="UI/MainContainer/SettingsContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "🔊 Test Sound Effect"
+text = "Test Sound Effect"
 
 [node name="ResetProgress" type="Button" parent="UI/MainContainer/SettingsContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 theme_override_font_sizes/font_size = 18
-text = "🔄 Reset Everything"
+text = "Reset Everything"
 
 [node name="HSeparator3" type="HSeparator" parent="UI/MainContainer"]
+visible = false
 layout_mode = 2
 
 [node name="BackButton" type="Button" parent="UI/MainContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "🏠 BACK TO MENU"
+text = "BACK TO MENU"
 
 [node name="HSeparator4" type="HSeparator" parent="UI/MainContainer"]
 layout_mode = 2

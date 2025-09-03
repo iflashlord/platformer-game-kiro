@@ -121,37 +121,37 @@ theme_override_constants/separation = 20
 [node name="PlayButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "🎮 NEW GAME"
+text = "  NEW GAME"
 alignment = 0
 
 [node name="ContinueButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "📖 CONTINUE"
+text = "  CONTINUE"
 alignment = 0
 
 [node name="LevelSelectButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "🗺️ LEVEL SELECT"
+text = "  LEVEL SELECT"
 alignment = 0
 
 [node name="OptionsButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "⚙️ SETTINGS"
+text = "  SETTINGS"
 alignment = 0
 
 [node name="CreditsButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "👥 CREDITS"
+text = "  CREDITS"
 alignment = 0
 
 [node name="QuitButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "🚪 QUIT GAME"
+text = "  QUIT GAME"
 alignment = 0
 
 [node name="BottomContainer" type="HBoxContainer" parent="UI"]

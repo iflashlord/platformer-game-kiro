@@ -130,19 +130,19 @@ func setup_results(data: Dictionary):
 	var seconds = int(time) % 60
 	var milliseconds = int((time - int(time)) * 100)
 	if time_label:
-		time_label.text = "⏱️ Time: %02d:%02d.%02d" % [minutes, seconds, milliseconds]
+		time_label.text = "Time: %02d:%02d.%02d" % [minutes, seconds, milliseconds]
 	
 	# Hearts remaining
 	if hearts_label:
-		hearts_label.text = "❤️ Hearts Remaining: %d/5" % data.get("hearts_remaining", 5)
+		hearts_label.text = "Hearts Remaining: %d/5" % int(data.get("hearts_remaining", 5))
 	
 	# Gems found
 	if gems_label:
-		gems_label.text = "💎 Hidden Gems: %d/%d" % [data.get("gems_found", 0), data.get("total_gems", 0)]
+		gems_label.text = "Hidden Gems: %d/%d" % [data.get("gems_found", 0), data.get("total_gems", 0)]
 	
 	# Final score
 	if score_label:
-		score_label.text = "🏆 Final Score: %04d" % data.get("score", 0)
+		score_label.text = "Final Score: %04d" % int(data.get("score", 0))
 	
 	# Fallback: Update simple VictoryUI if no detailed results UI exists
 	#if not level_name_label or not score_label:
@@ -214,7 +214,7 @@ func _update_simple_victory_ui(data: Dictionary):
 		if victory_text:
 			var score = data.get("score", 0)
 			var level_display = _get_level_display_name(current_level)
-			victory_text.text = "🏆 " + level_display + " COMPLETE!\n💰 Final Score: " + str(score) + "\n🎯 +1000 Bonus Points!"
+			victory_text.text = "" + level_display + " COMPLETE!\n Final Score: " + str(score) + "\n +1000 Bonus Points!"
 			print("🏆 Updated simple victory text with score: ", score)
 		
 		print("🏆 Simple victory UI shown")
@@ -292,7 +292,7 @@ func _setup_next_level_button():
 	if next_level == "":
 		# No next level - this was the final level
 		print("🎯 Setting GAME COMPLETE button")
-		next_level_button.text = "🏆 GAME COMPLETE!"
+		next_level_button.text = "GAME COMPLETE!"
 		next_level_button.disabled = false  # Keep enabled to allow clicking
 		next_level_button.modulate = Color(1.2, 1.1, 0.8)  # Golden color for completion
 		# Add completion glow effect
@@ -398,7 +398,7 @@ func _add_performance_rank(data: Dictionary):
 	# Update the title to include rank
 	var title_node = $UI/MenuContainer/Header/Title
 	if title_node:
-		title_node.text = "🎉 LEVEL COMPLETED! 🎉\nRank: " + rank
+		title_node.text = " LEVEL COMPLETED!  \nRank: " + rank
 		title_node.modulate = rank_color
 
 func _calculate_performance_rank(data: Dictionary) -> String:
@@ -663,29 +663,58 @@ func _setup_button_effects():
 		button.focus_exited.connect(_on_button_unfocus.bind(button))
 
 func _on_button_hover(button: Button):
-	_play_ui_sound("ui_hover")
-	_animate_button_scale(button, 1.05)
+	if not button.has_focus():
+		_play_ui_sound("ui_hover")
+		_animate_button_selection(button, true)
 
 func _on_button_exit(button: Button):
-	_animate_button_scale(button, 1.0)
+	if not button.has_focus():
+		_animate_button_selection(button, false)
 
 func _on_button_focus(button: Button):
 	_play_ui_sound("ui_focus")
-	_animate_button_scale(button, 1.05)
+	_animate_button_selection(button, true)
 
 func _on_button_unfocus(button: Button):
-	_animate_button_scale(button, 1.0)
+	_animate_button_selection(button, false)
 
-func _animate_button_scale(button: Button, target_scale: float):
-	"""Animate button scale smoothly"""
+func _animate_button_selection(button: Button, selected: bool):
+	"""Enhanced button selection animation with scale, glow, and border"""
 	if not button:
 		return
 	
 	var tween = create_tween()
-	if tween:
-		tween.set_ease(Tween.EASE_OUT)
-		tween.set_trans(Tween.TRANS_BACK)
-		tween.tween_property(button, "scale", Vector2(target_scale, target_scale), 0.1)
+	if not tween:
+		return
+		
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_BACK)
+	
+	if selected:
+		# Enhanced selection: 1.15x scale with golden glow
+		tween.parallel().tween_property(button, "scale", Vector2(1.15, 1.15), 0.15)
+		tween.parallel().tween_property(button, "modulate", Color(1.4, 1.2, 0.8), 0.15)
+		
+		# Add cyan border with StyleBoxFlat
+		var style_box = StyleBoxFlat.new()
+		style_box.border_width_left = 3
+		style_box.border_width_right = 3
+		style_box.border_width_top = 3
+		style_box.border_width_bottom = 3
+		style_box.border_color = Color.CYAN
+		style_box.bg_color = Color(0.2, 0.2, 0.2, 0.8)
+		style_box.corner_radius_top_left = 8
+		style_box.corner_radius_top_right = 8
+		style_box.corner_radius_bottom_left = 8
+		style_box.corner_radius_bottom_right = 8
+		button.add_theme_stylebox_override("focus", style_box)
+	else:
+		# Reset to normal state
+		tween.parallel().tween_property(button, "scale", Vector2(1.0, 1.0), 0.1)
+		tween.parallel().tween_property(button, "modulate", Color.WHITE, 0.1)
+		
+		# Remove custom style override
+		button.remove_theme_stylebox_override("focus")
 
 func _get_unlock_requirements_text(level_id: String) -> String:
 	"""Get text describing unlock requirements"""

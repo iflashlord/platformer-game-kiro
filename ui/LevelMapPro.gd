@@ -562,6 +562,7 @@ func _ready():
 	_load_configurations()
 	_connect_signals()
 	_setup_ui()
+	_setup_header_button_effects()
 	_create_level_grid()
 	_update_progress()
 	_setup_keyboard_navigation()
@@ -1191,3 +1192,95 @@ func _show_unlock_notification(level_id: String):
 		Audio.play_sfx("ui_level_unlock")
 	
 	# TODO: Add visual notification popup if desired
+
+func _setup_header_button_effects():
+	"""Setup enhanced selection effects for header buttons"""
+	if back_button:
+		back_button.mouse_entered.connect(_on_back_button_hover_entered)
+		back_button.mouse_exited.connect(_on_back_button_hover_exited)
+		back_button.focus_entered.connect(_on_back_button_focus_entered)
+		back_button.focus_exited.connect(_on_back_button_focus_exited)
+	
+	if dev_button:
+		dev_button.mouse_entered.connect(_on_dev_button_hover_entered)
+		dev_button.mouse_exited.connect(_on_dev_button_hover_exited)
+		dev_button.focus_entered.connect(_on_dev_button_focus_entered)
+		dev_button.focus_exited.connect(_on_dev_button_focus_exited)
+
+func _on_back_button_hover_entered():
+	"""Handle back button hover"""
+	if not back_button.has_focus():  # Only apply hover if not focused
+		_animate_button_selection(back_button, true)
+
+func _on_back_button_hover_exited():
+	"""Handle back button hover exit"""
+	if not back_button.has_focus():
+		_animate_button_selection(back_button, false)
+
+func _on_back_button_focus_entered():
+	"""Handle back button focus"""
+	_animate_button_selection(back_button, true)
+
+func _on_back_button_focus_exited():
+	"""Handle back button focus exit"""
+	_animate_button_selection(back_button, false)
+
+func _on_dev_button_hover_entered():
+	"""Handle dev button hover"""
+	if not dev_button.has_focus():  # Only apply hover if not focused
+		_animate_button_selection(dev_button, true)
+
+func _on_dev_button_hover_exited():
+	"""Handle dev button hover exit"""
+	if not dev_button.has_focus():
+		_animate_button_selection(dev_button, false)
+
+func _on_dev_button_focus_entered():
+	"""Handle dev button focus"""
+	_animate_button_selection(dev_button, true)
+
+func _on_dev_button_focus_exited():
+	"""Handle dev button focus exit"""
+	_animate_button_selection(dev_button, false)
+
+func _animate_button_selection(button: Button, selected: bool):
+	"""Animate button selection with enhanced effects"""
+	if not button:
+		return
+	
+	if selected:
+		# Enhanced selection: 1.15x scale, golden glow, cyan border
+		var tween = create_tween()
+		tween.parallel().tween_property(button, "scale", Vector2(1.15, 1.15), 0.2)
+		tween.parallel().tween_property(button, "modulate", Color(1.3, 1.2, 0.8), 0.2)
+		
+		# Add cyan border effect using shader or additional visual
+		if button.has_method("add_theme_stylebox_override"):
+			var style = StyleBoxFlat.new()
+			style.border_width_left = 3
+			style.border_width_right = 3
+			style.border_width_top = 3
+			style.border_width_bottom = 3
+			style.border_color = Color.CYAN
+			style.bg_color = button.get("bg_color") if button.has_method("get") else Color.TRANSPARENT
+			button.add_theme_stylebox_override("normal", style)
+			button.add_theme_stylebox_override("hover", style)
+			button.add_theme_stylebox_override("pressed", style)
+			button.add_theme_stylebox_override("focus", style)
+		
+		tween.set_ease(Tween.EASE_OUT)
+		tween.set_trans(Tween.TRANS_BACK)
+	else:
+		# Reset to normal state
+		var tween = create_tween()
+		tween.parallel().tween_property(button, "scale", Vector2(1.0, 1.0), 0.15)
+		tween.parallel().tween_property(button, "modulate", Color.WHITE, 0.15)
+		
+		# Remove border effect
+		if button.has_method("remove_theme_stylebox_override"):
+			button.remove_theme_stylebox_override("normal")
+			button.remove_theme_stylebox_override("hover")
+			button.remove_theme_stylebox_override("pressed")
+			button.remove_theme_stylebox_override("focus")
+		
+		tween.set_ease(Tween.EASE_OUT)

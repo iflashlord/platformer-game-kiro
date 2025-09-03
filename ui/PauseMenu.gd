@@ -240,7 +240,7 @@ func _on_game_resumed():
 
 # Helper functions
 func _setup_button_effects():
-	"""Setup hover and focus effects for buttons"""
+	"""Setup enhanced hover and focus effects for buttons"""
 	for button in menu_buttons:
 		if not button:
 			continue
@@ -254,21 +254,23 @@ func _setup_button_effects():
 		button.focus_exited.connect(_on_button_unfocus.bind(button))
 
 func _on_button_hover(button: Button):
-	_play_ui_sound("ui_hover")
-	_animate_button_scale(button, 1.05)
+	if not button.has_focus():
+		_play_ui_sound("ui_hover")
+		_animate_button_selection(button, true)
 
 func _on_button_exit(button: Button):
-	_animate_button_scale(button, 1.0)
+	if not button.has_focus():
+		_animate_button_selection(button, false)
 
 func _on_button_focus(button: Button):
 	_play_ui_sound("ui_focus")
-	_animate_button_scale(button, 1.05)
+	_animate_button_selection(button, true)
 
 func _on_button_unfocus(button: Button):
-	_animate_button_scale(button, 1.0)
+	_animate_button_selection(button, false)
 
-func _animate_button_scale(button: Button, target_scale: float):
-	"""Animate button scale smoothly"""
+func _animate_button_selection(button: Button, selected: bool):
+	"""Animate button selection with enhanced visual effects"""
 	if not button:
 		return
 	
@@ -276,7 +278,32 @@ func _animate_button_scale(button: Button, target_scale: float):
 	if tween:
 		tween.set_ease(Tween.EASE_OUT)
 		tween.set_trans(Tween.TRANS_BACK)
-		tween.tween_property(button, "scale", Vector2(target_scale, target_scale), 0.1)
+		
+		if selected:
+			# Scale to 1.15x when selected with golden glow
+			tween.parallel().tween_property(button, "scale", Vector2(1.15, 1.15), 0.2)
+			tween.parallel().tween_property(button, "modulate", Color(1.4, 1.2, 0.8), 0.2)  # Golden glow
+			
+			# Add cyan border with StyleBoxFlat
+			var style_box = StyleBoxFlat.new()
+			style_box.bg_color = Color(0.2, 0.4, 0.8, 0.3)  # Semi-transparent blue background
+			style_box.border_width_left = 3
+			style_box.border_width_right = 3
+			style_box.border_width_top = 3
+			style_box.border_width_bottom = 3
+			style_box.border_color = Color(0.0, 1.0, 1.0, 0.8)  # Cyan border
+			style_box.corner_radius_top_left = 8
+			style_box.corner_radius_top_right = 8
+			style_box.corner_radius_bottom_left = 8
+			style_box.corner_radius_bottom_right = 8
+			button.add_theme_stylebox_override("focus", style_box)
+		else:
+			# Reset to normal appearance with smooth animations
+			tween.parallel().tween_property(button, "scale", Vector2(1.0, 1.0), 0.15)
+			tween.parallel().tween_property(button, "modulate", Color.WHITE, 0.15)
+			
+			# Remove custom focus style
+			button.remove_theme_stylebox_override("focus")
 
 func _play_ui_sound(sound_name: String):
 	"""Play UI sound with fallback"""

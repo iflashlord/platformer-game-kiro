@@ -24,6 +24,9 @@ func _ready():
 	# Setup keyboard navigation
 	_setup_keyboard_navigation()
 	
+	# Setup enhanced button effects
+	_setup_button_effects()
+	
 	# Load current settings
 	_load_settings()
 	
@@ -164,6 +167,85 @@ func _setup_keyboard_navigation():
 			current.focus_neighbor_left = current.get_path_to(prev)
 	
 	print("⌨️ Keyboard navigation setup complete")
+
+func _setup_button_effects():
+	"""Setup enhanced visual effects for buttons only"""
+	# Connect buttons only - no effects for sliders
+	_connect_button_effects(test_sfx_button)
+	_connect_button_effects(reset_progress_button) 
+	_connect_button_effects(back_button)
+	
+	print("✨ Enhanced button effects setup complete")
+
+func _connect_button_effects(button: Button):
+	"""Connect hover and focus events to a button"""
+	if not button:
+		return
+		
+	button.mouse_entered.connect(_on_button_hover.bind(button))
+	button.mouse_exited.connect(_on_button_exit.bind(button))
+	button.focus_entered.connect(_on_button_focus.bind(button))
+	button.focus_exited.connect(_on_button_unfocus.bind(button))
+
+
+
+func _on_button_hover(button: Button):
+	"""Handle button hover"""
+	if not button.has_focus():
+		_animate_button_selection(button, true, 1.15)
+
+func _on_button_exit(button: Button):
+	"""Handle button exit"""
+	if not button.has_focus():
+		_animate_button_selection(button, false, 1.15)
+
+func _on_button_focus(button: Button):
+	"""Handle button focus"""
+	_animate_button_selection(button, true, 1.15)
+
+func _on_button_unfocus(button: Button):
+	"""Handle button unfocus"""
+	_animate_button_selection(button, false, 1.15)
+
+
+
+func _animate_button_selection(element: Control, selected: bool, scale_factor: float):
+	"""Enhanced button/slider selection animation with glow and border effects"""
+	if not element:
+		return
+	
+	var tween = create_tween()
+	tween.set_parallel(true)
+	
+	if selected:
+		# Scale up with enhanced visuals
+		tween.tween_property(element, "scale", Vector2.ONE * scale_factor, 0.15)
+		tween.tween_property(element, "modulate", Color(1.2, 1.1, 0.8), 0.15)
+		
+		# Add golden glow effect by adjusting self_modulate
+		element.self_modulate = Color(1.3, 1.2, 0.9, 1.0)
+		
+		# Create subtle border effect by adjusting the element's theme
+		if element is Button:
+			var style_box = element.get_theme_stylebox("normal").duplicate()
+			if style_box is StyleBoxFlat:
+				style_box.border_color = Color.CYAN
+				style_box.border_width_left = 2
+				style_box.border_width_top = 2
+				style_box.border_width_right = 2
+				style_box.border_width_bottom = 2
+				element.add_theme_stylebox_override("normal", style_box)
+	else:
+		# Scale down and remove effects
+		tween.tween_property(element, "scale", Vector2.ONE, 0.15)
+		tween.tween_property(element, "modulate", Color.WHITE, 0.15)
+		
+		# Remove glow
+		element.self_modulate = Color.WHITE
+		
+		# Remove border
+		if element is Button:
+			element.remove_theme_stylebox_override("normal")
 
 func _trigger_glitch_transition():
 	"""Trigger dimension glitch effect for menu transitions"""

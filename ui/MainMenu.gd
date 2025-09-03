@@ -79,9 +79,9 @@ func _check_save_data():
 	# Update button text and visibility based on save data
 	if play_button:
 		if has_save_data:
-			play_button.text = "Continue"
+			play_button.text = "  Continue"
 		else:
-			play_button.text = "Play"
+			play_button.text = "  Play"
 	
 	# Hide the separate continue button since we're using the play button for both
 	if continue_button:
@@ -236,18 +236,20 @@ func _setup_button_effects():
 		button.focus_exited.connect(_on_button_unfocus.bind(button))
 
 func _on_button_hover(button: Button):
-	_play_ui_sound("ui_hover")
-	_animate_button_scale(button, 1.05)
+	if not button.has_focus():  # Only apply hover if not focused
+		_play_ui_sound("ui_hover")
+		_animate_button_selection(button, true)
 
 func _on_button_exit(button: Button):
-	_animate_button_scale(button, 1.0)
+	if not button.has_focus():  # Only reset if not focused
+		_animate_button_selection(button, false)
 
 func _on_button_focus(button: Button):
 	_play_ui_sound("ui_focus")
-	_animate_button_scale(button, 1.05)
+	_animate_button_selection(button, true)
 
 func _on_button_unfocus(button: Button):
-	_animate_button_scale(button, 1.0)
+	_animate_button_selection(button, false)
 
 func _play_ui_sound(sound_name: String):
 	"""Play UI sound with fallback"""
@@ -260,8 +262,8 @@ func _play_ui_sound(sound_name: String):
 	else:
 		Audio.play_sfx(sound_name)
 
-func _animate_button_scale(button: Button, target_scale: float):
-	"""Animate button scale smoothly"""
+func _animate_button_selection(button: Button, selected: bool):
+	"""Animate button selection with enhanced visual effects"""
 	if not button:
 		return
 	
@@ -269,7 +271,32 @@ func _animate_button_scale(button: Button, target_scale: float):
 	if tween:
 		tween.set_ease(Tween.EASE_OUT)
 		tween.set_trans(Tween.TRANS_BACK)
-		tween.tween_property(button, "scale", Vector2(target_scale, target_scale), 0.1)
+		
+		if selected:
+			# Make selected button much more obvious
+			tween.parallel().tween_property(button, "scale", Vector2(1.1, 1.1), 0.2)
+			tween.parallel().tween_property(button, "modulate", Color(1.3, 1.3, 1.0), 0.2)  # Bright yellow tint
+			
+			# Add subtle glow effect with border
+			var style_box = StyleBoxFlat.new()
+			style_box.bg_color = Color(0.2, 0.4, 0.8, 0.3)  # Semi-transparent blue
+			style_box.border_width_left = 3
+			style_box.border_width_right = 3
+			style_box.border_width_top = 3
+			style_box.border_width_bottom = 3
+			style_box.border_color = Color(0.4, 0.8, 1.0, 0.8)  # Bright cyan border
+			style_box.corner_radius_top_left = 8
+			style_box.corner_radius_top_right = 8
+			style_box.corner_radius_bottom_left = 8
+			style_box.corner_radius_bottom_right = 8
+			button.add_theme_stylebox_override("focus", style_box)
+		else:
+			# Reset to normal appearance
+			tween.parallel().tween_property(button, "scale", Vector2(1.0, 1.0), 0.15)
+			tween.parallel().tween_property(button, "modulate", Color.WHITE, 0.15)
+			
+			# Remove custom focus style
+			button.remove_theme_stylebox_override("focus")
 
 func _show_error(message: String):
 	# Could show an error popup here

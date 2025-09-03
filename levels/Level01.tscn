@@ -1,178 +1,832 @@
-[gd_scene load_steps=16 format=3 uid="uid://do2g5aru41o4q"]
+[gd_scene load_steps=27 format=3 uid="uid://do2g5aru41o4q"]
 
+[ext_resource type="Script" uid="uid://gra7fkfogri0" path="res://levels/Level01.gd" id="1_uxcem"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://c8yay2n7m6wqp" path="res://ui/HintDisplay.tscn" id="4_hint"]
+[ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="7_8bey8"]
 [ext_resource type="PackedScene" uid="uid://dliaposygu1e" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
+[ext_resource type="PackedScene" uid="uid://dt4gkyxqmr5ws" path="res://actors/DimensionSwitch.tscn" id="12_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
-[ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="14_n24nw"]
-[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://actors/DangerousSpike.tscn" id="15_2rky8"]
+[ext_resource type="PackedScene" uid="uid://bvq8x7y2n8wqr" path="res://actors/HintArea.tscn" id="12_ll6ei"]
 [ext_resource type="PackedScene" uid="uid://1i32l3lwnelj" path="res://actors/DeathZone.tscn" id="15_080q8"]
 [ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="16_6oto5"]
-[ext_resource type="PackedScene" uid="uid://00mkiltltuwb" path="res://actors/FlyingEnemy.tscn" id="16_haklp"]
+[ext_resource type="PackedScene" uid="uid://00mkiltltuwb" path="res://actors/FlyingEnemy.tscn" id="16_ll6ei"]
 [ext_resource type="Script" uid="uid://dopaqsu7gfsrv" path="res://systems/LevelManager.gd" id="18_level_manager"]
+[ext_resource type="PackedScene" uid="uid://c8y7qkr8wbqxv" path="res://actors/ParallaxBackgroundSystem.tscn" id="19_88x2b"]
+[ext_resource type="Script" uid="uid://bxm5g8u8h5004" path="res://actors/BackgroundLayerConfig.gd" id="20_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
+[ext_resource type="Texture2D" uid="uid://dg8la8ddwnn1b" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_desert.png" id="21_w2yij"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
+[ext_resource type="PackedScene" uid="uid://cgrshje24m0s0" path="res://actors/CollectableHeart.tscn" id="23_ax175"]
+[ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="23_blrwf"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://actors/DangerousSpike.tscn" id="24_ax175"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
 
+[sub_resource type="Resource" id="Resource_88x2b"]
+script = ExtResource("20_blrwf")
+texture = ExtResource("21_w2yij")
+use_different_textures_per_layer = false
+scroll_speed = Vector2(-50, 0)
+parallax_factor = Vector2(0.5, 0.5)
+auto_scroll = true
+loop_seamlessly = true
+horizontal_gap = -100
+vertical_gap = 0
+modulate_color = Color(1, 1, 1, 1)
+z_index = -10
+scale_factor = Vector2(1, 1)
+layer_name = ""
+description = ""
+target_layer = "A"
+visible_in_both_dimensions = true
+metadata/_custom_type_script = "uid://bxm5g8u8h5004"
+
+[sub_resource type="Resource" id="Resource_ax175"]
+script = ExtResource("20_blrwf")
+texture = ExtResource("23_blrwf")
+use_different_textures_per_layer = false
+scroll_speed = Vector2(-50, 0)
+parallax_factor = Vector2(0.5, 0.5)
+auto_scroll = true
+loop_seamlessly = true
+horizontal_gap = -300
+vertical_gap = -400
+modulate_color = Color(1, 1, 1, 1)
+z_index = -10
+scale_factor = Vector2(1, 1)
+layer_name = ""
+description = ""
+target_layer = "A"
+visible_in_both_dimensions = true
+metadata/_custom_type_script = "uid://bxm5g8u8h5004"
+
 [node name="Level00" type="Node2D"]
+script = ExtResource("1_uxcem")
 
 [node name="LevelManager" type="Node" parent="."]
 script = ExtResource("18_level_manager")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(17, 304)
+position = Vector2(48, 352)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="GameHUD" parent="UI" instance=ExtResource("3_hud")]
 
+[node name="HintDisplay" parent="UI" instance=ExtResource("4_hint")]
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Level" type="Node2D" parent="."]
+
 [node name="Checkpoints" type="Node2D" parent="."]
 
 [node name="Checkpoint1" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
-position = Vector2(520, 364)
+position = Vector2(520, 472)
 checkpoint_id = "level01_checkpoint_1"
 checkpoint_name = "First Platform"
-
-[node name="Checkpoint2" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
-position = Vector2(900, 215)
-checkpoint_id = "level01_checkpoint_2"
-checkpoint_name = "High Platform"
 
 [node name="Collectibles" type="Node2D" parent="."]
 
 [node name="InteractiveElements" type="Node2D" parent="."]
 
-[node name="DeathZone" parent="InteractiveElements" instance=ExtResource("15_080q8")]
-position = Vector2(288, 568)
-scale = Vector2(15.952, 0.555505)
-
-[node name="DeathZone2" parent="InteractiveElements" instance=ExtResource("15_080q8")]
-position = Vector2(-738, 728)
-scale = Vector2(12.36, 1)
-
 [node name="TeleportGate" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(251, 242)
+position = Vector2(1344, 360)
 teleport_target = NodePath("../TeleportGate2")
+target_layer = "B"
 
 [node name="TeleportGate2" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(1323, 356)
+position = Vector2(1712, 352)
 teleport_target = NodePath("../TeleportGate")
+target_layer = "B"
 
 [node name="HiddenGem" parent="InteractiveElements" instance=ExtResource("16_6oto5")]
-position = Vector2(77, 228)
-
-[node name="JumpPad" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
-position = Vector2(591, 372)
-pad_type = "horizontal"
-
-[node name="BasicCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(367, 268)
+position = Vector2(1648, 152)
 
 [node name="BounceCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(598, 319)
+position = Vector2(1512, 312)
 crate_type = "bounce"
 
 [node name="TNTCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(800, 270)
+position = Vector2(1848, 472)
 crate_type = "tnt"
 
 [node name="BasicCrate2" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(1160, 350)
+position = Vector2(1360, 240)
 
 [node name="JumpPad1" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
-position = Vector2(679, 372)
+position = Vector2(2048, 480)
+
+[node name="HintArea" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(72, 440)
+scale = Vector2(1.23398, 1.04371)
+hint_message = "Welcome to the tutorial! Use WASD or arrow keys to move, SPACE to jump."
+hint_title = "Movement Tutorial"
+target_layer = "Both"
+
+[node name="HintArea3" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(520, 440)
+hint_message = "This is a checkpoint! When you die, you'll respawn here instead of the beginning."
+hint_title = "Checkpoint"
+target_layer = "Both"
+
+[node name="HintArea10" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(640, 440)
+hint_message = "You can travel back and forthto different dimension, some elements only available in one dimension! You can do that by pressing F button anytime! There is a time limit for switch you need to wait between switches."
+hint_title = "Dimension Switch!"
+target_layer = "Both"
+
+[node name="HintArea8" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(1344, 440)
+hint_message = "Press F to change dimension and see the gates! Entering teleport gate allows you go back and forth between two gates!"
+hint_title = "Teleport Gate"
+target_layer = "Both"
+
+[node name="HintArea5" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(2384, 440)
+hint_message = "Recharge your hearts by collection red hearts!"
+hint_title = "Health"
+target_layer = "Both"
+
+[node name="HintArea6" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(2048, 440)
+hint_message = "You can jump on the jupming platforms which help you for jumps!"
+hint_title = "Jump"
+target_layer = "Both"
+
+[node name="HintArea9" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(2248, 440)
+hint_message = "Jump on or below crates to get pints!"
+hint_title = "Crates"
+target_layer = "Both"
+
+[node name="HintArea7" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(1848, 440)
+hint_message = "You only have 3 second to run after toching it!"
+hint_title = "TNT"
+target_layer = "Both"
+
+[node name="HintArea4" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
+position = Vector2(360, 440)
+hint_message = "Jump on enemies to defeat them! Approach from above to stomp them safely."
+hint_title = "Enemy Combat"
+target_layer = "Both"
+
+[node name="DimensionSwitch" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
+position = Vector2(656, 456)
+
+[node name="DimensionSwitch2" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
+position = Vector2(1224, 456)
+
+[node name="DimensionSwitch3" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
+position = Vector2(1720, 456)
+
+[node name="Signs" type="Node2D" parent="."]
+show_behind_parent = true
+
+[node name="DynamicPlatform43" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(1792, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform46" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(1304, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform47" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(456, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform51" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(576, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform50" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(312, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform48" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(8, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform44" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(1992, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform45" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(2192, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform49" parent="Signs" instance=ExtResource("7_8bey8")]
+position = Vector2(2320, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 29
+collision_disabled = true
+visible_in_both_dimensions = true
 
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="GoblinPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
-position = Vector2(91, 382)
+position = Vector2(360, 472)
 patrol_distance = 100.0
-
-[node name="GoblinPatrol2" parent="Enemies" instance=ExtResource("24_enemy")]
-position = Vector2(975, 297)
-enemy_type = "skeleton"
-patrol_distance = 100.0
+visible_in_both_dimensions = true
 
 [node name="OrcPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
-position = Vector2(1088, 443)
+position = Vector2(1472, 376)
 enemy_type = "orc"
 patrol_speed = 50.0
 patrol_distance = 80.0
 
 [node name="BounceCrate" parent="Enemies" instance=ExtResource("9_ub75y")]
-position = Vector2(489, 248)
+position = Vector2(2240, 352)
+
+[node name="DeathZones" type="Node2D" parent="."]
+show_behind_parent = true
+
+[node name="DynamicPlatform32" parent="DeathZones" instance=ExtResource("7_8bey8")]
+position = Vector2(696, 552)
+scale = Vector2(0.5, 0.5)
+width = 1000.0
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 6
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="DeathZone2" parent="DeathZones/DynamicPlatform32" instance=ExtResource("15_080q8")]
+position = Vector2(0, -16)
+width = 1000
+
+[node name="DeathZone" parent="DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(152, 560)
+scale = Vector2(0.5, 0.5)
+width = 300
+
+[node name="DeathZone3" parent="DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(-584, 904)
+scale = Vector2(0.5, 0.5)
+zone_type = "void"
+width = 8000
+visible_in_both_dimensions = true
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
-position = Vector2(1549, 409)
+position = Vector2(492, 342)
 current_game_level = "Level01"
 
 [node name="Instructions" type="CanvasLayer" parent="."]
 
-[node name="InstructionLabel" type="Label" parent="Instructions"]
-visible = false
-offset_left = 50.0
-offset_top = 50.0
-offset_right = 600.0
-offset_bottom = 200.0
-theme_override_font_sizes/font_size = 14
-text = "🌲 LEVEL 1: FOREST ADVENTURE
+[node name="FlyingEnemy" parent="." instance=ExtResource("16_ll6ei")]
+position = Vector2(208, 416)
+visible_in_both_dimensions = true
 
-🎯 Complete level with reusable components:
-• 📦 Crates: Basic, Bounce, TNT (3s countdown)
-• 🍎 Fruits: Apple, Banana, Orange (floating)
-• 💎 Gems: Ruby (hidden), Emerald (visible)
-• 👹 Enemies: Goblin, Orc (patrol AI)
-• 🔺 Spikes: Static + Auto-retracting
-• 🦘 Jump Pad: Extra bounce power
-• ✅ Checkpoints: Save progress
-• 🚪 Portal: Complete level
+[node name="DynamicPlatform" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-208, 488)
+scale = Vector2(0.5, 0.5)
+platform_type = 8
+target_layer = "B"
 
-🎮 Controls:
-WASD/Arrows: Move | Space: Jump
-ESC: Menu | R: Restart | Enter: Stats
+[node name="DynamicPlatform10" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-208, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 14
+target_layer = "B"
 
-✨ All components are reusable and self-contained!"
+[node name="DynamicPlatform5" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-208, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 12
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+target_layer = "B"
 
-[node name="FlyingEnemy" parent="." instance=ExtResource("16_haklp")]
-position = Vector2(161, 380)
+[node name="DynamicPlatform2" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-192, 488)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 9
+axis_stretch_horizontal = 1
+target_layer = "B"
 
-[node name="DynamicPlatform" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(-14, 372)
+[node name="DynamicPlatform8" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-176, 720)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 15
+axis_stretch_horizontal = 1
+target_layer = "B"
 
-[node name="DynamicPlatform2" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(-14, 372)
+[node name="DynamicPlatform4" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-192, 520)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 11
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+target_layer = "B"
 
-[node name="DynamicPlatform3" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(160, 390)
+[node name="DynamicPlatform3" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-96, 488)
+scale = Vector2(0.5, 0.5)
+platform_type = 10
+target_layer = "B"
 
-[node name="DynamicPlatform4" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(228, 304)
+[node name="DynamicPlatform7" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-96, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 16
+target_layer = "B"
 
-[node name="DynamicPlatform5" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(74, 409)
+[node name="DynamicPlatform6" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-96, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 13
+axis_stretch_vertical = 1
+target_layer = "B"
 
-[node name="DynamicPlatform6" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(494, 386)
+[node name="DynamicPlatform11" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(8, 488)
+scale = Vector2(0.5, 0.5)
+platform_type = 17
+visible_in_both_dimensions = true
 
-[node name="DynamicPlatform7" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(566, 390)
+[node name="DynamicPlatform12" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(8, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 23
+visible_in_both_dimensions = true
 
-[node name="DynamicPlatform8" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(645, 389)
+[node name="DynamicPlatform13" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(8, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 21
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
-[node name="DynamicPlatform9" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(800, 384)
+[node name="DynamicPlatform15" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(32, 488)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 18
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
-[node name="DynamicPlatform10" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(861, 240)
+[node name="DynamicPlatform16" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(40, 720)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 24
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
 
-[node name="DynamicPlatform11" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(947, 316)
+[node name="DynamicPlatform17" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(24, 520)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 20
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
 
-[node name="DynamicPlatform12" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(1058, 457)
-width = 600.0
+[node name="DynamicPlatform18" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(120, 488)
+scale = Vector2(0.5, 0.5)
+platform_type = 19
+visible_in_both_dimensions = true
 
-[node name="DangerousSpike" parent="." instance=ExtResource("15_2rky8")]
+[node name="DynamicPlatform19" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(120, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 25
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform20" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(120, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 22
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform22" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(300, 488)
+scale = Vector2(0.5, 0.5)
+platform_type = 17
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform23" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(300, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 23
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform24" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(300, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 21
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform25" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(316, 488)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 9
+axis_stretch_horizontal = 1
+
+[node name="DynamicPlatform26" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(316, 488)
+scale = Vector2(0.5, 0.5)
+width = 700.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 18
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform27" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(332, 720)
+scale = Vector2(0.5, 0.5)
+width = 700.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 24
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform28" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(316, 520)
+scale = Vector2(0.5, 0.5)
+width = 700.0
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 20
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform29" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(664, 488)
+scale = Vector2(0.5, 0.5)
+platform_type = 19
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform30" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(664, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 25
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform31" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(664, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 22
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform33" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1192, 488)
+scale = Vector2(0.5, 0.5)
+platform_type = 17
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform44" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 456)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform45" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 424)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform46" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 392)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform47" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 360)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform48" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 328)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform49" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 296)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform50" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 264)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform51" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 232)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform52" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 200)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform53" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1536, 168)
+scale = Vector2(0.5, 0.5)
+platform_type = 32
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform34" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1192, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 23
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform35" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1192, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 21
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform36" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1208, 488)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 9
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform37" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1208, 488)
+scale = Vector2(0.5, 0.5)
+width = 2800.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 18
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform38" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1224, 720)
+scale = Vector2(0.5, 0.5)
+width = 2800.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 24
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform39" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1208, 520)
+scale = Vector2(0.5, 0.5)
+width = 2800.0
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 20
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform40" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2602, 488)
+scale = Vector2(0.5, 0.5)
+platform_type = 19
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform41" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2602, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 25
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform42" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2602, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 22
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="ParallaxBackgroundSystem" parent="." instance=ExtResource("19_88x2b")]
+background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_ax175")])
+
+[node name="DynamicPlatform21" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(152, 568)
+scale = Vector2(0.5, 0.5)
+width = 300.0
+height = 370.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 6
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="CollectableHeart2" parent="." instance=ExtResource("23_ax175")]
+position = Vector2(2384, 456)
+scale = Vector2(0.864163, 0.864163)
+
+[node name="CollectableHeart3" parent="." instance=ExtResource("23_ax175")]
+position = Vector2(-136, 456)
+scale = Vector2(0.864163, 0.864163)
+
+[node name="DynamicPlatform9" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(728, 480)
+scale = Vector2(0.5, 0.5)
+width = 211.0
+height = 30.0
+patch_margin_left = 0.0
+patch_margin_right = 2.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 5
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+is_breakable = true
+respawn_delay = 3.0
+target_layer = "B"
+
+[node name="DynamicPlatform14" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(888, 480)
+scale = Vector2(0.5, 0.5)
+width = 211.0
+height = 30.0
+patch_margin_left = 0.0
+patch_margin_right = 2.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 5
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+is_breakable = true
+respawn_delay = 3.0
+target_layer = "B"
+
+[node name="DynamicPlatform43" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1048, 480)
+scale = Vector2(0.5, 0.5)
+width = 211.0
+height = 30.0
+patch_margin_left = 0.0
+patch_margin_right = 2.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 5
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+is_breakable = true
+respawn_delay = 3.0
+target_layer = "B"
+
+[node name="BounceCrate2" parent="." instance=ExtResource("21_crate")]
+position = Vector2(936, 400)
+crate_type = "bounce"
+target_layer = "B"
+
+[node name="DangerousSpike" parent="." instance=ExtResource("24_ax175")]
+position = Vector2(1442, 468)
+auto_retract_cycle = true
+spike_scale = 0.3
+
+[node name="DangerousSpike2" parent="." instance=ExtResource("24_ax175")]
+position = Vector2(1478, 468)
+auto_retract_cycle = true
+spike_scale = 0.3
+
+[node name="DangerousSpike3" parent="." instance=ExtResource("24_ax175")]
+position = Vector2(1513, 468)
+auto_retract_cycle = true
+spike_scale = 0.3
