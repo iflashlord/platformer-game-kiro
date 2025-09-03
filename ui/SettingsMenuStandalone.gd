@@ -1,14 +1,14 @@
 extends CanvasLayer
 
-@onready var master_slider: HSlider = $UI/SettingsContainer/MasterVolume/Slider
-@onready var music_slider: HSlider = $UI/SettingsContainer/MusicVolume/Slider
-@onready var sfx_slider: HSlider = $UI/SettingsContainer/SFXVolume/Slider
-@onready var master_label: Label = $UI/SettingsContainer/MasterVolume/ValueLabel
-@onready var music_label: Label = $UI/SettingsContainer/MusicVolume/ValueLabel
-@onready var sfx_label: Label = $UI/SettingsContainer/SFXVolume/ValueLabel
-@onready var test_sfx_button: Button = $UI/SettingsContainer/TestSFX
-@onready var reset_progress_button: Button = $UI/SettingsContainer/ResetProgress
-@onready var back_button: Button = $UI/BackButton
+@onready var master_slider: HSlider = $UI/MainContainer/SettingsContainer/MasterVolume/Slider
+@onready var music_slider: HSlider = $UI/MainContainer/SettingsContainer/MusicVolume/Slider
+@onready var sfx_slider: HSlider = $UI/MainContainer/SettingsContainer/SFXVolume/Slider
+@onready var master_label: Label = $UI/MainContainer/SettingsContainer/MasterVolume/ValueLabel
+@onready var music_label: Label = $UI/MainContainer/SettingsContainer/MusicVolume/ValueLabel
+@onready var sfx_label: Label = $UI/MainContainer/SettingsContainer/SFXVolume/ValueLabel
+@onready var test_sfx_button: Button = $UI/MainContainer/SettingsContainer/ButtonContainer/TestSFX
+@onready var reset_progress_button: Button = $UI/MainContainer/SettingsContainer/ButtonContainer/ResetProgress
+@onready var back_button: Button = $UI/MainContainer/BackButton
 
 func _ready():
 	# Connect slider signals
@@ -21,15 +21,14 @@ func _ready():
 	reset_progress_button.pressed.connect(_on_reset_everything_pressed)
 	back_button.pressed.connect(_on_back_pressed)
 	
-	# Update button text to clarify it resets everything
-	if reset_progress_button:
-		reset_progress_button.text = "Reset Everything"
+	# Setup keyboard navigation
+	_setup_keyboard_navigation()
 	
 	# Load current settings
 	_load_settings()
 	
-	# Focus back button
-	back_button.grab_focus()
+	# Focus first interactive element
+	master_slider.grab_focus()
 
 func _load_settings():
 	"""Load current settings and update UI"""
@@ -146,6 +145,26 @@ func _on_back_pressed():
 	await get_tree().create_timer(0.3).timeout
 	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
 
+func _setup_keyboard_navigation():
+	"""Setup proper keyboard navigation between UI elements"""
+	# Create navigation chain: Master → Music → SFX → Test → Reset → Back → (wrap to Master)
+	var ui_elements = [master_slider, music_slider, sfx_slider, test_sfx_button, reset_progress_button, back_button]
+	
+	# Set up navigation chain
+	for i in range(ui_elements.size()):
+		var current = ui_elements[i]
+		var next = ui_elements[(i + 1) % ui_elements.size()]
+		var prev = ui_elements[(i - 1 + ui_elements.size()) % ui_elements.size()]
+		
+		if current and next:
+			current.focus_neighbor_bottom = current.get_path_to(next)
+			current.focus_neighbor_right = current.get_path_to(next)
+		if current and prev:
+			current.focus_neighbor_top = current.get_path_to(prev)
+			current.focus_neighbor_left = current.get_path_to(prev)
+	
+	print("⌨️ Keyboard navigation setup complete")
+
 func _trigger_glitch_transition():
 	"""Trigger dimension glitch effect for menu transitions"""
 	if DimensionManager and DimensionManager.has_method("trigger_menu_glitch_effect"):
@@ -156,13 +175,18 @@ func _trigger_glitch_transition():
 
 func _input(event):
 	"""Handle input events for settings menu"""
+	if not visible:
+		return
+		
 	if Input.is_action_just_pressed("ui_cancel") or Input.is_action_just_pressed("pause"):
 		_on_back_pressed()
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("ui_accept"):
-		# If a slider has focus, don't interfere
+	elif Input.is_action_just_pressed("ui_accept"):
+		# Activate focused element
 		var focused = get_viewport().gui_get_focus_owner()
-		if focused and focused is HSlider:
-			return
-		# Otherwise allow normal button activation
+		if focused and focused is Button:
+			focused.pressed.emit()
 		get_viewport().set_input_as_handled()
+	elif Input.is_action_just_pressed("ui_up") or Input.is_action_just_pressed("ui_down"):
+		# Let the focus system handle this naturally
+		pass
