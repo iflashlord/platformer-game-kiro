@@ -7,8 +7,11 @@ var layer_objects: Dictionary = {}
 
 # Cooldown system for dimension switching
 var switch_cooldown: float = 0.0
-var switch_cooldown_time: float = 3.0  # 3 seconds cooldown
+var switch_cooldown_time: float = 3.0 # 3 seconds cooldown
 var is_switching: bool = false
+
+# Glitch effect state
+var _glitch_active: bool = false
 
 func _ready():
 	# Make this a singleton-like autoload
@@ -48,8 +51,7 @@ func set_layer(new_layer: String):
 		Audio.play_sfx("dimension")
 
 	# Wait for glitch effect, then complete the switch
-	await get_tree().create_timer(0.5).timeout  # Brief delay for glitch effect
-	
+	await get_tree().create_timer(0.5).timeout # Brief delay for glitch effect
 	
 	
 	# Update all registered layer objects
@@ -143,7 +145,16 @@ func _set_object_visibility(obj: Node, visible: bool):
 
 func trigger_menu_glitch_effect():
 	"""Public function to trigger glitch effect for menu transitions"""
+	# Prevent multiple rapid triggers
+	if _glitch_active:
+		print("🌀 Glitch effect already active, skipping")
+		return
+	
+	_glitch_active = true
 	_trigger_dimension_glitch_effect()
+	
+	# Reset flag after effect duration
+	get_tree().create_timer(0.5).timeout.connect(func(): _glitch_active = false)
 
 func _trigger_dimension_glitch_effect():
 	"""Create a glitch effect when switching dimensions"""
@@ -161,15 +172,15 @@ func _trigger_dimension_glitch_effect():
 	
 	# Create multiple rapid flashes with different colors to simulate glitch
 	var glitch_colors = [
-		Color(0.8, 0.2, 1.0, 0.9),  # Purple - increased alpha
-		Color(0.0, 1.0, 1.0, 0.7),  # Cyan - increased alpha
-		Color(1.0, 0.2, 0.5, 0.8),  # Magenta - increased alpha
-		Color(0.2, 1.0, 0.2, 0.6),  # Green - increased alpha
+		Color(0.8, 0.2, 1.0, 0.9), # Purple - increased alpha
+		Color(0.0, 1.0, 1.0, 0.7), # Cyan - increased alpha
+		Color(1.0, 0.2, 0.5, 0.8), # Magenta - increased alpha
+		Color(0.2, 1.0, 0.2, 0.6), # Green - increased alpha
 	]
 	
 	# Create rapid succession of colored flashes
 	for i in range(glitch_colors.size()):
-		var delay = i * 0.03  # Faster flashes
+		var delay = i * 0.03 # Faster flashes
 		get_tree().create_timer(delay).timeout.connect(
 			func(): _create_glitch_flash(glitch_colors[i % glitch_colors.size()], glitch_layer)
 		)
@@ -200,7 +211,7 @@ func _trigger_dimension_glitch_effect():
 	get_tree().create_timer(0.07).timeout.connect(func(): _create_time_fracture_effect(glitch_layer))
 	
 	# Clean up the glitch layer after all effects are done (extended time for new effects)
-	get_tree().create_timer(0.8).timeout.connect(func(): 
+	get_tree().create_timer(0.8).timeout.connect(func():
 		if is_instance_valid(glitch_layer):
 			glitch_layer.queue_free()
 	)
@@ -208,7 +219,7 @@ func _trigger_dimension_glitch_effect():
 func _create_glitch_canvas_layer() -> CanvasLayer:
 	"""Create a dedicated CanvasLayer for glitch effects that's guaranteed to be on top"""
 	var glitch_layer = CanvasLayer.new()
-	glitch_layer.layer = 1000  # Very high layer to ensure it's on top
+	glitch_layer.layer = 1000 # Very high layer to ensure it's on top
 	glitch_layer.name = "GlitchEffectLayer"
 	
 	# Add to the scene tree root to ensure it covers everything
@@ -238,12 +249,15 @@ func _create_glitch_flash(color: Color, glitch_layer: CanvasLayer):
 	# Quick flash animation
 	var tween = create_tween()
 	tween.tween_property(flash_overlay, "modulate:a", 0.0, 0.08)
-	tween.tween_callback(flash_overlay.queue_free)
+	tween.tween_callback(func():
+		if is_instance_valid(flash_overlay):
+			flash_overlay.queue_free()
+	)
 
 func _create_scanline_effect(glitch_layer: CanvasLayer):
 	"""Create horizontal scanline effect across the screen"""
 	var scanlines = ColorRect.new()
-	scanlines.color = Color(0.0, 1.0, 1.0, 0.5)  # More visible cyan scanlines
+	scanlines.color = Color(0.0, 1.0, 1.0, 0.5) # More visible cyan scanlines
 	scanlines.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	# Get viewport size to cover entire screen
@@ -256,7 +270,7 @@ func _create_scanline_effect(glitch_layer: CanvasLayer):
 	
 	# Create moving scanline pattern with more dramatic effect
 	var tween = create_tween()
-	for i in range(8):  # More flickers
+	for i in range(8): # More flickers
 		var alpha = 0.7 if i % 2 == 0 else 0.2
 		var color_shift = Color(randf_range(0.0, 0.3), 1.0, randf_range(0.8, 1.0), alpha)
 		tween.tween_property(scanlines, "color", color_shift, 0.02)
@@ -267,7 +281,7 @@ func _create_scanline_effect(glitch_layer: CanvasLayer):
 func _create_static_noise_effect(glitch_layer: CanvasLayer):
 	"""Create static noise overlay effect"""
 	var noise_overlay = ColorRect.new()
-	noise_overlay.color = Color(1.0, 1.0, 1.0, 0.4)  # More visible
+	noise_overlay.color = Color(1.0, 1.0, 1.0, 0.4) # More visible
 	noise_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	# Get viewport size to cover entire screen
@@ -280,7 +294,7 @@ func _create_static_noise_effect(glitch_layer: CanvasLayer):
 	
 	# Create rapid flickering noise effect with more intensity
 	var tween = create_tween()
-	for i in range(15):  # More flickers
+	for i in range(15): # More flickers
 		var noise_alpha = randf_range(0.2, 0.6)
 		var noise_color = Color(randf(), randf(), randf(), noise_alpha)
 		tween.tween_property(noise_overlay, "color", noise_color, 0.015)
@@ -291,7 +305,7 @@ func _create_static_noise_effect(glitch_layer: CanvasLayer):
 func _create_main_glitch_overlay(glitch_layer: CanvasLayer):
 	"""Create the main glitch overlay that encompasses the entire effect"""
 	var main_overlay = ColorRect.new()
-	main_overlay.color = Color(0.5, 0.0, 1.0, 0.3)  # Purple base
+	main_overlay.color = Color(0.5, 0.0, 1.0, 0.3) # Purple base
 	main_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	# Get viewport size to cover entire screen
@@ -307,7 +321,10 @@ func _create_main_glitch_overlay(glitch_layer: CanvasLayer):
 	tween.set_loops(4)
 	tween.tween_property(main_overlay, "modulate:a", 0.8, 0.06)
 	tween.tween_property(main_overlay, "modulate:a", 0.2, 0.06)
-	tween.tween_callback(main_overlay.queue_free)
+	tween.tween_callback(func():
+		if is_instance_valid(main_overlay):
+			main_overlay.queue_free()
+	)
 
 func _create_chromatic_aberration_effect(glitch_layer: CanvasLayer):
 	"""Create chromatic aberration effect by offsetting RGB channels"""
@@ -346,7 +363,7 @@ func _create_chromatic_aberration_effect(glitch_layer: CanvasLayer):
 	tween.tween_property(blue_overlay, "position:x", -8, 0.1)
 	tween.tween_property(blue_overlay, "modulate:a", 0.0, 0.15)
 	
-	tween.tween_callback(func(): 
+	tween.tween_callback(func():
 		red_overlay.queue_free()
 		blue_overlay.queue_free()
 	)
@@ -412,7 +429,7 @@ func _create_time_ripple_effect(glitch_layer: CanvasLayer):
 	# Create multiple ripple waves
 	for wave in range(4):
 		var ripple_overlay = ColorRect.new()
-		var wave_color = Color(0.0, 0.8, 1.0, 0.6)  # Cyan time energy
+		var wave_color = Color(0.0, 0.8, 1.0, 0.6) # Cyan time energy
 		ripple_overlay.color = wave_color
 		ripple_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		
@@ -422,7 +439,7 @@ func _create_time_ripple_effect(glitch_layer: CanvasLayer):
 		ripple_overlay.size = Vector2(20, 20)
 		ripple_overlay.position = center - ripple_overlay.size / 2
 		
-		var delay = wave * 0.05  # Stagger the waves
+		var delay = wave * 0.05 # Stagger the waves
 		await get_tree().create_timer(delay).timeout
 		
 		var tween = create_tween()
@@ -448,7 +465,7 @@ func _create_reality_distortion_effect(glitch_layer: CanvasLayer):
 	# Create horizontal distortion waves
 	for wave in range(3):
 		var distortion_overlay = ColorRect.new()
-		var wave_color = Color(1.0, 0.3, 0.8, 0.4)  # Magenta reality distortion
+		var wave_color = Color(1.0, 0.3, 0.8, 0.4) # Magenta reality distortion
 		distortion_overlay.color = wave_color
 		distortion_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		
@@ -457,6 +474,10 @@ func _create_reality_distortion_effect(glitch_layer: CanvasLayer):
 		# Start as a thin horizontal line
 		distortion_overlay.size = Vector2(screen_size.x, 10)
 		distortion_overlay.position = Vector2(0, screen_size.y * (0.2 + wave * 0.3))
+		
+		# Safety check before animating
+		if not is_instance_valid(distortion_overlay):
+			continue
 		
 		var tween = create_tween()
 		tween.set_parallel(true)
@@ -468,11 +489,15 @@ func _create_reality_distortion_effect(glitch_layer: CanvasLayer):
 		# Wave motion - move across screen
 		tween.tween_property(distortion_overlay, "position:x", -screen_size.x * 0.2, 0.25)
 		
-		# Fade and distort
+		# Fade and distort (using scale instead of skew for compatibility)
 		tween.tween_property(distortion_overlay, "modulate:a", 0.0, 0.25)
-		tween.tween_property(distortion_overlay, "skew", 0.3, 0.15)
+		tween.tween_property(distortion_overlay, "scale", Vector2(1.2, 0.8), 0.15)
 		
-		tween.tween_callback(distortion_overlay.queue_free)
+		# Safe cleanup with validity check
+		tween.tween_callback(func():
+			if is_instance_valid(distortion_overlay):
+				distortion_overlay.queue_free()
+		)
 
 func _create_temporal_echo_effect(glitch_layer: CanvasLayer):
 	"""Create afterimage/echo effects like time is stuttering"""
@@ -481,9 +506,9 @@ func _create_temporal_echo_effect(glitch_layer: CanvasLayer):
 	
 	# Create multiple echo layers with different colors and positions
 	var echo_colors = [
-		Color(1.0, 1.0, 0.0, 0.3),  # Yellow past
-		Color(0.0, 1.0, 0.5, 0.3),  # Green present  
-		Color(0.5, 0.0, 1.0, 0.3),  # Purple future
+		Color(1.0, 1.0, 0.0, 0.3), # Yellow past
+		Color(0.0, 1.0, 0.5, 0.3), # Green present
+		Color(0.5, 0.0, 1.0, 0.3), # Purple future
 	]
 	
 	for i in range(echo_colors.size()):
@@ -520,7 +545,7 @@ func _create_time_fracture_effect(glitch_layer: CanvasLayer):
 	# Create multiple fracture lines
 	for fracture in range(6):
 		var fracture_line = ColorRect.new()
-		var fracture_color = Color(1.0, 1.0, 1.0, 0.8)  # Bright white cracks
+		var fracture_color = Color(1.0, 1.0, 1.0, 0.8) # Bright white cracks
 		fracture_line.color = fracture_color
 		fracture_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		
@@ -533,7 +558,7 @@ func _create_time_fracture_effect(glitch_layer: CanvasLayer):
 		if is_vertical:
 			fracture_line.size = Vector2(thickness, screen_size.y)
 			fracture_line.position = Vector2(randf_range(0, screen_size.x), 0)
-			fracture_line.rotation = randf_range(-0.2, 0.2)  # Slight angle
+			fracture_line.rotation = randf_range(-0.2, 0.2) # Slight angle
 		else:
 			fracture_line.size = Vector2(screen_size.x, thickness)
 			fracture_line.position = Vector2(0, randf_range(0, screen_size.y))
