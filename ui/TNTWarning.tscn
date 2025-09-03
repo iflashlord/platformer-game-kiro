@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bb02u5kyx2nst"]
 
-[ext_resource type="Script" path="res://ui/TNTWarning.gd" id="1_tnt_warning"]
+[ext_resource type="Script" uid="uid://qy4odsv5o1kv" path="res://ui/TNTWarning.gd" id="1_tnt_warning"]
 
 [node name="TNTWarning" type="Control"]
 layout_mode = 3
@@ -14,6 +14,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(1, 1, 0, 0.8)
 
 [node name="ExclamationMark" type="Label" parent="WarningIcon"]
@@ -21,6 +23,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "!"
 horizontal_alignment = 1
 vertical_alignment = 1

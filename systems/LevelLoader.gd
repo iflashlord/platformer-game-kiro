@@ -18,7 +18,7 @@ func _ready():
 	create_loading_overlay()
 
 func load_levels_config():
-	var config_path = "res://data/load_levels_config.json"
+	var config_path = "res://data/level_map_config.json"
 	
 	if not FileAccess.file_exists(config_path):
 		print("Warning: levels.json not found, using default configuration")
@@ -43,13 +43,13 @@ func load_levels_config():
 		return
 	
 	levels_data = json.data
-	print("Loaded levels configuration with ", levels_data.levels.size(), " levels")
+	print("Loaded levels configuration with ", levels_data.level_nodes.size(), " level_nodes")
 
 func create_default_levels_config():
 	levels_data = {
 		"levels": {
 			"Level00": {
-				"name": "Tutorial",
+				"name": "First Steps",
 				"scene_path": "res://levels/Level00.tscn",
 				"unlocked": true,
 				"time_trial_unlocked": false,
@@ -59,31 +59,6 @@ func create_default_levels_config():
 				"time_trial_requirements": {
 					"best_time": 60.0
 				}
-			},
-			"CrateTest": {
-				"name": "Crate Test",
-				"scene_path": "res://levels/CrateTest.tscn",
-				"unlocked": true,
-				"time_trial_unlocked": false,
-				"best_time": 0.0,
-				"best_score": 0,
-				"unlock_requirements": {},
-				"time_trial_requirements": {
-					"best_time": 45.0
-				}
-			},
-			"CollectibleTest": {
-				"name": "Collectible Test",
-				"scene_path": "res://levels/CollectibleTest.tscn",
-				"unlocked": true,
-				"time_trial_unlocked": false,
-				"best_time": 0.0,
-				"best_score": 0,
-				"unlock_requirements": {},
-				"time_trial_requirements": {
-					"best_time": 30.0
-				}
-			}
 		}
 	}
 
@@ -288,8 +263,8 @@ func complete_level_load(scene_path: String, level_name: String, is_time_trial: 
 	print("Successfully loaded level: ", level_name, " (Time Trial: ", is_time_trial, ")")
 
 func get_level_info(level_name: String) -> Dictionary:
-	if level_name in levels_data.levels:
-		return levels_data.levels[level_name]
+	if level_name in levels_data.level_nodes:
+		return levels_data.level_nodes[level_name]
 	return {}
 
 func get_level_display_name(level_name: String) -> String:
@@ -305,30 +280,30 @@ func is_time_trial_unlocked(level_name: String) -> bool:
 	return level_info.get("time_trial_unlocked", false)
 
 func unlock_level(level_name: String):
-	if level_name in levels_data.levels:
-		levels_data.levels[level_name].unlocked = true
+	if level_name in levels_data.level_nodes:
+		levels_data.level_nodes[level_name].unlocked = true
 		save_levels_config()
 
 func unlock_time_trial(level_name: String):
-	if level_name in levels_data.levels:
-		levels_data.levels[level_name].time_trial_unlocked = true
+	if level_name in levels_data.level_nodes:
+		levels_data.level_nodes[level_name].time_trial_unlocked = true
 		save_levels_config()
 
 func update_best_time(level_name: String, time: float):
-	if level_name in levels_data.levels:
-		var current_best = levels_data.levels[level_name].get("best_time", 0.0)
+	if level_name in levels_data.level_nodes:
+		var current_best = levels_data.level_nodes[level_name].get("best_time", 0.0)
 		if time < current_best or current_best == 0.0:
-			levels_data.levels[level_name].best_time = time
+			levels_data.level_nodes[level_name].best_time = time
 			save_levels_config()
 			
 			# Check if time trial should be unlocked
 			check_time_trial_unlock(level_name)
 
 func update_best_score(level_name: String, score: int):
-	if level_name in levels_data.levels:
-		var current_best = levels_data.levels[level_name].get("best_score", 0)
+	if level_name in levels_data.level_nodes:
+		var current_best = levels_data.level_nodes[level_name].get("best_score", 0)
 		if score > current_best:
-			levels_data.levels[level_name].best_score = score
+			levels_data.level_nodes[level_name].best_score = score
 			save_levels_config()
 
 func check_time_trial_unlock(level_name: String):
@@ -363,7 +338,7 @@ func has_next_level() -> bool:
 	if current == "":
 		return false
 	
-	var level_order = ["Level00", "CrateTest", "CollectibleTest", "DimensionTest", "EnemyGauntlet", "Level01", "Level02", "Level03", "Chase01"]
+	var level_order = ["Level00", "Level01", "Level02", "Level_GiantBoss"]
 	var current_index = level_order.find(current)
 	
 	if current_index >= 0 and current_index < level_order.size() - 1:
@@ -377,7 +352,7 @@ func load_next_level() -> bool:
 	if current == "":
 		return false
 	
-	var level_order = ["Level00", "CrateTest", "CollectibleTest", "DimensionTest", "EnemyGauntlet", "Level01", "Level02", "Level03", "Chase01"]
+	var level_order = ["Level00", "Level01", "Level02", "Level_GiantBoss"]
 	var current_index = level_order.find(current)
 	
 	if current_index >= 0 and current_index < level_order.size() - 1:

@@ -192,14 +192,9 @@ func _get_next_level(current: String) -> String:
 	# Fallback to hardcoded progression
 	var level_progression = [
 		"Level00",
-		"CrateTest", 
-		"CollectibleTest",
-		"DimensionTest",
-		"EnemyGauntlet",
 		"Level01",
 		"Level02",
-		"Level03",
-		"Chase01"
+		"Level_GiantBoss"
 	]
 	
 	var current_index = level_progression.find(current)

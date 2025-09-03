@@ -72,7 +72,7 @@ func _on_tnt_placed(tnt_position: Vector2):
 	print("TNT placed at: ", tnt_position)
 	
 	# Optional: Show warning indicator
-	_show_tnt_warning(tnt_position)
+	#_show_tnt_warning(tnt_position)
 
 func _show_victory():
 	if victory_ui:

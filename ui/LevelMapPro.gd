@@ -390,24 +390,14 @@ class LevelCard extends Control:
 	
 	func _get_level_theme_color() -> Color:
 		var level_name = level_id.to_lower()
-		if "tutorial" in level_name or "level00" in level_name:
+		if "level00" in level_name:
 			return Color.BLUE
-		elif "crate" in level_name:
-			return Color.BROWN
-		elif "collectible" in level_name:
-			return Color.GOLD
-		elif "dimension" in level_name:
-			return Color.PURPLE
-		elif "enemy" in level_name:
-			return Color.RED
 		elif "level01" in level_name:
-			return Color.GREEN
+			return Color.BROWN
 		elif "level02" in level_name:
-			return Color.DARK_GREEN
-		elif "level03" in level_name:
-			return Color.GRAY
-		elif "chase" in level_name:
-			return Color.ORANGE
+			return Color.GOLD
+		elif "level_giantboss" in level_name:
+			return Color.PURPLE
 		else:
 			return Color.STEEL_BLUE
 	
@@ -573,6 +563,9 @@ func _setup_ui():
 	# Show/hide dev button based on debug mode
 	if dev_button:
 		dev_button.visible = map_config.get("map_config", {}).get("dev_mode", {}).get("show_debug_info", false)
+		# Initialize button text based on current dev_mode state
+		dev_button.text = "DEV: ON" if dev_mode else "DEV: OFF"
+		dev_button.modulate = Color.YELLOW if dev_mode else Color.WHITE
 	
 	# Calculate card width based on viewport
 	var viewport_width = get_viewport().get_visible_rect().size.x
@@ -686,48 +679,61 @@ func _update_focus_display():
 
 func _is_level_unlocked(level_id: String, node_data: Dictionary) -> bool:
 	"""Check if a level is unlocked"""
-	# Dev mode unlocks all
+	
+	# DEV MODE: Unlock all levels
 	if dev_mode:
-		print("🔧 Dev mode: Level ", level_id, " is unlocked")
+		print("🔧 DEV MODE: Level ", level_id, " force unlocked")
 		return true
 	
-	# Use Persistence system if available
-	if Persistence and Persistence.has_method("is_level_unlocked"):
-		var unlocked = Persistence.is_level_unlocked(level_id)
-		print("🔍 Persistence check for ", level_id, ": ", unlocked)
-		return unlocked
-	
-	# Fallback to local game data check
-	var level_info = levels_data.get(level_id, {})
-	if level_info.get("unlocked", false):
-		print("✅ Level ", level_id, " is unlocked via game data")
+	# FIRST LEVEL: Always unlocked
+	if level_id == "Level00":
+		print("🌟 Level00 (First Steps) is always unlocked")
 		return true
 	
-	# Check unlock requirements
+	# Check unlock requirements from level map config
 	var requirements = node_data.get("unlock_requirements", {})
+	
+	# If no requirements but not Level00, should be locked by default
 	if requirements.is_empty():
-		print("✅ Level ", level_id, " has no requirements - unlocked")
-		return true  # No requirements = unlocked
+		print("🔒 Level ", level_id, " locked - no unlock requirements (not first level)")
+		return false
 	
 	# Check previous level requirement
 	if "previous_level" in requirements:
 		var prev_level = requirements.previous_level
-		var prev_info = levels_data.get(prev_level, {})
-		if prev_info.get("best_score", 0) <= 0:
+		var prev_completed = false
+		var prev_score = 0
+		
+		# Check completion via Persistence first
+		if Persistence and Persistence.has_method("is_level_completed"):
+			prev_completed = Persistence.is_level_completed(prev_level)
+			print("🔍 Persistence check: ", prev_level, " completed = ", prev_completed)
+		
+		# Get score data
+		if Persistence and Persistence.has_method("get_level_completion"):
+			var completion_data = Persistence.get_level_completion(prev_level)
+			prev_score = completion_data.get("score", 0)
+		
+		# Fallback to levels.json data
+		if not prev_completed or prev_score <= 0:
+			var prev_info = levels_data.get(prev_level, {})
+			prev_score = max(prev_score, prev_info.get("best_score", 0))
+			prev_completed = prev_score > 0
+		
+		if not prev_completed:
 			print("🔒 Level ", level_id, " locked - previous level ", prev_level, " not completed")
 			return false
-	
-	# Check minimum score requirement
-	if "min_score" in requirements:
-		var required_score = requirements.min_score
-		var prev_level = requirements.get("previous_level", "")
-		if prev_level != "":
-			var prev_info = levels_data.get(prev_level, {})
-			if prev_info.get("best_score", 0) < required_score:
-				print("🔒 Level ", level_id, " locked - insufficient score on ", prev_level)
+		
+		# Check minimum score requirement if specified
+		if "min_score" in requirements:
+			var required_score = requirements.min_score
+			if prev_score < required_score:
+				print("🔒 Level ", level_id, " locked - insufficient score on ", prev_level, " (", prev_score, "/", required_score, ")")
 				return false
+			else:
+				print("✅ Score requirement met: ", prev_score, "/", required_score)
 	
-	print("✅ Level ", level_id, " requirements met - unlocked")
+	print("✅ Level ", level_id, " requirements met - UNLOCKED")
 	return true
 
 func _is_level_perfect(level_info: Dictionary, completion_data: Dictionary = {}) -> bool:
@@ -814,13 +820,19 @@ func _on_back_pressed():
 func _on_dev_pressed():
 	"""Toggle dev mode"""
 	dev_mode = !dev_mode
-	print("🔧 Dev mode: ", dev_mode)
+	print("🔧 DEV MODE TOGGLED: ", "ON" if dev_mode else "OFF")
 	
-	# Update button text
+	# Update button text with visual feedback
 	if dev_button:
 		dev_button.text = "DEV: ON" if dev_mode else "DEV: OFF"
+		dev_button.modulate = Color.YELLOW if dev_mode else Color.WHITE
+	
+	# Play feedback sound
+	if Audio and Audio.has_method("play_sfx"):
+		Audio.play_sfx("ui_select")
 	
 	# Refresh grid and selection
+	print("🔧 Refreshing level grid with dev_mode = ", dev_mode)
 	_create_level_grid()
 	_setup_keyboard_navigation()
 	
@@ -828,9 +840,12 @@ func _on_dev_pressed():
 	if not dev_mode:
 		var current_card = created_level_cards[selected_index] if selected_index < created_level_cards.size() else null
 		if current_card and not current_card.is_unlocked:
+			print("🔧 Current selection is now locked, finding valid level")
 			selected_index = _find_next_recommended_level()
 			_update_focus_display()
 			_scroll_to_selected()
+	
+	print("🔧 Dev mode toggle complete")
 
 func _on_level_selected(level_id: String):
 	"""Handle level selection"""

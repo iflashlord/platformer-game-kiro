@@ -88,7 +88,7 @@ vertical_alignment = 1
 modulate = Color(0.8, 0.8, 0.8, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "A Platformer Adventure"
+text = "Broken Reality"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -141,6 +141,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "✕ QUIT"
 alignment = 0
+expand_icon = true
 
 [node name="BottomContainer" type="HBoxContainer" parent="UI"]
 layout_mode = 1
@@ -155,7 +156,7 @@ grow_vertical = 0
 modulate = Color(0.6, 0.6, 0.6, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "v1.0.0"
+text = "  v1.0.0"
 vertical_alignment = 2
 
 [node name="Spacer" type="Control" parent="UI/BottomContainer"]
@@ -166,7 +167,7 @@ size_flags_horizontal = 3
 modulate = Color(0.7, 0.7, 0.7, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-text = "Web Build - Use WASD/Arrow Keys + Space"
+text = "Use WASD/Arrow Keys + Space  • F to chanage dimensions      "
 horizontal_alignment = 2
 vertical_alignment = 2
 

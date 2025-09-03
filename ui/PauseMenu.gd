@@ -167,13 +167,23 @@ func _update_game_info():
 	"""Update displayed game information"""
 	# Update level info
 	if level_info_label and Game:
-		var level_name = Game.current_level
-		if level_name != "":
+		var level_id = Game.current_level
+		var display_name = "Unknown"
+		
+		if level_id != "":
+			# First try LevelLoader
 			if LevelLoader and LevelLoader.has_method("get_level_display_name"):
-				level_name = LevelLoader.get_level_display_name(level_name)
-			level_info_label.text = "Level: " + level_name
+				display_name = LevelLoader.get_level_display_name(level_id)
+			
+			# Fallback to our own mapping if LevelLoader doesn't work
+			if display_name == level_id or display_name == "":
+				display_name = _get_level_display_name(level_id)
+			
+			level_info_label.text = "Level: " + display_name
+			print("🎮 Updated level info: ", level_id, " -> ", display_name)
 		else:
 			level_info_label.text = "Level: Unknown"
+			print("🎮 No current level set")
 	
 	# Update time
 	if time_label and GameTimer:
@@ -280,6 +290,16 @@ func get_menu_buttons() -> Array[Button]:
 func is_active() -> bool:
 	"""Check if pause menu is currently active"""
 	return is_menu_active
+
+func _get_level_display_name(level_id: String) -> String:
+	"""Get display name for a level (fallback mapping)"""
+	var display_names = {
+		"Level00": "First Steps",
+		"Level01": "Mystic Realms", 
+		"Level02": "Parallel Worlds",
+		"Level_GiantBoss": "Titan's Wrath"
+	}
+	return display_names.get(level_id, level_id)
 
 # Legacy compatibility
 func _on_resume_button_pressed():

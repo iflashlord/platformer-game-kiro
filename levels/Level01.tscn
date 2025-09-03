@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://do2g5aru41o4q"]
+[gd_scene load_steps=16 format=3 uid="uid://do2g5aru41o4q"]
 
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
 [ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="14_n24nw"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://actors/DangerousSpike.tscn" id="15_2rky8"]
 [ext_resource type="PackedScene" uid="uid://1i32l3lwnelj" path="res://actors/DeathZone.tscn" id="15_080q8"]
 [ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="16_6oto5"]
 [ext_resource type="PackedScene" uid="uid://00mkiltltuwb" path="res://actors/FlyingEnemy.tscn" id="16_haklp"]
@@ -187,3 +188,9 @@ position = Vector2(1315, 457)
 
 [node name="DynamicPlatform17" parent="." instance=ExtResource("14_n24nw")]
 position = Vector2(1315, 457)
+
+[node name="DangerousSpike" parent="." instance=ExtResource("15_2rky8")]
+position = Vector2(199, 373)
+retract_on_hit = true
+auto_retract_cycle = true
+spike_scale = 0.3
