@@ -101,6 +101,15 @@ func setup_results(data: Dictionary):
 	completion_data = data
 	current_level = data.get("level_name", "")
 	
+	print("🎉 SETUP_RESULTS DEBUG:")
+	print("  Raw data: ", data)
+	print("  Current level (raw): '", current_level, "'")
+	print("  Current level length: ", current_level.length())
+	print("  Current level stripped: '", current_level.strip_edges(), "'")
+	
+	# Clean up the level name - remove any whitespace
+	current_level = current_level.strip_edges()
+	
 	print("🎉 Setting up results for level: ", current_level)
 	
 	# IMPORTANT: Save completion data to persistence FIRST
@@ -109,6 +118,7 @@ func setup_results(data: Dictionary):
 	
 	# Determine next level
 	next_level = _get_next_level(current_level)
+	print("🎯 Next level determined: '", next_level, "' for current level: '", current_level, "'")
 	
 	# Update labels (with null checks for compatibility)
 	if level_name_label:
@@ -148,14 +158,41 @@ func setup_results(data: Dictionary):
 	show_results()
 
 func _get_level_display_name(level_name: String) -> String:
-	"""Get display name for a level"""
-	var display_names = {
-		"Level00": "🌟 First Steps",
-		"Level01": "🌀 Mystic Realms",
-		"Level02": "🔮 Parallel Worlds",
-		"Level_GiantBoss": "⚡ Titan's Wrath"
-	}
-	return display_names.get(level_name, level_name)
+	"""Get display name for a level from config file"""
+	print("🎯 Getting display name for: '", level_name, "'")
+	
+	# Load from config file
+	var config_path = "res://data/level_map_config.json"
+	if not FileAccess.file_exists(config_path):
+		print("🎯 Config file not found, using level_name as fallback")
+		return level_name
+	
+	var file = FileAccess.open(config_path, FileAccess.READ)
+	if not file:
+		print("🎯 Could not open config file, using level_name as fallback")
+		return level_name
+	
+	var json_string = file.get_as_text()
+	file.close()
+	
+	var json = JSON.new()
+	if json.parse(json_string) != OK:
+		print("🎯 Could not parse config JSON, using level_name as fallback")
+		return level_name
+	
+	var config = json.data
+	var level_nodes = config.get("level_nodes", [])
+	
+	# Find the level and return its display name
+	for node in level_nodes:
+		var level_id = node.get("id", "")
+		if level_id == level_name:
+			var display_name = node.get("display_name", level_name)
+			print("🎯 Found display name in config: '", display_name, "'")
+			return display_name
+	
+	print("🎯 Level not found in config, using level_name as fallback")
+	return level_name
 
 func _update_simple_victory_ui(data: Dictionary):
 	"""Update simple VictoryUI when detailed results UI is not available"""
@@ -185,48 +222,97 @@ func _update_simple_victory_ui(data: Dictionary):
 		print("⚠️ No victory UI found at all")
 
 func _get_next_level(current: String) -> String:
-	"""Get the next level in progression"""
+	"""Get the next level in progression from config file"""
+	print("🎯 _get_next_level called with current: '", current, "'")
+	
 	if has_node("/root/Persistence") and get_node("/root/Persistence").has_method("get_next_level_in_progression"):
-		return get_node("/root/Persistence").get_next_level_in_progression(current)
+		var persistence_result = get_node("/root/Persistence").get_next_level_in_progression(current)
+		print("🎯 Persistence returned: '", persistence_result, "'")
+		if persistence_result != "":
+			return persistence_result
 	
-	# Fallback to hardcoded progression
-	var level_progression = [
-		"Level00",
-		"Level01",
-		"Level02",
-		"Level_GiantBoss"
-	]
+	# Load level progression from config file
+	var config_path = "res://data/level_map_config.json"
+	if not FileAccess.file_exists(config_path):
+		print("🎯 ERROR: Config file not found: ", config_path)
+		return ""
 	
-	var current_index = level_progression.find(current)
-	if current_index >= 0 and current_index < level_progression.size() - 1:
-		return level_progression[current_index + 1]
+	var file = FileAccess.open(config_path, FileAccess.READ)
+	if not file:
+		print("🎯 ERROR: Could not open config file")
+		return ""
 	
-	return ""  # No next level
+	var json_string = file.get_as_text()
+	file.close()
+	
+	var json = JSON.new()
+	if json.parse(json_string) != OK:
+		print("🎯 ERROR: Could not parse config JSON")
+		return ""
+	
+	var config = json.data
+	var level_nodes = config.get("level_nodes", [])
+	
+	print("🎯 Found ", level_nodes.size(), " level nodes in config")
+	
+	# Sort by order to ensure correct progression
+	level_nodes.sort_custom(func(a, b): return a.get("order", 0) < b.get("order", 0))
+	print("🎯 Found ", level_nodes, " level nodes in config")
+
+	# Find current level and return the next one
+	for i in range(level_nodes.size()):
+		var node = level_nodes[i]
+		var level_id = node.get("id", "")
+		print("🎯 Checking level ", i, ": '", level_id, "' (order: ", node.get("order", 0), ")")
+		
+		if level_id == current:
+			print("🎯 Found current level at index ", i)
+			if i < level_nodes.size() - 1:
+				var next_node = level_nodes[i + 1]
+				var next_level = next_node.get("id", "")
+				print("🎯 Next level: '", next_level, "' (", next_node.get("display_name", ""), ")")
+				return next_level
+			else:
+				print("🎯 Current level is the last level")
+				return ""
+	
+	print("🎯 ERROR: Current level '", current, "' not found in config")
+	return ""
 
 func _setup_next_level_button():
 	"""Setup the next level button based on availability"""
+	print("🎯 SETUP_NEXT_LEVEL_BUTTON DEBUG:")
+	print("  Current level: '", current_level, "'")
+	print("  Next level: '", next_level, "'")
+	print("  Next level empty? ", next_level == "")
+	
 	if ErrorHandler:
 		ErrorHandler.debug("Setting up next level button for: " + current_level + " -> " + next_level)
 	
 	if next_level == "":
 		# No next level - this was the final level
+		print("🎯 Setting GAME COMPLETE button")
 		next_level_button.text = "🏆 GAME COMPLETE!"
-		next_level_button.disabled = true
-		next_level_button.modulate = Color(0.7, 0.7, 0.7)
+		next_level_button.disabled = false  # Keep enabled to allow clicking
+		next_level_button.modulate = Color(1.2, 1.1, 0.8)  # Golden color for completion
 		# Add completion glow effect
 		_add_completion_glow()
 	else:
+		print("🎯 Setting up next level button for: ", next_level)
 		# Force check unlock status after completion
 		var is_unlocked = false
 		if Persistence:
 			# Refresh unlock status
 			is_unlocked = Persistence.is_level_unlocked(next_level)
+			print("🎯 Is next level unlocked? ", is_unlocked)
 		
 		var next_display_name = _get_level_display_name(next_level)
 		var short_name = next_display_name.split(" ", false, 1)[1] if " " in next_display_name else next_display_name
+		print("🎯 Next level display: '", next_display_name, "' -> short: '", short_name, "'")
 		
 		if is_unlocked:
-			next_level_button.text = "▶ NEXT: " + short_name
+			print("🎯 Next level is unlocked, setting normal button")
+			next_level_button.text = "▶ NEXT: " + next_display_name
 			next_level_button.disabled = false
 			next_level_button.modulate = Color.WHITE
 			# Make it the primary action (focused by default)
@@ -234,6 +320,7 @@ func _setup_next_level_button():
 			# Add unlock animation
 			_animate_unlock_button()
 		else:
+			print("🎯 Next level is locked, setting locked button")
 			# Show requirements for unlock
 			var requirements_text = _get_unlock_requirements_text(next_level)
 			next_level_button.text = "🔒 " + short_name + "\n" + requirements_text
@@ -241,6 +328,9 @@ func _setup_next_level_button():
 			next_level_button.modulate = Color(0.7, 0.7, 0.7)
 			# Focus retry button instead
 			selected_button_index = 1
+	
+	print("🎯 Final button text: '", next_level_button.text, "'")
+	print("🎯 Final button disabled: ", next_level_button.disabled)
 
 func _save_completion_data():
 	"""Save completion data to persistence system"""
@@ -380,13 +470,16 @@ func _get_rank_color(rank: String) -> Color:
 func _on_next_level_pressed():
 	"""Go to next level"""
 	_play_ui_sound("ui_select")
+	print("🎯 Next level button pressed. Current level: '", current_level, "', Next level: '", next_level, "'")
 	
 	# Unpause the game before transitioning
 	_unpause_game()
 	
 	if next_level == "":
-		# No next level, go to level select to show completion
-		_on_level_select_pressed()
+		print("🎯 Game completed! Going to credits menu")
+		# Game completed - go to credits menu
+		get_tree().change_scene_to_file("res://ui/CreditsMenu.tscn")
+		queue_free()
 		return
 	
 	print("▶ Loading next level: ", next_level)
@@ -448,31 +541,44 @@ func _load_level(level_id: String):
 	# This avoids potential issues with LevelLoader system
 	print("🔍 Loading level directly via scene file...")
 	
-	# Try to find level scene directly
+	# First try direct path construction
+	var scene_path = "res://levels/" + level_id + ".tscn"
+	print("🔍 Trying direct path construction: ", scene_path)
+	print("🔍 File exists: ", FileAccess.file_exists(scene_path))
+	
+	if FileAccess.file_exists(scene_path):
+		print("✅ Loading level scene via direct path: ", scene_path)
+		# Unpause the game before loading new level
+		_unpause_game()
+		# Reset dimension to A when loading level
+		if DimensionManager:
+			DimensionManager.reset_to_layer_a()
+		get_tree().change_scene_to_file(scene_path)
+		queue_free()
+		return
+	
+	# Fallback to scene mapping
 	var level_scenes = {
 		"Level00": "res://levels/Level00.tscn",
 		"Level01": "res://levels/Level01.tscn", 
 		"Level02": "res://levels/Level02.tscn",
-		"Level03": "res://levels/Level03.tscn",
-		"CrateTest": "res://levels/CrateTest.tscn",
-		"CollectibleTest": "res://levels/CollectibleTest.tscn",
-		"DimensionTest": "res://levels/DimensionTest.tscn",
-		"EnemyGauntlet": "res://levels/EnemyGauntlet.tscn",
-		"Chase01": "res://levels/Chase01.tscn"
+		"Level_GiantBoss": "res://levels/Level_GiantBoss.tscn"
 	}
 	
-	var scene_path = level_scenes.get(level_id, "")
-	print("🔍 Looking for scene path: ", scene_path)
-	print("🔍 File exists: ", FileAccess.file_exists(scene_path) if scene_path != "" else false)
+	scene_path = level_scenes.get(level_id, "")
+	print("🔍 Fallback scene path lookup: ", scene_path)
 	
 	if scene_path != "" and FileAccess.file_exists(scene_path):
-		print("✅ Loading level scene: ", scene_path)
+		print("✅ Loading level scene via fallback mapping: ", scene_path)
 		# Unpause the game before loading new level
 		_unpause_game()
+		# Reset dimension to A when loading level
+		if DimensionManager:
+			DimensionManager.reset_to_layer_a()
 		get_tree().change_scene_to_file(scene_path)
 		queue_free()
 	else:
-		print("❌ Level scene not found for ", level_id, " at path: ", scene_path)
+		print("❌ Level scene not found for ", level_id, " at any path")
 		_on_level_select_pressed()  # Fallback to level select
 
 func _show_level_locked_message(level_id: String):

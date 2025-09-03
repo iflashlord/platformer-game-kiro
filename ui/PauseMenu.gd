@@ -297,7 +297,7 @@ func _get_level_display_name(level_id: String) -> String:
 		"Level00": "First Steps",
 		"Level01": "Mystic Realms", 
 		"Level02": "Parallel Worlds",
-		"Level_GiantBoss": "Titan's Wrath"
+		"Level_GiantBoss": "The Giant’s Last Stand"
 	}
 	return display_names.get(level_id, level_id)
 

@@ -102,11 +102,16 @@ func _reset_game_systems():
 	
 	if GameTimer and GameTimer.has_method("reset_timer"):
 		GameTimer.reset_timer()
+	
+	# Reset dimension to layer A
+	if DimensionManager and DimensionManager.has_method("reset_to_layer_a"):
+		DimensionManager.reset_to_layer_a()
 
 func _handle_trial_timeout():
 	"""Handle when trial mode time runs out"""
 	# Could show game over screen or restart level
 	# For now, just emit a signal that UI can listen to
+	
 	if current_level != "":
 		show_level_results(current_level, 0.0, score, total_gems, 0)
 

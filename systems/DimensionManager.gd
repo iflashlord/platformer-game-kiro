@@ -125,6 +125,28 @@ func get_switch_cooldown() -> float:
 func get_inactive_layer() -> String:
 	return "B" if current_layer == "A" else "A"
 
+func reset_to_layer_a():
+	"""Reset dimension to layer A - called when level starts/restarts"""
+	print("🌀 Resetting dimension to layer A")
+	current_layer = "A"
+	switch_cooldown = 0.0
+	is_switching = false
+	_glitch_active = false
+	
+	# Update all objects to show layer A
+	_update_all_objects()
+	
+	# Emit signal to notify other systems
+	layer_changed.emit("A")
+
+func _update_all_objects():
+	"""Update visibility of all registered objects based on current layer"""
+	for layer in layer_objects:
+		for obj in layer_objects[layer]:
+			if obj and is_instance_valid(obj):
+				var should_be_visible = (layer == current_layer)
+				_set_object_visibility(obj, should_be_visible)
+
 func _set_object_visibility(obj: Node, visible: bool):
 	"""Set visibility for an object, handling different node types"""
 	if obj is DimensionNode:

@@ -43,6 +43,10 @@ func _ready():
 	if Game:
 		Game.score = 0
 
+	# Reset dimension to layer A
+	if DimensionManager:
+		DimensionManager.reset_to_layer_a()
+
 	# Audio feedback
 	if Audio:
 		Audio.play_music(level_id, 0.4)
@@ -141,6 +145,7 @@ func _on_level_completed():
 	# Save completion to persistence system
 	if Persistence and Persistence.has_method("save_level_completion"):
 		var level_name_to_save = level_id if level_id != "" else level_name
+		print("BaseLevel save level complete " + level_name_to_save)
 		Persistence.save_level_completion(level_name_to_save, completion_data)
 	
 	# Show level results

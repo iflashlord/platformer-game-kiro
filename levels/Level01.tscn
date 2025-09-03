@@ -106,7 +106,7 @@ position = Vector2(489, 248)
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
 position = Vector2(1549, 409)
-portal_name = "Level 1 Complete"
+current_game_level = "Level01"
 
 [node name="Instructions" type="CanvasLayer" parent="."]
 

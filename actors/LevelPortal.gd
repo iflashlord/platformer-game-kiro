@@ -1,7 +1,7 @@
 extends Area2D
 class_name LevelPortal
 
-@export var next_level: String = ""
+@export var current_game_level: String = ""
 @export var portal_name: String = "Level Complete"
 
 @onready var portal_sprite: Node2D = $PortalSprite
@@ -166,7 +166,7 @@ func _complete_level():
 	
 	# Collect completion data
 	var completion_data = {
-		"level_name": Game.current_level,
+		"level_name": current_game_level,
 		"completion_time": 60.0,
 		"score": 1000,
 		"hearts_remaining": 5,
@@ -222,7 +222,7 @@ func show_level_results(completion_data: Dictionary):
 		print("📊 Level results already showing, skipping")
 		return
 	
-	print("📊 Creating new LevelResults instance")
+	print("📊 Creating new LevelResults instance", completion_data)
 	
 	# Load and show the LevelResults scene
 	var results_scene = preload("res://ui/LevelResults.tscn")

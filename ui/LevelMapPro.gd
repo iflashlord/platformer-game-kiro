@@ -158,13 +158,17 @@ class LevelCard extends Control:
 		lock_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		lock_overlay.add_child(lock_bg)
 		
+		var lock_content = VBoxContainer.new()
+		lock_content.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+		lock_content.alignment = BoxContainer.ALIGNMENT_CENTER
+		lock_overlay.add_child(lock_content)
+		
 		var lock_icon = Label.new()
-		lock_icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 		lock_icon.text = "🔒"
 		lock_icon.add_theme_font_size_override("font_size", 48)
 		lock_icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lock_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		lock_overlay.add_child(lock_icon)
+		lock_content.add_child(lock_icon)
 		
 		# Focus border (initially hidden)
 		focus_border = ColorRect.new()
@@ -184,7 +188,7 @@ class LevelCard extends Control:
 		
 
 	
-	func update_status(unlocked: bool, completed: bool, perfect: bool = false):
+	func update_status(unlocked: bool, completed: bool, perfect: bool = false, unlock_requirements: Dictionary = {}):
 		is_unlocked = unlocked
 		is_completed = completed
 		is_perfect = perfect
@@ -192,26 +196,40 @@ class LevelCard extends Control:
 		# Update lock overlay
 		lock_overlay.visible = !unlocked
 		
+		# If locked, show unlock requirements
+		if not unlocked and not unlock_requirements.is_empty():
+			_show_unlock_requirements(unlock_requirements)
+		
 		# Get completion data from Persistence
 		var completion_data = {}
 		var best_score = level_info.get("best_score", 0)
+
+		if level_id == "Level02":
+			print("🐛 LEVEL02 SCORE DEBUG:")
+			print("🐛   level_info: ", level_info)
+			print("🐛   initial best_score from level_info: ", best_score)
 		
 		if Persistence and Persistence.has_method("get_level_completion"):
 			completion_data = Persistence.get_level_completion(level_id)
 			# Use the score from completion data if available, otherwise fallback to level_info
 			if completion_data.get("score", 0) > 0:
 				best_score = completion_data.get("score", 0)
+
+		if level_id == "Level02":
+			print("🐛   completion_data: ", completion_data)
+			print("🐛   final best_score: ", best_score)
 		
 		# Update score display with latest and best
 		if best_score > 0:
 			var latest_score = completion_data.get("score", best_score)
 			if latest_score == best_score:
-				score_label.text = "Best: " + str(best_score)
+				score_label.text = "Best: " + str(int(best_score))
 			else:
 				score_label.text = "Latest: " + str(latest_score) + " • Best: " + str(best_score)
 		else:
 			score_label.text = "Not Completed"
-		
+			if level_id == "Level02":
+				print("🐛   Setting 'Not Completed' because best_score = ", best_score)
 		# Update hearts display with actual completion data
 		_update_hearts_display(completion_data)
 		
@@ -225,6 +243,48 @@ class LevelCard extends Control:
 			main_panel.modulate = Color.WHITE
 		else:
 			main_panel.modulate = Color(0.6, 0.6, 0.6)  # Dimmed
+	
+	func _show_unlock_requirements(requirements: Dictionary):
+		"""Show unlock requirements on the lock overlay"""
+		# Find the lock content container
+		var lock_content = null
+		for child in lock_overlay.get_children():
+			if child is VBoxContainer:
+				lock_content = child
+				break
+		
+		if not lock_content:
+			return
+		
+		# Remove any existing requirement labels (keep only the lock icon)
+		var children = lock_content.get_children()
+		for i in range(children.size() - 1, 0, -1):  # Keep first child (lock icon)
+			children[i].queue_free()
+		
+		# Add requirement text
+		if "min_score" in requirements:
+			var prev_level = requirements.get("previous_level", "previous level")
+			var min_score = requirements["min_score"]
+			
+			var req_label = Label.new()
+			req_label.text = "Need " + str(min_score) + " points\non " + prev_level
+			req_label.add_theme_font_size_override("font_size", 14)
+			req_label.add_theme_color_override("font_color", Color.YELLOW)
+			req_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			req_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			req_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			lock_content.add_child(req_label)
+		elif "previous_level" in requirements:
+			var prev_level = requirements["previous_level"]
+			
+			var req_label = Label.new()
+			req_label.text = "Complete\n" + prev_level + " first"
+			req_label.add_theme_font_size_override("font_size", 14)
+			req_label.add_theme_color_override("font_color", Color.YELLOW)
+			req_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			req_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			req_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			lock_content.add_child(req_label)
 	
 	func _update_hearts_display(completion_data: Dictionary = {}):
 		# Clear existing hearts
@@ -255,7 +315,7 @@ class LevelCard extends Control:
 			
 			# Add text label showing hearts remaining
 			var hearts_text = Label.new()
-			hearts_text.text = " " + str(hearts_remaining) + "/5"
+			hearts_text.text = " " + str(int(hearts_remaining)) + "/5"
 			hearts_text.add_theme_font_size_override("font_size", 12)
 			hearts_text.add_theme_color_override("font_color", Color.WHITE)
 			hearts_container.add_child(hearts_text)
@@ -516,6 +576,17 @@ func _ready():
 	
 	print("✅ Professional Level Map initialized")
 
+func _enter_tree():
+	# Refresh level status every time we enter this scene (e.g., returning from completing a level)
+	# Use call_deferred to ensure everything is initialized first
+	call_deferred("_check_and_refresh_level_status")
+
+func _check_and_refresh_level_status():
+	"""Check if we need to refresh level status"""
+	if created_level_cards.size() > 0:
+		print("🔄 Refreshing level status on scene entry")
+		_refresh_level_status()
+
 func _load_configurations():
 	"""Load map configuration and levels data"""
 	# Load map config
@@ -628,7 +699,9 @@ func _create_level_card(node_data: Dictionary):
 	var is_completed = completion_data.get("completed", false) or level_info.get("best_score", 0) > 0
 	var is_perfect = _is_level_perfect(level_info, completion_data)
 	
-	level_card.update_status(is_unlocked, is_completed, is_perfect)
+	# Pass unlock requirements to show on locked cards
+	var unlock_requirements = node_data.get("unlock_requirements", {})
+	level_card.update_status(is_unlocked, is_completed, is_perfect, unlock_requirements)
 	
 	# Connect signal
 	level_card.level_selected.connect(_on_level_selected)
@@ -679,6 +752,28 @@ func _update_focus_display():
 
 func _is_level_unlocked(level_id: String, node_data: Dictionary) -> bool:
 	"""Check if a level is unlocked"""
+	print("🔍 UNLOCK CHECK for ", level_id)
+	
+	# Special debug for Level_GiantBoss
+	if level_id == "Level_GiantBoss":
+		print("🐉 GIANT BOSS UNLOCK CHECK - Special Debug:")
+		if Persistence:
+			print("🐉 All saved levels in persistence:")
+			var profile = Persistence.current_profile
+			var level_completions = profile.get("level_completions", {})
+			for saved_level in level_completions:
+				print("🐉   ", saved_level, ": ", level_completions[saved_level])
+			
+			# Specifically check Level02 data
+			if "Level02" in level_completions:
+				var level02_data = level_completions["Level02"]
+				print("🐉 LEVEL02 SPECIFIC DATA:")
+				print("🐉   completed: ", level02_data.get("completed", false))
+				print("🐉   score: ", level02_data.get("score", 0))
+			else:
+				print("🐉 ERROR: Level02 not found in completions!")
+		else:
+			print("🐉 Persistence system not available!")
 	
 	# DEV MODE: Unlock all levels
 	if dev_mode:
@@ -692,6 +787,13 @@ func _is_level_unlocked(level_id: String, node_data: Dictionary) -> bool:
 	
 	# Check unlock requirements from level map config
 	var requirements = node_data.get("unlock_requirements", {})
+	print("🔍 Requirements for ", level_id, ": ", requirements)
+	
+	# Extra debug for Level_GiantBoss
+	if level_id == "Level_GiantBoss":
+		print("🐉 LEVEL_GIANTBOSS REQUIREMENTS BREAKDOWN:")
+		print("🐉   previous_level: ", requirements.get("previous_level", "NOT SET"))
+		print("🐉   min_score: ", requirements.get("min_score", "NOT SET"))
 	
 	# If no requirements but not Level00, should be locked by default
 	if requirements.is_empty():
@@ -704,6 +806,8 @@ func _is_level_unlocked(level_id: String, node_data: Dictionary) -> bool:
 		var prev_completed = false
 		var prev_score = 0
 		
+		print("🎯 CHECKING PREVIOUS LEVEL: '", prev_level, "' for unlocking '", level_id, "'")
+		
 		# Check completion via Persistence first
 		if Persistence and Persistence.has_method("is_level_completed"):
 			prev_completed = Persistence.is_level_completed(prev_level)
@@ -713,6 +817,8 @@ func _is_level_unlocked(level_id: String, node_data: Dictionary) -> bool:
 		if Persistence and Persistence.has_method("get_level_completion"):
 			var completion_data = Persistence.get_level_completion(prev_level)
 			prev_score = completion_data.get("score", 0)
+			print("🔍 Score from persistence: ", prev_level, " score = ", prev_score)
+			print("🔍 Full completion data: ", completion_data)
 		
 		# Fallback to levels.json data
 		if not prev_completed or prev_score <= 0:
@@ -724,14 +830,16 @@ func _is_level_unlocked(level_id: String, node_data: Dictionary) -> bool:
 			print("🔒 Level ", level_id, " locked - previous level ", prev_level, " not completed")
 			return false
 		
-		# Check minimum score requirement if specified
+		#Check minimum score requirement if specified
 		if "min_score" in requirements:
 			var required_score = requirements.min_score
+			print("🎯 SCORE CHECK for ", level_id, ": Required=", required_score, ", Got=", prev_score)
 			if prev_score < required_score:
-				print("🔒 Level ", level_id, " locked - insufficient score on ", prev_level, " (", prev_score, "/", required_score, ")")
+				print("🔒 Level ", level_id, " LOCKED - insufficient score on ", prev_level, " (", prev_score, "/", required_score, ")")
+				print("🔒 You need ", (required_score - prev_score), " more points to unlock ", level_id)
 				return false
 			else:
-				print("✅ Score requirement met: ", prev_score, "/", required_score)
+				print("✅ Score requirement MET: ", prev_score, "/", required_score, " for ", level_id)
 	
 	print("✅ Level ", level_id, " requirements met - UNLOCKED")
 	return true
@@ -801,7 +909,7 @@ func _update_progress():
 			progress_text += " • Total Score: %d" % total_score
 		if levels_with_heart_data > 0:
 			var avg_hearts = float(total_hearts_remaining) / float(levels_with_heart_data)
-			progress_text += " • Avg Hearts: %.1f/5" % avg_hearts
+			progress_text += " • Avg Hearts: %.1f/5" % int(avg_hearts)
 		progress_label.text = progress_text
 	
 	# Update progress bar with smooth animation
@@ -881,6 +989,9 @@ func _load_level(level_id: String, time_trial: bool = false):
 		
 		# Wait for glitch effect then load
 		await get_tree().create_timer(0.3).timeout
+		# Reset dimension to A when loading level
+		if DimensionManager:
+			DimensionManager.reset_to_layer_a()
 		get_tree().change_scene_to_file(scene_path)
 		return
 	
@@ -1057,7 +1168,9 @@ func _refresh_level_status():
 		var is_completed = completion_data.get("completed", false) or level_info.get("best_score", 0) > 0
 		var is_perfect = _is_level_perfect(level_info, completion_data)
 		
-		card.update_status(is_unlocked, is_completed, is_perfect)
+		# Pass unlock requirements to show on locked cards
+		var unlock_requirements = node_data.get("unlock_requirements", {})
+		card.update_status(is_unlocked, is_completed, is_perfect, unlock_requirements)
 	
 	# Update progress display
 	_update_progress()

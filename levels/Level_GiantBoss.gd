@@ -9,7 +9,7 @@ class_name BossLevel
 
 func _ready():
 	level_id = "Level_GiantBoss"
-	level_name = "Titan's Wrath"
+	level_name = "The Giant’s Last Stand"
 	target_score = 2000
 	Game.current_level = level_id
 	super._ready()

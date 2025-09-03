@@ -32,6 +32,11 @@ func change_scene(scene_path: String, show_loading: bool = true) -> bool:
 	if result == OK:
 		current_scene_path = scene_path
 		is_transitioning = false
+		
+		# Reset dimension to A when loading a new scene (especially levels)
+		if scene_path.begins_with("res://levels/") and DimensionManager:
+			DimensionManager.reset_to_layer_a()
+		
 		scene_changed.emit(scene_path)
 		transition_completed.emit(scene_path)
 		return true

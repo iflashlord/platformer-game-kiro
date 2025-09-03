@@ -300,7 +300,7 @@ visible_in_both_dimensions = true
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
 position = Vector2(2552, 432)
-portal_name = "Level 1 Complete"
+current_game_level = "Level00"
 
 [node name="Instructions" type="CanvasLayer" parent="."]
 

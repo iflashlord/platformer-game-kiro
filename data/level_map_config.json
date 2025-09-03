@@ -61,7 +61,7 @@
 			"difficulty": 5,
 			"estimated_time": "8-12 min",
 			"rewards": ["Boss Slayer", "Titan Conqueror", "Game Master"],
-			"unlock_requirements": {"previous_level": "Level02", "min_score": 150},
+			"unlock_requirements": {"previous_level": "Level02", "min_score": 10},
 			"theme_color": "#F44336"
 		}
 	],

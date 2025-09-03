@@ -345,3 +345,4 @@ scale = Vector2(20, 1)
 
 [node name="LevelPortal" parent="." instance=ExtResource("19_sawng")]
 position = Vector2(1199, 346)
+current_game_level = "Level_GiantBoss"
