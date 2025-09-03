@@ -5,7 +5,7 @@ class_name Level01
 
 func _ready():
 	level_id = "Level01"
-	level_name = "First Steps"
+	level_name = "Mystic Realms"
 	Game.current_level = level_id
 	target_score = 300
 	super._ready()

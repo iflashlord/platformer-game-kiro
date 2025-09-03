@@ -8,9 +8,10 @@ class_name BossLevel
 @onready var level_portal: Node = $LevelPortal
 
 func _ready():
-	level_id = "Level03"
-	level_name = "Gaint Boss"
+	level_id = "Level_GiantBoss"
+	level_name = "Titan's Wrath"
 	target_score = 2000
+	Game.current_level = level_id
 	super._ready()
 
 	# Connect boss signals

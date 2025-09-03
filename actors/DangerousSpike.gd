@@ -180,6 +180,11 @@ func _can_damage_player() -> bool:
 	return is_active_in_current_layer
 
 func damage_player(player):
+	# Check if player is invincible first
+	if player.has_method("is_player_invincible") and player.is_player_invincible():
+		print("🔺 Player is invincible, no damage dealt")
+		return
+	
 	# Apply knockback first
 	if knockback_force > 0:
 		var knockback_dir = (player.global_position - global_position).normalized()

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpsr3r051h4dw"
-path="res://.godot/imported/collectible_test.png-20b3efb86baaedc0f857a92ed451f3ae.ctex"
+uid="uid://ckin6q5o01kky"
+path="res://.godot/imported/Level_GiantBoss.png-5ae75068c92dad584c18f44b95ca9b57.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://content/thumbnails/collectible_test.png"
-dest_files=["res://.godot/imported/collectible_test.png-20b3efb86baaedc0f857a92ed451f3ae.ctex"]
+source_file="res://content/thumbnails/Level_GiantBoss.png"
+dest_files=["res://.godot/imported/Level_GiantBoss.png-5ae75068c92dad584c18f44b95ca9b57.ctex"]
 
 [params]
 

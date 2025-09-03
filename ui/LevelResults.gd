@@ -150,17 +150,10 @@ func setup_results(data: Dictionary):
 func _get_level_display_name(level_name: String) -> String:
 	"""Get display name for a level"""
 	var display_names = {
-		"Level00": "🎓 Tutorial",
-		"Level01": "🌲 Forest Adventure",
-		"Level02": "🏭 Industrial Zone", 
-		"Level03": "☁️ Sky Realm",
-		"CrateTest": "📦 Crate Chaos",
-		"CollectibleTest": "💎 Treasure Hunt",
-		"DimensionTest": "🌀 Dimension Shift",
-		"EnemyGauntlet": "⚔️ Enemy Gauntlet",
-		"Chase01": "🏃 The Great Escape",
-		"Level_GiantBoss": "🏆 Giant Boss Arena",
-		"Boss Arena": "🏆 Giant Boss Arena"
+		"Level00": "🌟 First Steps",
+		"Level01": "🌀 Mystic Realms",
+		"Level02": "🔮 Parallel Worlds",
+		"Level_GiantBoss": "⚡ Titan's Wrath"
 	}
 	return display_names.get(level_name, level_name)
 

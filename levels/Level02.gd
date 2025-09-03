@@ -5,8 +5,9 @@ class_name Level02
 
 func _ready():
 	level_id = "Level02"
-	level_name = "Forest Canopy"
+	level_name = "Parallel Worlds"
 	target_score = 400
+	Game.current_level = level_id
 	super._ready()
 
 func setup_level():
