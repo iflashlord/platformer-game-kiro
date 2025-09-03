@@ -244,6 +244,14 @@ func handle_sprite_flip():
 		if DimensionManager and DimensionManager.can_switch_dimension():
 			DimensionManager.toggle_layer()
 			print("Player triggered dimension flip")
+		else:
+			# Show cooldown message if dimension switching is blocked
+			if DimensionManager:
+				var cooldown_remaining = DimensionManager.get_switch_cooldown()
+				if cooldown_remaining > 0:
+					var message = "Wait %.1f seconds to switch dimensions again" % cooldown_remaining
+					EventBus.hint_requested.emit(message, "Dimension Switch Cooldown")
+					print("🚫 Dimension switch blocked - cooldown: ", cooldown_remaining, "s")
 		
 	# Debug shake test
 	if Input.is_action_just_pressed("debug_shake"):
