@@ -31,25 +31,25 @@ script = ExtResource("1_mainmenu")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.05, 0.1, 0.2, 1)
+color = Color(0.05, 0.1, 0.15, 1)
 
 [node name="BackgroundPattern" type="ColorRect" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.177468, 0.251061, 0.39803, 0.3)
+color = Color(0.1, 0.2, 0.35, 0.4)
 
 [node name="ParticleSystem" type="CPUParticles2D" parent="."]
 position = Vector2(640, 360)
-amount = 50
-lifetime = 8.0
+amount = 80
+lifetime = 12.0
 direction = Vector2(0, 1)
-gravity = Vector2(0, 10)
-initial_velocity_min = 20.0
-initial_velocity_max = 50.0
-scale_amount_min = 0.1
-scale_amount_max = 0.3
-color = Color(0.4, 0.6, 0.8, 0.3)
+gravity = Vector2(0, 15)
+initial_velocity_min = 10.0
+initial_velocity_max = 30.0
+scale_amount_min = 0.05
+scale_amount_max = 0.25
+color = Color(0.3, 0.7, 0.9, 0.4)
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -100,7 +100,7 @@ visible = false
 modulate = Color(0.8, 0.8, 0.8, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Broken Reality"
+text = "A Dimensional Platform Adventure"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -121,39 +121,38 @@ theme_override_constants/separation = 20
 [node name="PlayButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = " PLAY"
+text = "🎮 NEW GAME"
 alignment = 0
 
 [node name="ContinueButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = " CONTINUE"
+text = "📖 CONTINUE"
 alignment = 0
 
 [node name="LevelSelectButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = " LEVEL SELECT"
+text = "🗺️ LEVEL SELECT"
 alignment = 0
 
 [node name="OptionsButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = " OPTIONS"
+text = "⚙️ SETTINGS"
 alignment = 0
 
 [node name="CreditsButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = " CREDITS"
+text = "👥 CREDITS"
 alignment = 0
 
 [node name="QuitButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = " QUIT"
+text = "🚪 QUIT GAME"
 alignment = 0
-expand_icon = true
 
 [node name="BottomContainer" type="HBoxContainer" parent="UI"]
 layout_mode = 1
@@ -168,7 +167,7 @@ grow_vertical = 0
 modulate = Color(0.6, 0.6, 0.6, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "  v1.0.0"
+text = "Glitch Dimension v1.0.0"
 vertical_alignment = 2
 
 [node name="Spacer" type="Control" parent="UI/BottomContainer"]
@@ -179,7 +178,7 @@ size_flags_horizontal = 3
 modulate = Color(0.7, 0.7, 0.7, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-text = "Use WASD/Arrow Keys + Space  • F to chanage dimensions      "
+text = "WASD + Space to Move  •  F to Change Dimensions  •  ESC to Pause"
 horizontal_alignment = 2
 vertical_alignment = 2
 

@@ -143,11 +143,17 @@ func _on_quit_requested():
 # Helper functions
 func _transition_to_scene(scene_path: String):
 	"""Safely transition to a scene"""
+	# Trigger glitch effect
+	_trigger_glitch_transition()
+	
 	# Clean up pause menu first
 	if current_pause_menu:
 		current_pause_menu.queue_free()
 		current_pause_menu = null
 		is_pause_menu_loaded = false
+	
+	# Wait for glitch effect
+	await get_tree().create_timer(0.3).timeout
 	
 	# Use SceneManager for better transitions
 	if SceneManager:
@@ -162,6 +168,14 @@ func _transition_to_scene(scene_path: String):
 		var result = get_tree().change_scene_to_file(scene_path)
 		if result != OK and ErrorHandler:
 			ErrorHandler.report_scene_load_error(scene_path, result)
+
+func _trigger_glitch_transition():
+	"""Trigger dimension glitch effect for menu transitions"""
+	if DimensionManager and DimensionManager.has_method("trigger_menu_glitch_effect"):
+		DimensionManager.trigger_menu_glitch_effect()
+		print("🌀 Triggered glitch transition effect from PauseManager")
+	else:
+		print("⚠️ DimensionManager not available for glitch effect")
 
 func _restart_current_scene():
 	"""Restart the current scene as fallback"""

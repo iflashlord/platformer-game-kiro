@@ -141,6 +141,10 @@ func _set_object_visibility(obj: Node, visible: bool):
 		# For other node types, we can't control visibility directly
 		print("⚠️ Warning: Cannot set visibility for node type: ", obj.get_class())
 
+func trigger_menu_glitch_effect():
+	"""Public function to trigger glitch effect for menu transitions"""
+	_trigger_dimension_glitch_effect()
+
 func _trigger_dimension_glitch_effect():
 	"""Create a glitch effect when switching dimensions"""
 	print("✨ Triggering dimension glitch effect")
@@ -541,12 +545,14 @@ func _create_time_fracture_effect(glitch_layer: CanvasLayer):
 		# Fracture appears suddenly then fades
 		tween.tween_property(fracture_line, "modulate:a", 0.0, 0.15)
 		
-		# Add some crackling motion
+		# Add crackling motion using tween chains
+		var crack_tween = create_tween()
 		for crack in range(3):
 			var crack_delay = crack * 0.02
-			await get_tree().create_timer(crack_delay).timeout
 			var crack_intensity = randf_range(0.5, 1.0)
-			tween.tween_property(fracture_line, "modulate:a", crack_intensity, 0.01)
-			tween.tween_property(fracture_line, "modulate:a", 0.2, 0.01)
+			crack_tween.tween_interval(crack_delay)
+			crack_tween.tween_property(fracture_line, "modulate:a", crack_intensity, 0.01)
+			crack_tween.tween_property(fracture_line, "modulate:a", 0.2, 0.01)
 		
-		tween.tween_callback(fracture_line.queue_free)
+		# Clean up after all animations
+		crack_tween.tween_callback(fracture_line.queue_free)

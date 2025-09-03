@@ -811,10 +811,20 @@ func _update_progress():
 		tween.tween_property(progress_bar, "value", progress_percent, 0.5)
 		tween.set_ease(Tween.EASE_OUT)
 
+func _trigger_glitch_transition():
+	"""Trigger dimension glitch effect for menu transitions"""
+	if DimensionManager and DimensionManager.has_method("trigger_menu_glitch_effect"):
+		DimensionManager.trigger_menu_glitch_effect()
+		print("🌀 Triggered glitch transition effect")
+	else:
+		print("⚠️ DimensionManager not available for glitch effect")
+
 # Signal handlers
 func _on_back_pressed():
 	"""Handle back button press"""
 	print("🏠 Going back to main menu")
+	_trigger_glitch_transition()
+	await get_tree().create_timer(0.3).timeout
 	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
 
 func _on_dev_pressed():
@@ -856,6 +866,9 @@ func _load_level(level_id: String, time_trial: bool = false):
 	"""Load a level"""
 	print("🎮 Loading level: ", level_id, " (Time Trial: ", time_trial, ")")
 	
+	# Trigger glitch effect before level transition
+	_trigger_glitch_transition()
+	
 	# First try to construct the scene path directly
 	var scene_path = "res://levels/" + level_id + ".tscn"
 	
@@ -866,7 +879,8 @@ func _load_level(level_id: String, time_trial: bool = false):
 		if Game:
 			Game.current_level = level_id
 		
-		# Load the scene directly
+		# Wait for glitch effect then load
+		await get_tree().create_timer(0.3).timeout
 		get_tree().change_scene_to_file(scene_path)
 		return
 	

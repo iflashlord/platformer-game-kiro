@@ -135,6 +135,7 @@ func _validate_button_references():
 # Button callbacks
 func _on_play_pressed():
 	_play_button_sound()
+	_trigger_glitch_transition()
 	
 	# If player has save data, continue from where they left off
 	if has_save_data:
@@ -143,13 +144,17 @@ func _on_play_pressed():
 		if Persistence and Persistence.has_method("get_next_recommended_level"):
 			target_scene = Persistence.get_next_recommended_level()
 		
+		await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
 		_transition_to_scene(target_scene, "Continuing your adventure...")
 	else:
 		# New player, start from tutorial
+		await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
 		_transition_to_scene("res://levels/Level00.tscn", "Starting new game...")
 
 func _on_continue_pressed():
 	_play_button_sound()
+	_trigger_glitch_transition()
+	
 	var target_scene = "res://levels/Level00.tscn"
 	
 	if Persistence and Persistence.has_method("get_last_level"):
@@ -157,20 +162,28 @@ func _on_continue_pressed():
 		if last_level and FileAccess.file_exists(last_level):
 			target_scene = last_level
 	
+	await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
 	_transition_to_scene(target_scene, "Continuing game...")
 
 func _on_level_select_pressed():
 	_play_button_sound()
+	_trigger_glitch_transition()
+	await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
 	_transition_to_scene("res://ui/LevelMapPro.tscn", "Opening level select...")
 
 func _on_options_pressed():
 	_play_button_sound()
+	_trigger_glitch_transition()
+	await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
 	_transition_to_scene("res://ui/SettingsMenuStandalone.tscn", "Opening settings...")
 
 func _on_credits_pressed():
 	_play_button_sound()
+	_trigger_glitch_transition()
+	
 	# Check if credits screen exists
 	if FileAccess.file_exists("res://ui/CreditsMenu.tscn"):
+		await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
 		_transition_to_scene("res://ui/CreditsMenu.tscn", "Loading credits...")
 	else:
 		_show_coming_soon("Credits screen coming soon!")
@@ -197,6 +210,14 @@ func _transition_to_scene(scene_path: String, message: String = ""):
 
 func _play_button_sound():
 	_play_ui_sound("ui_select")
+
+func _trigger_glitch_transition():
+	"""Trigger dimension glitch effect for menu transitions"""
+	if DimensionManager and DimensionManager.has_method("trigger_menu_glitch_effect"):
+		DimensionManager.trigger_menu_glitch_effect()
+		print("🌀 Triggered glitch transition effect")
+	else:
+		print("⚠️ DimensionManager not available for glitch effect")
 
 func _setup_button_effects():
 	"""Setup basic button hover and focus effects"""
