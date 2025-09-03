@@ -1,6 +1,6 @@
-[gd_scene load_steps=39 format=3 uid="uid://00mkiltltuwb"]
+[gd_scene load_steps=40 format=3 uid="uid://00mkiltltuwb"]
 
-[ext_resource type="Script" path="res://actors/FlyingEnemy.gd" id="1_flying_enemy"]
+[ext_resource type="Script" uid="uid://c1lot6le18jp8" path="res://actors/FlyingEnemy.gd" id="1_flying_enemy"]
 [ext_resource type="Texture2D" uid="uid://dxstxojp65ylu" path="res://content/Graphics/Sprites/Enemies/Double/mouse_walk_a.png" id="2_c3565"]
 [ext_resource type="Texture2D" uid="uid://xv1qxqtpqv4f" path="res://content/Graphics/Sprites/Enemies/Double/barnacle_attack_a.png" id="2_fdt22"]
 [ext_resource type="Texture2D" uid="uid://dv3xi41qbcenv" path="res://content/Graphics/Sprites/Enemies/Double/mouse_walk_b.png" id="3_a5e0x"]
@@ -241,9 +241,7 @@ animations = [{
 
 [node name="FlyingEnemy" type="CharacterBody2D"]
 collision_layer = 4
-collision_mask = 1
 script = ExtResource("1_flying_enemy")
-enemy_type = "bee"
 flight_pattern = "Sine Wave"
 
 [node name="EnemyLabel" type="Label" parent="."]
@@ -279,6 +277,3 @@ shape = SubResource("RectangleShape2D_damage")
 scale = Vector2(0.25, 0.25)
 sprite_frames = SubResource("SpriteFrames_flying")
 animation = &"bee"
-
-</content>
-</file></invoke>

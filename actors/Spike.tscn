@@ -1,39 +1,56 @@
-[gd_scene load_steps=6 format=3 uid="uid://bihfpfc3sxin0"]
+[gd_scene load_steps=8 format=3 uid="uid://bihfpfc3sxin0"]
 
-[ext_resource type="Script" path="res://actors/Spike.gd" id="1_spike"]
-[ext_resource type="Script" path="res://systems/DimensionNode.gd" id="2_dimension"]
-[ext_resource type="Script" path="res://systems/DebugBorder.gd" id="4_debug"]
+[ext_resource type="Script" uid="uid://dlccrv1sjym3h" path="res://actors/Spike.gd" id="1_spike"]
+[ext_resource type="Script" uid="uid://b7mskwqthxt0g" path="res://systems/DimensionNode.gd" id="2_dimension"]
+[ext_resource type="Texture2D" uid="uid://4gwa1wy1q3bf" path="res://content/Graphics/Sprites/Tiles/Default/spikes.png" id="4_3233k"]
+[ext_resource type="Script" uid="uid://cxf8gb242c2s8" path="res://systems/DebugBorder.gd" id="4_debug"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
-size = Vector2(24, 32)
+size = Vector2(40, 21)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_damage"]
-size = Vector2(28, 36)
+size = Vector2(43, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_j15sj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_3233k")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="Spike" type="StaticBody2D"]
 script = ExtResource("1_spike")
 
 [node name="DimensionNode" type="Node" parent="."]
 script = ExtResource("2_dimension")
-active_layers = Array[int]([0])
 
 [node name="DebugBorder" type="Node2D" parent="."]
 script = ExtResource("4_debug")
-border_color = Color(0.8, 0.8, 0.8, 1)
 
 [node name="SpikeSprite" type="ColorRect" parent="."]
-offset_left = -16.0
+modulate = Color(1, 1, 1, 0.5)
+offset_left = -12.0
 offset_top = -16.0
-offset_right = 16.0
+offset_right = 12.0
 offset_bottom = 16.0
-color = Color(0.5, 0.5, 0.5, 1)
+scale = Vector2(0.5, 0.5)
+color = Color(0.8, 0.2, 0.2, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 5.5)
 shape = SubResource("RectangleShape2D_spike")
 
-[node name="DamageArea" type="Area2D"]
+[node name="DamageArea" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+position = Vector2(-0.5, 6.5)
 shape = SubResource("RectangleShape2D_damage")
 
-[node name="AnimationPlayer" type="AnimationPlayer"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-9.53674e-07, -2)
+scale = Vector2(0.625, 0.625)
+sprite_frames = SubResource("SpriteFrames_j15sj")

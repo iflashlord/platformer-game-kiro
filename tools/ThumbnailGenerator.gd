@@ -6,7 +6,7 @@ extends EditorScript
 
 func _run():
 	print("🖼️ Thumbnail Generator - Creating placeholder thumbnails")
-	print("=" * 50)
+	print("====================================================")
 	
 	var levels = [
 		{"id": "tutorial", "color": Color.BLUE, "icon": "🎓"},

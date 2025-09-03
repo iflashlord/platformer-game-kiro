@@ -6,7 +6,7 @@ extends EditorScript
 
 func _run():
 	print("⚡ Quick Level Configuration Helper")
-	print("=" * 40)
+	print("========================================")
 	
 	# Quick configuration options - modify these and run the script
 	var quick_config = {

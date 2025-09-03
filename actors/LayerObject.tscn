@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://bwlfimusfofub"]
 
-[ext_resource type="Script" path="res://actors/LayerObject.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://milexvh1tns7" path="res://actors/LayerObject.gd" id="1_script"]
 
 [node name="LayerObject" type="Node"]
 script = ExtResource("1_script")

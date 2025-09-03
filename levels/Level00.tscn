@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=27 format=3 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" uid="uid://c8yay2n7m6wqp" path="res://ui/HintDisplay.tscn" id="4_hint"]
 [ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="7_8bey8"]
-[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="7_portal"]
+[ext_resource type="PackedScene" uid="uid://dliaposygu1e" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://dt4gkyxqmr5ws" path="res://actors/DimensionSwitch.tscn" id="12_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
 [ext_resource type="PackedScene" uid="uid://cgrshje24m0s0" path="res://actors/CollectableHeart.tscn" id="23_ax175"]
 [ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="23_blrwf"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://ui/LevelResults.tscn" id="24_ax175"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
 
 [sub_resource type="Resource" id="Resource_88x2b"]
@@ -814,3 +815,5 @@ target_layer = "B"
 position = Vector2(936, 400)
 crate_type = "bounce"
 target_layer = "B"
+
+[node name="DangerousSpike" parent="." instance=ExtResource("24_ax175")]

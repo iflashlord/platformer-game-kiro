@@ -3,7 +3,7 @@ class_name BossLevel
 
 @onready var boss: Node = $GiantBoss
 @onready var boss_ui: Control = $UI/BossHealthUI
-@onready var player: CharacterBody2D = $Player
+@onready var boss_player: CharacterBody2D = $Player
 @onready var victory_ui: Control = $UI/VictoryUI
 @onready var level_portal: Node = $LevelPortal
 
@@ -79,5 +79,5 @@ func _show_tnt_warning(pos: Vector2):
 	# Create a temporary warning indicator
 	var warning = preload("res://ui/TNTWarning.tscn").instantiate()
 	add_child(warning)
-	warning.global_position = pos - Vector2(20, 40)  # Position above TNT
-	warning.show_warning(3.0)  # Show for 3 seconds (TNT fuse time)
+	warning.global_position = pos - Vector2(20, 40) # Position above TNT
+	warning.show_warning(3.0) # Show for 3 seconds (TNT fuse time)

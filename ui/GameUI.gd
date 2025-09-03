@@ -5,7 +5,7 @@ class_name GameUI
 static var instance: GameUI
 
 @onready var pause_menu: PauseMenu
-@onready var results: Results
+@onready var results: LevelResults
 @onready var touch_controls: Control
 @onready var game_hud: CanvasLayer
 

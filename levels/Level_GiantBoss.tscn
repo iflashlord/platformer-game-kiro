@@ -1,6 +1,5 @@
-[gd_scene load_steps=25 format=3 uid="uid://u27d5bc2y2uv"]
+[gd_scene load_steps=24 format=3 uid="uid://u27d5bc2y2uv"]
 
-[ext_resource type="Script" path="res://examples/Level_GiantBoss.gd" id="1_boss_level"]
 [ext_resource type="PackedScene" uid="uid://kuwc58wcfuui" path="res://actors/GiantBoss.tscn" id="2_giant_boss"]
 [ext_resource type="PackedScene" uid="uid://b8vxnan0p1qrs" path="res://ui/BossHealthUI.tscn" id="3_boss_ui"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="4_player"]
@@ -18,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://dg8la8ddwnn1b" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_desert.png" id="16_bg_texture1"]
 [ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="17_bg_texture2"]
 [ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="18_platform"]
-[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="19_sawng"]
+[ext_resource type="PackedScene" uid="uid://dliaposygu1e" path="res://actors/LevelPortal.tscn" id="19_sawng"]
 
 [sub_resource type="Resource" id="Resource_bg1"]
 script = ExtResource("15_bg_config")
@@ -68,7 +67,6 @@ outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
 [node name="Level_GiantBoss" type="Node2D"]
-script = ExtResource("1_boss_level")
 
 [node name="LevelManager" type="Node" parent="."]
 script = ExtResource("8_level_manager")

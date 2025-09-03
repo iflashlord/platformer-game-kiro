@@ -29,14 +29,14 @@
 			"unlocked": true
 		},
 		"Level00": {
-			"best_score": 225,
-			"best_time": 23.684,
+			"best_score": 200,
+			"best_time": 0.0,
 			"name": "Tutorial",
 			"scene_path": "res://levels/Level00.tscn",
 			"time_trial_requirements": {
 				"best_time": 60.0
 			},
-			"time_trial_unlocked": true,
+			"time_trial_unlocked": false,
 			"unlock_requirements": {
 
 			},

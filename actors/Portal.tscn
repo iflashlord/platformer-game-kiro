@@ -26,14 +26,16 @@ offset_left = -40.0
 offset_top = -40.0
 offset_right = 40.0
 offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="OuterRing" type="ColorRect" parent="PortalSprite"]
 layout_mode = 1
 anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.3, 0.6, 1, 0.8)
 
 [node name="MiddleRing" type="ColorRect" parent="PortalSprite"]
@@ -47,6 +49,8 @@ offset_left = -30.0
 offset_top = -30.0
 offset_right = 30.0
 offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.6, 0.9, 1, 0.6)
 
 [node name="InnerCore" type="ColorRect" parent="PortalSprite"]
@@ -60,6 +64,8 @@ offset_left = -15.0
 offset_top = -15.0
 offset_right = 15.0
 offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.9, 1, 1, 0.9)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -93,7 +99,6 @@ initial_velocity_min = 100.0
 initial_velocity_max = 200.0
 scale_amount_min = 0.5
 scale_amount_max = 2.0
-color = Color(1, 1, 1, 1)
 
 [node name="SpiralParticles" type="CPUParticles2D" parent="."]
 emitting = false
@@ -101,7 +106,6 @@ amount = 80
 lifetime = 2.0
 emission_shape = 1
 emission_sphere_radius = 50.0
-direction = Vector2(1, 0)
 spread = 30.0
 gravity = Vector2(0, 0)
 initial_velocity_min = 60.0
@@ -109,7 +113,6 @@ initial_velocity_max = 120.0
 angular_velocity_min = 180.0
 angular_velocity_max = 360.0
 scale_amount_min = 0.4
-scale_amount_max = 1.0
 color = Color(0.8, 0.9, 1, 0.8)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
