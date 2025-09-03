@@ -905,19 +905,25 @@ func _input(event):
 	"""Handle input events"""
 	if Input.is_action_just_pressed("ui_cancel") or Input.is_action_just_pressed("pause"):
 		_on_back_pressed()
+		get_viewport().set_input_as_handled()
 	elif Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("jump"):
 		if created_level_cards.size() > 0 and selected_index < created_level_cards.size():
 			created_level_cards[selected_index].activate()
+		get_viewport().set_input_as_handled()
 	elif Input.is_action_just_pressed("ui_right") or Input.is_action_just_pressed("move_right"):
 		_navigate_selection(1)
+		get_viewport().set_input_as_handled()
 	elif Input.is_action_just_pressed("ui_left") or Input.is_action_just_pressed("move_left"):
 		_navigate_selection(-1)
+		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseButton:
 		# Handle mouse wheel for horizontal scrolling
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_navigate_selection(-1)
+			get_viewport().set_input_as_handled()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_navigate_selection(1)
+			get_viewport().set_input_as_handled()
 
 func _navigate_selection(direction: int):
 	"""Navigate selection with keyboard"""

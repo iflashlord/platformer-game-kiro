@@ -32,3 +32,4 @@ func _trigger_glitch_transition():
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel") or Input.is_action_just_pressed("pause"):
 		_on_back_pressed()
+		get_viewport().set_input_as_handled()
