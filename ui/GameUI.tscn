@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cq2kq4weyp3vx" path="res://ui/GameUI.gd" id="1_gameui"]
 [ext_resource type="PackedScene" uid="uid://dx0yw3rkqiarr" path="res://ui/PauseMenu.tscn" id="2_pausemenu"]
-[ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4ll" path="res://ui/Results.tscn" id="3_results"]
 [ext_resource type="PackedScene" uid="uid://c8x9y2n7m6wqp" path="res://ui/HintDisplay.tscn" id="4_hintdisplay"]
 
 [node name="GameUI" type="Node"]

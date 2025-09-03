@@ -928,13 +928,39 @@ func _trigger_glitch_transition():
 	else:
 		print("⚠️ DimensionManager not available for glitch effect")
 
+func _safe_scene_change(scene_path: String):
+	"""Export-safe scene loading with error handling"""
+	print("🎬 Safe scene change to: ", scene_path)
+	
+	# Method 1: Try loading as resource first (works better in exports)
+	var scene_resource = load(scene_path)
+	if scene_resource:
+		print("✅ Scene resource loaded, changing to packed scene")
+		var result = get_tree().change_scene_to_packed(scene_resource)
+		if result == OK:
+			print("✅ Scene change succeeded")
+			return
+		else:
+			print("❌ Packed scene change failed, error: ", result)
+	else:
+		print("❌ Failed to load scene resource: ", scene_path)
+	
+	# Method 2: Fallback to file path (classic method)
+	print("🔄 Trying fallback: change_scene_to_file")
+	var result = get_tree().change_scene_to_file(scene_path)
+	if result == OK:
+		print("✅ Fallback scene change succeeded")
+	else:
+		print("❌ All scene loading methods failed, error: ", result)
+		push_error("Critical: Cannot load scene " + scene_path)
+
 # Signal handlers
 func _on_back_pressed():
 	"""Handle back button press"""
 	print("🏠 Going back to main menu")
 	_trigger_glitch_transition()
 	await get_tree().create_timer(0.3).timeout
-	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+	_safe_scene_change("res://ui/MainMenu.tscn")
 
 func _on_dev_pressed():
 	"""Toggle dev mode"""
@@ -993,7 +1019,7 @@ func _load_level(level_id: String, time_trial: bool = false):
 		# Reset dimension to A when loading level
 		if DimensionManager:
 			DimensionManager.reset_to_layer_a()
-		get_tree().change_scene_to_file(scene_path)
+		_safe_scene_change(scene_path)
 		return
 	
 	# Fallback: Try using LevelLoader if available

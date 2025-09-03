@@ -197,6 +197,26 @@ func _update_game_info():
 		score_label.text = "Score: " + str(Game.get_score())
 
 # Button callbacks
+func _safe_scene_change(scene_path: String):
+	"""Export-safe scene loading with fallback"""
+	print("🎬 Safe scene change called for: ", scene_path)
+	
+	# First try packed scene loading (export-safe)
+	var packed_scene = load(scene_path) as PackedScene
+	if packed_scene:
+		print("✅ Loaded as PackedScene: ", scene_path)
+		get_tree().change_scene_to_packed(packed_scene)
+		return
+	
+	print("⚠️ PackedScene load failed, falling back to file loading")
+	
+	# Fallback to file loading
+	var result = get_tree().change_scene_to_file(scene_path)
+	if result == OK:
+		print("✅ Fallback file loading successful: ", scene_path)
+	else:
+		print("❌ Scene loading failed completely: ", scene_path, " (Error: ", result, ")")
+
 func _on_resume_pressed():
 	"""Resume the game"""
 	_play_ui_sound("ui_select")

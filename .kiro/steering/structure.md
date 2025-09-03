@@ -61,7 +61,7 @@
 - **LevelSelect.tscn/gd** - Level selection with unlock status
 - **GameUI.tscn/gd** - In-game HUD management
 - **PauseMenu.tscn/gd** - Pause overlay with options
-- **Results.tscn/gd** - Level completion screen with scoring
+- **LevelResults.tscn/gd** - Level completion screen with scoring
 - **TouchControls.tscn/gd** - Mobile touch input system
 
 ### `/levels/` - Game Content

@@ -467,6 +467,26 @@ func _get_rank_color(rank: String) -> Color:
 			return Color.WHITE
 
 # Button callbacks
+func _safe_scene_change(scene_path: String):
+	"""Export-safe scene loading with fallback"""
+	print("🎬 Safe scene change called for: ", scene_path)
+	
+	# First try packed scene loading (export-safe)
+	var packed_scene = load(scene_path) as PackedScene
+	if packed_scene:
+		print("✅ Loaded as PackedScene: ", scene_path)
+		get_tree().change_scene_to_packed(packed_scene)
+		return
+	
+	print("⚠️ PackedScene load failed, falling back to file loading")
+	
+	# Fallback to file loading
+	var result = get_tree().change_scene_to_file(scene_path)
+	if result == OK:
+		print("✅ Fallback file loading successful: ", scene_path)
+	else:
+		print("❌ Scene loading failed completely: ", scene_path, " (Error: ", result, ")")
+
 func _on_next_level_pressed():
 	"""Go to next level"""
 	_play_ui_sound("ui_select")
@@ -478,7 +498,7 @@ func _on_next_level_pressed():
 	if next_level == "":
 		print("🎯 Game completed! Going to credits menu")
 		# Game completed - go to credits menu
-		get_tree().change_scene_to_file("res://ui/CreditsMenu.tscn")
+		_safe_scene_change("res://ui/CreditsMenu.tscn")
 		queue_free()
 		return
 	
@@ -504,7 +524,7 @@ func _on_level_select_pressed():
 	# Unpause the game before transitioning
 	_unpause_game()
 	
-	get_tree().change_scene_to_file("res://ui/LevelMapPro.tscn")
+	_safe_scene_change("res://ui/LevelMapPro.tscn")
 	queue_free()
 
 func _on_main_menu_pressed():
@@ -515,7 +535,7 @@ func _on_main_menu_pressed():
 	# Unpause the game before transitioning
 	_unpause_game()
 	
-	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+	_safe_scene_change("res://ui/MainMenu.tscn")
 	queue_free()
 
 func _load_level(level_id: String):
@@ -553,7 +573,7 @@ func _load_level(level_id: String):
 		# Reset dimension to A when loading level
 		if DimensionManager:
 			DimensionManager.reset_to_layer_a()
-		get_tree().change_scene_to_file(scene_path)
+		_safe_scene_change(scene_path)
 		queue_free()
 		return
 	
@@ -575,7 +595,7 @@ func _load_level(level_id: String):
 		# Reset dimension to A when loading level
 		if DimensionManager:
 			DimensionManager.reset_to_layer_a()
-		get_tree().change_scene_to_file(scene_path)
+		_safe_scene_change(scene_path)
 		queue_free()
 	else:
 		print("❌ Level scene not found for ", level_id, " at any path")

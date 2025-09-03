@@ -17,13 +17,7 @@ func _ready():
 		var pause_scene = preload("res://ui/PauseMenu.tscn")
 		pause_menu = pause_scene.instantiate()
 		add_child(pause_menu)
-	
-	# Create results screen if it doesn't exist
-	if not results:
-		var results_scene = preload("res://ui/Results.tscn")
-		results = results_scene.instantiate()
-		results.visible = false
-		add_child(results)
+
 	
 	# Create touch controls if it doesn't exist
 	if not touch_controls:
