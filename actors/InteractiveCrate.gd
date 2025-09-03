@@ -192,10 +192,10 @@ func detonate():
 		if audio.has_method("play_sfx"):
 			audio.play_sfx("explosion")
 	
-	# Check for player in explosion radius
+	# Check for player in explosion radius (but not boss)
 	var player = get_tree().get_first_node_in_group("player")
 	print("💥 Looking for player... Found: ", player != null)
-	if player:
+	if player and not player.is_in_group("boss"):
 		var distance = global_position.distance_to(player.global_position)
 		print("💥 Player distance from explosion: ", distance, " (radius: ", explosion_radius, ")")
 		if distance <= explosion_radius:
@@ -220,16 +220,21 @@ func detonate():
 		else:
 			print("💥 Player outside explosion radius")
 	
-	# Check for other crates in explosion radius (chain reaction)
+	# Check for other crates in explosion radius (chain reaction) - but not boss
 	var nearby_crates = get_tree().get_nodes_in_group("crates")
 	for crate in nearby_crates:
-		if crate != self and crate.has_method("start_explosion_countdown"):
+		if crate != self and crate.has_method("start_explosion_countdown") and not crate.is_in_group("boss"):
 			var crate_distance = global_position.distance_to(crate.global_position)
 			if crate_distance <= explosion_radius * 0.8:  # Slightly smaller radius for chain reaction
 				print("💥 Chain reaction with crate at distance: ", crate_distance)
 				# Trigger other TNT crates
 				if crate.crate_type == "tnt":
 					crate.start_explosion_countdown()
+	
+	# Ensure boss is never affected by TNT explosions
+	var bosses = get_tree().get_nodes_in_group("boss")
+	for boss in bosses:
+		print("🛡️ TNT explosion ignored boss: ", boss.name)
 	
 	# Visual explosion effect
 	create_explosion_effect()

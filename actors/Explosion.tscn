@@ -1,27 +1,30 @@
 [gd_scene load_steps=5 format=3 uid="uid://55cwdroiextm"]
 
 [ext_resource type="Script" uid="uid://b5xf4278ik3ca" path="res://actors/Explosion.gd" id="1_2x9f3"]
-[ext_resource type="Texture2D" uid="uid://ciommnr67cf81" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_walk_a.png" id="2_bomb"]
+[ext_resource type="Texture2D" uid="uid://r4bb2sowg0e0" path="res://content/Graphics/Sprites/Tiles/Default/bomb.png" id="2_bu55u"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 2.4
+radius = 8.06226
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
-radius = 3.6
+radius = 15.0
 
 [node name="Bomb" type="RigidBody2D"]
 gravity_scale = 2.0
 script = ExtResource("1_2x9f3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("2_bomb")
+position = Vector2(1.19209e-07, -1)
+scale = Vector2(0.260156, 0.260156)
+texture = ExtResource("2_bu55u")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 0)
 shape = SubResource("CircleShape2D_1")
 
 [node name="ExplosionArea" type="Area2D" parent="."]
 monitoring = false
 
 [node name="ExplosionCollisionShape2D" type="CollisionShape2D" parent="ExplosionArea"]
+position = Vector2(1, 0)
 shape = SubResource("CircleShape2D_2")

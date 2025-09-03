@@ -125,13 +125,22 @@ func _trigger_game_over():
 	else:
 		print("⚠️ Respawn system not available")
 	
-	# Restart the current level
-	if Game and Game.current_level != "":
-		print("🔄 Restarting level: ", Game.current_level)
-		get_tree().reload_current_scene()
+	# Always restart the current scene instead of going to menu
+	print("🔄 Restarting current level/scene")
+	var current_scene = get_tree().current_scene
+	if current_scene:
+		var scene_path = current_scene.scene_file_path
+		if scene_path != "":
+			print("🔄 Reloading scene: ", scene_path)
+			get_tree().reload_current_scene()
+		else:
+			# Fallback: if no scene path, still reload
+			print("🔄 No scene path found, reloading current scene")
+			get_tree().reload_current_scene()
 	else:
-		print("🏠 No current level - returning to menu")
-		get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+		# Last resort: reload current scene
+		print("🔄 No current scene found, attempting reload anyway")
+		get_tree().reload_current_scene()
 
 # Debug method to manually test heart loss
 func debug_lose_heart():

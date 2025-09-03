@@ -99,24 +99,33 @@ func setup_results(data: Dictionary):
 	# Determine next level
 	next_level = _get_next_level(current_level)
 	
-	# Update labels
-	level_name_label.text = _get_level_display_name(current_level)
+	# Update labels (with null checks for compatibility)
+	if level_name_label:
+		level_name_label.text = _get_level_display_name(current_level)
 	
 	# Format time
 	var time = data.get("completion_time", 0.0)
 	var minutes = int(time) / 60
 	var seconds = int(time) % 60
 	var milliseconds = int((time - int(time)) * 100)
-	time_label.text = "⏱️ Time: %02d:%02d.%02d" % [minutes, seconds, milliseconds]
+	if time_label:
+		time_label.text = "⏱️ Time: %02d:%02d.%02d" % [minutes, seconds, milliseconds]
 	
 	# Hearts remaining
-	hearts_label.text = "❤️ Hearts Remaining: %d/5" % data.get("hearts_remaining", 5)
+	if hearts_label:
+		hearts_label.text = "❤️ Hearts Remaining: %d/5" % data.get("hearts_remaining", 5)
 	
 	# Gems found
-	gems_label.text = "💎 Hidden Gems: %d/%d" % [data.get("gems_found", 0), data.get("total_gems", 0)]
+	if gems_label:
+		gems_label.text = "💎 Hidden Gems: %d/%d" % [data.get("gems_found", 0), data.get("total_gems", 0)]
 	
 	# Final score
-	score_label.text = "🏆 Final Score: %04d" % data.get("score", 0)
+	if score_label:
+		score_label.text = "🏆 Final Score: %04d" % data.get("score", 0)
+	
+	# Fallback: Update simple VictoryUI if no detailed results UI exists
+	#if not level_name_label or not score_label:
+	#	_update_simple_victory_ui(data)
 	
 	# Color code based on performance
 	_apply_performance_colors(data)
@@ -138,9 +147,38 @@ func _get_level_display_name(level_name: String) -> String:
 		"CollectibleTest": "💎 Treasure Hunt",
 		"DimensionTest": "🌀 Dimension Shift",
 		"EnemyGauntlet": "⚔️ Enemy Gauntlet",
-		"Chase01": "🏃 The Great Escape"
+		"Chase01": "🏃 The Great Escape",
+		"Level_GiantBoss": "🏆 Giant Boss Arena",
+		"Boss Arena": "🏆 Giant Boss Arena"
 	}
 	return display_names.get(level_name, level_name)
+
+func _update_simple_victory_ui(data: Dictionary):
+	"""Update simple VictoryUI when detailed results UI is not available"""
+	print("🏆 Using simple victory UI fallback")
+	
+	# Try to find existing VictoryUI in the scene
+	var victory_ui = get_tree().get_first_node_in_group("victory_ui")
+	if not victory_ui:
+		# Try alternative paths
+		var ui_layer = get_tree().current_scene.get_node_or_null("UI")
+		if ui_layer:
+			victory_ui = ui_layer.get_node_or_null("VictoryUI")
+	
+	if victory_ui:
+		victory_ui.visible = true
+		
+		# Update victory text with score if possible
+		var victory_text = victory_ui.get_node_or_null("VictoryText")
+		if victory_text:
+			var score = data.get("score", 0)
+			var level_display = _get_level_display_name(current_level)
+			victory_text.text = "🏆 " + level_display + " COMPLETE!\n💰 Final Score: " + str(score) + "\n🎯 +1000 Bonus Points!"
+			print("🏆 Updated simple victory text with score: ", score)
+		
+		print("🏆 Simple victory UI shown")
+	else:
+		print("⚠️ No victory UI found at all")
 
 func _get_next_level(current: String) -> String:
 	"""Get the next level in progression"""
@@ -222,40 +260,43 @@ func _save_completion_data():
 
 func _apply_performance_colors(data: Dictionary):
 	"""Apply color coding based on performance"""
-	# Color hearts based on remaining
-	var hearts_remaining = data.get("hearts_remaining", 5)
-	var heart_color = Color.WHITE
-	if hearts_remaining >= 4:
-		heart_color = Color.GREEN
-	elif hearts_remaining >= 2:
-		heart_color = Color.YELLOW
-	else:
-		heart_color = Color.RED
-	hearts_label.modulate = heart_color
-	
-	# Color gems based on collection
-	var gems_found = data.get("gems_found", 0)
-	var total_gems = data.get("total_gems", 0)
-	var gem_color = Color.WHITE
-	if total_gems > 0:
-		if gems_found == total_gems:
-			gem_color = Color.GOLD
-		elif gems_found > 0:
-			gem_color = Color.CYAN
+	# Color hearts based on remaining (if label exists)
+	if hearts_label:
+		var hearts_remaining = data.get("hearts_remaining", 5)
+		var heart_color = Color.WHITE
+		if hearts_remaining >= 4:
+			heart_color = Color.GREEN
+		elif hearts_remaining >= 2:
+			heart_color = Color.YELLOW
 		else:
-			gem_color = Color.GRAY
-	gems_label.modulate = gem_color
+			heart_color = Color.RED
+		hearts_label.modulate = heart_color
 	
-	# Color score based on performance
-	var score = data.get("score", 0)
-	var score_color = Color.WHITE
-	if score >= 2500:
-		score_color = Color.GOLD
-	elif score >= 2000:
-		score_color = Color.CYAN
-	elif score >= 1500:
-		score_color = Color.GREEN
-	score_label.modulate = score_color
+	# Color gems based on collection (if label exists)
+	if gems_label:
+		var gems_found = data.get("gems_found", 0)
+		var total_gems = data.get("total_gems", 0)
+		var gem_color = Color.WHITE
+		if total_gems > 0:
+			if gems_found == total_gems:
+				gem_color = Color.GOLD
+			elif gems_found > 0:
+				gem_color = Color.CYAN
+			else:
+				gem_color = Color.GRAY
+		gems_label.modulate = gem_color
+	
+	# Color score based on performance (if label exists)
+	if score_label:
+		var score = data.get("score", 0)
+		var score_color = Color.WHITE
+		if score >= 2500:
+			score_color = Color.GOLD
+		elif score >= 2000:
+			score_color = Color.CYAN
+		elif score >= 1500:
+			score_color = Color.GREEN
+		score_label.modulate = score_color
 	
 	# Add performance rank display
 	_add_performance_rank(data)

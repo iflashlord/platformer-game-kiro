@@ -7,8 +7,8 @@ enum BombPower {
 	HIGH
 }
 
-@export var bomb_power: BombPower = BombPower.MEDIUM
-@export var bomb_size_scale: float = 0.3  # Small bombs by default
+@export var bomb_power: BombPower = BombPower.LOW
+@export var bomb_size_scale: float = 0.6 
 @export var explosion_radius: float = 100.0
 @export var damage: float = 1.0
 @export var fuse_time: float = 3.0
@@ -98,7 +98,7 @@ func _ready():
 	
 	# Make bomb round and bouncy
 	physics_material_override = PhysicsMaterial.new()
-	physics_material_override.bounce = 0.3
+	physics_material_override.bounce = 0.4
 	physics_material_override.friction = 0.8
 	
 	# Enable contact monitoring for collision detection (ultra-optimized)
@@ -108,10 +108,11 @@ func _ready():
 		# Connect body collision signals
 		body_entered.connect(_on_body_entered)
 	else:
-		# Disable ALL physics interactions in simple mode
+		# Reduce physics interactions in simple mode but keep gravity
 		contact_monitor = false
-		freeze = true  # Freeze physics completely
-		print("⚡ Zero-lag mode: Disabled ALL physics for performance")
+		max_contacts_reported = 1  # Minimal contact monitoring
+		# DON'T freeze physics - bombs should still fall with gravity
+		print("⚡ Zero-lag mode: Reduced physics interactions for performance")
 	
 	# Production ready - no particle dependencies
 
@@ -149,8 +150,8 @@ func _on_body_entered(body):
 	if has_exploded or collision_disabled or not body:
 		return
 		
-	# Explode immediately when touching the player
-	if body.is_in_group("player"):
+	# Explode immediately when touching the player (but not boss)
+	if body.is_in_group("player") and not body.is_in_group("boss"):
 		print("💥 Bomb touched player - exploding!")
 		
 		# Throw player away immediately before explosion
@@ -182,12 +183,12 @@ func _on_explosion_area_exited(body):
 
 func _process_radiation_damage(body):
 	# Radiation effect only affects player, not enemies or GiantBoss
-	if body.is_in_group("player") and body.has_method("take_damage"):
+	if body.is_in_group("player") and not body.is_in_group("boss") and body.has_method("take_damage"):
 		# Apply radiation damage
 		body.take_damage(damage)
 		print("💥 Player took ", damage, " radiation damage from bomb explosion")
 		
-		# Apply explosion knockback (weaker than direct collision)
+		# Apply controlled explosion knockback (limited to 100-200 pixels)
 		_apply_explosion_knockback(body)
 	
 	# Trigger TNT crates in radiation area
@@ -222,7 +223,7 @@ func _simple_explode():
 	
 	# Ultra-simple player damage check (no complex calculations)
 	var player = get_tree().get_first_node_in_group("player")
-	if player and is_instance_valid(player):
+	if player and is_instance_valid(player) and not player.is_in_group("boss"):
 		var diff = player.global_position - global_position
 		var distance_squared = diff.x * diff.x + diff.y * diff.y  # Avoid sqrt
 		var radius_squared = explosion_radius * explosion_radius
@@ -230,9 +231,9 @@ func _simple_explode():
 		if distance_squared <= radius_squared:
 			if player.has_method("take_damage"):
 				player.take_damage(damage)
-			# Ultra-simple knockback
+			# Limited simple knockback (max ~100 pixels)
 			if "velocity" in player:
-				var push = diff.normalized() * 150.0  # Simple push
+				var push = diff.normalized() * 100.0  # Reduced from 150 to 100
 				player.velocity += push
 	
 	# Instant cleanup - no waiting at all
@@ -253,13 +254,13 @@ func _full_explode():
 	match bomb_power:
 		BombPower.HIGH:
 			if FX:
-				FX.hit_stop(100) # Reduced hit-stop
+				FX.hit_stop(80) # Reduced hit-stop
 				FX.shake(shake_strength)
 			if Audio:
 				Audio.play_sfx("big_explosion")
 		BombPower.MEDIUM:
 			if FX:
-				FX.hit_stop(60)  # Reduced hit-stop
+				FX.hit_stop(50)  # Reduced hit-stop
 				FX.shake(shake_strength)
 			if Audio:
 				Audio.play_sfx("explosion")
@@ -269,9 +270,30 @@ func _full_explode():
 			if Audio:
 				Audio.play_sfx("small_explosion")
 	
-	# Process radiation damage for all bodies in explosion area
+	# Direct explosion damage check for player (more reliable)
+	var player = get_tree().get_first_node_in_group("player")
+	if player and is_instance_valid(player) and not player.is_in_group("boss"):
+		var distance = global_position.distance_to(player.global_position)
+		if distance <= explosion_radius:
+			print("💥 Player in explosion range! Distance: ", distance, " Radius: ", explosion_radius)
+			
+			# Apply damage directly
+			if player.has_method("take_damage"):
+				player.take_damage(damage)
+				print("💔 Applied ", damage, " damage to player")
+			elif HealthSystem and HealthSystem.has_method("lose_heart"):
+				HealthSystem.lose_heart()
+				print("💔 Applied heart damage via HealthSystem")
+			
+			# Apply explosion knockback
+			_apply_explosion_knockback(player)
+		else:
+			print("💥 Player outside explosion radius: ", distance, " > ", explosion_radius)
+	
+	# Process radiation damage for all bodies in explosion area (as backup)
 	for body in bodies_in_explosion_area:
-		_process_radiation_damage(body)
+		if body != player:  # Avoid double-damage on player
+			_process_radiation_damage(body)
 	
 	# Chain reaction - trigger nearby TNT crates and bombs
 	trigger_nearby_tnts()
@@ -412,17 +434,17 @@ func _throw_player_away(player: Node):
 	else:
 		direction_to_player = direction_to_player.normalized()
 	
-	# Calculate knockback force based on bomb power
-	var base_knockback_force = 400.0
+	# Calculate limited knockback force (max 150 pixels displacement)
+	var base_knockback_force = 150.0  # Reduced from 400 to limit displacement
 	var power_multiplier = 1.0
 	
 	match bomb_power:
 		BombPower.LOW:
-			power_multiplier = 0.8
+			power_multiplier = 0.8  # 120 pixels max
 		BombPower.MEDIUM:
-			power_multiplier = 1.0
+			power_multiplier = 1.0  # 150 pixels max
 		BombPower.HIGH:
-			power_multiplier = 1.4
+			power_multiplier = 1.2  # 180 pixels max
 	
 	var knockback_force = base_knockback_force * power_multiplier
 	
@@ -470,17 +492,17 @@ func _apply_explosion_knockback(player: Node):
 	var max_distance = explosion_radius
 	var distance_factor = 1.0 - min(distance / max_distance, 1.0) # 1.0 at center, 0.0 at edge
 	
-	# Calculate knockback force based on bomb power and distance
-	var base_knockback_force = 250.0 # Weaker than direct collision
+	# Calculate limited radiation knockback (max 100-150 pixels)
+	var base_knockback_force = 120.0 # Much weaker for radiation
 	var power_multiplier = 1.0
 	
 	match bomb_power:
 		BombPower.LOW:
-			power_multiplier = 0.6
+			power_multiplier = 0.8  # ~96 pixels max
 		BombPower.MEDIUM:
-			power_multiplier = 0.8
+			power_multiplier = 1.0  # ~120 pixels max
 		BombPower.HIGH:
-			power_multiplier = 1.2
+			power_multiplier = 1.2  # ~144 pixels max
 	
 	var knockback_force = base_knockback_force * power_multiplier * distance_factor
 	
@@ -517,10 +539,10 @@ func _apply_simple_knockback(player: Node, distance: float):
 	if direction.length() < 0.1:
 		direction = Vector2(1, -0.5)  # Default direction
 	
-	# Basic knockback force
-	var knockback_force = 200.0 * (1.0 - min(distance / explosion_radius, 1.0))
+	# Limited knockback force for simple mode
+	var knockback_force = 100.0 * (1.0 - min(distance / explosion_radius, 1.0))  # Max 100 pixels
 	var knockback_vector = direction * knockback_force
-	knockback_vector.y -= knockback_force * 0.2  # Small upward push
+	knockback_vector.y -= knockback_force * 0.15  # Small upward push
 	
 	# Apply knockback using simplest method available
 	if "velocity" in player:

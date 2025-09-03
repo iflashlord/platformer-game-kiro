@@ -1,6 +1,12 @@
 extends CharacterBody2D
 class_name GiantBoss
 
+enum BombPower {
+	LOW,
+	MEDIUM,
+	HIGH
+}
+
 signal boss_defeated
 signal boss_damaged(current_health: int, max_health: int)
 signal tnt_placed(position: Vector2)
@@ -16,6 +22,7 @@ signal tnt_placed(position: Vector2)
 
 @export var flying_enemy_scene: PackedScene
 @export var patrol_enemy_scene: PackedScene
+@export var heart_scene: PackedScene # CollectableHeart for rewards
 
 @export var damage_amount: int = 1
 
@@ -104,6 +111,11 @@ var enemy_spawn_interval: float = 5.0
 var flying_enemies_spawned: int = 0
 var max_flying_enemies_per_phase: int = 2
 
+# Jump limiting system
+var jump_cooldown_timer: float = 0.0
+var min_jump_cooldown: float = 1.5 # Minimum 1.5 seconds between jumps
+var max_jump_height: float = -300.0 # Maximum jump force (3x boss height limit)
+
 # Current phase item counters
 var current_tnt_crates_dropped: int = 0
 var current_bombs_dropped: int = 0
@@ -127,6 +139,7 @@ var player_last_position: Vector2
 var player_velocity_history: Array[Vector2] = []
 var predicted_player_position: Vector2
 var attack_cooldown: float = 0.0
+var combo_attack_cooldown: float = 0.0
 var combo_attack_count: int = 0
 var is_enraged: bool = false
 var defensive_mode: bool = false
@@ -205,6 +218,10 @@ func _ready():
 	if attack_warning_timer_node:
 		attack_warning_timer_node.timeout.connect(_hide_attack_warning)
 	
+	# Add to boss group for explosion immunity
+	add_to_group("boss")
+	add_to_group("enemies")  # For general enemy identification
+	
 	print("🏆 GiantBoss initialized with difficulty: ", difficulty, " - Health: ", current_health)
 
 func _setup_connections():
@@ -217,6 +234,11 @@ func _setup_connections():
 
 func _physics_process(delta):
 	if current_phase == MovementPhase.DEFEATED:
+		# Still apply gravity when defeated so boss falls to ground
+		if not is_on_floor():
+			velocity.y += ProjectSettings.get_setting("physics/2d/default_gravity") * delta
+		velocity.x = 0  # No horizontal movement when defeated
+		move_and_slide()
 		return
 	
 	# Update invincibility system
@@ -421,25 +443,33 @@ func _handle_intelligent_jumping(_delta):
 	if not is_on_floor():
 		was_in_air = true
 	
-	# Smart jumping strategy
-	if player_above and distance_to_player < 150:
-		# Player is above, jump more frequently to reach them
-		if is_on_floor() and randf() < 0.08: # 8% chance per frame
-			velocity.y = jump_force
+	# Smart jumping strategy with cooldown and height limits
+	if is_on_floor() and jump_cooldown_timer <= 0.0:
+		var should_jump = false
+		var jump_strength = max_jump_height  # Use limited jump height
+		
+		if player_above and distance_to_player < 150:
+			# Player is above, controlled jumping to reach them
+			if randf() < 0.02: # Reduced chance: 2% per frame
+				should_jump = true
+				jump_strength = max_jump_height * 0.9  # 90% of max height
+		elif distance_to_player > 300:
+			# Player is far, small jump to close distance
+			if randf() < 0.015: # Reduced chance: 1.5% per frame
+				should_jump = true
+				jump_strength = max_jump_height * 0.6  # 60% of max height
+		elif randf() < 0.008: # Very reduced chance: 0.8% per frame
+			# Rare normal jumping
+			should_jump = true
+			jump_strength = max_jump_height * 0.8  # 80% of max height
+			
+		if should_jump:
+			velocity.y = jump_strength
 			sprite.play("jump")
 			_create_dust_effect()
 			was_in_air = true
-	elif distance_to_player > 300:
-		# Player is far, jump to close distance
-		if is_on_floor() and randf() < 0.05: # 5% chance per frame
-			velocity.y = jump_force * 0.8
-			sprite.play("jump")
-			was_in_air = true
-	elif is_on_floor() and randf() < 0.03:
-		# Normal jumping
-		velocity.y = jump_force * 1.2
-		sprite.play("jump")
-		was_in_air = true
+			jump_cooldown_timer = min_jump_cooldown  # Set cooldown
+			print("🦘 Boss jumped with force: ", jump_strength, " (cooldown: ", min_jump_cooldown, "s)")
 	
 	# Horizontal movement toward predicted position
 	var target_x = predicted_player_position.x
@@ -492,9 +522,19 @@ func _handle_intelligent_charging(_delta):
 		speed_multiplier *= 0.8
 	
 	velocity.x = walk_speed * speed_multiplier * direction
-	sprite.flip_h = direction < 0
+	
+	# Try opposite flip logic for charging - sprite might be oriented differently
+	sprite.flip_h = direction > 0
 	sprite.play("charge")
 	_update_detector_positions()
+	
+	# Enhanced debug output for charging direction
+	print("⚡ Charging DEBUG:")
+	print("  - Player pos: ", player.global_position.x, " Boss pos: ", global_position.x)
+	print("  - Distance: ", distance_to_player, " Target: ", predicted_player_position.x)
+	print("  - Direction: ", direction, " Velocity: ", velocity.x)
+	print("  - Sprite flip_h: ", sprite.flip_h)
+	print("  - Moving: ", "RIGHT" if direction > 0 else "LEFT")
 
 func _handle_intelligent_flying(delta):
 	var player = get_tree().get_first_node_in_group("player")
@@ -514,6 +554,16 @@ func _handle_intelligent_flying(delta):
 		# Smart approach with evasion
 		_handle_tactical_flight(player, distance_to_player)
 	
+	# Update sprite direction based on actual movement direction
+	if velocity.x != 0:
+		# Use same logic as charging - sprite assets seem to face left by default  
+		sprite.flip_h = velocity.x > 0
+		# Also update the direction variable for consistency
+		direction = 1 if velocity.x > 0 else -1
+		
+		# Debug output to check values
+		print("🦅 Flying: velocity.x=", velocity.x, " flip_h=", sprite.flip_h, " direction=", direction)
+	
 	sprite.play("fly")
 
 func _handle_circle_flight(player: Node2D, delta: float):
@@ -528,7 +578,6 @@ func _handle_circle_flight(player: Node2D, delta: float):
 	
 	var direction_to_target = (target_pos - global_position).normalized()
 	velocity = direction_to_target * fly_speed * 1.2
-	sprite.flip_h = direction_to_target.x < 0
 
 func _handle_aggressive_flight(_player: Node2D):
 	# Direct aggressive approach to predicted position
@@ -536,7 +585,6 @@ func _handle_aggressive_flight(_player: Node2D):
 	var direction_to_target = (target - global_position).normalized()
 	
 	velocity = direction_to_target * fly_speed * 1.8
-	sprite.flip_h = direction_to_target.x < 0
 
 func _handle_tactical_flight(player: Node2D, distance: float):
 	var target = predicted_player_position
@@ -559,8 +607,6 @@ func _handle_tactical_flight(player: Node2D, distance: float):
 		# Move perpendicular to player movement
 		var perpendicular = Vector2(-player_velocity.y, player_velocity.x).normalized()
 		velocity = perpendicular * fly_speed * 0.6
-	
-	sprite.flip_h = velocity.x < 0
 
 func _update_detector_positions():
 	wall_detector.position.x = abs(wall_detector.position.x) * direction
@@ -614,7 +660,7 @@ func _handle_flying_movement(_delta):
 		var direction_to_player = (target_pos - global_position).normalized()
 		
 		velocity = direction_to_player * fly_speed
-		sprite.flip_h = direction_to_player.x < 0
+		sprite.flip_h = direction_to_player.x > 0
 	else:
 		# No player found, hover in place
 		velocity = Vector2.ZERO
@@ -624,6 +670,8 @@ func _handle_flying_movement(_delta):
 func _handle_intelligent_attacks(delta):
 	tnt_drop_timer += delta
 	attack_cooldown -= delta
+	combo_attack_cooldown -= delta
+	jump_cooldown_timer -= delta  # Update jump cooldown
 	
 	# Smart TNT dropping based on player position and AI state
 	var adjusted_interval = tnt_drop_interval / difficulty_attack_frequency
@@ -646,60 +694,59 @@ func _handle_intelligent_attacks(delta):
 	if attack_cooldown <= 0.0:
 		_try_combo_attack()
 	
-	# Execute special combo attacks in later phases when enraged
+	# Execute special combo attacks in later phases when enraged (with cooldown)
 	if is_enraged and current_phase in [MovementPhase.CHARGING, MovementPhase.FLYING]:
-		if randf() < 0.02:  # 2% chance per frame when enraged
+		if combo_attack_cooldown <= 0.0 and randf() < 0.02:  # 2% chance per frame when enraged and not on cooldown
 			_execute_combo_attack()
 
 func _execute_smart_tnt_attack():
-	if not tnt_scene or not is_on_floor():
+	if not is_on_floor():
 		return
 	
 	var player = get_tree().get_first_node_in_group("player")
 	if not player:
 		return
 	
-	# Check TNT limits
+	# Check limits for both TNT and bombs
 	var phase_config = _get_current_phase_config()
 	var max_tnt = phase_config.get("max_tnt_crates", 999)
+	var max_bombs = phase_config.get("max_bombs", 999)
 	
-	if current_tnt_crates_dropped >= max_tnt:
-		print("🚫 Smart TNT limit reached: ", current_tnt_crates_dropped, "/", max_tnt)
+	if current_tnt_crates_dropped >= max_tnt and current_bombs_dropped >= max_bombs:
+		print("🚫 Smart attack limits reached - TNT: ", current_tnt_crates_dropped, "/", max_tnt, " Bombs: ", current_bombs_dropped, "/", max_bombs)
 		return
 	
-	# Strategic TNT placement
+	# Strategic attack selection
 	var drop_positions = _calculate_strategic_tnt_positions(player)
 	
-	# Limit actual drops by remaining capacity
-	var can_drop = min(drop_positions.size(), max_tnt - current_tnt_crates_dropped)
-	
-	for i in can_drop:
-		var pos = drop_positions[i]
-		
+	for pos in drop_positions:
 		# Choose between TNT and Bomb for strategic placement
-		var use_bomb = bomb_scene and randf() < 0.3 # 30% chance for bombs in strategic placement
+		var use_bomb = bomb_scene and current_bombs_dropped < max_bombs and randf() < 0.3 # 30% chance for bombs
+		var use_tnt = tnt_scene and current_tnt_crates_dropped < max_tnt
 		
-		if use_bomb:
-			var bomb_instance = bomb_scene.instantiate()
-			get_parent().add_child(bomb_instance)
-			bomb_instance.global_position = pos
-			
-			# Set bomb power based on phase for strategic placement
-			var bomb_power = _get_bomb_power_for_phase()
-			if bomb_instance.has_method("setup"):
-				bomb_instance.setup(bomb_power)
-				
-			tnt_placed.emit(pos)
-			current_tnt_crates_dropped += 1
-		elif tnt_scene:
+		if use_bomb and current_bombs_dropped < max_bombs:
+			# Use drop behavior for bombs (don't set position directly)
+			_drop_bomb()
+		elif use_tnt and current_tnt_crates_dropped < max_tnt:
+			# TNT can be placed strategically at specific positions
 			var tnt_instance = tnt_scene.instantiate()
-			tnt_instance.crate_type = "tnt"
 			get_parent().add_child(tnt_instance)
+			
+			# Wait for TNT to be ready
+			await get_tree().process_frame
+			
+			# Set TNT type
+			if "crate_type" in tnt_instance:
+				tnt_instance.crate_type = "tnt"
+			
+			# Place TNT at strategic position
 			tnt_instance.global_position = pos
-			tnt_placed.emit(pos)
+			
+			# Increment counter and emit signal
 			current_tnt_crates_dropped += 1
-	
-	print("💣 Smart TNT: ", can_drop, " dropped (", current_tnt_crates_dropped, "/", max_tnt, ")")
+			tnt_placed.emit(pos)
+			
+			print("🎯 Strategic TNT placed at: ", pos)
 	
 	# Audio feedback
 	if Audio:
@@ -802,7 +849,7 @@ func _drop_tnt():
 		_drop_bomb()
 	elif tnt_scene:
 		# Start attack warning (professional game telegraphing)
-		_show_attack_warning("💥 TNT INCOMING!")
+		_show_attack_warning("You shall taste my wrath!")
 		
 		# Wait for warning duration
 		await get_tree().create_timer(attack_warning_duration).timeout
@@ -853,7 +900,7 @@ func _drop_bomb():
 		return
 	
 	# Start attack warning (professional game telegraphing)
-	_show_attack_warning("💣 BOMB INCOMING!")
+	_show_attack_warning("Feel my explosive fury!")
 	
 	# Wait for warning duration, then drop bomb
 	await get_tree().create_timer(attack_warning_duration).timeout
@@ -864,10 +911,16 @@ func _drop_bomb():
 		return
 		
 	var bomb_instance = bomb_scene.instantiate()
+	bomb_instance.bomb_size_scale = 1.5
+	bomb_instance.bomb_power = BombPower.LOW
 	get_parent().add_child(bomb_instance)
 	
-	# Start bomb from boss center
-	bomb_instance.global_position = global_position
+	# Wait for bomb to be ready in the scene
+	await get_tree().process_frame
+	
+	# Start bomb slightly above boss to avoid collision issues
+	var spawn_offset = Vector2(direction * 20, -30) # Spawn 30 pixels above boss
+	bomb_instance.global_position = global_position + spawn_offset
 	
 	# Set bomb power based on phase
 	var bomb_power = _get_bomb_power_for_phase()
@@ -1004,15 +1057,27 @@ func _find_valid_spawn_position(base_position: Vector2, range_x: float, range_y:
 func _show_attack_warning(warning_text: String):
 	is_warning_active = true
 	
-	# Create warning UI if it doesn't exist
+	# Create speech bubble if it doesn't exist
 	if not warning_ui:
-		warning_ui = _create_warning_ui()
+		warning_ui = _create_boss_speech_bubble()
 	
 	if warning_ui:
 		warning_ui.visible = true
-		var warning_label = warning_ui.get_node_or_null("WarningLabel")
-		if warning_label:
-			warning_label.text = warning_text
+		# Use stored meta reference for easier and safer access
+		var speech_label = warning_ui.get_meta("speech_label", null)
+		if speech_label and is_instance_valid(speech_label):
+			speech_label.text = warning_text
+			print("💬 Boss says: ", warning_text)
+		else:
+			print("❌ SpeechLabel not found or invalid - recreating speech bubble")
+			# Recreate speech bubble if label is missing
+			if warning_ui:
+				warning_ui.queue_free()
+			warning_ui = _create_boss_speech_bubble()
+			if warning_ui:
+				var new_speech_label = warning_ui.get_meta("speech_label", null)
+				if new_speech_label:
+					new_speech_label.text = warning_text
 	
 	# Visual warning on boss (flash red)
 	var flash_tween = create_tween()
@@ -1033,30 +1098,47 @@ func _hide_attack_warning():
 	# Reset boss sprite color
 	sprite.modulate = Color.WHITE
 
-func _create_warning_ui() -> Control:
-	# Create a simple warning overlay
-	var canvas_layer = CanvasLayer.new()
-	canvas_layer.layer = 100  # High layer to show above everything
-	get_tree().current_scene.add_child(canvas_layer)
+func _create_boss_speech_bubble() -> Control:
+	# Create speech bubble attached to boss
+	var speech_bubble = Control.new()
+	speech_bubble.name = "BossSpeechBubble"
+	add_child(speech_bubble)
 	
-	var warning_control = Control.new()
-	warning_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	canvas_layer.add_child(warning_control)
+	# Position bubble above the boss
+	speech_bubble.position = Vector2(-80, -120) # Above boss head
+	speech_bubble.size = Vector2(160, 60)
 	
-	var warning_label = Label.new()
-	warning_label.name = "WarningLabel"
-	warning_label.text = "⚠️ WARNING!"
-	warning_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	warning_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	warning_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	warning_label.add_theme_font_size_override("font_size", 48)
-	warning_label.add_theme_color_override("font_color", Color.RED)
-	warning_label.add_theme_color_override("font_shadow_color", Color.BLACK)
-	warning_label.add_theme_constant_override("shadow_offset_x", 3)
-	warning_label.add_theme_constant_override("shadow_offset_y", 3)
-	warning_control.add_child(warning_label)
+	# Create speech bubble background (simple rectangle)
+	var bubble_bg = ColorRect.new()
+	bubble_bg.color = Color(0.1, 0.1, 0.1, 0.9) # Dark semi-transparent
+	bubble_bg.size = Vector2(160, 60)
+	speech_bubble.add_child(bubble_bg)
 	
-	return warning_control
+	# Add border effect
+	var border = ColorRect.new()
+	border.color = Color(0.8, 0.2, 0.2, 1.0) # Red border
+	border.size = Vector2(160, 60)
+	border.position = Vector2(-2, -2)
+	speech_bubble.add_child(border)
+	speech_bubble.move_child(border, 0) # Move border behind background
+	
+	# Create speech text label
+	var speech_label = Label.new()
+	speech_label.name = "SpeechLabel"
+	speech_label.text = "GRRR!"
+	speech_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	speech_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	speech_label.size = Vector2(156, 56)
+	speech_label.position = Vector2(2, 2)
+	speech_label.add_theme_font_size_override("font_size", 14)
+	speech_label.add_theme_color_override("font_color", Color.WHITE)
+	speech_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	bubble_bg.add_child(speech_label)
+	
+	# Store reference directly on speech_bubble for easier access
+	speech_bubble.set_meta("speech_label", speech_label)
+	
+	return speech_bubble
 
 # Platform passthrough system for boss mobility
 func _setup_platform_passthrough():
@@ -1146,6 +1228,9 @@ func _update_enrage_effects():
 
 # Professional combo system
 func _execute_combo_attack():
+	# Set cooldown to prevent rapid-fire combo attacks
+	combo_attack_cooldown = randf_range(2.0, 3.0)  # 2 to 3 seconds between combo attacks
+	
 	combo_streak += 1
 	var combo_name = ""
 	
@@ -1161,26 +1246,28 @@ func _execute_combo_attack():
 			_devastating_blast_attack()
 			combo_streak = 0  # Reset combo
 	
-	print("🔥 Boss executing combo: ", combo_name, " (streak: ", combo_streak, ")")
+	print("🔥 Boss executing combo: ", combo_name, " (streak: ", combo_streak, ") - Next combo in ", combo_attack_cooldown, "s")
 
 func _triple_bomb_attack():
-	_show_attack_warning("💣💣💣 TRIPLE BOMB BARRAGE!")
+	_show_attack_warning("I am enraged! Die!")
 	
 	for i in range(3):
-		var delay = i * 0.3
+		var delay = i * 3.0
 		get_tree().create_timer(attack_warning_duration + delay).timeout.connect(
 			func(): 
 				if bomb_scene:
 					var bomb = bomb_scene.instantiate()
+					bomb.bomb_size_scale = 1.5
+					bomb.bomb_power = BombPower.LOW
 					get_parent().add_child(bomb)
-					bomb.global_position = global_position + Vector2(direction * (50 + i * 30), 32)
+					bomb.global_position = global_position # + Vector2(direction * (50 + i * 30), 32)
 					if bomb.has_method("setup"):
 						bomb.setup(_get_bomb_power_for_phase())
 					current_bombs_dropped += 1
 		)
 
 func _tnt_rain_attack():
-	_show_attack_warning("💥💥 TNT RAIN INCOMING!")
+	_show_attack_warning("Nowhere to hide now!")
 	
 	for i in range(4):
 		var delay = i * 0.4
@@ -1197,7 +1284,7 @@ func _tnt_rain_attack():
 		)
 
 func _devastating_blast_attack():
-	_show_attack_warning("🌋 DEVASTATING BLAST - TAKE COVER!")
+	_show_attack_warning("This ends NOW!")
 	
 	get_tree().create_timer(attack_warning_duration * 1.5).timeout.connect(
 		func():
@@ -1216,6 +1303,8 @@ func _devastating_blast_attack():
 			for pos in positions:
 				if bomb_scene:
 					var bomb = bomb_scene.instantiate()
+					bomb.bomb_size_scale = 1.5
+					bomb.bomb_power = BombPower.LOW
 					get_parent().add_child(bomb)
 					bomb.global_position = pos
 					if bomb.has_method("setup"):
@@ -1835,6 +1924,14 @@ func _take_damage():
 	
 	current_health -= 1
 	
+	# Give 500 points to player for damaging the boss
+	if Game:
+		Game.add_score(500)
+		print("⭐ Player gained 500 points for damaging boss!")
+	
+	# Drop 2 hearts near the boss
+	_drop_hearts_reward()
+	
 	# Start invincibility period
 	_start_invincibility()
 	
@@ -1856,6 +1953,107 @@ func _take_damage():
 		_defeat_boss()
 	else:
 		_advance_phase_intelligently()
+
+func _drop_hearts_reward():
+	# Check if heart scene is assigned
+	if not heart_scene:
+		print("❌ Heart scene not assigned to GiantBoss!")
+		return
+	
+	# Find player position
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		print("❌ Could not find player for heart drop!")
+		return
+	
+	print("💖 Starting heart drop process - Boss at: ", global_position, " Player at: ", player.global_position)
+	
+	# Drop 2 hearts very close to the player (works regardless of boss distance)
+	for i in range(2):
+		print("💖 Creating heart ", i + 1)
+		
+		var heart = heart_scene.instantiate()
+		if not heart:
+			print("❌ Failed to instantiate heart scene!")
+			continue
+		
+		# Add to scene tree first
+		get_tree().current_scene.add_child(heart)
+		
+		# Wait for heart to be fully ready
+		await get_tree().process_frame
+		await get_tree().process_frame
+		
+		# Position hearts very close to player
+		var side_offset = 25 if i == 0 else -25  # One heart on each side of player
+		var vertical_offset = -15  # Slightly above player
+		
+		# Calculate drop position
+		var drop_position = player.global_position + Vector2(side_offset, vertical_offset)
+		
+		# Simple ground check with multiple fallbacks
+		var final_position = _find_safe_heart_position(drop_position, player.global_position, side_offset)
+		
+		# Set heart position
+		heart.global_position = final_position
+		
+		# Force visibility and ensure it's in the right groups
+		heart.visible = true
+		heart.modulate = Color.WHITE
+		heart.z_index = 100
+		
+		# Ensure it's properly configured
+		if heart.has_method("_ready"):
+			heart._ready()
+		
+		print("💖 Heart ", i + 1, " placed at: ", heart.global_position, " (Player at: ", player.global_position, ")")
+	
+	print("💖 Successfully dropped 2 hearts next to player!")
+
+func _find_safe_heart_position(preferred_position: Vector2, player_position: Vector2, side_offset: int) -> Vector2:
+	# Try multiple methods to find a safe position for the heart
+	
+	# Method 1: Try the preferred position with ground check
+	var space_state = get_world_2d().direct_space_state
+	if space_state:
+		var query = PhysicsRayQueryParameters2D.create(
+			preferred_position + Vector2(0, -20),
+			preferred_position + Vector2(0, 80)
+		)
+		query.collision_mask = 1 # World layer
+		
+		var result = space_state.intersect_ray(query)
+		if result:
+			var ground_position = result.position + Vector2(0, -10)
+			print("💖 Found ground for heart at: ", ground_position)
+			return ground_position
+	
+	# Method 2: Try different positions around player
+	var test_positions = [
+		player_position + Vector2(side_offset, -10),
+		player_position + Vector2(side_offset, 0),
+		player_position + Vector2(side_offset, 10),
+		player_position + Vector2(side_offset * 0.5, -10),
+		player_position + Vector2(0, -10)  # Directly above player as last resort
+	]
+	
+	for test_pos in test_positions:
+		if space_state:
+			var query = PhysicsRayQueryParameters2D.create(
+				test_pos + Vector2(0, -10),
+				test_pos + Vector2(0, 50)
+			)
+			query.collision_mask = 1
+			
+			var result = space_state.intersect_ray(query)
+			if result:
+				print("💖 Found alternative ground position: ", result.position)
+				return result.position + Vector2(0, -10)
+	
+	# Method 3: Fallback - just use player position with offset
+	var fallback_position = player_position + Vector2(side_offset, -5)
+	print("💖 Using fallback position: ", fallback_position)
+	return fallback_position
 
 func _advance_phase_intelligently():
 	# Smart phase transitions based on AI state
@@ -1936,8 +2134,24 @@ func _setup_phase(phase: MovementPhase):
 				phase_indicator.modulate = Color.GREEN
 
 func _defeat_boss():
+	print("🏆 Boss defeat sequence started!")
+	
 	current_phase = MovementPhase.DEFEATED
-	velocity = Vector2.ZERO
+	# Don't set velocity to zero - let boss fall with gravity
+	velocity.x = 0  # Stop horizontal movement but allow vertical fall
+	
+	# Clear and hide any active attack warnings
+	_hide_attack_warning()
+	if warning_ui:
+		warning_ui.queue_free()
+		warning_ui = null
+	
+	# Stop all attack timers and cooldowns
+	attack_cooldown = 999.0
+	combo_attack_cooldown = 999.0
+	tnt_drop_timer = 0.0
+	enemy_spawn_timer = 0.0
+	is_warning_active = false
 	
 	# End any invincibility and prevent further damage
 	is_invincible = true # Permanently invincible when defeated
@@ -1945,17 +2159,71 @@ func _defeat_boss():
 	sprite.modulate = Color.WHITE
 	sprite.modulate.a = 1.0
 	
+	# Start defeat animation but keep collision until landed
 	sprite.play("defeat")
-	collision_shape.set_deferred("disabled", true)
+	
+	# Disable damage systems immediately but keep collision for physics
 	damage_area.set_deferred("monitoring", false)
 	stomp_detector.set_deferred("monitoring", false)
 	
+	# Wait for boss to land before fully disabling collision
+	_wait_for_landing_then_disable_collision()
+	
+	# Create dramatic victory effect
+	_create_screen_shake(3.0)
+	if FX:
+		FX.flash_screen(Color.GOLD * 0.5, 1.0)
+	
+	# Emit defeat signal for level management
 	boss_defeated.emit()
 	
-	# Create victory effect
-	_create_screen_shake(2.0)
+	# Brief delay for dramatic effect, then pause and show results
+	await get_tree().create_timer(2.0).timeout
 	
-	print("💀 Boss defeated! No longer takes damage.")
+	print("🏆 Boss defeated! Victory sequence complete.")
+
+func _wait_for_landing_then_disable_collision():
+	# Wait for boss to land on ground, then disable collision
+	while current_phase == MovementPhase.DEFEATED and not is_on_floor():
+		await get_tree().process_frame
+		
+	# Boss has landed, now disable collision
+	collision_shape.set_deferred("disabled", true)
+	print("💥 Boss landed and collision disabled")
+	
+	# Add landing impact effect
+	if is_on_floor():
+		_create_screen_shake(1.5)
+		if FX:
+			FX.shake(150)
+		print("💥 Boss hit the ground with massive impact!")
+
+func _create_simple_victory_message():
+	# Create a simple victory message if no UI system found
+	var canvas = CanvasLayer.new()
+	canvas.layer = 1000  # Very high priority
+	get_tree().current_scene.add_child(canvas)
+	
+	var victory_control = Control.new()
+	victory_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	canvas.add_child(victory_control)
+	
+	# Dark background
+	var bg = ColorRect.new()
+	bg.color = Color(0, 0, 0, 0.8)
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	victory_control.add_child(bg)
+	
+	# Victory text
+	var victory_label = Label.new()
+	victory_label.text = "🏆 BOSS DEFEATED! 🏆\n+1000 POINTS\n\nPress R to restart or ESC to exit"
+	victory_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	victory_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	victory_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	victory_label.add_theme_font_size_override("font_size", 48)
+	victory_label.add_theme_color_override("font_color", Color.GOLD)
+	victory_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	victory_control.add_child(victory_label)
 
 func _update_health_display():
 	if health_bar:
@@ -2005,7 +2273,7 @@ func _start_invincibility():
 	sprite.modulate = Color.WHITE
 	
 	# Update phase indicator to show invincibility
-	if phase_indicator:
+	if phase_indicator && current_health > 0:
 		var _original_text = phase_indicator.text
 		phase_indicator.text = "🛡️ INVINCIBLE"
 		phase_indicator.modulate = Color.CYAN

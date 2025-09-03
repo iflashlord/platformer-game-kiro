@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://dgam7pc1bdgen" path="res://content/Graphics/Sprites/Enemies/Default/slime_normal_flat.png" id="17_defeat"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(128, 128)
+size = Vector2(102, 127)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1"]
 animations = [{
@@ -69,7 +69,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
-size = Vector2(140, 140)
+size = Vector2(101, 131)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
 size = Vector2(100, 20)
@@ -97,18 +97,20 @@ flying_enemy_scene = ExtResource("4_flying")
 patrol_enemy_scene = ExtResource("5_patrol")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_1")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_1")
-animation = &"walk"
+animation = &"charge"
 
 [node name="DamageArea" type="Area2D" parent="."]
 collision_layer = 8
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+position = Vector2(-0.5, -4.5)
 shape = SubResource("RectangleShape2D_2")
 
 [node name="StompDetector" type="Area2D" parent="."]
@@ -146,6 +148,7 @@ offset_top = -100.0
 offset_right = 64.0
 offset_bottom = -80.0
 value = 100.0
+rounded = true
 show_percentage = false
 
 [node name="PhaseIndicator" type="Label" parent="."]

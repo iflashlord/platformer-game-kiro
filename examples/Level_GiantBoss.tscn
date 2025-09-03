@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dadxe0f1g2hij"]
+[gd_scene load_steps=25 format=3 uid="uid://dadxe0f1g2hij"]
 
 [ext_resource type="Script" uid="uid://c0hksh4nrb6ui" path="res://examples/Level_GiantBoss.gd" id="1_boss_level"]
 [ext_resource type="PackedScene" uid="uid://kuwc58wcfuui" path="res://actors/GiantBoss.tscn" id="2_giant_boss"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://dg8la8ddwnn1b" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_desert.png" id="16_bg_texture1"]
 [ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="17_bg_texture2"]
 [ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="18_platform"]
+[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="19_sawng"]
 
 [sub_resource type="Resource" id="Resource_bg1"]
 script = ExtResource("15_bg_config")
@@ -101,12 +102,21 @@ position = Vector2(1312, 360)
 shape = SubResource("RectangleShape2D_2")
 
 [node name="GiantBoss" parent="." instance=ExtResource("2_giant_boss")]
-position = Vector2(640, 550)
+position = Vector2(660, 567)
+scale = Vector2(0.8, 0.8)
 difficulty = "Easy"
 bomb_scene = ExtResource("5_bomb_scene")
+heart_scene = ExtResource("12_heart")
+phase1_patrol_jump_limit = 2
+phase1_spawn_limit = 2
 phase1_max_bombs = 15
+phase1_max_patrol_enemies = 5
+phase1_max_flying_enemies = 2
 phase2_max_bombs = 5
+phase3_flying_speed = 40.0
+phase3_flying_altitude_limit = 150.0
 phase3_max_bombs = 4
+phase4_flying_speed = 50.0
 phase4_max_bombs = 5
 
 [node name="Player" parent="." instance=ExtResource("4_player")]
@@ -160,26 +170,6 @@ label_settings = SubResource("LabelSettings_1")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Instructions" type="Label" parent="UI"]
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 400.0
-offset_bottom = 120.0
-text = "🏆 GIANT BOSS ARENA 🏆
-
-• Jump on boss head 5 times to win!
-• ⚠️ Watch for RED WARNING FLASHES! 
-• 💣 Bombs get stronger each phase
-• 💥 Chain reactions can help or hurt
-• 🏥 Collect hearts to heal
-• 📍 Use checkpoints as safe spots
-
-Phase Progression:
-1. Walking → 2. Jumping → 3. Charging → 4. Flying
-
-Controls: WASD/Arrows + Space"
-horizontal_alignment = 1
-
 [node name="Level" type="Node2D" parent="."]
 
 [node name="Checkpoints" type="Node2D" parent="."]
@@ -197,7 +187,7 @@ checkpoint_name = "Mid Arena"
 [node name="Collectibles" type="Node2D" parent="."]
 
 [node name="CollectableHeart1" parent="Collectibles" instance=ExtResource("12_heart")]
-position = Vector2(50, 500)
+position = Vector2(317, 450)
 scale = Vector2(0.8, 0.8)
 
 [node name="CollectableHeart2" parent="Collectibles" instance=ExtResource("12_heart")]
@@ -205,18 +195,26 @@ position = Vector2(1209, 417)
 scale = Vector2(0.8, 0.8)
 
 [node name="CollectableHeart3" parent="Collectibles" instance=ExtResource("12_heart")]
-position = Vector2(1117, 489)
+position = Vector2(1106, 470)
 scale = Vector2(0.8, 0.8)
 
 [node name="CollectableHeart4" parent="Collectibles" instance=ExtResource("12_heart")]
-position = Vector2(685, 374)
+position = Vector2(547, 323)
+scale = Vector2(0.8, 0.8)
+
+[node name="CollectableHeart5" parent="Collectibles" instance=ExtResource("12_heart")]
+position = Vector2(52, 512)
+scale = Vector2(0.8, 0.8)
+
+[node name="CollectableHeart6" parent="Collectibles" instance=ExtResource("12_heart")]
+position = Vector2(760, 310)
+scale = Vector2(0.8, 0.8)
+
+[node name="CollectableHeart7" parent="Collectibles" instance=ExtResource("12_heart")]
+position = Vector2(194, 493)
 scale = Vector2(0.8, 0.8)
 
 [node name="InteractiveElements" type="Node2D" parent="."]
-
-[node name="TNTCrate1" parent="InteractiveElements" instance=ExtResource("11_crate")]
-position = Vector2(300, 600)
-crate_type = "tnt"
 
 [node name="TNTCrate2" parent="InteractiveElements" instance=ExtResource("11_crate")]
 position = Vector2(980, 600)
@@ -226,62 +224,109 @@ crate_type = "tnt"
 position = Vector2(150, 580)
 crate_type = "bounce"
 
+[node name="BounceCrate2" parent="InteractiveElements" instance=ExtResource("11_crate")]
+position = Vector2(1130, 580)
+crate_type = "bounce"
+
+[node name="TNTCrate3" parent="InteractiveElements" instance=ExtResource("11_crate")]
+position = Vector2(640, 350)
+crate_type = "tnt"
+
+[node name="BounceCrate3" parent="InteractiveElements" instance=ExtResource("11_crate")]
+position = Vector2(447, 381)
+crate_type = "bounce"
+
+[node name="BounceCrate4" parent="InteractiveElements" instance=ExtResource("11_crate")]
+position = Vector2(760, 300)
+crate_type = "bounce"
+
 [node name="HintArea1" parent="InteractiveElements" instance=ExtResource("10_hint_area")]
-position = Vector2(150, 620)
+position = Vector2(153, 597)
 hint_message = "This is the boss arena! Jump on the boss's head to damage it. Watch out for warning messages before attacks!"
 hint_title = "Boss Fight Tutorial"
 target_layer = "Both"
 
 [node name="HintArea2" parent="InteractiveElements" instance=ExtResource("10_hint_area")]
-position = Vector2(640, 620)
+position = Vector2(964, 490)
 hint_message = "The boss drops TNT and bombs that get more powerful each phase. Use them strategically or avoid them!"
 hint_title = "Boss Attack Patterns"
 target_layer = "Both"
 
 [node name="HintArea3" parent="InteractiveElements" instance=ExtResource("10_hint_area")]
-position = Vector2(1100, 620)
-hint_message = "Watch for red warning flashes on the boss - this means an attack is coming! Get ready to dodge!"
-hint_title = "Attack Warnings"
+position = Vector2(1100, 594)
+hint_message = "Watch for boss speech bubbles - they warn of incoming attacks! Get ready to dodge or take cover!"
+hint_title = "Boss Speech Warnings"
+target_layer = "Both"
+
+[node name="HintArea4" parent="InteractiveElements" instance=ExtResource("10_hint_area")]
+position = Vector2(319, 425)
+hint_message = "Every time you damage the boss, you get 500 points and the boss drops 2 hearts near you for healing!"
+hint_title = "Boss Damage Rewards"
+target_layer = "Both"
+
+[node name="HintArea5" parent="InteractiveElements" instance=ExtResource("10_hint_area")]
+position = Vector2(640, 320)
+hint_message = "Use higher platforms to jump on the boss head easier! Boss phases get more challenging as it loses health."
+hint_title = "Strategic Positioning"
 target_layer = "Both"
 
 [node name="Platforms" type="Node2D" parent="."]
 
 [node name="Platform1" parent="Platforms" instance=ExtResource("18_platform")]
-position = Vector2(225, 495)
+position = Vector2(166, 519)
 scale = Vector2(0.5, 0.5)
 width = 150.0
 platform_type = 4
 axis_stretch_horizontal = 1
 
 [node name="Platform5" parent="Platforms" instance=ExtResource("18_platform")]
-position = Vector2(426, 536)
+position = Vector2(400, 418)
 scale = Vector2(0.5, 0.5)
 width = 150.0
 platform_type = 4
 axis_stretch_horizontal = 1
 
 [node name="Platform4" parent="Platforms" instance=ExtResource("18_platform")]
-position = Vector2(340, 439)
+position = Vector2(286, 472)
 scale = Vector2(0.5, 0.5)
 width = 150.0
 platform_type = 4
 axis_stretch_horizontal = 1
 
 [node name="Platform2" parent="Platforms" instance=ExtResource("18_platform")]
-position = Vector2(1080, 520)
+position = Vector2(1062, 502)
 scale = Vector2(0.5, 0.5)
 width = 150.0
 
 [node name="Platform3" parent="Platforms" instance=ExtResource("18_platform")]
-position = Vector2(640, 400)
+position = Vector2(615, 376)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 platform_type = 1
 
+[node name="Platform6" parent="Platforms" instance=ExtResource("18_platform")]
+position = Vector2(929, 537)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 4
+axis_stretch_horizontal = 1
+
+[node name="Platform7" parent="Platforms" instance=ExtResource("18_platform")]
+position = Vector2(520, 350)
+scale = Vector2(0.5, 0.5)
+width = 100.0
+platform_type = 2
+
+[node name="Platform8" parent="Platforms" instance=ExtResource("18_platform")]
+position = Vector2(760, 350)
+scale = Vector2(0.5, 0.5)
+width = 100.0
+platform_type = 2
+
 [node name="SafeZones" type="Node2D" parent="."]
 
 [node name="SafePlatformLeft" parent="SafeZones" instance=ExtResource("18_platform")]
-position = Vector2(103, 436)
+position = Vector2(21, 546)
 scale = Vector2(0.5, 0.5)
 width = 120.0
 platform_type = 3
@@ -290,10 +335,13 @@ platform_type = 3
 position = Vector2(1180, 450)
 scale = Vector2(0.5, 0.5)
 width = 120.0
-platform_type = 10
+platform_type = 4
 
 [node name="Hazards" type="Node2D" parent="."]
 
 [node name="DeathZone1" parent="Hazards" instance=ExtResource("13_death_zone")]
 position = Vector2(-630, 830)
 scale = Vector2(20, 1)
+
+[node name="LevelPortal" parent="." instance=ExtResource("19_sawng")]
+position = Vector2(1199, 346)
