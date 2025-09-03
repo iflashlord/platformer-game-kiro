@@ -119,17 +119,33 @@ func collect():
 	print("💖 Starting collection process for heart")
 	is_collected = true
 	
+	# Check HealthSystem availability more thoroughly
+	var health_system = null
+	if has_node("/root/HealthSystem"):
+		health_system = get_node("/root/HealthSystem")
+		print("💖 Found HealthSystem node: ", health_system)
+	elif HealthSystem:
+		health_system = HealthSystem
+		print("💖 Using HealthSystem singleton: ", health_system)
+	else:
+		print("💖 ERROR: No HealthSystem found!")
+	
 	# Add health through HealthSystem
 	var health_added = false
-	if has_node("/root/HealthSystem"):
-		var health_system = get_node("/root/HealthSystem")
+	if health_system:
+		print("💖 Health before: ", health_system.get_current_health(), "/", health_system.get_max_health())
+		
 		if health_system.has_method("gain_heart"):
 			health_system.gain_heart()
 			health_added = true
-			print("💖 Heart added through HealthSystem")
+			print("💖 ✅ Called gain_heart() successfully")
+			print("💖 Health after: ", health_system.get_current_health(), "/", health_system.get_max_health())
+		else:
+			print("💖 ERROR: HealthSystem doesn't have gain_heart() method!")
+			print("💖 Available methods: ", health_system.get_method_list())
 	
 	if not health_added:
-		print("💖 HealthSystem not found, heart not added")
+		print("💖 ERROR: Failed to add health!")
 	
 	# Emit signal for level tracking
 	heart_collected.emit(self)
@@ -137,7 +153,7 @@ func collect():
 	# Create collection effect
 	create_collection_effect()
 	
-	print("💖 Heart collected! +", heal_amount, " health")
+	print("💖 Heart collection complete!")
 
 func create_collection_effect():
 	# Disable collision

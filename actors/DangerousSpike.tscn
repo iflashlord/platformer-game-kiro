@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://b7mskwqthxt0g" path="res://systems/DimensionNode.gd" id="3_dimension"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
-size = Vector2(53.76, 67.2)
+size = Vector2(21.504, 26.88)
 
 [node name="DangerousSpike" type="Area2D"]
 script = ExtResource("1_spike")

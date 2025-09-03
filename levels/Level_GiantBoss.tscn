@@ -1,5 +1,6 @@
-[gd_scene load_steps=24 format=3 uid="uid://u27d5bc2y2uv"]
+[gd_scene load_steps=25 format=3 uid="uid://u27d5bc2y2uv"]
 
+[ext_resource type="Script" uid="uid://c0hksh4nrb6ui" path="res://levels/Level_GiantBoss.gd" id="1_d8a4x"]
 [ext_resource type="PackedScene" uid="uid://kuwc58wcfuui" path="res://actors/GiantBoss.tscn" id="2_giant_boss"]
 [ext_resource type="PackedScene" uid="uid://b8vxnan0p1qrs" path="res://ui/BossHealthUI.tscn" id="3_boss_ui"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="4_player"]
@@ -67,6 +68,7 @@ outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
 [node name="Level_GiantBoss" type="Node2D"]
+script = ExtResource("1_d8a4x")
 
 [node name="LevelManager" type="Node" parent="."]
 script = ExtResource("8_level_manager")

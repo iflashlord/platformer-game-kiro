@@ -8,6 +8,11 @@ class_name BossLevel
 @onready var level_portal: Node = $LevelPortal
 
 func _ready():
+	level_id = "Level03"
+	level_name = "Gaint Boss"
+	target_score = 2000
+	super._ready()
+
 	# Connect boss signals
 	boss.boss_defeated.connect(_on_boss_defeated)
 	boss.boss_damaged.connect(_on_boss_damaged)
