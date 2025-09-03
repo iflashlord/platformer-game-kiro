@@ -1,4 +1,4 @@
-extends Node2D
+extends BaseLevel
 class_name BossLevel
 
 @onready var boss: Node = $GiantBoss

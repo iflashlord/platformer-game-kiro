@@ -145,6 +145,19 @@ func _play_completion_effects():
 func _complete_level():
 	print("🎉 Level completed via portal!")
 	
+	# Hide and cleanup pause menu if it's showing
+	print("🔧 LevelPortal: Attempting to hide pause menu")
+	if PauseManager:
+		print("🔧 LevelPortal: PauseManager exists")
+		if PauseManager.has_method("hide_pause_menu"):
+			print("🔧 LevelPortal: Calling hide_pause_menu")
+			PauseManager.hide_pause_menu()
+		if PauseManager.has_method("cleanup"):
+			print("🔧 LevelPortal: Calling cleanup")
+			PauseManager.cleanup()
+	else:
+		print("🔧 LevelPortal: PauseManager not found!")
+	
 	# Pause the game immediately when level is completed
 	if Game:
 		Game.is_paused = true

@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://dndiuiqji2q67"]
 
-[ext_resource type="Theme" path="res://ui/MainMenuTheme.tres" id="1_theme"]
-[ext_resource type="Script" path="res://ui/CreditsMenu.gd" id="2_script"]
+[ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="1_theme"]
+[ext_resource type="Script" uid="uid://37vgo5kkhi84" path="res://ui/CreditsMenu.gd" id="2_script"]
 
 [node name="CreditsMenu" type="CanvasLayer"]
 script = ExtResource("2_script")
@@ -17,6 +17,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme = ExtResource("1_theme")
 
 [node name="MainContainer" type="VBoxContainer" parent="UI"]
@@ -28,6 +30,8 @@ offset_left = 100.0
 offset_top = 50.0
 offset_right = -100.0
 offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Header" type="VBoxContainer" parent="UI/MainContainer"]
 layout_mode = 2
@@ -77,8 +81,8 @@ Web Deployment via Vercel"
 horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
 
 [node name="TechStack" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
@@ -97,8 +101,8 @@ GitHub Actions - CI/CD Pipeline"
 horizontal_alignment = 1
 
 [node name="Spacer3" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
 
 [node name="Features" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
@@ -117,8 +121,8 @@ Object Pooling Optimization"
 horizontal_alignment = 1
 
 [node name="Spacer4" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
 
 [node name="Assets" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
@@ -138,8 +142,8 @@ Creative Commons Licensed"
 horizontal_alignment = 1
 
 [node name="Spacer5" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
 
 [node name="Thanks" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2

@@ -1,6 +1,9 @@
 extends CanvasLayer
 class_name LevelResults
 
+# Signals
+signal level_results_shown
+
 # UI References
 @onready var level_name_label: Label = $UI/MenuContainer/Header/LevelName
 @onready var time_label: Label = $UI/MenuContainer/StatsContainer/TimeLabel
@@ -27,6 +30,11 @@ func _ready():
 	
 	# Add to group to prevent duplicates
 	add_to_group("level_results")
+	
+	# Connect to PauseManager
+	if PauseManager and has_signal("level_results_shown"):
+		level_results_shown.connect(PauseManager._on_level_results_shown)
+		print("🔧 LevelResults: Connected to PauseManager")
 	
 	# Setup UI and connect signals
 	_setup_ui()
@@ -70,6 +78,9 @@ func _connect_signals():
 func show_results():
 	"""Show the results screen with animation"""
 	print("🎉 Showing level results")
+	
+	# Signal to PauseManager to hide pause menu
+	level_results_shown.emit()
 	
 	visible = true
 	is_menu_active = true

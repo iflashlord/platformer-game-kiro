@@ -113,6 +113,13 @@ func _on_level_completed():
 	var end_time = Time.get_unix_time_from_system()
 	var completion_time = end_time - start_time
 	
+	# Hide and cleanup pause menu if it's showing
+	if PauseManager:
+		if PauseManager.has_method("hide_pause_menu"):
+			PauseManager.hide_pause_menu()
+		if PauseManager.has_method("cleanup"):
+			PauseManager.cleanup()
+	
 	# Pause the game immediately when level is completed
 	if Game:
 		Game.is_paused = true

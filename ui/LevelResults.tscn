@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bxvw8y7qkqx5"]
+[gd_scene load_steps=5 format=3 uid="uid://bxvw8y7qkqx5"]
 
 [ext_resource type="Script" uid="uid://bg3xejmbxa6yb" path="res://ui/LevelResults.gd" id="1_results"]
-[ext_resource type="Theme" path="res://ui/MainMenuTheme.tres" id="2_theme"]
+[ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="2_theme"]
 
 [sub_resource type="Animation" id="Animation_1"]
 resource_name = "slide_in"
@@ -33,7 +33,7 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
 _data = {
-"slide_in": SubResource("Animation_1")
+&"slide_in": SubResource("Animation_1")
 }
 
 [node name="LevelResults" type="CanvasLayer"]
@@ -57,6 +57,10 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 304.0
+offset_top = 72.0
+offset_right = -294.0
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_theme")
@@ -169,5 +173,5 @@ horizontal_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_1")
+&"": SubResource("AnimationLibrary_1")
 }

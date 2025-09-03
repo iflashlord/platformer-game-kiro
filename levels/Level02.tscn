@@ -1,18 +1,19 @@
-[gd_scene load_steps=8 format=3 uid="uid://ipjdvqjhnvk4"]
+[gd_scene load_steps=9 format=3 uid="uid://ctq2ijlfyctqy"]
 
-[ext_resource type="Script" path="res://levels/Level02.gd" id="1"]
-[ext_resource type="PackedScene" path="res://actors/Player.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://actors/PatrolEnemy.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://actors/DimensionPlatform.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://actors/Fruit.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://actors/HiddenGem.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://actors/Portal.tscn" id="7"]
+[ext_resource type="Script" uid="uid://de4gwin2pq07v" path="res://levels/Level02.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://byvw0rmn15t5f" path="res://actors/DimensionPlatform.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://b6jotin7e48qo" path="res://actors/Fruit.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://cxvxay8qkqxt" path="res://actors/HiddenGem.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx8" path="res://actors/Portal.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://actors/LevelPortal.tscn" id="8_kqcuv"]
 
 [node name="Level02" type="Node2D"]
 script = ExtResource("1")
 
 [node name="Player" parent="." instance=ExtResource("2")]
-position = Vector2(100, 500)
+position = Vector2(216, 312)
 
 [node name="Platforms" type="Node2D" parent="."]
 
@@ -20,7 +21,7 @@ position = Vector2(100, 500)
 position = Vector2(250, 450)
 
 [node name="Platform2" parent="Platforms" instance=ExtResource("4")]
-position = Vector2(450, 350)
+position = Vector2(418, 394)
 
 [node name="Platform3" parent="Platforms" instance=ExtResource("4")]
 position = Vector2(650, 300)
@@ -55,6 +56,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ScoreLabel" type="Label" parent="UI"]
 layout_mode = 0
@@ -62,3 +65,6 @@ anchor_right = 1.0
 anchor_bottom = 0.1
 text = "Score: 0"
 horizontal_alignment = 1
+
+[node name="LevelPortal" parent="." instance=ExtResource("8_kqcuv")]
+position = Vector2(404, 313)

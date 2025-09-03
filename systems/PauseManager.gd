@@ -14,8 +14,6 @@ func _ready():
 	if Game:
 		Game.game_paused.connect(_on_game_paused)
 		Game.game_resumed.connect(_on_game_resumed)
-	
-
 
 func _on_game_paused():
 	"""Handle game pause event"""
@@ -23,6 +21,11 @@ func _on_game_paused():
 
 func _on_game_resumed():
 	"""Handle game resume event"""
+	hide_pause_menu()
+
+func _on_level_results_shown():
+	"""Handle level results being shown - hide pause menu"""
+	print("🔧 PauseManager: Level results shown, hiding pause menu")
 	hide_pause_menu()
 
 func show_pause_menu():
@@ -60,8 +63,20 @@ func show_pause_menu():
 
 func hide_pause_menu():
 	"""Hide the pause menu"""
+	print("🔧 PauseManager: hide_pause_menu called")
 	if current_pause_menu:
+		print("🔧 PauseManager: Hiding pause menu instance")
 		current_pause_menu.hide_pause_menu()
+		# Remove from scene to prevent conflicts
+		if current_pause_menu.get_parent():
+			print("🔧 PauseManager: Removing pause menu from parent")
+			current_pause_menu.get_parent().remove_child(current_pause_menu)
+		current_pause_menu.queue_free()
+		current_pause_menu = null
+		is_pause_menu_loaded = false
+		print("🔧 PauseManager: Pause menu cleaned up")
+	else:
+		print("🔧 PauseManager: No pause menu to hide")
 
 func _connect_pause_menu_signals():
 	"""Connect pause menu signals to appropriate handlers"""
