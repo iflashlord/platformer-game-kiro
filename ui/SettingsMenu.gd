@@ -21,8 +21,12 @@ func _ready():
 	
 	# Connect button signals
 	test_sfx_button.pressed.connect(_on_test_sfx_pressed)
-	reset_progress_button.pressed.connect(_on_reset_progress_pressed)
+	reset_progress_button.pressed.connect(_on_reset_everything_pressed)
 	back_button.pressed.connect(_on_back_pressed)
+	
+	# Update button text to clarify it resets everything
+	if reset_progress_button:
+		reset_progress_button.text = "Reset Everything"
 	
 	# Load current settings
 	_load_settings()
@@ -40,103 +44,129 @@ func hide_settings():
 	settings_closed.emit()
 
 func _load_settings():
+	"""Load current settings and update UI"""
 	if Audio:
-		master_slider.value = Audio.master_volume
-		music_slider.value = Audio.music_volume
-		sfx_slider.value = Audio.sfx_volume
+		# Safely get volume values with fallbacks
+		master_slider.value = Audio.get_master_volume() if Audio.has_method("get_master_volume") else Audio.master_volume if "master_volume" in Audio else 1.0
+		music_slider.value = Audio.get_music_volume() if Audio.has_method("get_music_volume") else Audio.music_volume if "music_volume" in Audio else 0.8
+		sfx_slider.value = Audio.get_sfx_volume() if Audio.has_method("get_sfx_volume") else Audio.sfx_volume if "sfx_volume" in Audio else 1.0
+		_update_labels()
+	else:
+		# Set defaults if no Audio system
+		master_slider.value = 1.0
+		music_slider.value = 0.8
+		sfx_slider.value = 1.0
 		_update_labels()
 
 func _update_labels():
+	"""Update volume percentage labels"""
 	master_label.text = str(int(master_slider.value * 100)) + "%"
 	music_label.text = str(int(music_slider.value * 100)) + "%"
 	sfx_label.text = str(int(sfx_slider.value * 100)) + "%"
 
 func _on_master_volume_changed(value: float):
-	Audio.set_master_volume(value)
+	"""Handle master volume change"""
+	if Audio and Audio.has_method("set_master_volume"):
+		Audio.set_master_volume(value)
 	_update_labels()
 
 func _on_music_volume_changed(value: float):
-	Audio.set_music_volume(value)
+	"""Handle music volume change"""
+	if Audio and Audio.has_method("set_music_volume"):
+		Audio.set_music_volume(value)
 	_update_labels()
 
 func _on_sfx_volume_changed(value: float):
-	Audio.set_sfx_volume(value)
+	"""Handle SFX volume change"""
+	if Audio and Audio.has_method("set_sfx_volume"):
+		Audio.set_sfx_volume(value)
 	_update_labels()
 
 func _on_test_sfx_pressed():
-	# Play a test sound effect
-	Audio.play_sfx("jump")
+	"""Test SFX volume with sample sound"""
+	if Audio and Audio.has_method("play_sfx"):
+		Audio.play_sfx("ui_select")
+	else:
+		print("🔊 Audio system not available for testing")
 
-func _on_reset_progress_pressed():
-	# Show confirmation dialog
-	_show_reset_confirmation()
-
-func _show_reset_confirmation():
-	# Create confirmation dialog
-	var dialog = AcceptDialog.new()
-	dialog.title = "Reset All Progress"
-	dialog.dialog_text = "Are you sure you want to reset ALL game progress?\n\nThis will delete:\n• All level completions\n• All scores and times\n• All unlocked levels\n• All statistics\n\nThis action cannot be undone!"
+func _on_reset_everything_pressed():
+	"""Show simple reset confirmation"""
+	var dialog = ConfirmationDialog.new()
+	dialog.title = "Reset Everything"
+	dialog.dialog_text = "Reset ALL data to defaults?\n\n• Audio volumes → Default\n• Level progress → Cleared\n• All unlocks → Cleared\n\nThis cannot be undone!"
 	
-	# Add custom buttons
-	dialog.add_cancel_button("Cancel")
-	var confirm_button = dialog.add_button("RESET ALL PROGRESS", true, "confirm")
-	confirm_button.modulate = Color.RED  # Make it red to indicate danger
+	# Connect confirmation
+	dialog.confirmed.connect(_reset_everything)
 	
-	# Connect signals
-	dialog.custom_action.connect(_on_reset_confirmed)
-	dialog.confirmed.connect(_on_reset_confirmed)
-	
-	# Add to scene and show
+	# Style the dialog
 	add_child(dialog)
 	dialog.popup_centered()
+	
+	# Cleanup when done
+	dialog.tree_exiting.connect(func(): dialog.queue_free())
 
-func _on_reset_confirmed(action: String = ""):
-	# Only proceed if this is the confirm action or confirmed signal
-	if action == "confirm" or action == "":
-		print("🔄 Resetting all game progress...")
-		
-		# Reset all persistent data
-		if Persistence:
-			# Reset level progress
-			Persistence.reset_level_progress()
-			
-			# Reset profile to defaults (this will clear everything)
-			Persistence.reset_profile()
-			
-			print("✅ All game progress has been reset")
-			
-			# Show success message
-			_show_reset_success()
-		else:
-			print("❌ Persistence system not available")
-			_show_reset_error()
+func _reset_everything():
+	"""Reset all game data and settings"""
+	print("🔄 Resetting everything...")
+	
+	# Reset audio settings to defaults
+	_reset_audio_settings()
+	
+	# Reset game progress
+	_reset_game_progress()
+	
+	# Show success message
+	_show_simple_success()
 
-func _show_reset_success():
+func _reset_audio_settings():
+	"""Reset all audio settings to default"""
+	if Audio and Audio.has_method("reset_to_defaults"):
+		Audio.reset_to_defaults()
+		print("🔊 Audio settings reset to defaults")
+	elif Audio:
+		# Manual reset if no reset method
+		Audio.set_master_volume(1.0)
+		Audio.set_music_volume(0.8)
+		Audio.set_sfx_volume(1.0)
+		print("🔊 Audio settings manually reset")
+	
+	# Update UI sliders
+	_load_settings()
+
+func _reset_game_progress():
+	"""Reset all game progress data"""
+	if Persistence:
+		Persistence.reset_level_progress()
+		Persistence.reset_profile()
+		print("💾 Game progress reset")
+	else:
+		print("❌ Persistence system not available")
+
+func _show_simple_success():
+	"""Show simple success message"""
 	var dialog = AcceptDialog.new()
 	dialog.title = "Reset Complete"
-	dialog.dialog_text = "All game progress has been successfully reset.\n\nYou can now start fresh from the beginning!"
+	dialog.dialog_text = "Everything has been reset!\nRestart the game to see all changes."
 	
 	add_child(dialog)
 	dialog.popup_centered()
-	
-	# Auto-close after showing
-	dialog.confirmed.connect(func(): dialog.queue_free())
-
-func _show_reset_error():
-	var dialog = AcceptDialog.new()
-	dialog.title = "Reset Failed"
-	dialog.dialog_text = "Failed to reset game progress.\n\nPlease try again or restart the game."
-	
-	add_child(dialog)
-	dialog.popup_centered()
-	
-	# Auto-close after showing
-	dialog.confirmed.connect(func(): dialog.queue_free())
+	dialog.tree_exiting.connect(func(): dialog.queue_free())
 
 func _on_back_pressed():
 	hide_settings()
 
 func _input(event):
-	if visible and event.is_action_pressed("ui_cancel"):
+	"""Handle input events for settings menu"""
+	if not visible:
+		return
+		
+	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("pause"):
 		hide_settings()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_accept"):
+		# If a slider has focus, don't interfere
+		var focused = get_viewport().gui_get_focus_owner()
+		if focused and focused is HSlider:
+			return
+		# Otherwise allow normal button activation
 		get_viewport().set_input_as_handled()

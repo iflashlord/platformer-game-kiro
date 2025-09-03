@@ -61,6 +61,7 @@ func create_default_levels_config():
 				}
 		}
 	}
+}
 
 func create_loading_overlay():
 	loading_overlay = Control.new()

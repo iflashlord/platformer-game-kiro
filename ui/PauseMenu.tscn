@@ -126,25 +126,25 @@ theme_override_constants/separation = 16
 [node name="ResumeButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
-text = "▶ RESUME"
+text = " RESUME"
 alignment = 0
 
 [node name="RestartButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "↻ RESTART LEVEL"
+text = " RESTART LEVEL"
 alignment = 0
 
 [node name="LevelSelectButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "🗺 LEVEL SELECT"
+text = " LEVEL SELECT"
 alignment = 0
 
 [node name="MainMenuButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "🏠 MAIN MENU"
+text = " MAIN MENU"
 alignment = 0
 
 [node name="BottomInfo" type="VBoxContainer" parent="UI/MenuContainer"]

@@ -57,7 +57,7 @@ position = Vector2(251, 242)
 teleport_target = NodePath("../TeleportGate2")
 
 [node name="TeleportGate2" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(1080, 360)
+position = Vector2(1323, 356)
 teleport_target = NodePath("../TeleportGate")
 
 [node name="HiddenGem" parent="InteractiveElements" instance=ExtResource("16_6oto5")]
@@ -87,7 +87,7 @@ position = Vector2(679, 372)
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="GoblinPatrol" parent="Enemies" instance=ExtResource("24_enemy")]
-position = Vector2(149, 462)
+position = Vector2(91, 382)
 patrol_distance = 100.0
 
 [node name="GoblinPatrol2" parent="Enemies" instance=ExtResource("24_enemy")]
@@ -105,7 +105,7 @@ patrol_distance = 80.0
 position = Vector2(489, 248)
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
-position = Vector2(1304, 416)
+position = Vector2(1549, 409)
 portal_name = "Level 1 Complete"
 
 [node name="Instructions" type="CanvasLayer" parent="."]
@@ -173,24 +173,6 @@ position = Vector2(947, 316)
 
 [node name="DynamicPlatform12" parent="." instance=ExtResource("14_n24nw")]
 position = Vector2(1058, 457)
-
-[node name="DynamicPlatform13" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(1124, 457)
-
-[node name="DynamicPlatform14" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(1188, 457)
-
-[node name="DynamicPlatform15" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(1251, 457)
-
-[node name="DynamicPlatform16" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(1315, 457)
-
-[node name="DynamicPlatform17" parent="." instance=ExtResource("14_n24nw")]
-position = Vector2(1315, 457)
+width = 600.0
 
 [node name="DangerousSpike" parent="." instance=ExtResource("15_2rky8")]
-position = Vector2(199, 373)
-retract_on_hit = true
-auto_retract_cycle = true
-spike_scale = 0.3
