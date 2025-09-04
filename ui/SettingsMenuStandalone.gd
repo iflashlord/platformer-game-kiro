@@ -143,24 +143,14 @@ func _show_simple_success():
 	dialog.tree_exiting.connect(func(): dialog.queue_free())
 
 func _safe_scene_change(scene_path: String):
-	"""Export-safe scene loading with fallback"""
-	print("🎬 Safe scene change called for: ", scene_path)
+	"""Standard scene loading - same as MainMenu approach"""
+	print("🎬 Standard scene change to: ", scene_path)
 	
-	# First try packed scene loading (export-safe)
-	var packed_scene = load(scene_path) as PackedScene
-	if packed_scene:
-		print("✅ Loaded as PackedScene: ", scene_path)
-		get_tree().change_scene_to_packed(packed_scene)
-		return
-	
-	print("⚠️ PackedScene load failed, falling back to file loading")
-	
-	# Fallback to file loading
 	var result = get_tree().change_scene_to_file(scene_path)
-	if result == OK:
-		print("✅ Fallback file loading successful: ", scene_path)
+	if result != OK:
+		print("❌ Scene change failed, error code: ", result)
 	else:
-		print("❌ Scene loading failed completely: ", scene_path, " (Error: ", result, ")")
+		print("✅ Scene change successful")
 
 func _on_back_pressed():
 	"""Return to main menu with glitch effect"""

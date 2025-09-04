@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://3l4c2ub6a411"]
+[gd_scene load_steps=3 format=3 uid="uid://3l4c2ub6a411"]
 
 [ext_resource type="Script" uid="uid://cq2kq4weyp3vx" path="res://ui/GameUI.gd" id="1_gameui"]
 [ext_resource type="PackedScene" uid="uid://dx0yw3rkqiarr" path="res://ui/PauseMenu.tscn" id="2_pausemenu"]
@@ -8,8 +8,5 @@
 script = ExtResource("1_gameui")
 
 [node name="PauseMenu" parent="." instance=ExtResource("2_pausemenu")]
-
-[node name="Results" parent="." instance=ExtResource("3_results")]
-visible = false
 
 [node name="HintDisplay" parent="." instance=ExtResource("4_hintdisplay")]

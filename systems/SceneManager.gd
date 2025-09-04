@@ -19,15 +19,10 @@ func change_scene(scene_path: String, show_loading: bool = true) -> bool:
 			ErrorHandler.warning("Already transitioning, ignoring request")
 		return false
 	
-	if not FileAccess.file_exists(scene_path):
-		if ErrorHandler:
-			ErrorHandler.error("Scene file not found: " + scene_path)
-		transition_failed.emit("Scene file not found")
-		return false
-	
 	is_transitioning = true
 	transition_started.emit(scene_path)
 	
+	print("🎬 SceneManager loading scene: ", scene_path)
 	var result = get_tree().change_scene_to_file(scene_path)
 	if result == OK:
 		current_scene_path = scene_path
@@ -39,9 +34,11 @@ func change_scene(scene_path: String, show_loading: bool = true) -> bool:
 		
 		scene_changed.emit(scene_path)
 		transition_completed.emit(scene_path)
+		print("✅ Scene change successful")
 		return true
 	else:
 		is_transitioning = false
+		print("❌ Scene change failed, error code: ", result)
 		if ErrorHandler:
 			ErrorHandler.error("Failed to change scene: " + scene_path)
 		transition_failed.emit("Failed to load scene")

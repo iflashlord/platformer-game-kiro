@@ -156,18 +156,15 @@ func _transition_to_scene(scene_path: String):
 	await get_tree().create_timer(0.3).timeout
 	
 	# Use SceneManager for better transitions
-	if SceneManager:
-		SceneManager.change_scene(scene_path)
+	# Use simple, export-safe scene loading (same as MainMenu approach)
+	print("🎬 PauseManager loading scene: ", scene_path)
+	var result = get_tree().change_scene_to_file(scene_path)
+	if result != OK:
+		print("❌ Scene change failed, error code: ", result)
+		if ErrorHandler:
+			ErrorHandler.error("Failed to load scene: " + scene_path, "PauseManager")
 	else:
-		# Fallback
-		if not FileAccess.file_exists(scene_path):
-			if ErrorHandler:
-				ErrorHandler.error("Scene not found: " + scene_path, "PauseManager")
-			return
-		
-		var result = get_tree().change_scene_to_file(scene_path)
-		if result != OK and ErrorHandler:
-			ErrorHandler.report_scene_load_error(scene_path, result)
+		print("✅ Scene change successful")
 
 func _trigger_glitch_transition():
 	"""Trigger dimension glitch effect for menu transitions"""

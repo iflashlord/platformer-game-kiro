@@ -194,29 +194,15 @@ func _on_quit_pressed():
 
 # Helper functions
 func _transition_to_scene(scene_path: String, message: String = ""):
-	print("🎬 Attempting to load scene: ", scene_path)
+	print("🎬 Standard scene transition to: ", scene_path)
 	
-	# Enhanced export-compatible scene loading
-	var scene_resource = load(scene_path)
-	if not scene_resource:
-		print("❌ Failed to load scene resource: ", scene_path)
-		_show_error("Scene not found: " + scene_path.get_file())
-		return
-	
-	print("✅ Scene resource loaded successfully")
-	
-	var result = get_tree().change_scene_to_packed(scene_resource)
+	# Use the simplest, most standard approach
+	var result = get_tree().change_scene_to_file(scene_path)
 	if result != OK:
-		print("❌ Failed to change scene, error code: ", result)
-		# Try fallback method
-		result = get_tree().change_scene_to_file(scene_path)
-		if result != OK:
-			print("❌ Fallback scene change also failed, error code: ", result)
-			_show_error("Failed to load " + scene_path.get_file())
-		else:
-			print("✅ Fallback scene change succeeded")
+		print("❌ Scene change failed, error code: ", result)
+		_show_error("Failed to load " + scene_path.get_file())
 	else:
-		print("✅ Scene change succeeded")
+		print("✅ Scene change successful")
 
 func _play_button_sound():
 	_play_ui_sound("ui_select")

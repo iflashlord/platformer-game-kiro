@@ -375,18 +375,21 @@ class LevelCard extends Control:
 	func load_thumbnail():
 		var thumbnail_path = level_data.get("thumbnail", "")
 		
-		if thumbnail_path != "" and FileAccess.file_exists(thumbnail_path):
-			var texture = load(thumbnail_path)
-			if texture:
-				var cropped_texture = _create_cropped_texture(texture)
-				if cropped_texture:
-					thumbnail.texture = cropped_texture
-				else:
-					thumbnail.texture = texture  # Fallback to original
-			else:
-				_create_placeholder_thumbnail()
-		else:
-			_create_placeholder_thumbnail()
+		# For exports, always use placeholder thumbnails to avoid loading issues
+		if OS.has_feature("debug"):
+			# Dev mode: try to load actual thumbnails
+			if thumbnail_path != "" and FileAccess.file_exists(thumbnail_path):
+				var texture = load(thumbnail_path)
+				if texture:
+					var cropped_texture = _create_cropped_texture(texture)
+					if cropped_texture:
+						thumbnail.texture = cropped_texture
+					else:
+						thumbnail.texture = texture  # Fallback to original
+					return
+		
+		# Export mode or fallback: always use placeholder
+		_create_placeholder_thumbnail()
 	
 	func _create_cropped_texture(original_texture: Texture2D) -> ImageTexture:
 		"""Create a cropped version of the texture to fit the card aspect ratio"""
@@ -929,30 +932,14 @@ func _trigger_glitch_transition():
 		print("⚠️ DimensionManager not available for glitch effect")
 
 func _safe_scene_change(scene_path: String):
-	"""Export-safe scene loading with error handling"""
-	print("🎬 Safe scene change to: ", scene_path)
+	"""Standard scene loading - same as MainMenu approach"""
+	print("🎬 Standard scene change to: ", scene_path)
 	
-	# Method 1: Try loading as resource first (works better in exports)
-	var scene_resource = load(scene_path)
-	if scene_resource:
-		print("✅ Scene resource loaded, changing to packed scene")
-		var result = get_tree().change_scene_to_packed(scene_resource)
-		if result == OK:
-			print("✅ Scene change succeeded")
-			return
-		else:
-			print("❌ Packed scene change failed, error: ", result)
-	else:
-		print("❌ Failed to load scene resource: ", scene_path)
-	
-	# Method 2: Fallback to file path (classic method)
-	print("🔄 Trying fallback: change_scene_to_file")
 	var result = get_tree().change_scene_to_file(scene_path)
-	if result == OK:
-		print("✅ Fallback scene change succeeded")
+	if result != OK:
+		print("❌ Scene change failed, error code: ", result)
 	else:
-		print("❌ All scene loading methods failed, error: ", result)
-		push_error("Critical: Cannot load scene " + scene_path)
+		print("✅ Scene change successful")
 
 # Signal handlers
 func _on_back_pressed():
@@ -998,45 +985,29 @@ func _on_level_selected(level_id: String):
 	_load_level(level_id)
 
 func _load_level(level_id: String, time_trial: bool = false):
-	"""Load a level"""
+	"""Load a level - export-safe version"""
 	print("🎮 Loading level: ", level_id, " (Time Trial: ", time_trial, ")")
 	
 	# Trigger glitch effect before level transition
 	_trigger_glitch_transition()
 	
-	# First try to construct the scene path directly
+	# Update game state first
+	if Game:
+		Game.current_level = level_id
+	
+	# Wait for glitch effect then load
+	await get_tree().create_timer(0.3).timeout
+	
+	# Reset dimension to A when loading level
+	if DimensionManager:
+		DimensionManager.reset_to_layer_a()
+	
+	# Direct scene path construction (export-safe - no file existence check)
 	var scene_path = "res://levels/" + level_id + ".tscn"
+	print("✅ Attempting to load level scene: ", scene_path)
 	
-	# Check if the scene file exists
-	if FileAccess.file_exists(scene_path):
-		print("✅ Found level scene: ", scene_path)
-		# Update game state
-		if Game:
-			Game.current_level = level_id
-		
-		# Wait for glitch effect then load
-		await get_tree().create_timer(0.3).timeout
-		# Reset dimension to A when loading level
-		if DimensionManager:
-			DimensionManager.reset_to_layer_a()
-		_safe_scene_change(scene_path)
-		return
-	
-	# Fallback: Try using LevelLoader if available
-	if LevelLoader:
-		if time_trial:
-			LevelLoader.load_time_trial(level_id)
-		else:
-			LevelLoader.goto(level_id)
-	else:
-		# Last resort: check levels_data for scene path
-		var level_info = levels_data.get(level_id, {})
-		var fallback_scene_path = level_info.get("scene_path", "")
-		if fallback_scene_path != "" and FileAccess.file_exists(fallback_scene_path):
-			get_tree().change_scene_to_file(fallback_scene_path)
-		else:
-			print("❌ Level scene not found for: ", level_id)
-			print("❌ Tried paths: ", scene_path, " and ", fallback_scene_path)
+	# Always try to load - FileAccess.file_exists() is unreliable in exports
+	_safe_scene_change(scene_path)
 
 # Input handling
 func _input(event):
@@ -1288,7 +1259,7 @@ func _animate_button_selection(button: Button, selected: bool):
 			style.border_width_top = 3
 			style.border_width_bottom = 3
 			style.border_color = Color.CYAN
-			style.bg_color = button.get("bg_color") if button.has_method("get") else Color.TRANSPARENT
+			style.bg_color = Color(0.2, 0.4, 0.8, 0.3)  # Semi-transparent blue background
 			button.add_theme_stylebox_override("normal", style)
 			button.add_theme_stylebox_override("hover", style)
 			button.add_theme_stylebox_override("pressed", style)

@@ -94,30 +94,14 @@ func _trigger_glitch_transition():
 		print("⚠️ DimensionManager not available for glitch effect")
 
 func _safe_scene_change(scene_path: String):
-	"""Export-safe scene loading with error handling"""
-	print("🎬 Safe scene change to: ", scene_path)
+	"""Standard scene loading - same as MainMenu approach"""
+	print("🎬 Standard scene change to: ", scene_path)
 	
-	# Method 1: Try loading as resource first (works better in exports)
-	var scene_resource = load(scene_path)
-	if scene_resource:
-		print("✅ Scene resource loaded, changing to packed scene")
-		var result = get_tree().change_scene_to_packed(scene_resource)
-		if result == OK:
-			print("✅ Scene change succeeded")
-			return
-		else:
-			print("❌ Packed scene change failed, error: ", result)
-	else:
-		print("❌ Failed to load scene resource: ", scene_path)
-	
-	# Method 2: Fallback to file path (classic method)
-	print("🔄 Trying fallback: change_scene_to_file")
 	var result = get_tree().change_scene_to_file(scene_path)
-	if result == OK:
-		print("✅ Fallback scene change succeeded")
+	if result != OK:
+		print("❌ Scene change failed, error code: ", result)
 	else:
-		print("❌ All scene loading methods failed, error: ", result)
-		push_error("Critical: Cannot load scene " + scene_path)
+		print("✅ Scene change successful")
 
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel") or Input.is_action_just_pressed("pause"):

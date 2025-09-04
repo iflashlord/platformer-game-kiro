@@ -104,7 +104,17 @@ func _update_achievement_ui():
 func _on_back_pressed():
 	if Audio:
 		Audio.play_sfx("ui_select")
-	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+	_safe_scene_change("res://ui/MainMenu.tscn")
+
+func _safe_scene_change(scene_path: String):
+	"""Standard scene loading - same as MainMenu approach"""
+	print("🎬 Standard scene change to: ", scene_path)
+	
+	var result = get_tree().change_scene_to_file(scene_path)
+	if result != OK:
+		print("❌ Scene change failed, error code: ", result)
+	else:
+		print("✅ Scene change successful")
 
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel") or Input.is_action_just_pressed("pause"):
