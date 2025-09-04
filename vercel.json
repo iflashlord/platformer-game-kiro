@@ -19,11 +19,23 @@
       ]
     },
     {
-      "source": "/(.*\\.wasm)",
+      "source": "/index.wasm",
       "headers": [
         {
           "key": "Content-Type",
           "value": "application/wasm"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "credentialless"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         },
         {
           "key": "Cache-Control",
@@ -32,11 +44,23 @@
       ]
     },
     {
-      "source": "/(.*\\.pck)",
+      "source": "/index.pck",
       "headers": [
         {
           "key": "Content-Type",
           "value": "application/octet-stream"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "credentialless"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         },
         {
           "key": "Cache-Control",
