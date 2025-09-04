@@ -32,6 +32,19 @@
 	  ]
 	},
 	{
+		"source": "/:all*.wasm",
+		"headers": [
+			{ "key": "Content-Type", "value": "application/wasm" },
+			{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+		]
+	},
+	{
+		"source": "/:all*.pck",
+		"headers": [
+		  { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+		]
+	},
+	{
 	  "source": "/index.html",
 	  "headers": [
 		{
@@ -41,6 +54,7 @@
 	  ]
 	}
   ],
+  "cleanUrls": true,
   "functions": {
 	"index.html": {
 	  "includeFiles": "**"
