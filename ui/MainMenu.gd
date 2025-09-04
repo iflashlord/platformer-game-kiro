@@ -159,7 +159,7 @@ func _on_continue_pressed():
 	
 	if Persistence and Persistence.has_method("get_last_level"):
 		var last_level = Persistence.get_last_level()
-		if last_level and FileAccess.file_exists(last_level):
+		if last_level and last_level != "":
 			target_scene = last_level
 	
 	await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
@@ -181,12 +181,8 @@ func _on_credits_pressed():
 	_play_button_sound()
 	_trigger_glitch_transition()
 	
-	# Check if credits screen exists
-	if FileAccess.file_exists("res://ui/CreditsMenu.tscn"):
-		await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
-		_transition_to_scene("res://ui/CreditsMenu.tscn", "Loading credits...")
-	else:
-		_show_coming_soon("Credits screen coming soon!")
+	await get_tree().create_timer(0.3).timeout  # Wait for glitch effect
+	_transition_to_scene("res://ui/CreditsMenu.tscn", "Loading credits...")
 
 func _on_quit_pressed():
 	_play_button_sound()
