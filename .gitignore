@@ -27,7 +27,7 @@ Thumbs.db
 build/
 dist/
 *.exe
-*.pck
+# *.pck  # Commented out to allow Godot web export files
 *.zip
 *.dmg
 *.app
