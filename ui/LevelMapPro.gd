@@ -1,6 +1,12 @@
 extends CanvasLayer
 class_name LevelMapPro
 
+# Preloaded thumbnails for export compatibility
+const THUMBNAIL_LEVEL00 = preload("res://content/thumbnails/Level00.png")
+const THUMBNAIL_LEVEL01 = preload("res://content/thumbnails/Level01.png")
+const THUMBNAIL_LEVEL02 = preload("res://content/thumbnails/Level02.png")
+const THUMBNAIL_GIANTBOSS = preload("res://content/thumbnails/Level_GiantBoss.png")
+
 # UI References
 @onready var back_button: Button = $UI/Header/TitleContainer/BackButton
 @onready var dev_button: Button = $UI/Header/TitleContainer/DevButton
@@ -373,23 +379,37 @@ class LevelCard extends Control:
 		tween.tween_property(main_panel, "modulate", Color(1.2, 1.1, 0.8), 0.5)
 	
 	func load_thumbnail():
-		var thumbnail_path = level_data.get("thumbnail", "")
+		# Use preloaded thumbnails for export compatibility
+		var thumbnail_texture: Texture2D = null
 		
-		# For exports, always use placeholder thumbnails to avoid loading issues
-		if OS.has_feature("debug"):
-			# Dev mode: try to load actual thumbnails
-			if thumbnail_path != "" and FileAccess.file_exists(thumbnail_path):
-				var texture = load(thumbnail_path)
-				if texture:
-					var cropped_texture = _create_cropped_texture(texture)
-					if cropped_texture:
-						thumbnail.texture = cropped_texture
-					else:
-						thumbnail.texture = texture  # Fallback to original
-					return
+		# Get the appropriate preloaded thumbnail
+		match level_id:
+			"Level00":
+				thumbnail_texture = THUMBNAIL_LEVEL00
+			"Level01":
+				thumbnail_texture = THUMBNAIL_LEVEL01
+			"Level02":
+				thumbnail_texture = THUMBNAIL_LEVEL02
+			"Level_GiantBoss":
+				thumbnail_texture = THUMBNAIL_GIANTBOSS
+			_:
+				print("📷 No preloaded thumbnail for: ", level_id, ", using placeholder")
+				_create_placeholder_thumbnail()
+				return
 		
-		# Export mode or fallback: always use placeholder
-		_create_placeholder_thumbnail()
+		if thumbnail_texture:
+			# Create cropped version for consistent aspect ratio
+			var cropped_texture = _create_cropped_texture(thumbnail_texture)
+			if cropped_texture:
+				thumbnail.texture = cropped_texture
+				print("📷 Loaded cropped preloaded thumbnail for: ", level_id)
+			else:
+				# Fallback to original if cropping fails
+				thumbnail.texture = thumbnail_texture
+				print("📷 Loaded original preloaded thumbnail for: ", level_id)
+		else:
+			print("📷 Preloaded thumbnail failed for: ", level_id, ", using placeholder")
+			_create_placeholder_thumbnail()
 	
 	func _create_cropped_texture(original_texture: Texture2D) -> ImageTexture:
 		"""Create a cropped version of the texture to fit the card aspect ratio"""
@@ -447,9 +467,24 @@ class LevelCard extends Control:
 				var pixel_color = base_color.lerp(base_color.darkened(0.4), gradient_factor)
 				image.set_pixel(x, y, pixel_color)
 		
+		# Add level indicator pattern in the center
+		var center_x = 240
+		var center_y = 160
+		var bright_color = base_color.lightened(0.3)
+		
+		# Draw a simple pattern to indicate this is a placeholder
+		for i in range(-20, 21):
+			for j in range(-20, 21):
+				if abs(i) + abs(j) < 15:  # Diamond pattern
+					var px = center_x + i
+					var py = center_y + j
+					if px >= 0 and px < 480 and py >= 0 and py < 320:
+						image.set_pixel(px, py, bright_color)
+		
 		var texture = ImageTexture.new()
 		texture.set_image(image)
 		thumbnail.texture = texture
+		print("📷 Created placeholder thumbnail for: ", level_id)
 	
 	func _get_level_theme_color() -> Color:
 		var level_name = level_id.to_lower()
