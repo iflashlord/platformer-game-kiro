@@ -19,7 +19,7 @@
       ]
     },
     {
-      "source": "/(.*\\.wasm)$",
+      "source": "/(.*\\.wasm)",
       "headers": [
         {
           "key": "Content-Type",
@@ -32,7 +32,7 @@
       ]
     },
     {
-      "source": "/(.*\\.pck)$",
+      "source": "/(.*\\.pck)",
       "headers": [
         {
           "key": "Content-Type",
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "source": "/(.*\\.js)$",
+      "source": "/(.*\\.js)",
       "headers": [
         {
           "key": "Content-Type",
@@ -58,7 +58,7 @@
       ]
     },
     {
-      "source": "/(.*\\.json)$",
+      "source": "/(.*\\.json)",
       "headers": [
         {
           "key": "Content-Type",
@@ -71,7 +71,7 @@
       ]
     },
     {
-      "source": "/(.*\\.(png|jpg|jpeg|gif|ico|svg))$",
+      "source": "/(.*\\.(png|jpg|jpeg|gif|ico|svg))",
       "headers": [
         {
           "key": "Cache-Control",
