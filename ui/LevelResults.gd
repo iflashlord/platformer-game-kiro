@@ -1,6 +1,21 @@
 extends CanvasLayer
 class_name LevelResults
 
+# Hardcoded level data for export compatibility (instead of loading JSON)
+const LEVEL_DISPLAY_NAMES = {
+	"Level00": "First Steps",
+	"Level01": "Mystic Realms", 
+	"Level02": "Parallel Worlds",
+	"Level_GiantBoss": "Titan's Wrath"
+}
+
+const LEVEL_PROGRESSION = {
+	"Level00": "Level01",
+	"Level01": "Level02",
+	"Level02": "Level_GiantBoss",
+	"Level_GiantBoss": ""
+}
+
 # Signals
 signal level_results_shown
 
@@ -158,41 +173,12 @@ func setup_results(data: Dictionary):
 	show_results()
 
 func _get_level_display_name(level_name: String) -> String:
-	"""Get display name for a level from config file"""
+	"""Get display name for a level - export-safe hardcoded version"""
 	print("🎯 Getting display name for: '", level_name, "'")
 	
-	# Load from config file
-	var config_path = "res://data/level_map_config.json"
-	if not FileAccess.file_exists(config_path):
-		print("🎯 Config file not found, using level_name as fallback")
-		return level_name
-	
-	var file = FileAccess.open(config_path, FileAccess.READ)
-	if not file:
-		print("🎯 Could not open config file, using level_name as fallback")
-		return level_name
-	
-	var json_string = file.get_as_text()
-	file.close()
-	
-	var json = JSON.new()
-	if json.parse(json_string) != OK:
-		print("🎯 Could not parse config JSON, using level_name as fallback")
-		return level_name
-	
-	var config = json.data
-	var level_nodes = config.get("level_nodes", [])
-	
-	# Find the level and return its display name
-	for node in level_nodes:
-		var level_id = node.get("id", "")
-		if level_id == level_name:
-			var display_name = node.get("display_name", level_name)
-			print("🎯 Found display name in config: '", display_name, "'")
-			return display_name
-	
-	print("🎯 Level not found in config, using level_name as fallback")
-	return level_name
+	var display_name = LEVEL_DISPLAY_NAMES.get(level_name, level_name)
+	print("🎯 Display name result: '", display_name, "'")
+	return display_name
 
 func _update_simple_victory_ui(data: Dictionary):
 	"""Update simple VictoryUI when detailed results UI is not available"""
@@ -222,7 +208,7 @@ func _update_simple_victory_ui(data: Dictionary):
 		print("⚠️ No victory UI found at all")
 
 func _get_next_level(current: String) -> String:
-	"""Get the next level in progression from config file"""
+	"""Get the next level in progression - export-safe hardcoded version"""
 	print("🎯 _get_next_level called with current: '", current, "'")
 	
 	if has_node("/root/Persistence") and get_node("/root/Persistence").has_method("get_next_level_in_progression"):
@@ -231,53 +217,10 @@ func _get_next_level(current: String) -> String:
 		if persistence_result != "":
 			return persistence_result
 	
-	# Load level progression from config file
-	var config_path = "res://data/level_map_config.json"
-	if not FileAccess.file_exists(config_path):
-		print("🎯 ERROR: Config file not found: ", config_path)
-		return ""
-	
-	var file = FileAccess.open(config_path, FileAccess.READ)
-	if not file:
-		print("🎯 ERROR: Could not open config file")
-		return ""
-	
-	var json_string = file.get_as_text()
-	file.close()
-	
-	var json = JSON.new()
-	if json.parse(json_string) != OK:
-		print("🎯 ERROR: Could not parse config JSON")
-		return ""
-	
-	var config = json.data
-	var level_nodes = config.get("level_nodes", [])
-	
-	print("🎯 Found ", level_nodes.size(), " level nodes in config")
-	
-	# Sort by order to ensure correct progression
-	level_nodes.sort_custom(func(a, b): return a.get("order", 0) < b.get("order", 0))
-	print("🎯 Found ", level_nodes, " level nodes in config")
-
-	# Find current level and return the next one
-	for i in range(level_nodes.size()):
-		var node = level_nodes[i]
-		var level_id = node.get("id", "")
-		print("🎯 Checking level ", i, ": '", level_id, "' (order: ", node.get("order", 0), ")")
-		
-		if level_id == current:
-			print("🎯 Found current level at index ", i)
-			if i < level_nodes.size() - 1:
-				var next_node = level_nodes[i + 1]
-				var next_level = next_node.get("id", "")
-				print("🎯 Next level: '", next_level, "' (", next_node.get("display_name", ""), ")")
-				return next_level
-			else:
-				print("🎯 Current level is the last level")
-				return ""
-	
-	print("🎯 ERROR: Current level '", current, "' not found in config")
-	return ""
+	# Use hardcoded progression for export compatibility
+	var next_level = LEVEL_PROGRESSION.get(current, "")
+	print("🎯 Hardcoded progression: '", current, "' -> '", next_level, "'")
+	return next_level
 
 func _setup_next_level_button():
 	"""Setup the next level button based on availability"""
@@ -551,45 +494,20 @@ func _load_level(level_id: String):
 	# This avoids potential issues with LevelLoader system
 	print("🔍 Loading level directly via scene file...")
 	
-	# First try direct path construction
+	# Direct scene path construction (export-safe - no file existence checks)
 	var scene_path = "res://levels/" + level_id + ".tscn"
-	print("🔍 Trying direct path construction: ", scene_path)
-	print("🔍 File exists: ", FileAccess.file_exists(scene_path))
+	print("✅ Loading level scene: ", scene_path)
 	
-	if FileAccess.file_exists(scene_path):
-		print("✅ Loading level scene via direct path: ", scene_path)
-		# Unpause the game before loading new level
-		_unpause_game()
-		# Reset dimension to A when loading level
-		if DimensionManager:
-			DimensionManager.reset_to_layer_a()
-		_safe_scene_change(scene_path)
-		queue_free()
-		return
+	# Unpause the game before loading new level
+	_unpause_game()
 	
-	# Fallback to scene mapping
-	var level_scenes = {
-		"Level00": "res://levels/Level00.tscn",
-		"Level01": "res://levels/Level01.tscn", 
-		"Level02": "res://levels/Level02.tscn",
-		"Level_GiantBoss": "res://levels/Level_GiantBoss.tscn"
-	}
+	# Reset dimension to A when loading level
+	if DimensionManager:
+		DimensionManager.reset_to_layer_a()
 	
-	scene_path = level_scenes.get(level_id, "")
-	print("🔍 Fallback scene path lookup: ", scene_path)
-	
-	if scene_path != "" and FileAccess.file_exists(scene_path):
-		print("✅ Loading level scene via fallback mapping: ", scene_path)
-		# Unpause the game before loading new level
-		_unpause_game()
-		# Reset dimension to A when loading level
-		if DimensionManager:
-			DimensionManager.reset_to_layer_a()
-		_safe_scene_change(scene_path)
-		queue_free()
-	else:
-		print("❌ Level scene not found for ", level_id, " at any path")
-		_on_level_select_pressed()  # Fallback to level select
+	# Always try to load - no file existence checks (unreliable in exports)
+	_safe_scene_change(scene_path)
+	queue_free()
 
 func _show_level_locked_message(level_id: String):
 	"""Show a message that the level is locked and go to level select"""
@@ -733,8 +651,6 @@ func _get_unlock_requirements_text(level_id: String) -> String:
 	
 	# Load level config to check requirements
 	var level_config_path = "res://data/level_map_config.json"
-	if not FileAccess.file_exists(level_config_path):
-		return "Complete previous level"
 	
 	var file = FileAccess.open(level_config_path, FileAccess.READ)
 	if not file:
