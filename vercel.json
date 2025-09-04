@@ -1,12 +1,5 @@
 {
-  "version": 2,
   "name": "glitch-dimension",
-  "builds": [
-    {
-      "src": "**",
-      "use": "@vercel/static"
-    }
-  ],
   "headers": [
     {
       "source": "/index.html",
