@@ -1,8 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://bx0yw1rkqh7pp"]
+[gd_scene load_steps=11 format=3 uid="uid://bx0yw1rkqh7pp"]
 
 [ext_resource type="Script" uid="uid://bg5cpijcglffn" path="res://ui/MainMenu.gd" id="1_mainmenu"]
 [ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="2_theme"]
 [ext_resource type="Texture2D" uid="uid://dc5l880r117is" path="res://content/Graphics/typo.png" id="3_logo"]
+[ext_resource type="Texture2D" uid="uid://c6y464f7j6an4" path="res://content/Graphics/Icons/White/1x/forward.png" id="4_uwsby"]
+[ext_resource type="Texture2D" uid="uid://bs4pa4bxjqrul" path="res://content/Graphics/Icons/White/1x/video.png" id="5_uvwf2"]
+[ext_resource type="Texture2D" uid="uid://dlp4lr8txd2o6" path="res://content/Graphics/Icons/White/1x/gear.png" id="6_youui"]
+[ext_resource type="Texture2D" uid="uid://cpgl24tb6wst3" path="res://content/Graphics/Icons/White/1x/information.png" id="7_58pe3"]
+[ext_resource type="Texture2D" uid="uid://c8dnyquj3aexb" path="res://content/Graphics/Icons/White/1x/exitRight.png" id="8_g6r01"]
 
 [sub_resource type="Animation" id="Animation_1"]
 resource_name = "fade_in"
@@ -122,37 +127,49 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "  NEW GAME"
+icon = ExtResource("4_uwsby")
 alignment = 0
+expand_icon = true
 
 [node name="ContinueButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "  CONTINUE"
+icon = ExtResource("4_uwsby")
 alignment = 0
+expand_icon = true
 
 [node name="LevelSelectButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "  LEVEL SELECT"
+icon = ExtResource("5_uvwf2")
 alignment = 0
+expand_icon = true
 
 [node name="OptionsButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "  SETTINGS"
+icon = ExtResource("6_youui")
 alignment = 0
+expand_icon = true
 
 [node name="CreditsButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "  CREDITS"
+icon = ExtResource("7_58pe3")
 alignment = 0
+expand_icon = true
 
 [node name="QuitButton" type="Button" parent="UI/MainContainer/RightPanel/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "  QUIT GAME"
+icon = ExtResource("8_g6r01")
 alignment = 0
+expand_icon = true
 
 [node name="BottomContainer" type="HBoxContainer" parent="UI"]
 layout_mode = 1

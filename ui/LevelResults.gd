@@ -312,7 +312,7 @@ func _setup_next_level_button():
 		
 		if is_unlocked:
 			print("🎯 Next level is unlocked, setting normal button")
-			next_level_button.text = "▶ NEXT: " + next_display_name
+			next_level_button.text = "  NEXT: " + next_display_name
 			next_level_button.disabled = false
 			next_level_button.modulate = Color.WHITE
 			# Make it the primary action (focused by default)

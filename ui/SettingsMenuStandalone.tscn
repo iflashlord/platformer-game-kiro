@@ -1,7 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://cxvxay8qkqx0"]
+[gd_scene load_steps=8 format=3 uid="uid://cxvxay8qkqx0"]
 
 [ext_resource type="Script" uid="uid://cq5dwbddijvcy" path="res://ui/SettingsMenuStandalone.gd" id="1_settings"]
 [ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="2_theme"]
+[ext_resource type="Texture2D" uid="uid://btix0ge1jpfnt" path="res://content/Graphics/Icons/White/1x/audioOn.png" id="3_fqgee"]
+[ext_resource type="Texture2D" uid="uid://021qfdals6n" path="res://content/Graphics/Icons/White/1x/musicOn.png" id="4_h11eb"]
+[ext_resource type="Texture2D" uid="uid://bt7rsev0tqor8" path="res://content/Graphics/Icons/White/1x/joystickRight.png" id="5_o20pe"]
+[ext_resource type="Texture2D" uid="uid://c27s8wyu6gtrm" path="res://content/Graphics/Icons/White/1x/return.png" id="6_h11eb"]
+[ext_resource type="Texture2D" uid="uid://cnc85veubns0r" path="res://content/Graphics/Icons/White/1x/backward.png" id="6_mcpkp"]
 
 [node name="SettingsMenuStandalone" type="CanvasLayer"]
 script = ExtResource("1_settings")
@@ -55,11 +60,16 @@ theme_override_constants/separation = 16
 [node name="MasterVolume" type="HBoxContainer" parent="UI/MainContainer/SettingsContainer"]
 layout_mode = 2
 
+[node name="TextureRect" type="TextureRect" parent="UI/MainContainer/SettingsContainer/MasterVolume"]
+layout_mode = 2
+texture = ExtResource("3_fqgee")
+expand_mode = 2
+
 [node name="Label" type="Label" parent="UI/MainContainer/SettingsContainer/MasterVolume"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 18
-text = "🔊 Master Volume:"
+text = " Master Volume:"
 
 [node name="Slider" type="HSlider" parent="UI/MainContainer/SettingsContainer/MasterVolume"]
 custom_minimum_size = Vector2(200, 0)
@@ -79,11 +89,16 @@ horizontal_alignment = 2
 [node name="MusicVolume" type="HBoxContainer" parent="UI/MainContainer/SettingsContainer"]
 layout_mode = 2
 
+[node name="TextureRect" type="TextureRect" parent="UI/MainContainer/SettingsContainer/MusicVolume"]
+layout_mode = 2
+texture = ExtResource("4_h11eb")
+expand_mode = 2
+
 [node name="Label" type="Label" parent="UI/MainContainer/SettingsContainer/MusicVolume"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 18
-text = "🎵 Music Volume:"
+text = "Music Volume:"
 
 [node name="Slider" type="HSlider" parent="UI/MainContainer/SettingsContainer/MusicVolume"]
 custom_minimum_size = Vector2(200, 0)
@@ -103,11 +118,16 @@ horizontal_alignment = 2
 [node name="SFXVolume" type="HBoxContainer" parent="UI/MainContainer/SettingsContainer"]
 layout_mode = 2
 
+[node name="TextureRect2" type="TextureRect" parent="UI/MainContainer/SettingsContainer/SFXVolume"]
+layout_mode = 2
+texture = ExtResource("5_o20pe")
+expand_mode = 2
+
 [node name="Label" type="Label" parent="UI/MainContainer/SettingsContainer/SFXVolume"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 18
-text = "🔉 SFX Volume:"
+text = "SFX Volume:"
 
 [node name="Slider" type="HSlider" parent="UI/MainContainer/SettingsContainer/SFXVolume"]
 custom_minimum_size = Vector2(200, 0)
@@ -136,12 +156,16 @@ alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Test Sound Effect"
+icon = ExtResource("3_fqgee")
+expand_icon = true
 
 [node name="ResetProgress" type="Button" parent="UI/MainContainer/SettingsContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 theme_override_font_sizes/font_size = 18
 text = "Reset Everything"
+icon = ExtResource("6_h11eb")
+expand_icon = true
 
 [node name="HSeparator3" type="HSeparator" parent="UI/MainContainer"]
 visible = false
@@ -151,6 +175,8 @@ layout_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "BACK TO MENU"
+icon = ExtResource("6_mcpkp")
+expand_icon = true
 
 [node name="HSeparator4" type="HSeparator" parent="UI/MainContainer"]
 layout_mode = 2

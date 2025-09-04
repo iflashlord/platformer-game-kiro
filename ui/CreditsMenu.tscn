@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dndiuiqji2q67"]
+[gd_scene load_steps=4 format=3 uid="uid://dndiuiqji2q67"]
 
 [ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="1_theme"]
 [ext_resource type="Script" uid="uid://37vgo5kkhi84" path="res://ui/CreditsMenu.gd" id="2_script"]
+[ext_resource type="Texture2D" uid="uid://cnc85veubns0r" path="res://content/Graphics/Icons/White/1x/backward.png" id="3_cyg8p"]
 
 [node name="CreditsMenu" type="CanvasLayer"]
 script = ExtResource("2_script")
@@ -173,4 +174,6 @@ layout_mode = 2
 [node name="BackButton" type="Button" parent="UI/MainContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "🏠 BACK TO MENU"
+text = "BACK TO MENU"
+icon = ExtResource("3_cyg8p")
+expand_icon = true

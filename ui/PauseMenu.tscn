@@ -1,7 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://dx0yw3rkqiarr"]
+[gd_scene load_steps=9 format=3 uid="uid://dx0yw3rkqiarr"]
 
 [ext_resource type="Script" uid="uid://b83waifjogmuj" path="res://ui/PauseMenu.gd" id="1_pausemenu"]
 [ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="2_theme"]
+[ext_resource type="Texture2D" uid="uid://c6y464f7j6an4" path="res://content/Graphics/Icons/White/1x/forward.png" id="3_bqsny"]
+[ext_resource type="Texture2D" uid="uid://c27s8wyu6gtrm" path="res://content/Graphics/Icons/White/1x/return.png" id="4_fdrbn"]
+[ext_resource type="Texture2D" uid="uid://bs4pa4bxjqrul" path="res://content/Graphics/Icons/White/1x/video.png" id="5_afaem"]
+[ext_resource type="Texture2D" uid="uid://byriexbngfmoe" path="res://content/Graphics/Icons/White/1x/menuList.png" id="6_bsjxr"]
 
 [sub_resource type="Animation" id="Animation_1"]
 resource_name = "slide_in"
@@ -127,25 +131,33 @@ theme_override_constants/separation = 16
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 text = " RESUME"
+icon = ExtResource("3_bqsny")
 alignment = 0
+expand_icon = true
 
 [node name="RestartButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = " RESTART LEVEL"
+icon = ExtResource("4_fdrbn")
 alignment = 0
+expand_icon = true
 
 [node name="LevelSelectButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = " LEVEL SELECT"
+icon = ExtResource("5_afaem")
 alignment = 0
+expand_icon = true
 
 [node name="MainMenuButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = " MAIN MENU"
+icon = ExtResource("6_bsjxr")
 alignment = 0
+expand_icon = true
 
 [node name="BottomInfo" type="VBoxContainer" parent="UI/MenuContainer"]
 layout_mode = 2

@@ -1,7 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://dugqdnseqnh4e"]
+[gd_scene load_steps=9 format=3 uid="uid://dugqdnseqnh4e"]
 
 [ext_resource type="Script" uid="uid://bg3xejmbxa6yb" path="res://ui/LevelResults.gd" id="1_results"]
 [ext_resource type="Theme" uid="uid://dyj50sedyht6" path="res://ui/MainMenuTheme.tres" id="2_theme"]
+[ext_resource type="Texture2D" uid="uid://chekrypjj6dhx" path="res://content/Graphics/Icons/White/1x/fastForward.png" id="3_vnu1k"]
+[ext_resource type="Texture2D" uid="uid://c27s8wyu6gtrm" path="res://content/Graphics/Icons/White/1x/return.png" id="4_7tof4"]
+[ext_resource type="Texture2D" uid="uid://bs4pa4bxjqrul" path="res://content/Graphics/Icons/White/1x/video.png" id="5_p5i81"]
+[ext_resource type="Texture2D" uid="uid://byriexbngfmoe" path="res://content/Graphics/Icons/White/1x/menuList.png" id="6_qcaio"]
 
 [sub_resource type="Animation" id="Animation_1"]
 resource_name = "slide_in"
@@ -137,26 +141,34 @@ theme_override_constants/separation = 12
 [node name="NextLevelButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
-text = "▶ NEXT LEVEL"
+text = "  NEXT LEVEL"
+icon = ExtResource("3_vnu1k")
 alignment = 0
+expand_icon = true
 
 [node name="RetryButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "  RETRY LEVEL"
+icon = ExtResource("4_7tof4")
 alignment = 0
+expand_icon = true
 
 [node name="LevelSelectButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "  LEVEL SELECT"
+icon = ExtResource("5_p5i81")
 alignment = 0
+expand_icon = true
 
 [node name="MainMenuButton" type="Button" parent="UI/MenuContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "  MAIN MENU"
+icon = ExtResource("6_qcaio")
 alignment = 0
+expand_icon = true
 
 [node name="BottomInfo" type="VBoxContainer" parent="UI/MenuContainer"]
 layout_mode = 2

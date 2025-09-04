@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://bxvw8y7qkqx1"]
+[gd_scene load_steps=6 format=3 uid="uid://bxvw8y7qkqx1"]
 
 [ext_resource type="Script" uid="uid://ckejxjsytfb42" path="res://ui/GameHUD.gd" id="1_hud"]
 [ext_resource type="Texture2D" uid="uid://dnbnh78jaq2k8" path="res://content/Graphics/Sprites/Tiles/Double/hud_heart.png" id="2_b8fo0"]
 [ext_resource type="Texture2D" uid="uid://bvuuf4nixnjr0" path="res://content/Graphics/Sprites/Tiles/Double/hud_heart_empty.png" id="3_o4xvh"]
+[ext_resource type="Texture2D" uid="uid://c201c55bghpp" path="res://content/Graphics/Icons/White/1x/pause.png" id="4_o4xvh"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_mpdc4"]
 resource_name = "AnimatedSprite2D_1"
@@ -126,7 +127,9 @@ custom_minimum_size = Vector2(60, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 24
-text = "⏸"
+icon = ExtResource("4_o4xvh")
+icon_alignment = 1
+expand_icon = true
 
 [node name="PauseOverlay" type="Control" parent="UI"]
 visible = false
