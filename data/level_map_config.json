@@ -54,7 +54,7 @@
 		},
 		{
 			"id": "Level_GiantBoss",
-			"display_name": "Titan's Wrath",
+			"display_name": "The Giant’s Last Stand",
 			"description": "Face the colossal Giant Boss in an epic final battle! Use all your skills and dimension powers to defeat this mighty foe.",
 			"order": 4,
 			"thumbnail": "res://content/thumbnails/Level_GiantBoss.png",

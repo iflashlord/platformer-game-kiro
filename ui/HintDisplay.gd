@@ -21,6 +21,8 @@ var _original_size: Vector2
 @export var max_height: float = 400.0
 @export var padding: Vector2 = Vector2(32, 32)  # Internal padding for content
 
+
+
 func _ready():
 	# Connect to EventBus signals
 	EventBus.hint_requested.connect(_on_hint_requested)
@@ -41,6 +43,7 @@ func _on_hint_requested(message: String, title: String = ""):
 		# If already showing, just update the content
 		print("💡 HintDisplay: Updating existing hint")
 		_update_content(message, title)
+
 		return
 	
 	# Update content and wait for sizing to complete before showing

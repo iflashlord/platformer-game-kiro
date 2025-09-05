@@ -167,13 +167,18 @@ class LevelCard extends Control:
 		var lock_content = VBoxContainer.new()
 		lock_content.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 		lock_content.alignment = BoxContainer.ALIGNMENT_CENTER
+		lock_content.offset_top = -60
+		lock_content.offset_left = -50
 		lock_overlay.add_child(lock_content)
-		
-		var lock_icon = Label.new()
-		lock_icon.text = "🔒"
-		lock_icon.add_theme_font_size_override("font_size", 48)
-		lock_icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		 
+ 		#use asset for lock icon
+		var lock_icon = TextureRect.new()
+		lock_icon.texture = load("res://content/Graphics/Icons/White/1x/locked.png")
+		lock_icon.custom_minimum_size = Vector2(48, 48)
+		lock_icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		lock_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		lock_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 		lock_content.add_child(lock_icon)
 		
 		# Focus border (initially hidden)
@@ -209,22 +214,13 @@ class LevelCard extends Control:
 		# Get completion data from Persistence
 		var completion_data = {}
 		var best_score = level_info.get("best_score", 0)
-
-		if level_id == "Level02":
-			print("🐛 LEVEL02 SCORE DEBUG:")
-			print("🐛   level_info: ", level_info)
-			print("🐛   initial best_score from level_info: ", best_score)
 		
 		if Persistence and Persistence.has_method("get_level_completion"):
 			completion_data = Persistence.get_level_completion(level_id)
 			# Use the score from completion data if available, otherwise fallback to level_info
 			if completion_data.get("score", 0) > 0:
 				best_score = completion_data.get("score", 0)
-
-		if level_id == "Level02":
-			print("🐛   completion_data: ", completion_data)
-			print("🐛   final best_score: ", best_score)
-		
+ 
 		# Update score display with latest and best
 		if best_score > 0:
 			var latest_score = completion_data.get("score", best_score)
@@ -234,8 +230,7 @@ class LevelCard extends Control:
 				score_label.text = "Latest: " + str(latest_score) + " • Best: " + str(best_score)
 		else:
 			score_label.text = "Not Completed"
-			if level_id == "Level02":
-				print("🐛   Setting 'Not Completed' because best_score = ", best_score)
+
 		# Update hearts display with actual completion data
 		_update_hearts_display(completion_data)
 		

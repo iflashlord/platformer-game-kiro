@@ -26,7 +26,9 @@ func _ready():
 	
 	# Start menu music
 	if Audio and Audio.has_method("play_music"):
-		Audio.play_music("menu_theme")
+		Audio.play_music("game_intro", false) 
+		await get_tree().create_timer(4.0).timeout
+		Audio.play_music("menu_theme", true)
 
 func _setup_ui():
 	# Set version from project settings

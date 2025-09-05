@@ -6,7 +6,7 @@ const LEVEL_DISPLAY_NAMES = {
 	"Level00": "First Steps",
 	"Level01": "Mystic Realms", 
 	"Level02": "Parallel Worlds",
-	"Level_GiantBoss": "Titan's Wrath"
+	"Level_GiantBoss": "The Giant’s Last Stand"
 }
 
 const LEVEL_PROGRESSION = {

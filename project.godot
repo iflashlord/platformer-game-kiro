@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Glitch Dimension"
-config/description="A 2D platformer with dimension-shifting mechanics, challenging levels, and smooth web deployment."
+config/description="A 2D platformer with dimension-shifting mechanics"
 config/version="1.0.0"
 run/main_scene="uid://bx0yw1rkqh7pp"
 config/features=PackedStringArray("4.4", "GL Compatibility")

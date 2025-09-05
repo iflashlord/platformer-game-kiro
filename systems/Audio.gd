@@ -4,6 +4,7 @@ extends Node
 const MASTER_BUS = "Master"
 const MUSIC_BUS = "Music"
 const SFX_BUS = "SFX"
+const NARRATION_BUS = "Narration"
 
 # SFX player pool
 var sfx_players: Array[AudioStreamPlayer] = []
@@ -12,6 +13,10 @@ var current_sfx_index: int = 0
 
 # Music player
 var music_player: AudioStreamPlayer
+
+# Narration player and queue
+var narration_player: AudioStreamPlayer
+var narration_playing: bool = false
 
 # Audio resources cache
 var sfx_cache: Dictionary = {}
@@ -37,6 +42,19 @@ func _ready():
 		player.bus = SFX_BUS
 		add_child(player)
 		sfx_players.append(player)
+	
+	# Create Narration bus if it doesn't exist
+	if AudioServer.get_bus_index(NARRATION_BUS) == -1:
+		var idx = AudioServer.get_bus_count()
+		AudioServer.add_bus(idx)
+		AudioServer.set_bus_name(idx, NARRATION_BUS)
+		AudioServer.set_bus_send(idx, MASTER_BUS)
+	
+	# Create narration player
+	narration_player = AudioStreamPlayer.new()
+	narration_player.bus = NARRATION_BUS
+	add_child(narration_player)
+	narration_player.connect("finished", Callable(self, "_on_narration_finished"))
 	
 	# Load settings from persistence
 	_load_audio_settings()
@@ -71,6 +89,8 @@ func play_music(track: String, loop: bool = true):
 
 func stop_music():
 	music_player.stop()
+
+
 func play_sfx(sfx_name: String):
 	var stream = _load_sfx(sfx_name)
 	if stream:
@@ -108,7 +128,6 @@ func _load_sfx(sfx_name: String) -> AudioStream:
 	
 	print("SFX not found: ", sfx_name)
 	return null
-	return null
 
 func _load_music(track: String) -> AudioStream:
 	if track in music_cache:
@@ -129,6 +148,48 @@ func _load_music(track: String) -> AudioStream:
 	
 	print("Music not found: ", track)
 	return null
+
+func play_narration(narration_name: String):
+	# Stop any current narration immediately
+	if narration_playing:
+		narration_player.stop()
+		_restore_music_volume()
+	
+	var stream = _load_narration(narration_name)
+	if stream:
+		narration_playing = true
+		_set_music_volume_temp(0.2) # Lower music volume
+		narration_player.stream = stream
+		narration_player.play()
+
+func stop_narration():
+	if narration_playing:
+		narration_player.stop()
+		_restore_music_volume()
+
+func _on_narration_finished():
+	narration_playing = false
+	_restore_music_volume()
+
+func _load_narration(narration_name: String) -> AudioStream:
+	var path = "res://audio/narration/" + narration_name + ".ogg"
+	if ResourceLoader.exists(path):
+		return load(path)
+	path = "res://audio/narration/" + narration_name + ".wav"
+	if ResourceLoader.exists(path):
+		return load(path)
+	print("Narration not found: ", narration_name)
+	return null
+
+# Helper to lower/restore music volume
+var _music_volume_backup: float = music_volume
+
+func _set_music_volume_temp(temp_volume: float):
+	_music_volume_backup = music_volume
+	set_music_volume(temp_volume)
+
+func _restore_music_volume():
+	set_music_volume(_music_volume_backup)
 
 func set_master_volume(volume: float):
 	master_volume = clamp(volume, 0.0, 1.0)

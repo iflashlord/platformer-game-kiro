@@ -70,9 +70,6 @@ func _on_boss_damaged(health: int, max_health: int):
 
 func _on_tnt_placed(tnt_position: Vector2):
 	print("TNT placed at: ", tnt_position)
-	
-	# Optional: Show warning indicator
-	#_show_tnt_warning(tnt_position)
 
 func _show_victory():
 	if victory_ui:
@@ -80,10 +77,3 @@ func _show_victory():
 		var tween = create_tween()
 		victory_ui.modulate.a = 0.0
 		tween.tween_property(victory_ui, "modulate:a", 1.0, 1.0)
-
-func _show_tnt_warning(pos: Vector2):
-	# Create a temporary warning indicator
-	var warning = preload("res://ui/TNTWarning.tscn").instantiate()
-	add_child(warning)
-	warning.global_position = pos - Vector2(20, 40) # Position above TNT
-	warning.show_warning(3.0) # Show for 3 seconds (TNT fuse time)

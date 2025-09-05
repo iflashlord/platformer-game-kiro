@@ -6,6 +6,8 @@ class_name HintArea
 
 @export var hint_message: String = "Enter your hint message here"
 @export var hint_title: String = ""
+# Dynamic audio to play when showing/hiding hints
+@export var narration_audio: String = ""
 @export var auto_hide_delay: float = 0.0  # 0 = manual hide only
 @export var show_once_only: bool = false
 @export_enum("A", "B", "Both") var target_layer: String = "A"  # Which dimension layer this hint belongs to
@@ -15,6 +17,7 @@ var _has_been_shown: bool = false
 var _hide_timer: Timer
 var _layer_object: LayerObject
 var _is_currently_showing: bool = false  # Track if this hint area is currently showing a hint
+
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
@@ -43,6 +46,11 @@ func _on_body_entered(body: Node2D):
 	if not body.has_method("is_player"):
 		return
 	
+
+	if narration_audio != "":
+		if Audio and Audio.has_method("play_narration"):
+			Audio.play_narration(narration_audio)
+
 	print("🌀 HintArea: Player entered ", name, " (layer: ", target_layer, ", active: ", is_active_in_current_dimension(), ")")
 	
 	# Check if this hint area is active in the current dimension
@@ -66,6 +74,10 @@ func _on_body_exited(body: Node2D):
 	if not body.has_method("is_player"):
 		return
 	
+	if narration_audio != "":
+		if Audio and Audio.has_method("stop_narration"):
+			Audio.stop_narration()
+		
 	print("🌀 HintArea: Player exited ", name, " (layer: ", target_layer, ", currently showing: ", _is_currently_showing, ")")
 	
 	# Always hide hint when player exits, regardless of dimension state

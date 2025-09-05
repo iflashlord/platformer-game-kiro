@@ -77,8 +77,6 @@ position = Vector2(48, 352)
 [node name="GameHUD" parent="UI" instance=ExtResource("3_hud")]
 
 [node name="HintDisplay" parent="UI" instance=ExtResource("4_hint")]
-grow_horizontal = 2
-grow_vertical = 0
 
 [node name="Level" type="Node2D" parent="."]
 
