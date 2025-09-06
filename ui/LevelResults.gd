@@ -596,8 +596,8 @@ func _on_button_hover(button: Button):
 		_animate_button_selection(button, true)
 
 func _on_button_exit(button: Button):
-	if not button.has_focus():
-		_animate_button_selection(button, false)
+	#if not button.has_focus():
+	_animate_button_selection(button, false)
 
 func _on_button_focus(button: Button):
 	_play_ui_sound("ui_focus")

@@ -229,14 +229,16 @@ func _setup_button_effects():
 		button.focus_entered.connect(_on_button_focus.bind(button))
 		button.focus_exited.connect(_on_button_unfocus.bind(button))
 
+		# Ensure buttons are initially unselected
+		_animate_button_selection(button, false)
+
 func _on_button_hover(button: Button):
 	if not button.has_focus():  # Only apply hover if not focused
 		_play_ui_sound("ui_hover")
 		_animate_button_selection(button, true)
 
 func _on_button_exit(button: Button):
-	if not button.has_focus():  # Only reset if not focused
-		_animate_button_selection(button, false)
+	_animate_button_selection(button, false)
 
 func _on_button_focus(button: Button):
 	_play_ui_sound("ui_focus")

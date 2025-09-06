@@ -142,6 +142,22 @@ High-quality 2D game assets
 Creative Commons Licensed"
 horizontal_alignment = 1
 
+[node name="Spacer6" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="TechStack2" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "NARRATIONS & MUSIC"
+horizontal_alignment = 1
+
+[node name="Narrations" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Generate with Elevenlabs.io"
+horizontal_alignment = 1
+
 [node name="Spacer5" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2

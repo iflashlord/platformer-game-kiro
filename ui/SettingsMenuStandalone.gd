@@ -206,8 +206,8 @@ func _on_button_hover(button: Button):
 
 func _on_button_exit(button: Button):
 	"""Handle button exit"""
-	if not button.has_focus():
-		_animate_button_selection(button, false, 1.15)
+	#if not button.has_focus():
+	_animate_button_selection(button, false, 1.15)
 
 func _on_button_focus(button: Button):
 	"""Handle button focus"""

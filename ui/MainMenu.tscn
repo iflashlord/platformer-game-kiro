@@ -180,11 +180,16 @@ offset_top = -60.0
 offset_right = 1280.0
 grow_vertical = 0
 
+[node name="Spacer3" type="Control" parent="UI/BottomContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+
 [node name="VersionLabel" type="Label" parent="UI/BottomContainer"]
 modulate = Color(0.6, 0.6, 0.6, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "Glitch Dimension v1.0.0"
+text = "v1.0.0"
 vertical_alignment = 2
 
 [node name="Spacer" type="Control" parent="UI/BottomContainer"]
@@ -198,6 +203,11 @@ theme_override_font_sizes/font_size = 12
 text = "WASD + Space to Move  •  F to Change Dimensions  •  ESC to Pause"
 horizontal_alignment = 2
 vertical_alignment = 2
+
+[node name="Spacer2" type="Control" parent="UI/BottomContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.08
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

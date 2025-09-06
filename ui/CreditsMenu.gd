@@ -31,8 +31,8 @@ func _on_button_hover(button: Button):
 		_animate_button_selection(button, true)
 
 func _on_button_exit(button: Button):
-	if not button.has_focus():  # Only reset if not focused
-		_animate_button_selection(button, false)
+	#if not button.has_focus():  # Only reset if not focused
+	_animate_button_selection(button, false)
 
 func _on_button_focus(button: Button):
 	if Audio: Audio.play_sfx("ui_focus")

@@ -222,6 +222,16 @@ func _ready():
 	add_to_group("boss")
 	add_to_group("enemies")  # For general enemy identification
 	
+
+	_show_attack_warning("So you have come this far!")
+	if Audio and Audio.has_method("play_narration"):
+		Audio.play_narration("so-you-have-come-this-far")
+	
+	# after 4 seconds hide the warning
+	await get_tree().create_timer(4.0).timeout
+	_hide_attack_warning()
+
+
 	print("🏆 GiantBoss initialized with difficulty: ", difficulty, " - Health: ", current_health)
 
 func _setup_connections():
@@ -849,8 +859,10 @@ func _drop_tnt():
 		_drop_bomb()
 	elif tnt_scene:
 		# Start attack warning (professional game telegraphing)
-		_show_attack_warning("You shall taste my wrath!")
-		
+		_show_attack_warning("You shall taste my power!")
+		if Audio and Audio.has_method("play_narration"):
+			Audio.play_narration("you-shall-taste-my-power")
+
 		# Wait for warning duration
 		await get_tree().create_timer(attack_warning_duration).timeout
 		
@@ -901,6 +913,8 @@ func _drop_bomb():
 	
 	# Start attack warning (professional game telegraphing)
 	_show_attack_warning("Feel my explosive fury!")
+	if Audio and Audio.has_method("play_narration"):
+		Audio.play_narration("feel-my-explosive-fury")
 	
 	# Wait for warning duration, then drop bomb
 	await get_tree().create_timer(attack_warning_duration).timeout
@@ -1086,8 +1100,8 @@ func _show_attack_warning(warning_text: String):
 	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
 	
 	# Audio warning
-	if Audio:
-		Audio.play_sfx("warning")
+	# if Audio:
+	# 	Audio.play_sfx("warning")
 
 func _hide_attack_warning():
 	is_warning_active = false
@@ -1110,7 +1124,7 @@ func _create_boss_speech_bubble() -> Control:
 	
 	# Create speech bubble background (simple rectangle)
 	var bubble_bg = ColorRect.new()
-	bubble_bg.color = Color(0.1, 0.1, 0.1, 0.9) # Dark semi-transparent
+	bubble_bg.color = Color(0.1, 0.1, 0.1, 0.5) # Dark semi-transparent
 	bubble_bg.size = Vector2(160, 60)
 	speech_bubble.add_child(bubble_bg)
 	
@@ -1250,7 +1264,9 @@ func _execute_combo_attack():
 
 func _triple_bomb_attack():
 	_show_attack_warning("I am enraged! Die!")
-	
+	if Audio and Audio.has_method("play_narration"):
+		Audio.play_narration("i-am-enraged-die")
+
 	for i in range(3):
 		var delay = i * 3.0
 		get_tree().create_timer(attack_warning_duration + delay).timeout.connect(
@@ -1268,7 +1284,9 @@ func _triple_bomb_attack():
 
 func _tnt_rain_attack():
 	_show_attack_warning("Nowhere to hide now!")
-	
+	if Audio and Audio.has_method("play_narration"):
+		Audio.play_narration("nowhere-to-hide-now")
+
 	for i in range(4):
 		var delay = i * 0.4
 		get_tree().create_timer(attack_warning_duration + delay).timeout.connect(
@@ -1285,7 +1303,9 @@ func _tnt_rain_attack():
 
 func _devastating_blast_attack():
 	_show_attack_warning("This ends NOW!")
-	
+	if Audio and Audio.has_method("play_narration"):
+		Audio.play_narration("this-ends-now")
+
 	get_tree().create_timer(attack_warning_duration * 1.5).timeout.connect(
 		func():
 			# Screen shake
