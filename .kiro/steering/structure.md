@@ -75,8 +75,7 @@
 **Purpose**: Visual and audio assets
 - **Sprites**: PNG textures organized by type
 - **Resources**: .tres files for shared configurations
-- **SpriteAtlas.gd** - Texture atlas management
-- **Tileset.tres** - Level geometry tileset
+ 
 
 ## Architecture Patterns
 

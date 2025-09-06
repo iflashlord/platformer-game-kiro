@@ -1,10 +1,48 @@
-[gd_scene load_steps=4 format=4 uid="uid://cxvxay8qkqx3"]
+[gd_scene load_steps=8 format=3 uid="uid://cxvxay8qkqx3"]
 
 [ext_resource type="Script" uid="uid://cbpm4ejmempee" path="res://actors/CollectibleGem.gd" id="1_gem"]
-[ext_resource type="TileSet" uid="uid://bqxvw4rkqh00i" path="res://content/Tileset.tres" id="2_pvhc6"]
+[ext_resource type="Texture2D" uid="uid://blppi02eytlbi" path="res://content/Graphics/Sprites/Tiles/Default/gem_blue.png" id="2_axkd3"]
+[ext_resource type="Texture2D" uid="uid://b2v18re1o3njf" path="res://content/Graphics/Sprites/Tiles/Default/gem_green.png" id="3_psjoo"]
+[ext_resource type="Texture2D" uid="uid://pcf6ba60sf4d" path="res://content/Graphics/Sprites/Tiles/Default/gem_red.png" id="4_0ed5j"]
+[ext_resource type="Texture2D" uid="uid://c1x1sd5is8u63" path="res://content/Graphics/Sprites/Tiles/Default/gem_yellow.png" id="5_m7pj7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gem"]
 radius = 8.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8fqot"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_axkd3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_psjoo")
+}],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_0ed5j")
+}],
+"loop": true,
+"name": &"new_animation_1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_m7pj7")
+}],
+"loop": true,
+"name": &"new_animation_2",
+"speed": 5.0
+}]
 
 [node name="CollectibleGem" type="Area2D"]
 z_index = 10
@@ -32,8 +70,5 @@ vertical_alignment = 1
 scale = Vector2(2.5, 2.5)
 shape = SubResource("CircleShape2D_gem")
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
-position = Vector2(-39, -24)
-scale = Vector2(0.4, 0.4)
-tile_map_data = PackedByteArray("AAADAAIADwEBAAIAAAADAAMADwEBAAMAAAADAAQADwEBAAQAAAAEAAEADwECAAEAAAAEAAIADwECAAIAAAAEAAMADwECAAMAAAAEAAQADwECAAQAAAAEAAUADwECAAUAAAAFAAEADwEDAAEAAAAFAAIADwEDAAIAAAAFAAMADwEDAAMAAAAFAAQADwEDAAQAAAAFAAUADwEDAAUAAAAGAAEADwEEAAEAAAAGAAIADwEEAAIAAAAGAAMADwEEAAMAAAAGAAQADwEEAAQAAAAGAAUADwEEAAUAAAAHAAEADwEFAAEAAAAHAAIADwEFAAIAAAAHAAMADwEFAAMAAAAHAAQADwEFAAQAAAAHAAUADwEFAAUAAAAIAAIADwEGAAIAAAAIAAMADwEGAAMAAAAIAAQADwEGAAQAAAA=")
-tile_set = ExtResource("2_pvhc6")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_8fqot")

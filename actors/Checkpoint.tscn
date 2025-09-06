@@ -1,13 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://cxu2llg8aiye1"]
+[gd_scene load_steps=9 format=3 uid="uid://cxu2llg8aiye1"]
 
 [ext_resource type="Script" uid="uid://cjn0pc50h7ww" path="res://actors/Checkpoint.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dc4jn60r7xxbf" path="res://content/Graphics/Sprites/Tiles/Double/flag_green_a.png" id="2_dn6ra"]
 [ext_resource type="Texture2D" uid="uid://b6dab1kjmkc3q" path="res://content/Graphics/Sprites/Tiles/Double/flag_green_b.png" id="3_muqop"]
 [ext_resource type="Texture2D" uid="uid://coxvtkscc0rce" path="res://content/Graphics/Sprites/Tiles/Double/flag_blue_a.png" id="4_h0dgd"]
 [ext_resource type="Texture2D" uid="uid://p6aaajrslrjd" path="res://content/Graphics/Sprites/Tiles/Double/flag_blue_b.png" id="5_hqhro"]
+[ext_resource type="Texture2D" uid="uid://dakmj43f67ups" path="res://content/Graphics/Sprites/Tiles/Double/flag_off.png" id="6_muqop"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(32, 33)
+size = Vector2(32, 57)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hgd25"]
 animations = [{
@@ -40,7 +41,7 @@ collision_mask = 2
 script = ExtResource("1_script")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -0.5)
+position = Vector2(0, 11.5)
 shape = SubResource("RectangleShape2D_1")
 
 [node name="Label" type="Label" parent="."]
@@ -53,6 +54,13 @@ text = "CHECKPOINT"
 horizontal_alignment = 1
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, 4)
+position = Vector2(-1, 4)
 scale = Vector2(0.207564, 0.207564)
 sprite_frames = SubResource("SpriteFrames_hgd25")
+animation = &"checked"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-1, 30)
+scale = Vector2(0.208, 0.208)
+texture = ExtResource("6_muqop")
+flip_v = true

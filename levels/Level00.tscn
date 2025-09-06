@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=30 format=3 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -25,6 +25,8 @@
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://actors/DangerousSpike.tscn" id="24_ax175"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
 [ext_resource type="PackedScene" uid="uid://g578emkoewtw" path="res://actors/Collectible.tscn" id="25_53pyl"]
+[ext_resource type="PackedScene" uid="uid://byvw0rmn15t5f" path="res://actors/DimensionPlatform.tscn" id="26_qxkwm"]
+[ext_resource type="PackedScene" uid="uid://dp3qp3h57kst2" path="res://actors/DimensionPlatformB.tscn" id="27_rndmq"]
 
 [sub_resource type="Resource" id="Resource_88x2b"]
 script = ExtResource("20_blrwf")
@@ -84,7 +86,7 @@ position = Vector2(-320, 352)
 [node name="Checkpoints" type="Node2D" parent="."]
 
 [node name="Checkpoint1" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
-position = Vector2(520, 472)
+position = Vector2(520, 448)
 checkpoint_id = "level01_checkpoint_1"
 checkpoint_name = "First Platform"
 
@@ -127,7 +129,7 @@ hint_title = "Movement Tutorial"
 target_layer = "Both"
 
 [node name="HintArea3" parent="InteractiveElements" instance=ExtResource("12_ll6ei")]
-position = Vector2(520, 440)
+position = Vector2(512, 440)
 hint_message = "This is a checkpoint! When you die, you'll respawn here instead of the beginning."
 hint_title = "Checkpoint"
 target_layer = "Both"
@@ -815,12 +817,6 @@ position = Vector2(936, 400)
 crate_type = "bounce"
 target_layer = "B"
 
-[node name="DangerousSpike" parent="." instance=ExtResource("24_ax175")]
-
-[node name="DangerousSpike2" parent="." instance=ExtResource("24_ax175")]
-
-[node name="DangerousSpike3" parent="." instance=ExtResource("24_ax175")]
-
 [node name="CollectibleFruit" parent="." instance=ExtResource("25_53pyl")]
 position = Vector2(-216, 464)
 visible_in_both_dimensions = true
@@ -855,3 +851,21 @@ visible_in_both_dimensions = true
 position = Vector2(-48, 464)
 float_speed = 0.0
 visible_in_both_dimensions = true
+
+[node name="BounceCrate" parent="." instance=ExtResource("9_ub75y")]
+position = Vector2(16, 392)
+points_per_fruit = 15
+
+[node name="Checkpoint" parent="." instance=ExtResource("4_checkpoint")]
+position = Vector2(136, 451)
+
+[node name="DangerousSpike" parent="." instance=ExtResource("24_ax175")]
+position = Vector2(16, 472)
+auto_retract_cycle = true
+spike_scale = 0.3
+
+[node name="DimensionPlatform" parent="." instance=ExtResource("26_qxkwm")]
+position = Vector2(24, 304)
+
+[node name="DimensionPlatformB" parent="." instance=ExtResource("27_rndmq")]
+position = Vector2(232, 304)

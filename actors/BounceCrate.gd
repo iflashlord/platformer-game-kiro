@@ -157,7 +157,7 @@ func create_collection_effect():
 	var effect_label = Label.new()
 	effect_label.text = "+" + str(points_per_fruit)
 	effect_label.add_theme_font_size_override("font_size", 16)
-	effect_label.add_theme_color_override("font_color", Color.YELLOW)
+	effect_label.add_theme_color_override("font_color", Color.BLACK)
 	effect_label.position = global_position + Vector2(-15, -30)
 	get_tree().current_scene.add_child(effect_label)
 	

@@ -18,11 +18,11 @@ Players can now defeat enemies by jumping on top of them, similar to classic pla
 - **Particle Effect**: Landing particles at stomp location
 - **Player Squash**: Player sprite squashes on impact
 - **Enemy Squash**: Enemy gets squashed animation before disappearing
-- **Score Text**: "STOMP! +[points]" in orange text
+- **Score Text**: "  +[points]" in orange text
 
 ### Score System
 - **Points Awarded**: Same as enemy's normal point value
-- **Score Display**: Special "STOMP!" prefix on floating score text
+- **Score Display**: Special "+points" prefix on floating score text
 - **Game Integration**: Points automatically added to player's score
 
 ## Implementation Details

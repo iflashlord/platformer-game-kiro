@@ -221,7 +221,7 @@ func _trigger_dimension_glitch_effect():
 	get_tree().create_timer(0.01).timeout.connect(func(): _create_temporal_spiral_effect(glitch_layer))
 	
 	# Clock/time ripple effect
-	get_tree().create_timer(0.04).timeout.connect(func(): _create_time_ripple_effect(glitch_layer))
+	get_tree().create_timer(0.04).timeout.connect(func(): _create_noise_rect_effect(glitch_layer))
 	
 	# Reality distortion waves
 	get_tree().create_timer(0.06).timeout.connect(func(): _create_reality_distortion_effect(glitch_layer))
@@ -442,42 +442,27 @@ func _animate_spiral_expansion(overlay: ColorRect, center: Vector2, final_size: 
 	var final_pos = center - final_size / 2
 	tween.tween_property(overlay, "position", final_pos, 0.4)
 
-func _create_time_ripple_effect(glitch_layer: CanvasLayer):
+func _create_noise_rect_effect(glitch_layer: CanvasLayer):
 	"""Create concentric ripples like time waves emanating from center"""
 	var viewport = get_viewport()
 	var screen_size = viewport.get_visible_rect().size
 	var center = screen_size / 2
-	
-	# Create multiple ripple waves
-	for wave in range(4):
-		var ripple_overlay = ColorRect.new()
-		var wave_color = Color(0.0, 0.8, 1.0, 0.6) # Cyan time energy
-		ripple_overlay.color = wave_color
-		ripple_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		
-		glitch_layer.add_child(ripple_overlay)
-		
-		# Start small in center
-		ripple_overlay.size = Vector2(20, 20)
-		ripple_overlay.position = center - ripple_overlay.size / 2
-		
-		var delay = wave * 0.05 # Stagger the waves
-		await get_tree().create_timer(delay).timeout
-		
-		var tween = create_tween()
-		tween.set_parallel(true)
-		
-		# Expand outward like a ripple
-		var final_size_val = screen_size.length() * 1.5
-		var final_size = Vector2(final_size_val, final_size_val)
-		var final_pos = center - final_size / 2
-		
-		tween.tween_property(ripple_overlay, "size", final_size, 0.3)
-		tween.tween_property(ripple_overlay, "position", final_pos, 0.3)
-		
-		# Fade out as it expands
-		tween.tween_property(ripple_overlay, "modulate:a", 0.0, 0.3)
-		tween.tween_callback(ripple_overlay.queue_free)
+	  
+	# Add small random glitch rects around the screen
+	for i in range(12):
+		var glitch_rect = ColorRect.new()
+		var glitch_color = Color(randf_range(0.7, 1.0), randf_range(0.7, 1.0), 1.0, randf_range(0.3, 0.7))
+		glitch_rect.color = glitch_color
+		glitch_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var rect_size = Vector2(randf_range(3, 10), randf_range(2, 8))
+		glitch_rect.size = rect_size
+		var rand_x = randf_range(0, screen_size.x - rect_size.x)
+		var rand_y = randf_range(0, screen_size.y - rect_size.y)
+		glitch_rect.position = Vector2(rand_x, rand_y)
+		glitch_layer.add_child(glitch_rect)
+		var glitch_tween = create_tween()
+		glitch_tween.tween_property(glitch_rect, "modulate:a", 0.0, randf_range(0.15, 0.28))
+		glitch_tween.tween_callback(glitch_rect.queue_free)
 
 func _create_reality_distortion_effect(glitch_layer: CanvasLayer):
 	"""Create reality-bending wave distortions across the screen"""

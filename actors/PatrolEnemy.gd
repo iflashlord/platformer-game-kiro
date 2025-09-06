@@ -441,7 +441,7 @@ func create_defeat_effect(from_stomp: bool = false):
 	# Different colors for stomp vs regular defeat
 	if from_stomp:
 		effect_label.add_theme_color_override("font_color", Color.BLACK)
-		effect_label.text = "STOMP! +" + str(points_value)
+		effect_label.text = "+" + str(points_value)
 	else:
 		effect_label.add_theme_color_override("font_color", Color.BLACK)
 	

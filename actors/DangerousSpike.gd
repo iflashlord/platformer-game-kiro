@@ -9,12 +9,12 @@ signal spike_extended
 
 # Basic Properties
 @export_group("Damage")
-@export var damage_amount: int = 1: set = set_damage_amount
+@export var damage_amount: int = 1 #: set = set_damage_amount
 @export var knockback_force: float = 100.0
 @export var damage_type: String = "spike"
 
 @export_group("Direction")
-@export var spike_direction: Vector2 = Vector2.UP: set = set_spike_direction
+@export var spike_direction: Vector2 = Vector2.UP #: set = set_spike_direction
 
 @export_group("Behavior")
 @export var retract_on_hit: bool = false
@@ -25,8 +25,8 @@ signal spike_extended
 @export var show_warning: bool = true
 
 @export_group("Visual")
-@export var spike_scale: float = 0.75: set = set_spike_scale
-@export var use_background: bool = false: set = set_use_background
+@export var spike_scale: float = 0.75 #: set = set_spike_scale
+@export var use_background: bool = false #: set = set_use_background
 @export var glow_effect: bool = true
 
 @export_group("Retract Animation")
@@ -41,8 +41,8 @@ signal spike_extended
 @export var extend_sound: String = "spike_extend"
 
 @export_group("Dimensions")
-@export var target_layer: String = "A": set = set_target_layer
-@export var visible_in_both_dimensions: bool = false: set = set_visible_in_both_dimensions
+@export var target_layer: String = "A" #: set = set_target_layer
+@export var visible_in_both_dimensions: bool = false#: set = set_visible_in_both_dimensions
 @export var fade_on_dimension_change: bool = true
 @export var dimension_transition_time: float = 0.3
 
@@ -366,25 +366,25 @@ func set_spike_properties(properties: Dictionary):
 
 # Property setters for editor preview
 
-func set_damage_amount(value: int):
-	damage_amount = value
-	if _is_spike_ready():
-		setup_spike_appearance()
+# func set_damage_amount(value: int):
+# 	damage_amount = value
+# 	if _is_spike_ready():
+# 		setup_spike_appearance()
 
-func set_spike_direction(value: Vector2):
-	spike_direction = value
-	if _is_spike_ready():
-		setup_spike_appearance()
+# func set_spike_direction(value: Vector2):
+# 	spike_direction = value
+# 	if _is_spike_ready():
+# 		setup_spike_appearance()
 
-func set_spike_scale(value: float):
-	spike_scale = value
-	if _is_spike_ready():
-		_update_spike_scale()
+# func set_spike_scale(value: float):
+# 	spike_scale = value
+# 	if _is_spike_ready():
+# 		_update_spike_scale()
 
-func set_use_background(value: bool):
-	use_background = value
-	if _is_spike_ready():
-		_update_background_visibility()
+# func set_use_background(value: bool):
+# 	use_background = value
+# 	if _is_spike_ready():
+# 		_update_background_visibility()
 
 # Helper functions for editor preview
 
