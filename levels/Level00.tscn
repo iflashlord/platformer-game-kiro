@@ -823,18 +823,22 @@ target_layer = "B"
 
 [node name="CollectibleFruit" parent="." instance=ExtResource("25_53pyl")]
 position = Vector2(112, 360)
+target_layer = "B"
 
 [node name="CollectibleFruit2" parent="." instance=ExtResource("25_53pyl")]
 position = Vector2(160, 344)
 collectable_type = "coin_gold"
+target_layer = "B"
 
 [node name="CollectibleFruit3" parent="." instance=ExtResource("25_53pyl")]
 position = Vector2(208, 336)
 collectable_type = "coin_gold"
+target_layer = "B"
 
 [node name="CollectibleFruit4" parent="." instance=ExtResource("25_53pyl")]
 position = Vector2(256, 336)
 collectable_type = "gem_blue"
+visible_in_both_dimensions = true
 
 [node name="CollectibleFruit5" parent="." instance=ExtResource("25_53pyl")]
 position = Vector2(296, 360)

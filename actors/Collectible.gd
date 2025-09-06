@@ -9,9 +9,17 @@ signal fruit_collected(fruit: CollectibleFruit, points: int)
 @export var float_speed: float = 2.0
 @export var rotation_speed: float = 1.0
 
+@export_group("Dimension")
+@export var target_layer: String = "A"  # For dimension system compatibility
+@export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
+
 var start_position: Vector2
 var time_offset: float
 var is_collected: bool = false
+
+# Dimension system compatibility
+var dimension_manager: Node
+var is_active_in_current_layer: bool = true
 
 @onready var sprite: ColorRect = $FruitSprite
 @onready var label: Label = $FruitLabel
@@ -39,6 +47,36 @@ func _ready():
 	# Set collision layers
 	collision_layer = 8  # Collectible layer
 	collision_mask = 2   # Player layer
+
+	# Setup dimension system
+	if not Engine.is_editor_hint():
+		_setup_dimension_system()
+# Dimension system methods
+func _setup_dimension_system():
+	# Only setup dimension system at runtime
+	if Engine.is_editor_hint():
+		return
+
+	# Find dimension manager
+	dimension_manager = get_tree().get_first_node_in_group("dimension_managers")
+	if not dimension_manager and has_node("/root/DimensionManager"):
+		dimension_manager = get_node("/root/DimensionManager")
+
+	if dimension_manager:
+		dimension_manager.layer_changed.connect(_on_layer_changed)
+		_update_for_layer(dimension_manager.get_current_layer())
+
+func _on_layer_changed(new_layer: String):
+	_update_for_layer(new_layer)
+
+func _update_for_layer(current_layer: String):
+	# If visible in both dimensions, always active. Otherwise check target layer.
+	is_active_in_current_layer = visible_in_both_dimensions or (current_layer == target_layer)
+
+	# Update visibility and collision based on layer
+	visible = is_active_in_current_layer
+	collision_layer = 8 if is_active_in_current_layer else 0  # Collectible layer is 8
+	collision_mask = 2 if is_active_in_current_layer else 0   # Collide with player layer 2
  
  
 
