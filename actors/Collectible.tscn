@@ -1,0 +1,125 @@
+[gd_scene load_steps=15 format=3 uid="uid://g578emkoewtw"]
+
+[ext_resource type="Script" uid="uid://d3teji203f3j7" path="res://actors/Collectible.gd" id="1_uolwe"]
+[ext_resource type="Texture2D" uid="uid://c7froxtr6gv2q" path="res://content/Graphics/Sprites/Tiles/Default/coin_bronze.png" id="2_5kt2y"]
+[ext_resource type="Texture2D" uid="uid://b7acip6871aox" path="res://content/Graphics/Sprites/Tiles/Default/coin_bronze_side.png" id="3_esexe"]
+[ext_resource type="Texture2D" uid="uid://c4nx3sqomymnf" path="res://content/Graphics/Sprites/Tiles/Default/coin_gold.png" id="4_hf78j"]
+[ext_resource type="Texture2D" uid="uid://dwsdcnewa4r6u" path="res://content/Graphics/Sprites/Tiles/Default/coin_gold_side.png" id="5_t74h7"]
+[ext_resource type="Texture2D" uid="uid://oougv2q826fj" path="res://content/Graphics/Sprites/Tiles/Default/coin_silver.png" id="6_ie856"]
+[ext_resource type="Texture2D" uid="uid://cnsmh0o6jsa3n" path="res://content/Graphics/Sprites/Tiles/Default/coin_silver_side.png" id="7_6i8p5"]
+[ext_resource type="Texture2D" uid="uid://blppi02eytlbi" path="res://content/Graphics/Sprites/Tiles/Default/gem_blue.png" id="8_02cur"]
+[ext_resource type="Texture2D" uid="uid://b2v18re1o3njf" path="res://content/Graphics/Sprites/Tiles/Default/gem_green.png" id="9_phwnx"]
+[ext_resource type="Texture2D" uid="uid://pcf6ba60sf4d" path="res://content/Graphics/Sprites/Tiles/Default/gem_red.png" id="10_xskd7"]
+[ext_resource type="Texture2D" uid="uid://c1x1sd5is8u63" path="res://content/Graphics/Sprites/Tiles/Default/gem_yellow.png" id="11_3c65l"]
+[ext_resource type="Texture2D" uid="uid://bpdvc72q4nvom" path="res://content/Graphics/Sprites/Tiles/Default/star.png" id="12_iefmp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fruit"]
+radius = 20.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kdbqk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_5kt2y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_esexe")
+}],
+"loop": true,
+"name": &"coin_bronze",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_hf78j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_t74h7")
+}],
+"loop": true,
+"name": &"coin_gold",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_ie856")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_6i8p5")
+}],
+"loop": true,
+"name": &"coin_silver",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_02cur")
+}],
+"loop": true,
+"name": &"gem_blue",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_phwnx")
+}],
+"loop": true,
+"name": &"gem_green",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_xskd7")
+}],
+"loop": true,
+"name": &"gem_red",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_3c65l")
+}],
+"loop": true,
+"name": &"gem_yellow",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_iefmp")
+}],
+"loop": true,
+"name": &"star",
+"speed": 5.0
+}]
+
+[node name="CollectibleFruit" type="Area2D"]
+z_index = 10
+script = ExtResource("1_uolwe")
+
+[node name="FruitSprite" type="ColorRect" parent="."]
+visible = false
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(1, 0, 0, 1)
+
+[node name="FruitLabel" type="Label" parent="."]
+visible = false
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 20
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_fruit")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, 2)
+scale = Vector2(0.642928, 0.639999)
+sprite_frames = SubResource("SpriteFrames_kdbqk")
+animation = &"gem_yellow"

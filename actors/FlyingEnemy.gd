@@ -6,7 +6,7 @@ signal enemy_stomped(enemy: FlyingEnemy, player: Node2D, points: int)
 signal player_detected(enemy: FlyingEnemy, player: Node2D)
 signal player_damaged(enemy: FlyingEnemy, player: Node2D, damage: int)
 
-@export var enemy_type: String = "bee"
+@export_enum("bee", "fly", "ladybug_fly", "bat", "wasp") var enemy_type: String = "bee" : set = _set_enemy_type
 @export var flight_speed: float = 80.0
 @export var damage_amount: int = 1
 @export var points_value: int = 200
@@ -421,10 +421,10 @@ func create_defeat_effect(from_stomp: bool = false):
 	
 	# Different colors for stomp vs regular defeat
 	if from_stomp:
-		effect_label.add_theme_color_override("font_color", Color.ORANGE)
+		effect_label.add_theme_color_override("font_color", Color.BLACK)
 		effect_label.text = "STOMP! +" + str(points_value)
 	else:
-		effect_label.add_theme_color_override("font_color", Color.CYAN)
+		effect_label.add_theme_color_override("font_color", Color.BLACK)
 		effect_label.text = "FLY DOWN! +" + str(points_value)
 	
 	effect_label.position = global_position + Vector2(-40, -40)
@@ -518,3 +518,11 @@ func _update_for_layer(current_layer: String):
 	if damage_area:
 		damage_area.collision_layer = 8 if is_active_in_current_layer else 0
 		damage_area.collision_mask = 2 if is_active_in_current_layer else 0
+
+ 
+func _set_enemy_type(value: String):
+	if is_inside_tree():
+		setup_enemy_appearance()
+		# Force update in editor
+		if Engine.is_editor_hint():
+			notify_property_list_changed()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=28 format=3 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="23_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://actors/DangerousSpike.tscn" id="24_ax175"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
+[ext_resource type="PackedScene" uid="uid://g578emkoewtw" path="res://actors/Collectible.tscn" id="25_53pyl"]
 
 [sub_resource type="Resource" id="Resource_88x2b"]
 script = ExtResource("20_blrwf")
@@ -819,3 +820,30 @@ target_layer = "B"
 [node name="DangerousSpike2" parent="." instance=ExtResource("24_ax175")]
 
 [node name="DangerousSpike3" parent="." instance=ExtResource("24_ax175")]
+
+[node name="CollectibleFruit" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(112, 360)
+
+[node name="CollectibleFruit2" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(160, 344)
+collectable_type = "coin_gold"
+
+[node name="CollectibleFruit3" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(208, 336)
+collectable_type = "coin_gold"
+
+[node name="CollectibleFruit4" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(256, 336)
+collectable_type = "gem_blue"
+
+[node name="CollectibleFruit5" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(296, 360)
+collectable_type = "gem_red"
+
+[node name="CollectibleFruit6" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(328, 392)
+collectable_type = "coin_silver"
+
+[node name="CollectibleFruit7" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(352, 432)
+collectable_type = "star"
