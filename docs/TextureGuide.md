@@ -38,27 +38,7 @@ The game uses multiple texture files organized by category for optimal performan
    - Basic tile texture for particles and effects
    - Used in: Particle systems, basic sprites
 
-## Sprite Atlas System
-
-The `SpriteAtlas.gd` class manages texture regions and provides:
-
-- Automatic texture selection based on sprite name
-- Region mapping for efficient sprite batching
-- Easy sprite creation with `create_atlas_sprite()`
-- Texture application with `apply_to_sprite()`
-
-### Usage Example
-
-```gdscript
-# Create a sprite using the atlas
-var atlas = SpriteAtlas.new()
-var player_sprite = atlas.create_atlas_sprite("player_idle")
-add_child(player_sprite)
-
-# Apply atlas texture to existing sprite
-atlas.apply_to_sprite(existing_sprite, "enemy_patrol")
-```
-
+ 
 ## Texture Regions
 
 ### Player Sprites (PlayerSprite.png)

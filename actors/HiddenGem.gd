@@ -13,18 +13,22 @@ var collected: bool = false
 var pulse_time: float = 0.0
 
 signal gem_collected(gem: HiddenGem)
+signal hidden_gem_found(gem: HiddenGem)  # Add signal declaration
 
 func _ready():
+	# Add to hidden_gems group for level tracking
+	add_to_group("hidden_gems")
+
 	# Set up collision detection
 	body_entered.connect(_on_body_entered)
-	
+
 	# Set collision layers
 	collision_layer = 8   # Collectible layer
 	collision_mask = 2    # Player layer
-	
+
 	# Setup appearance based on gem type
 	_setup_gem_appearance()
-	
+
 	# Start with hidden state
 	if is_hidden:
 		modulate.a = 0.3
@@ -89,36 +93,67 @@ func reveal():
 func collect():
 	if collected:
 		return
-	
+
+	# Set collected state and emit signals
 	collected = true
 	gem_collected.emit(self)
-	
+	hidden_gem_found.emit(self)
+
+	# Add 500 points for hidden gem discovery
+	if has_node("/root/Game"):
+		Game.add_score(500)
+		# Notify base level through the current scene
+		var base_level = get_tree().current_scene
+		if base_level and base_level is BaseLevel:
+			base_level.hidden_gems_collected_count += 1
+			print("Hidden gem found! +500 points. Total collected: ", base_level.hidden_gems_collected_count)
+		print("New score: ", Game.get_score())
+	else:
+		print("Game singleton not found, score not added")
+
 	# Notify event bus
 	EventBus.notify_collectible_gathered("gem_" + gem_type, global_position)
-	
+
 	# Visual feedback
 	if collect_particles:
 		collect_particles.emitting = true
-	
+
+	# Floating text effect for score
+	var effect_label = Label.new()
+	effect_label.text = "+500"
+	effect_label.add_theme_font_size_override("font_size", 18)
+	effect_label.add_theme_color_override("font_color", Color.BLACK)
+	effect_label.position = global_position + Vector2(-15, -30)
+	get_tree().current_scene.add_child(effect_label)
+
 	# Collection animation
 	var tween = create_tween()
+	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
+	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
 	tween.parallel().tween_property(sprite, "scale", Vector2(2.0, 2.0), 0.3)
 	tween.parallel().tween_property(self, "modulate:a", 0.0, 0.4)
-	tween.tween_callback(_finish_collection)
-	
+	tween.tween_callback(func():
+		effect_label.queue_free()
+		_finish_collection()
+	)
+
 	# Audio feedback
 	Audio.play_sfx("collect_gem")
-	
+
 	# Screen flash
 	FX.flash_screen(sprite.modulate * 0.3, 0.2)
+
+func is_collected() -> bool:
+	print("DEBUG: HiddenGem checking collected=", collected, " in is_collected() for gem: ", self)
+	return collected
 
 func _finish_collection():
 	# Update game statistics
 	Game.add_score(gem_value)
 	Persistence.update_statistics("gems_collected", 1)
-	
-	# Remove from scene
-	queue_free()
+
+	# Defer removal to allow group counting
+	call_deferred("queue_free")
 
 func _on_body_entered(body):
 	if body.is_in_group("player") and not collected:

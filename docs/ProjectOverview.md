@@ -64,15 +64,7 @@
 - **Level02.tscn/gd** - Forest Canopy
 - **Level03.tscn/gd** - Crystal Caves
 - **Chase01.tscn/gd** - The Great Escape
-
-### Content (`content/`)
-- **PlayerSprite.png** - Player character texture
-- **EnemySprites.png** - Enemy textures
-- **CollectibleSprites.png** - Fruit and gem textures
-- **HazardSprites.png** - Spike and crate textures
-- **UISprites.png** - UI element textures
-- **SpriteAtlas.gd** - Texture atlas management
-- **GameAtlas.tres** - Atlas resource configuration
+ 
 
 ### Audio (`audio/`)
 - **default_bus_layout.tres** - Audio bus configuration

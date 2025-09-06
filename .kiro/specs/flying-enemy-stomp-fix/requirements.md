@@ -48,7 +48,7 @@ This feature addresses the flying enemy collision system to ensure proper stompi
 
 #### Acceptance Criteria
 
-1. WHEN a flying enemy is stomped THEN a "STOMP!" text effect SHALL appear with orange color and the enemy's point value
+1. WHEN a flying enemy is stomped THEN a "+point" text effect SHALL appear with orange color and the enemy's point value
 2. WHEN a flying enemy is stomped THEN the "enemy_hurt" sound effect SHALL play
 3. WHEN a player takes damage from a flying enemy THEN the screen SHALL flash red for 0.15 seconds
 4. WHEN a player takes damage from a flying enemy THEN the screen SHALL shake for 8 frames

@@ -19,8 +19,13 @@ var is_completed: bool = false
 @onready var player: Player = get_node_or_null("Player")
 @onready var hud = get_node_or_null("UI/GameHUD")
 
+var hidden_gems_collected_count: int = 0
+
 func _ready():
 	start_time = Time.get_unix_time_from_system()
+
+	# Reset hidden gems counter
+	hidden_gems_collected_count = 0
 
 	# Track level start for save data
 	if level_id != "" and Persistence and Persistence.has_method("track_level_start"):
@@ -63,11 +68,20 @@ func _ready():
 	
 	setup_level()
 	connect_signals()
+	# Defer gem counting to ensure all nodes are ready
+	call_deferred("_update_total_gems")
+func _update_total_gems():
+	var total_gems = _count_total_gems_in_level()
+	print("Total gems in level (including hidden): ", total_gems)
+	var total_hidden_gems = _count_total_hidden_gems_in_level()
+	print("Total hidden gems in level: ", total_hidden_gems)
+	var total_hidden_gems_collected = _count_total_hidden_gems_collected_in_level()
+	print("Total hidden gems collected in level: ", total_hidden_gems_collected)
 
 func setup_level():
 	# Override in child classes for level-specific setup
 	pass
-
+ 
 func connect_signals():
 	if player and player.has_signal("player_died"):
 		# Disconnect if already connected to avoid duplicates
@@ -78,6 +92,15 @@ func connect_signals():
 	# Set initial spawn position
 	if player and Respawn:
 		Respawn.default_spawn_position = player.global_position
+
+	# Reset hidden gems counter
+	hidden_gems_collected_count = 0
+
+	# Connect to hidden gems
+	var hidden_gems = get_tree().get_nodes_in_group("hidden_gems")
+	for gem in hidden_gems:
+		if gem.has_signal("hidden_gem_found") and not gem.hidden_gem_found.is_connected(_on_hidden_gem_found):
+			gem.hidden_gem_found.connect(_on_hidden_gem_found)
 	
 	# Connect to EventBus for global events (disconnect first to avoid duplicates)
 	if EventBus:
@@ -109,6 +132,10 @@ func _on_gem_collected(points: int):
 	current_score += points
 	update_ui()
 
+func _on_hidden_gem_found():
+	hidden_gems_collected_count += 1
+	print("Hidden gem found! Total collected: ", hidden_gems_collected_count)
+
 func _on_level_completed():
 	if is_completed:
 		return
@@ -117,6 +144,10 @@ func _on_level_completed():
 	var end_time = Time.get_unix_time_from_system()
 	var completion_time = end_time - start_time
 	
+	_update_total_gems()
+	call_deferred("_update_total_gems")
+
+
 	# Hide and cleanup pause menu if it's showing
 	if PauseManager:
 		if PauseManager.has_method("hide_pause_menu"):
@@ -139,6 +170,8 @@ func _on_level_completed():
 		"hearts_remaining": HealthSystem.get_current_health() if HealthSystem else 5,
 		"gems_found": Game.get_total_gems() if Game else 0,
 		"total_gems": _count_total_gems_in_level(),
+		"hidden_gems_collected": hidden_gems_collected_count,
+		"total_hidden_gems": _count_total_hidden_gems_in_level(),
 		"completed": true
 	}
 	
@@ -178,9 +211,27 @@ func _count_total_gems_in_level() -> int:
 	
 	return gem_count
 
+func _count_total_hidden_gems_in_level() -> int:
+	"""Count total gems available in this level"""
+	var gem_count = 0
+	# Also check for HiddenGem nodes
+	var hidden_gems = get_tree().get_nodes_in_group("hidden_gems")
+	if hidden_gems:
+		gem_count += hidden_gems.size()
+	
+	return gem_count
+
+func _count_total_hidden_gems_collected_in_level() -> int:
+	"""Count total gems collected in this level"""
+	print("Total hidden_gems_collected:", hidden_gems_collected_count)
+	return hidden_gems_collected_count
+
 func _show_level_results(completion_data: Dictionary):
 	"""Show the level results screen"""
 	# Load and show the level results scene
+
+	_count_total_hidden_gems_collected_in_level()
+
 	var results_scene = preload("res://ui/LevelResults.tscn")
 	if results_scene:
 		var results_instance = results_scene.instantiate()

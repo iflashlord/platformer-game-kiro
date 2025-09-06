@@ -967,9 +967,9 @@ func _get_bomb_power_for_phase() -> Bomb.BombPower:
 		MovementPhase.JUMPING:
 			return Bomb.BombPower.LOW
 		MovementPhase.CHARGING:
-			return Bomb.BombPower.MEDIUM
+			return Bomb.BombPower.LOW
 		MovementPhase.FLYING:
-			return Bomb.BombPower.HIGH
+			return Bomb.BombPower.LOW
 		_:
 			return Bomb.BombPower.MEDIUM # Default to MEDIUM
 
@@ -1328,7 +1328,7 @@ func _devastating_blast_attack():
 					get_parent().add_child(bomb)
 					bomb.global_position = pos
 					if bomb.has_method("setup"):
-						bomb.setup(Bomb.BombPower.HIGH)
+						bomb.setup(Bomb.BombPower.LOW)
 					current_bombs_dropped += 1
 	)
 

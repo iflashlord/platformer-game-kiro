@@ -35,11 +35,7 @@ Bundle Resources: On (reduces file count)
 ```
 
 ## Performance Optimizations
-
-### Sprite Atlases
-- Combine multiple small textures into single atlas
-- Reduces draw calls and improves batching
-- Use `SpriteAtlas.gd` for automated region management
+ 
 
 ### Object Pooling
 - Pool frequently created/destroyed objects
