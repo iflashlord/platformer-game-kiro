@@ -2160,6 +2160,9 @@ func _defeat_boss():
 	# Don't set velocity to zero - let boss fall with gravity
 	velocity.x = 0  # Stop horizontal movement but allow vertical fall
 	
+	if Audio and Audio.has_method("play_narration"):
+		Audio.play_narration("no-you-may-have-won-today")
+ 
 	# Clear and hide any active attack warnings
 	_hide_attack_warning()
 	if warning_ui:
