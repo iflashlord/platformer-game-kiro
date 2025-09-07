@@ -17,6 +17,15 @@ class_name BackgroundLayerConfig
 @export var horizontal_gap: int = 0
 @export var vertical_gap: int = 0
 
+@export_group("Loop Control")
+@export var loop_start_point: Vector2 = Vector2.ZERO  # Starting point for the loop
+@export var loop_end_point: Vector2 = Vector2.ZERO   # End point for the loop (0 means infinite)
+@export var reset_position: Vector2 = Vector2.ZERO   # Position to reset to when reaching loop_end_point
+@export var loop_left: bool = true    # Enable looping when scrolling left
+@export var loop_right: bool = true   # Enable looping when scrolling right
+@export var loop_up: bool = true      # Enable looping when scrolling up
+@export var loop_down: bool = true    # Enable looping when scrolling down
+
 @export_group("Visual Settings")
 @export var modulate_color: Color = Color.WHITE
 @export var z_index: int = -10
@@ -48,6 +57,15 @@ func duplicate_config() -> BackgroundLayerConfig:
 	new_config.parallax_factor = parallax_factor
 	new_config.auto_scroll = auto_scroll
 	new_config.loop_seamlessly = loop_seamlessly
+	
+	# Copy loop control settings
+	new_config.loop_start_point = loop_start_point
+	new_config.loop_end_point = loop_end_point
+	new_config.reset_position = reset_position
+	new_config.loop_left = loop_left
+	new_config.loop_right = loop_right
+	new_config.loop_up = loop_up
+	new_config.loop_down = loop_down
 	
 	new_config.modulate_color = modulate_color
 	new_config.z_index = z_index

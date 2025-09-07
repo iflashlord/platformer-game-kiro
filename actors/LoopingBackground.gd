@@ -15,6 +15,15 @@ signal background_looped
 @export var horizontal_gap: int = 0
 @export var vertical_gap: int = 0
 
+@export_group("Loop Control")
+@export var loop_start_point: Vector2 = Vector2.ZERO  # Starting point for the loop
+@export var loop_end_point: Vector2 = Vector2.ZERO   # End point for the loop (0 means infinite)
+@export var reset_position: Vector2 = Vector2.ZERO   # Position to reset to when reaching loop_end_point
+@export var loop_left: bool = true    # Enable looping when scrolling left
+@export var loop_right: bool = true   # Enable looping when scrolling right
+@export var loop_up: bool = true      # Enable looping when scrolling up
+@export var loop_down: bool = true    # Enable looping when scrolling down
+
 @export_group("Layer Settings")
 @export var layer_a_texture: Texture2D
 @export var layer_b_texture: Texture2D
@@ -87,10 +96,22 @@ func _setup_background():
 	
 	_texture_size = current_texture.get_size() * scale_factor
 	
-	# Calculate how many sprites we need for seamless looping
+	# Calculate how many sprites we need based on looping directions
 	var viewport_size = (get_viewport().get_visible_rect().size * 5)
-	var sprites_needed_x = max(3, ceil(viewport_size.x / _texture_size.x) + 2)
-	var sprites_needed_y = max(3, ceil(viewport_size.y / _texture_size.y) + 2) if scroll_speed.y != 0 else 1
+	var sprites_needed_x = 1
+	var sprites_needed_y = 1
+	
+	# Calculate horizontal sprites needed
+	if (loop_left and scroll_speed.x < 0) or (loop_right and scroll_speed.x > 0):
+		sprites_needed_x = max(3, ceil(viewport_size.x / _texture_size.x) + 2)
+	else:
+		sprites_needed_x = max(2, ceil(viewport_size.x / _texture_size.x))
+	
+	# Calculate vertical sprites needed
+	if scroll_speed.y != 0 and ((loop_up and scroll_speed.y < 0) or (loop_down and scroll_speed.y > 0)):
+		sprites_needed_y = max(3, ceil(viewport_size.y / _texture_size.y) + 2)
+	elif scroll_speed.y != 0:
+		sprites_needed_y = max(2, ceil(viewport_size.y / _texture_size.y))
 	
 	# Create sprites
 	for x in range(sprites_needed_x):
@@ -100,17 +121,17 @@ func _setup_background():
 			sprite.modulate = modulate_color
 			sprite.scale = scale_factor
 			
-			# Position sprites in a grid
+			# Position sprites in a grid starting from loop_start_point
 			sprite.position = Vector2(
-				x * _texture_size.x,
-				y * _texture_size.y
+				loop_start_point.x + (x * _texture_size.x),
+				loop_start_point.y + (y * _texture_size.y)
 			)
 			
 			add_child(sprite)
 
-			# start from - 500 to avoid flickering on start
+			# Adjust for viewport to avoid flickering on start
 			var viewport_width = get_viewport().get_visible_rect().size.x
-			sprite.position -=  Vector2(viewport_width, 0)
+			sprite.position -= Vector2(viewport_width, 0)
 			
 			_sprites.append(sprite)
 	
@@ -147,7 +168,28 @@ func _process(delta):
 		_handle_looping()
 
 func _handle_looping():
-	"""Reset position when we've scrolled far enough to maintain seamless loop"""
+	"""Reset position when we've scrolled far enough to maintain seamless loop while respecting loop limits and directions"""
+	# Skip if no texture
+	if not _texture_size:
+		return
+		
+	# Check if we've reached the loop end point
+	if loop_end_point != Vector2.ZERO:
+		# Handle horizontal looping based on direction settings
+		if scroll_speed.x < 0 and loop_left and global_position.x <= -loop_end_point.x:
+			global_position.x = reset_position.x
+			emit_signal("background_looped")
+		elif scroll_speed.x > 0 and loop_right and global_position.x >= loop_end_point.x:
+			global_position.x = reset_position.x
+			emit_signal("background_looped")
+			
+		# Handle vertical looping based on direction settings
+		if scroll_speed.y < 0 and loop_up and global_position.y <= -loop_end_point.y:
+			global_position.y = reset_position.y
+			emit_signal("background_looped")
+		elif scroll_speed.y > 0 and loop_down and global_position.y >= loop_end_point.y:
+			global_position.y = reset_position.y
+			emit_signal("background_looped")
 	var loop_threshold = _texture_size
 
 	# Horizontal looping
@@ -211,9 +253,9 @@ func resume_scrolling():
 	"""Resume automatic scrolling"""
 	auto_scroll = true
 
-func reset_position():
-	"""Reset the background to its starting position"""
-	_current_offset = Vector2.ZERO
+#func reset_position():
+	#"""Reset the background to its starting position"""
+	#_current_offset = Vector2.ZERO
 
 func set_texture_for_layer(layer: String, new_texture: Texture2D):
 	"""Set a specific texture for a layer"""

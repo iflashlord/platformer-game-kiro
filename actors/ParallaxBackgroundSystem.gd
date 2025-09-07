@@ -81,6 +81,15 @@ func _setup_background_layers():
 		bg.target_layer = config.target_layer
 		bg.visible_in_both_dimensions = config.visible_in_both_dimensions
 		
+		# Loop control settings
+		bg.loop_start_point = config.loop_start_point
+		bg.loop_end_point = config.loop_end_point
+		bg.reset_position = config.reset_position
+		bg.loop_left = config.loop_left
+		bg.loop_right = config.loop_right
+		bg.loop_up = config.loop_up
+		bg.loop_down = config.loop_down
+		
 		add_child(bg)
 		_background_instances.append(bg)
 		
