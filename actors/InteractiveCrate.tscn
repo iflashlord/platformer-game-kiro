@@ -1,17 +1,27 @@
-[gd_scene load_steps=9 format=3 uid="uid://bxvw8y7qkqx4"]
+[gd_scene load_steps=11 format=3 uid="uid://bxvw8y7qkqx4"]
 
 [ext_resource type="Script" uid="uid://liohwky0chg" path="res://actors/InteractiveCrate.gd" id="1_crate"]
-[ext_resource type="Texture2D" uid="uid://bvnqnjs5e6l03" path="res://content/Graphics/Sprites/Tiles/Double/block_planks.png" id="2_enpyk"]
-[ext_resource type="Texture2D" uid="uid://bvxwkptrp1yla" path="res://content/Graphics/Sprites/Tiles/Double/block_red.png" id="2_ngvu6"]
-[ext_resource type="Texture2D" uid="uid://cltq1oo3yhwcy" path="res://content/Graphics/Sprites/Tiles/Double/block_strong_danger_active.png" id="3_im5un"]
-[ext_resource type="Texture2D" uid="uid://d30xuqpmb38ar" path="res://content/Graphics/Sprites/Tiles/Double/block_strong_exclamation.png" id="3_me5sj"]
-[ext_resource type="Texture2D" uid="uid://vog3lepqhvdi" path="res://content/Graphics/Sprites/Tiles/Double/bricks_grey.png" id="4_lpfn4"]
+[ext_resource type="Texture2D" uid="uid://be3ywm1c0pf4k" path="res://content/Graphics/Sprites/Tiles/Default/bricks_brown.png" id="2_lpfn4"]
+[ext_resource type="Texture2D" uid="uid://btwjxqrkd2ghe" path="res://content/Graphics/Sprites/Tiles/Default/block_planks.png" id="2_me5sj"]
+[ext_resource type="Texture2D" uid="uid://vl2mg2w3upna" path="res://content/Graphics/Sprites/Tiles/Default/block_strong_exclamation.png" id="3_lpfn4"]
+[ext_resource type="Texture2D" uid="uid://wvvjce3kqavs" path="res://content/Graphics/Sprites/Tiles/Default/bricks_grey.png" id="4_g1dql"]
+[ext_resource type="Texture2D" uid="uid://4c4fr8wayer5" path="res://content/Graphics/Sprites/Tiles/Default/block_tnt.png" id="5_me5sj"]
+[ext_resource type="Texture2D" uid="uid://c8sfsheh8clcx" path="res://content/Graphics/Sprites/Tiles/Default/block_tnt_bold.png" id="6_lpfn4"]
+[ext_resource type="Texture2D" uid="uid://dkah8jr61hvm6" path="res://content/Graphics/Sprites/Tiles/Default/block_tnt_txt.png" id="7_g1dql"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_jt3jt"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_enpyk")
+"texture": ExtResource("2_lpfn4")
+}],
+"loop": true,
+"name": &"basic_block",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_me5sj")
 }],
 "loop": true,
 "name": &"basic_idle",
@@ -19,7 +29,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_me5sj")
+"texture": ExtResource("3_lpfn4")
 }],
 "loop": true,
 "name": &"bounce_idle",
@@ -27,7 +37,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_lpfn4")
+"texture": ExtResource("4_g1dql")
 }],
 "loop": true,
 "name": &"metal_idle",
@@ -35,10 +45,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_ngvu6")
+"texture": ExtResource("5_me5sj")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_im5un")
+"texture": ExtResource("6_lpfn4")
 }],
 "loop": true,
 "name": &"tnt_exploding",
@@ -46,7 +56,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_ngvu6")
+"texture": ExtResource("7_g1dql")
 }],
 "loop": true,
 "name": &"tnt_idle",
@@ -60,6 +70,7 @@ size = Vector2(32, 32)
 script = ExtResource("1_crate")
 
 [node name="CrateSprite" type="ColorRect" parent="."]
+visible = false
 offset_left = -16.0
 offset_top = -16.0
 offset_right = 16.0
@@ -67,9 +78,9 @@ offset_bottom = 16.0
 color = Color(0.6, 0.4, 0.2, 1)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-scale = Vector2(0.279999, 0.279999)
+scale = Vector2(0.560002, 0.560002)
 sprite_frames = SubResource("SpriteFrames_jt3jt")
-animation = &"bounce_idle"
+animation = &"tnt_exploding"
 
 [node name="CrateLabel" type="Label" parent="."]
 visible = false

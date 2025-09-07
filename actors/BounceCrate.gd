@@ -13,7 +13,6 @@ var fruits_remaining: int = 5
 var is_bouncing: bool = false
 var bounce_timer: float = 0.0
 
-@onready var sprite: ColorRect = $CrateSprite
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var detection_area: Area2D = $DetectionArea
 @onready var detection_collision: CollisionShape2D = $DetectionArea/DetectionCollisionShape2D
@@ -34,9 +33,9 @@ func _ready():
 	fruits_remaining = initial_fruit_count
 	update_display()
 	
-	# Set orange color for fruit box
-	sprite.color = Color.ORANGE
-	
+	if crateSprite:
+		crateSprite.play("basic")
+
 	# Add to groups
 	add_to_group("fruit_boxes")
 	add_to_group("interactive_objects")
@@ -128,7 +127,6 @@ func update_display():
 	
 	# Change color based on remaining fruits
 	var color_intensity = float(fruits_remaining) / float(initial_fruit_count)
-	sprite.color = Color.ORANGE.lerp(Color.DARK_ORANGE, 1.0 - color_intensity)
 
 func deplete_box():
 	# Box is empty, prepare for removal
@@ -136,18 +134,37 @@ func deplete_box():
 	
 	# Emit depletion signal
 	box_depleted.emit(global_position)
-	 
-	# Disable collision and areas
-	collision_shape.set_deferred("disabled", true)
-	detection_collision.set_deferred("disabled", true)
 	
-	# Queue for removal after animation
-	var timer = Timer.new()
-	timer.wait_time = 0.5
-	timer.one_shot = true
-	add_child(timer)
-	timer.start()
-	timer.timeout.connect(queue_free)
+	# Transform to static block instead of removing
+	transform_to_block()
+	
+	# Disable detection area
+	detection_collision.set_deferred("disabled", true)
+	detection_area.monitoring = false
+	detection_area.monitorable = false
+
+func transform_to_block():
+	# Update appearance to basic block
+	if crateSprite:
+		crateSprite.play("basic_block")
+	
+	# Keep the original color but darken it
+	fruit_label.text = ""
+	
+	# Set up collision for platform behavior
+	collision_shape.disabled = false
+	collision_layer = 1  # World/Platform layer
+	collision_mask = 2   # Player layer
+	
+	# Visual transformation effect
+	var tween = create_tween()
+	tween.parallel().tween_property(self, "scale", Vector2(1.2, 1.2), 0.1)
+	tween.parallel().tween_property(self, "modulate", Color(0.4, 0.4, 0.5, 1), 0.2)
+	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
+	
+	# Play transformation sound if available
+	if Audio:
+		Audio.play_sfx("transform_to_block")
 
 func _on_detection_area_body_exited(body):
 	print("Body exited detection area: ", body.name)

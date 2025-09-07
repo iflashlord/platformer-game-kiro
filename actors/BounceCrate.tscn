@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://cx0yw6rkqh2ll"]
+[gd_scene load_steps=8 format=3 uid="uid://cx0yw6rkqh2ll"]
 
 [ext_resource type="Script" uid="uid://cjobmdyssbcx7" path="res://actors/BounceCrate.gd" id="1_bounce"]
-[ext_resource type="Texture2D" uid="uid://clhd33orwflv0" path="res://content/Graphics/Sprites/Tiles/Double/block_coin.png" id="2_qd8rr"]
-[ext_resource type="Texture2D" uid="uid://bwwt2s78oerbh" path="res://content/Graphics/Sprites/Tiles/Double/block_empty.png" id="3_ioo8y"]
-[ext_resource type="Texture2D" uid="uid://bv24lbq1hcyok" path="res://content/Graphics/Sprites/Tiles/Double/block_coin_active.png" id="4_5q1rx"]
+[ext_resource type="Texture2D" uid="uid://be3ywm1c0pf4k" path="res://content/Graphics/Sprites/Tiles/Default/bricks_brown.png" id="2_ioo8y"]
+[ext_resource type="Texture2D" uid="uid://cfp0m5k2kvrga" path="res://content/Graphics/Sprites/Tiles/Default/block_empty.png" id="3_l07xb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_crate"]
 size = Vector2(32, 32)
@@ -15,26 +14,18 @@ size = Vector2(40, 40)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_qd8rr")
+"texture": ExtResource("3_l07xb")
 }],
 "loop": true,
-"name": &"default",
+"name": &"basic",
 "speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_ioo8y")
+"texture": ExtResource("2_ioo8y")
 }],
 "loop": true,
-"name": &"empty",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("4_5q1rx")
-}],
-"loop": true,
-"name": &"gold",
+"name": &"basic_block",
 "speed": 5.0
 }]
 
@@ -44,14 +35,6 @@ outline_color = Color(0, 0, 0, 1)
 
 [node name="BounceCrate" type="StaticBody2D"]
 script = ExtResource("1_bounce")
-
-[node name="CrateSprite" type="ColorRect" parent="."]
-visible = false
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(1, 0.647059, 0, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_crate")
@@ -65,9 +48,9 @@ shape = SubResource("RectangleShape2D_detection")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-7.62939e-06, -7.62939e-06)
-scale = Vector2(0.28, 0.28)
+scale = Vector2(0.559999, 0.559999)
 sprite_frames = SubResource("SpriteFrames_7atu2")
-animation = &"empty"
+animation = &"basic"
 
 [node name="FruitLabel" type="Label" parent="."]
 offset_left = -8.0

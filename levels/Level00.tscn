@@ -874,3 +874,15 @@ gem_type = "emerald"
 
 [node name="InteractiveCrate" parent="." instance=ExtResource("21_crate")]
 position = Vector2(64, 392)
+crate_type = "tnt"
+
+[node name="InteractiveCrate2" parent="." instance=ExtResource("21_crate")]
+position = Vector2(112, 392)
+
+[node name="InteractiveCrate3" parent="." instance=ExtResource("21_crate")]
+position = Vector2(160, 392)
+crate_type = "bounce"
+
+[node name="InteractiveCrate4" parent="." instance=ExtResource("21_crate")]
+position = Vector2(208, 392)
+crate_type = "metal"

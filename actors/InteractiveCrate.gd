@@ -4,7 +4,7 @@ class_name InteractiveCrate
 signal crate_destroyed(crate: InteractiveCrate, points: int)
 signal player_bounced(crate: InteractiveCrate, player: Node2D)
 
-@export var crate_type: String = "basic"
+@export_enum("basic", "bounce", "tnt", "metal") var crate_type: String = "basic"
 @export var points_value: int = 50
 @export var bounce_force: float = 500.0
 @export var explosion_radius: float = 100.0
@@ -40,22 +40,45 @@ func _ready():
 	if crate_type == "tnt":
 		interactive_sprite.play("tnt_idle")
 		countdown_label = Label.new()
-		countdown_label.position = Vector2(-10, -35)
+		countdown_label.position = Vector2( -5, -10)
 		countdown_label.add_theme_font_size_override("font_size", 16)
-		countdown_label.add_theme_color_override("font_color", Color.RED)
+		countdown_label.add_theme_color_override("font_color", Color.WHITE)
 		countdown_label.visible = false
 		add_child(countdown_label)
 	
 	# Connect collision
 	body_entered.connect(_on_body_entered)
 	
-	# Set collision layers
-	collision_layer = 16  # Interactive layer
-	collision_mask = 2    # Player layer
+	# Set collision layers and type
+	if crate_type == "metal":
+		# Set up for static body behavior
+		set_collision_layer_value(1, true)  # World/Platform layer
+		set_collision_mask_value(2, true)   # Player layer
+		monitoring = false  # Disable area monitoring
+		monitorable = false  # Disable area monitoring
+	else:
+		collision_layer = 16  # Interactive layer
+		collision_mask = 2    # Player layer
 	
 	# Setup dimension system
 	if not Engine.is_editor_hint():
 		_setup_dimension_system()
+	
+	# Set up metal crate as static body if needed
+	if crate_type == "metal":
+		var static_body = StaticBody2D.new()
+		static_body.collision_layer = 1  # World/Platform layer
+		static_body.collision_mask = 2   # Player layer
+		
+		# Create a collision shape for the static body
+		var collision = CollisionShape2D.new()
+		var shape = RectangleShape2D.new()
+		shape.size = $CollisionShape2D.shape.size  # Copy size from Area2D's shape
+		collision.shape = shape
+		collision.position = $CollisionShape2D.position  # Copy position from Area2D's shape
+		
+		static_body.add_child(collision)
+		add_child(static_body)
 
 func _process(delta):
 	if is_exploding and crate_type == "tnt":
@@ -64,7 +87,7 @@ func _process(delta):
 		var remaining_time = explosion_countdown - explosion_timer
 		
 		if countdown_label:
-			countdown_label.text = str(ceil(remaining_time))
+			countdown_label.text = str(int(ceil(remaining_time)))
 			countdown_label.visible = true
 			
 			# Flash effect
@@ -93,9 +116,9 @@ func setup_crate_appearance():
 			points_value = 100
 		"metal":
 			interactive_sprite.play("metal_idle")
-			sprite.color = Color(0.7, 0.7, 0.8, 1)
-			label.text = "🔩"
-			points_value = 150
+			sprite.color = Color(0.4, 0.4, 0.5, 1)  # Darker, more metallic color
+			label.text = "⬛"  # Solid block appearance
+			points_value = 0  # No points since it's not destructible
 		_:
 			interactive_sprite.play("basic_idle")
 			sprite.color = Color(0.6, 0.4, 0.2, 1)
@@ -104,7 +127,7 @@ func setup_crate_appearance():
 
 func _on_body_entered(body):
 	print("📦 Crate collision detected with: ", body.name, " (groups: ", body.get_groups(), ")")
-	if body.is_in_group("player") and not is_destroyed:
+	if body.is_in_group("player") and not is_destroyed and crate_type != "metal":
 		print("📦 Valid player collision, interacting with crate")
 		interact_with_player(body)
 	else:
@@ -116,17 +139,16 @@ func interact_with_player(player):
 	match crate_type:
 		"basic":
 			bounce_player(player)
-			destroy_crate()
+			transform_to_block()
 		"bounce":
 			bounce_player(player)
-			destroy_crate()
+			transform_to_block()
 		"tnt":
-			bounce_player(player)
 			start_explosion_countdown()
+			transform_to_temporary_platform()  # Transform to platform without bouncing
 		"metal":
-			# Metal crates are harder to break
-			bounce_player(player)
-			#destroy_crate()
+			# Metal crates are solid platforms - no interaction needed
+			pass
 
 func bounce_player(player):
 	# Apply bounce force to player
@@ -307,6 +329,69 @@ func apply_explosion_knockback(player, distance: float):
 	if FX and FX.has_method("shake"):
 		FX.shake(100)  # Stronger shake for explosion
 
+func transform_to_block():
+	# Change the crate type
+	crate_type = "metal"
+	
+	# Update appearance to basic block but keep metal functionality
+	interactive_sprite.play("basic_block")
+	# Keep the original basic crate appearance
+	sprite.color = Color(0.6, 0.4, 0.2, 1)
+	label.text = "📦"
+	points_value = 0
+	
+	# Set up static body for platform behavior
+	var static_body = StaticBody2D.new()
+	static_body.collision_layer = 1  # World/Platform layer
+	static_body.collision_mask = 2   # Player layer
+	
+	# Create a collision shape for the static body
+	var collision = CollisionShape2D.new()
+	var shape = RectangleShape2D.new()
+	shape.size = $CollisionShape2D.shape.size
+	collision.shape = shape
+	collision.position = $CollisionShape2D.position
+	
+	static_body.add_child(collision)
+	add_child(static_body)
+	
+	# Disable Area2D behavior
+	monitoring = false
+	monitorable = false
+	
+	# Visual transformation effect
+	var tween = create_tween()
+	tween.parallel().tween_property(self, "scale", Vector2(1.2, 1.2), 0.1)
+	tween.parallel().tween_property(self, "modulate", Color(0.4, 0.4, 0.5, 1), 0.2)
+	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
+	
+	# Play transformation sound if available
+	if Audio:
+		Audio.play_sfx("transform_to_block")
+
+func transform_to_temporary_platform():
+	# Set up static body for temporary platform behavior
+	var static_body = StaticBody2D.new()
+	static_body.name = "TemporaryPlatform"
+	static_body.collision_layer = 1  # World/Platform layer
+	static_body.collision_mask = 2   # Player layer
+	
+	# Create a collision shape for the static body
+	var collision = CollisionShape2D.new()
+	var shape = RectangleShape2D.new()
+	shape.size = $CollisionShape2D.shape.size
+	collision.shape = shape
+	collision.position = $CollisionShape2D.position
+	
+	static_body.add_child(collision)
+	add_child(static_body)
+	
+	# Visual transformation effect
+	var tween = create_tween()
+	tween.parallel().tween_property(self, "scale", Vector2(1.1, 1.1), 0.1)
+	tween.parallel().tween_property(self, "modulate", Color(1, 0.5, 0.5, 1), 0.1)
+	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
+
 func create_explosion_effect():
 	# Create explosion visual
 	var explosion_sprite = ColorRect.new()
@@ -323,6 +408,11 @@ func create_explosion_effect():
 	# Hide countdown label and radius indicator
 	if countdown_label:
 		countdown_label.visible = false
+	
+	# Remove temporary platform if it exists
+	var temp_platform = get_node_or_null("TemporaryPlatform")
+	if temp_platform:
+		temp_platform.queue_free()
 	
 	var radius_indicator = get_node_or_null("ExplosionRadiusIndicator")
 	if radius_indicator:
