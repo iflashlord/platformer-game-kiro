@@ -117,10 +117,6 @@ func collect():
 	print("DEBUG: gem_collected signal emitted")
 	hidden_gem_found.emit(self)
 
-	Game.collect_gem(1)  # Notify game system of gem collection
-
-	add_to_group("collected_gems")
-
 	# Add 500 points for hidden gem discovery
 	if has_node("/root/Game"):
 		Game.add_score(gem_value)
@@ -128,7 +124,7 @@ func collect():
 		var base_level = get_tree().current_scene
 		if base_level and base_level is BaseLevel:
 			base_level.hidden_gems_collected_count += 1
-			print("Hidden gem found! +500 points. Total collected: ", base_level.hidden_gems_collected_count)
+			print("Hidden gem found! "+ str(gem_value) +" points. Total collected: ", base_level.hidden_gems_collected_count)
 		print("New score: ", Game.get_score())
 	else:
 		print("Game singleton not found, score not added")
