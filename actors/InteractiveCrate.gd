@@ -135,7 +135,12 @@ func _on_body_entered(body):
 
 func interact_with_player(player):
 
+	# Visual bounce effect
+	var bounce_tween = create_tween()
+	bounce_tween.parallel().tween_property(self, "scale", Vector2(1.2, 0.8), 0.1)
+	bounce_tween.chain().tween_property(self, "scale", Vector2(1.0, 1.0), 0.2)
 	
+
 	match crate_type:
 		"basic":
 			bounce_player(player)

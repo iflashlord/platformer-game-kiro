@@ -100,6 +100,11 @@ func consume_fruit():
 		fruits_remaining -= 1
 		update_display()
 		
+		# Visual bounce effect
+		var bounce_tween = create_tween()
+		bounce_tween.parallel().tween_property(self, "scale", Vector2(1.2, 0.8), 0.1)
+		bounce_tween.chain().tween_property(self, "scale", Vector2(1.0, 1.0), 0.2)
+		
 		# Audio feedback
 		if Audio:
 			Audio.play_sfx("collect_gem")
