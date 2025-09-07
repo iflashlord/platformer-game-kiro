@@ -18,11 +18,16 @@ var is_completed: bool = false
 @onready var ui: Node = get_node_or_null("UI")
 @onready var player: Player = get_node_or_null("Player")
 @onready var hud = get_node_or_null("UI/GameHUD")
+@onready var levelManager = get_tree().current_scene.get_node_or_null("LevelManager")
 
 var hidden_gems_collected_count: int = 0
 
 func _ready():
 	start_time = Time.get_unix_time_from_system()
+
+	#level manager 
+	print("BaseLevel ready, looking for LevelManager..."+ str(levelManager))
+	levelManager.initialize_level(level_id if level_id != "" else level_name)
 
 	# Reset hidden gems counter
 	hidden_gems_collected_count = 0

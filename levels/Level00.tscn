@@ -864,6 +864,8 @@ spike_scale = 0.3
 
 [node name="HiddenGem" parent="." instance=ExtResource("16_6oto5")]
 position = Vector2(400, 392)
+scale = Vector2(1, 0.957695)
+gem_type = "multicolor"
 
 [node name="InteractiveCrate" parent="." instance=ExtResource("21_crate")]
 position = Vector2(64, 392)

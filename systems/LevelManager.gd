@@ -58,11 +58,15 @@ func auto_connect_components():
 	print("🍎 Connected to ", fruits.size(), " fruits")
 	
 	# Connect to all CollectibleGem instances
-	var gems = get_tree().get_nodes_in_group("gems")
+	var gems = get_tree().get_nodes_in_group("hidden_gems")
 	level_stats.total_gems = gems.size()
+	print("💎 Found ", gems.size(), " gems in hidden_gems group")
 	for gem in gems:
+		print("💎 Checking gem: ", gem, " has_signal: ", gem.has_signal("gem_collected"))
 		if gem.has_signal("gem_collected"):
+			print("💎 Connecting to gem: ", gem)
 			gem.gem_collected.connect(_on_gem_collected)
+			print("💎 Successfully connected to gem's gem_collected signal")
 	print("💎 Connected to ", gems.size(), " gems")
 	
 	# Connect to all InteractiveCrate instances
@@ -127,7 +131,8 @@ func _on_fruit_collected(fruit: CollectibleFruit, points: int):
 		print("🎉 All fruits collected! Bonus: +500 points")
 		Game.add_score(500)
 
-func _on_gem_collected(gem: CollectibleGem, points: int):
+func _on_gem_collected(gem: HiddenGem, points: int):
+	print("💎 _on_gem_collected called for gem: ", gem)
 	level_stats.gems_collected += 1
 	collectible_gathered.emit("gem", points)
 	

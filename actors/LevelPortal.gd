@@ -185,13 +185,18 @@ func _complete_level():
 		completion_data.hearts_remaining = HealthSystem.get_current_health()
 	
 	# Get gem data from LevelManager if available
+	# get parent level manager
+
 	var level_manager = get_tree().get_first_node_in_group("level_managers")
+	print("🔧 LevelPortal: Found LevelManager: ", level_manager)
 	if not level_manager:
+		print("🔧 LevelPortal: LevelManager not found in group, checking current scene")
 		# Try to find it in the current scene
 		level_manager = get_tree().current_scene.get_node_or_null("LevelManager")
-	
+		print("🔧 LevelPortal: Found LevelManager in current scene: ", level_manager)
 	if level_manager:
 		var stats = level_manager.get_level_stats()
+		print("🔧 LevelPortal: Retrieved level stats: ", stats)
 		completion_data.gems_found = stats.gems_collected
 		completion_data.total_gems = stats.total_gems
 		

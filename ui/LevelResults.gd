@@ -290,6 +290,7 @@ func _save_completion_data():
 		
 		print("💾 Completion data confirmed saved for ", current_level)
 
+ 
 func _apply_performance_colors(data: Dictionary):
 	"""Apply color coding based on performance"""
 	# Color hearts based on remaining (if label exists)
@@ -305,6 +306,7 @@ func _apply_performance_colors(data: Dictionary):
 		hearts_label.modulate = heart_color
 	
 	# Color gems based on collection (if label exists)
+	
 	if gems_label:
 		var gems_found = data.get("gems_found", 0)
 		var total_gems = data.get("total_gems", 0)

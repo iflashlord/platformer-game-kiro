@@ -1,17 +1,60 @@
-[gd_scene load_steps=7 format=3 uid="uid://cxvxay8qkqxt"]
+[gd_scene load_steps=9 format=3 uid="uid://cxvxay8qkqxt"]
 
 [ext_resource type="Script" uid="uid://doq1otjmvrtg5" path="res://actors/HiddenGem.gd" id="1_0k8w6"]
-[ext_resource type="Script" uid="uid://cxf8gb242c2s8" path="res://systems/DebugBorder.gd" id="3_debug"]
-[ext_resource type="Texture2D" uid="uid://blppi02eytlbi" path="res://content/Graphics/Sprites/Tiles/Default/gem_blue.png" id="3_qhaff"]
+[ext_resource type="Texture2D" uid="uid://cdhydscs3l0lm" path="res://content/Graphics/Sprites/Tiles/Double/gem_blue.png" id="2_jw70k"]
+[ext_resource type="Texture2D" uid="uid://ejq3fklngffs" path="res://content/Graphics/Sprites/Tiles/Double/gem_green.png" id="3_3xcsr"]
+[ext_resource type="Texture2D" uid="uid://gy07jqyh3sqx" path="res://content/Graphics/Sprites/Tiles/Double/gem_red.png" id="4_idceg"]
+[ext_resource type="Texture2D" uid="uid://wi6153xil6nd" path="res://content/Graphics/Sprites/Tiles/Double/gem_yellow.png" id="5_q76qp"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ecbhw"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_qhaff")
+"texture": ExtResource("3_3xcsr")
 }],
 "loop": true,
-"name": &"default",
+"name": &"amethyst",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_jw70k")
+}],
+"loop": true,
+"name": &"diamond",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_q76qp")
+}],
+"loop": true,
+"name": &"emerald",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_jw70k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_3xcsr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_idceg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_q76qp")
+}],
+"loop": true,
+"name": &"multicolor",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_idceg")
+}],
+"loop": true,
+"name": &"ruby",
 "speed": 5.0
 }]
 
@@ -26,20 +69,10 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 0.93228, 0.792932, 0.33209, 1, 1, 1, 0)
 [node name="HiddenGem" type="Area2D"]
 script = ExtResource("1_0k8w6")
 
-[node name="DebugBorder" type="Node2D" parent="."]
-visible = false
-script = ExtResource("3_debug")
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.385792, 0.385792)
 sprite_frames = SubResource("SpriteFrames_ecbhw")
-
-[node name="GemSprite" type="ColorRect" parent="."]
-visible = false
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
-color = Color(0.9, 0.1, 0.9, 1)
+animation = &"amethyst"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(1.22, 1.22857)
@@ -58,7 +91,7 @@ initial_velocity_min = 50.0
 initial_velocity_max = 100.0
 scale_amount_min = 0.5
 scale_amount_max = 1.2
-color = Color(1, 1, 0.5, 1)
+color = Color(0.97, 0.97, 0.97, 1)
 
 [node name="GlowParticles" type="CPUParticles2D" parent="."]
 amount = 10

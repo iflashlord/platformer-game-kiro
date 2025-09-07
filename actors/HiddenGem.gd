@@ -1,20 +1,22 @@
 extends Area2D
 class_name HiddenGem
 
-@onready var sprite: ColorRect = $GemSprite
+## Signal emitted when the gem is collected
+signal gem_collected(gem: HiddenGem, points: int)
+## Signal emitted when a hidden gem is found
+signal hidden_gem_found(gem: HiddenGem)
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var glow_particles: CPUParticles2D = $GlowParticles
 @onready var collect_particles: CPUParticles2D = $CollectParticles
 
-@export var gem_type: String = "ruby"
-@export var gem_value: int = 100
+@export_enum("ruby", "emerald", "diamond", "amethyst", "multicolor") var gem_type = "ruby"
+@export var gem_value: int = 50
 @export var is_hidden: bool = true
 
 var collected: bool = false
-var pulse_time: float = 0.0
-
-signal gem_collected(gem: HiddenGem)
-signal hidden_gem_found(gem: HiddenGem)  # Add signal declaration
-
+var pulse_time: float = 0.0 
+ 
 func _ready():
 	# Add to hidden_gems group for level tracking
 	add_to_group("hidden_gems")
@@ -32,7 +34,8 @@ func _ready():
 	# Start with hidden state
 	if is_hidden:
 		modulate.a = 0.3
-		scale = Vector2(0.8, 0.8)
+		scale = Vector2(0.35, 0.35)
+		glow_particles.emitting = false
 
 func _physics_process(delta):
 	if not collected:
@@ -48,28 +51,36 @@ func _physics_process(delta):
 func _setup_gem_appearance():
 	match gem_type:
 		"ruby":
-			sprite.modulate = Color.RED
-			gem_value = 100
+			glow_particles.color = Color.RED
+			sprite.play("ruby")
+			gem_value = 50
 		"emerald":
-			sprite.modulate = Color.GREEN
-			gem_value = 150
-		"sapphire":
-			sprite.modulate = Color.BLUE
-			gem_value = 200
+			glow_particles.color = Color.GREEN
+			sprite.play("emerald")
+			gem_value = 100
 		"diamond":
-			sprite.modulate = Color.WHITE
-			gem_value = 300
+			glow_particles.color = Color.WHITE
+			sprite.play("diamond")
+			gem_value = 150
 		"amethyst":
-			sprite.modulate = Color.PURPLE
+			glow_particles.color = Color.PURPLE
+			sprite.play("amethyst")
+			gem_value = 200
+		"multicolor":
+			glow_particles.color = Color.WHITE
+			sprite.play("multicolor")
 			gem_value = 250
 		_:
-			sprite.modulate = Color.YELLOW
+			glow_particles.color = Color.RED
+			sprite.play("ruby")
 			gem_value = 50
 	
 	# Setup glow particles to match gem color
 	if glow_particles:
 		glow_particles.color = sprite.modulate
 		glow_particles.emitting = true
+
+ 
 
 func reveal():
 	if not is_hidden:
@@ -80,14 +91,19 @@ func reveal():
 	# Reveal animation
 	var tween = create_tween()
 	tween.parallel().tween_property(self, "modulate:a", 1.0, 0.5)
-	tween.parallel().tween_property(self, "scale", Vector2.ONE, 0.5)
+	tween.parallel().tween_property(self, "scale",  Vector2(0.4, 0.4), 0.3)
 	
 	# Audio feedback
 	Audio.play_sfx("gem_reveal")
 	
 	# Particle burst
 	if glow_particles:
-		glow_particles.amount = 30
+		glow_particles.amount = 20
+		glow_particles.emitting = true
+		glow_particles.direction = Vector2(0, -1)
+		glow_particles.speed_scale = 1.0
+		glow_particles.randomness = 0.5
+		glow_particles.scale = Vector2(1.5, 1.5)
 		glow_particles.restart()
 
 func collect():
@@ -96,12 +112,18 @@ func collect():
 
 	# Set collected state and emit signals
 	collected = true
-	gem_collected.emit(self)
+	print("DEBUG: About to emit gem_collected signal...")
+	gem_collected.emit(self, gem_value)  # Pass both the gem instance and its value
+	print("DEBUG: gem_collected signal emitted")
 	hidden_gem_found.emit(self)
+
+	Game.collect_gem(1)  # Notify game system of gem collection
+
+	add_to_group("collected_gems")
 
 	# Add 500 points for hidden gem discovery
 	if has_node("/root/Game"):
-		Game.add_score(500)
+		Game.add_score(gem_value)
 		# Notify base level through the current scene
 		var base_level = get_tree().current_scene
 		if base_level and base_level is BaseLevel:
@@ -113,14 +135,14 @@ func collect():
 
 	# Notify event bus
 	EventBus.notify_collectible_gathered("gem_" + gem_type, global_position)
-
+ 
 	# Visual feedback
 	if collect_particles:
 		collect_particles.emitting = true
 
 	# Floating text effect for score
 	var effect_label = Label.new()
-	effect_label.text = "+500"
+	effect_label.text = "+" + str(gem_value)
 	effect_label.add_theme_font_size_override("font_size", 18)
 	effect_label.add_theme_color_override("font_color", Color.BLACK)
 	effect_label.position = global_position + Vector2(-15, -30)
