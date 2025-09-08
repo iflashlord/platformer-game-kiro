@@ -39,6 +39,7 @@ signal spike_extended
 @export var damage_sound: String = "spike_hit"
 @export var retract_sound: String = "spike_retract"
 @export var extend_sound: String = "spike_extend"
+@export var proximity_sound_max_distance: float = 300.0
 
 @export_group("Dimensions")
 @export var target_layer: String = "A" #: set = set_target_layer
@@ -247,8 +248,8 @@ func retract_spike():
 	is_retracting = true
 	retract_timer = 0.0
 	
-	# Play sound
-	_play_sound(retract_sound)
+	# Play sound only if player is nearby
+	_play_sound_if_player_near(retract_sound)
 	
 	# Emit signal
 	spike_retracted.emit()
@@ -288,8 +289,8 @@ func extend_spike():
 	is_extended = true
 	is_retracting = false
 	
-	# Play sound
-	_play_sound(extend_sound)
+	# Play sound only if player is nearby
+	_play_sound_if_player_near(extend_sound)
 	
 	# Emit signal
 	spike_extended.emit()
@@ -337,6 +338,17 @@ func _play_sound(sound_name: String):
 	"""Play sound effect"""
 	if sound_name != "" and Audio and Audio.has_method("play_sfx"):
 		Audio.play_sfx(sound_name)
+
+func _play_sound_if_player_near(sound_name: String, max_distance: float = proximity_sound_max_distance):
+	"""Play sound only if the player is within a certain distance"""
+	if sound_name == "":
+		return
+	var player := get_tree().get_first_node_in_group("player")
+	if player and player is Node2D:
+		var dist = global_position.distance_to(player.global_position)
+		if dist <= max_distance:
+			_play_sound(sound_name)
+
 
 func get_spike_info() -> Dictionary:
 	"""Get information about the spike state"""
