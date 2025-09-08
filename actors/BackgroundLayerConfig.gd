@@ -31,6 +31,14 @@ class_name BackgroundLayerConfig
 @export var z_index: int = -10
 @export var scale_factor: Vector2 = Vector2.ONE
 
+@export_group("Background Color (Optional)")
+# Optional per-resource colors; not required by the system, but kept to
+# support level resource entries. These are not automatically consumed by
+# ParallaxBackgroundSystem.
+@export var background_color_main: Color = Color(0, 0, 0, 0)
+@export var background_color_a: Color = Color(0, 0, 0, 0)
+@export var background_color_b: Color = Color(0, 0, 0, 0)
+
 @export_group("Layer Info")
 @export var layer_name: String = ""
 @export var description: String = ""
@@ -70,6 +78,11 @@ func duplicate_config() -> BackgroundLayerConfig:
 	new_config.modulate_color = modulate_color
 	new_config.z_index = z_index
 	new_config.scale_factor = scale_factor
+
+	# Copy optional background color fields
+	new_config.background_color_main = background_color_main
+	new_config.background_color_a = background_color_a
+	new_config.background_color_b = background_color_b
 	
 	new_config.layer_name = layer_name
 	new_config.description = description

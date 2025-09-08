@@ -37,7 +37,7 @@ loop_seamlessly = true
 horizontal_gap = -100
 vertical_gap = 0
 loop_start_point = Vector2(0, -100)
-loop_end_point = Vector2(0, 1000)
+loop_end_point = Vector2(0, 0)
 reset_position = Vector2(0, 0)
 loop_left = true
 loop_right = true
@@ -46,6 +46,9 @@ loop_down = true
 modulate_color = Color(1, 1, 1, 1)
 z_index = -10
 scale_factor = Vector2(1, 1)
+background_color_main = Color(0, 0, 0, 0)
+background_color_a = Color(1, 0, 0, 0.603922)
+background_color_b = Color(0, 1, 0, 0.701961)
 layer_name = ""
 description = ""
 target_layer = "A"
@@ -72,6 +75,9 @@ loop_down = true
 modulate_color = Color(1, 1, 1, 1)
 z_index = -10
 scale_factor = Vector2(1, 1)
+background_color_main = Color(0, 0, 0, 0)
+background_color_a = Color(0, 0, 0, 0)
+background_color_b = Color(0, 0, 0, 0)
 layer_name = ""
 description = ""
 target_layer = "A"
@@ -85,6 +91,9 @@ script = ExtResource("1_level00")
 script = ExtResource("18_level_manager")
 
 [node name="ParallaxBackgroundSystem" parent="." instance=ExtResource("19_88x2b")]
+main_bg_color = Color(1, 0.231373, 0.580392, 1)
+layer_a_bg_color = Color(0.0862745, 0.486275, 0.560784, 1)
+layer_b_bg_color = Color(0.972549, 0.411765, 0, 1)
 background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_ax175")])
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
@@ -696,6 +705,62 @@ visible_in_both_dimensions = true
 
 [node name="DynamicPlatform52" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(2232, 152)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform76" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2520, 48)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform77" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2520, 48)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform78" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2640, 0)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform79" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2752, -40)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform80" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2864, -88)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform81" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(2976, -144)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform82" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3088, -200)
+scale = Vector2(0.5, 0.5)
+width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform83" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3088, -200)
 scale = Vector2(0.5, 0.5)
 width = 150.0
 platform_type = 3

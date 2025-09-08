@@ -10,6 +10,13 @@ signal all_backgrounds_ready
 @export var auto_find_camera: bool = true
 @export var follow_camera: bool = true
 
+@export_group("Background Color")
+# Main scene background color (used as fallback)
+@export var main_bg_color: Color = Color(0, 0, 0, 0)
+# Optional per-dimension overrides; if alpha == 0, falls back to main_bg_color
+@export var layer_a_bg_color: Color = Color(0, 0, 0, 0)
+@export var layer_b_bg_color: Color = Color(0, 0, 0, 0)
+
 # Background layer configuration
 @export_group("Background Layers")
 @export var background_layers: Array[BackgroundLayerConfig] = []
@@ -18,6 +25,9 @@ signal all_backgrounds_ready
 var _camera: Camera2D
 var _background_instances: Array[LoopingBackground] = []
 var _is_ready: bool = false
+var _bg_enabled: bool = false
+var _bg_color_current: Color = Color(0, 0, 0, 0)
+var _bg_poly: Polygon2D
 
 @onready var _dimension_manager: Node = get_node("/root/DimensionManager")
 
@@ -26,6 +36,7 @@ func _ready():
 		_find_camera()
 	
 	_setup_background_layers()
+	_setup_background_fill()
 	_is_ready = true
 	all_backgrounds_ready.emit()
 	
@@ -94,6 +105,79 @@ func _setup_background_layers():
 		_background_instances.append(bg)
 		
 		print("🌄 Created background layer: ", bg.name, " (z: ", config.z_index, ")")
+
+func _setup_background_fill():
+	"""Initialize background color drawing and connect signals."""
+	_bg_enabled = (main_bg_color.a > 0.0) or (layer_a_bg_color.a > 0.0) or (layer_b_bg_color.a > 0.0)
+	if not _bg_enabled:
+		return
+
+	# Initialize current color based on current dimension
+	var current_layer := "A"
+	if _dimension_manager and _dimension_manager.has_method("get_current_layer"):
+		current_layer = _dimension_manager.get_current_layer()
+	_bg_color_current = _get_bg_color_for_layer(current_layer)
+	# Prepare poly drawer
+	if not is_instance_valid(_bg_poly):
+		_bg_poly = Polygon2D.new()
+		_bg_poly.name = "BackgroundFill2D"
+		_bg_poly.z_as_relative = false
+		_bg_poly.z_index = -4096  # draw behind all world items
+		_bg_poly.color = _bg_color_current
+		add_child(_bg_poly)
+
+	_update_bg_polygon()
+	_update_bg_position()
+
+	# Update on dimension change
+	if _dimension_manager and not _dimension_manager.layer_changed.is_connected(_on_dim_layer_changed):
+		_dimension_manager.layer_changed.connect(_on_dim_layer_changed)
+
+	# Redraw on viewport resize
+	if not get_viewport().size_changed.is_connected(_on_viewport_resized):
+		get_viewport().size_changed.connect(_on_viewport_resized)
+
+func _get_bg_color_for_layer(layer: String) -> Color:
+	"""Return the active background color for the given dimension, falling back to main."""
+	if layer == "A" and layer_a_bg_color.a > 0.0:
+		return layer_a_bg_color
+	if layer == "B" and layer_b_bg_color.a > 0.0:
+		return layer_b_bg_color
+	return main_bg_color
+
+func _on_dim_layer_changed(new_layer: String):
+	if not _bg_enabled:
+		return
+	_bg_color_current = _get_bg_color_for_layer(new_layer)
+	if is_instance_valid(_bg_poly):
+		_bg_poly.color = _bg_color_current
+
+func _on_viewport_resized():
+	if _bg_enabled:
+		_update_bg_polygon()
+		_update_bg_position()
+func _update_bg_polygon():
+	if not (_bg_enabled and is_instance_valid(_bg_poly)):
+		return
+	var vp_size: Vector2 = get_viewport().get_visible_rect().size
+	_bg_poly.polygon = PackedVector2Array([
+		Vector2(0, 0),
+		Vector2(vp_size.x, 0),
+		Vector2(vp_size.x, vp_size.y),
+		Vector2(0, vp_size.y)
+	])
+
+func _update_bg_position():
+	if not (_bg_enabled and is_instance_valid(_bg_poly)):
+		return
+	var vp_size: Vector2 = get_viewport().get_visible_rect().size
+	var half: Vector2 = vp_size * 0.5
+	var cam_pos: Vector2 = _camera.global_position if _camera else Vector2.ZERO
+	_bg_poly.global_position = cam_pos - half
+
+func _process(delta):
+	if _bg_enabled:
+		_update_bg_position()
 
 # Public API
 func add_background_layer(config: BackgroundLayerConfig):
