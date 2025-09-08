@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=30 format=3 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -7,8 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://c8yay2n7m6wqp" path="res://ui/HintDisplay.tscn" id="4_hint"]
 [ext_resource type="Texture2D" uid="uid://crikv87u561tk" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_hills_large.png" id="5_53pyl"]
 [ext_resource type="Texture2D" uid="uid://dq4x7ooj1ujrf" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds_large.png" id="6_53pyl"]
+[ext_resource type="Texture2D" uid="uid://djlam76epbvrq" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_hills_large_b.png" id="6_mjv5a"]
 [ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="7_8bey8"]
 [ext_resource type="PackedScene" uid="uid://dliaposygu1e" path="res://actors/LevelPortal.tscn" id="7_portal"]
+[ext_resource type="Texture2D" uid="uid://c07mifot4yvcn" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds_large_b.png" id="8_qxkwm"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
 [ext_resource type="PackedScene" uid="uid://dt4gkyxqmr5ws" path="res://actors/DimensionSwitch.tscn" id="12_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
@@ -29,7 +31,9 @@
 [sub_resource type="Resource" id="Resource_88x2b"]
 script = ExtResource("20_blrwf")
 texture = ExtResource("5_53pyl")
-use_different_textures_per_layer = false
+layer_a_texture = ExtResource("5_53pyl")
+layer_b_texture = ExtResource("6_mjv5a")
+use_different_textures_per_layer = true
 scroll_speed = Vector2(-50, 0)
 parallax_factor = Vector2(0.5, 0.5)
 auto_scroll = true
@@ -58,7 +62,9 @@ metadata/_custom_type_script = "uid://bxm5g8u8h5004"
 [sub_resource type="Resource" id="Resource_ax175"]
 script = ExtResource("20_blrwf")
 texture = ExtResource("6_53pyl")
-use_different_textures_per_layer = false
+layer_a_texture = ExtResource("6_53pyl")
+layer_b_texture = ExtResource("8_qxkwm")
+use_different_textures_per_layer = true
 scroll_speed = Vector2(-50, 0)
 parallax_factor = Vector2(0.5, 0.5)
 auto_scroll = true
