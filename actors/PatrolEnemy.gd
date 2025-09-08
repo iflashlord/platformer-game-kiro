@@ -6,7 +6,7 @@ signal enemy_stomped(enemy: PatrolEnemy, player: Node2D, points: int)
 signal player_detected(enemy: PatrolEnemy, player: Node2D)
 signal player_damaged(enemy: PatrolEnemy, player: Node2D, damage: int)
 
-@export var enemy_type: String = "mouse"
+@export_enum("mouse", "barnacle", "bee", "fish_blue", "fish_yellow", "flog", "fly", "ladybug", "ladybug_fly", "saw", "slime_fire", "slime_green", "slime_normal", "slime_spike", "snail", "worm_blue", "worm_ring") var enemy_type: String = "mouse"
 @export var patrol_speed: float = 65.0
 @export var patrol_distance: float = 150.0
 @export var damage_amount: int = 1
@@ -167,7 +167,7 @@ func setup_enemy_appearance():
 			damage_amount = 1
 		"snail":
 			enemy_sprite.play("snail")
-			patrol_speed = 75.0
+			patrol_speed = 25.0
 			points_value = 150
 			damage_amount = 1
 		"worm_blue":

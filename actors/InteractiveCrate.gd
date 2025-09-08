@@ -276,8 +276,11 @@ func destroy_crate():
 	is_destroyed = true
 	
 	# Add score
-	Game.add_score(points_value)
-	
+
+	# if not tnt crate, add points
+	if crate_type != "tnt" and points_value > 0 and Game and Game.has_method("add_score"):
+		Game.add_score(points_value)
+
 	# Emit signal
 	crate_destroyed.emit(self as InteractiveCrate, points_value)
 	
@@ -290,21 +293,7 @@ func create_destruction_effect():
 	# Disable collision
 	collision_layer = 0
 	collision_mask = 0
-	
-	# Create floating text effect
-	var effect_label = Label.new()
-	effect_label.text = "+" + str(points_value)
-	effect_label.add_theme_font_size_override("font_size", 14)
-	effect_label.add_theme_color_override("font_color", Color.WHITE)
-	effect_label.position = global_position + Vector2(-15, -25)
-	get_tree().current_scene.add_child(effect_label)
-	
-	# Animate the effect
-	var tween = create_tween()
-	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -40), 0.8)
-	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 0.8)
-	tween.tween_callback(effect_label.queue_free)
-	
+	 
 	# Animate the crate destruction
 	var item_tween = create_tween()
 	item_tween.parallel().tween_property(self, "scale", Vector2(1.2, 1.2), 0.1)

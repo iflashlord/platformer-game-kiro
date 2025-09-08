@@ -99,7 +99,11 @@ func _setup_background():
 	_texture_size = current_texture.get_size() * scale_factor
 	
 	# Calculate how many sprites we need based on looping directions
-	var viewport_size = (get_viewport().get_visible_rect().size * 5)
+	var viewport_size: Vector2
+	if get_viewport() and get_viewport().has_method("get_visible_rect"):
+		viewport_size = get_viewport().get_visible_rect().size * 5
+	else:
+		viewport_size = Vector2(1920, 1080) * 5  # Fallback to default size
 	var sprites_needed_x = 1
 	var sprites_needed_y = 1
 	
@@ -132,7 +136,13 @@ func _setup_background():
 			add_child(sprite)
 
 			# Adjust for viewport to avoid flickering on start
-			var viewport_width = get_viewport().get_visible_rect().size.x
+			var viewport_width = 0
+
+			if get_viewport() and get_viewport().has_method("get_visible_rect"):
+				viewport_width = get_viewport().get_visible_rect().size.x
+			else:
+				viewport_width = 1920  # Fallback to default width
+
 			sprite.position -= Vector2(viewport_width, 0)
 			
 			_sprites.append(sprite)
