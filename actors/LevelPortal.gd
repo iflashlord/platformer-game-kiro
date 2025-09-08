@@ -4,6 +4,15 @@ class_name LevelPortal
 @export var current_game_level: String = ""
 @export var portal_name: String = "Level Complete"
 
+# Magnetic capture/entry effect tuning
+@export var magnet_duration: float = 0.8
+@export var magnet_spin_rotations: float = 2.0
+@export var magnet_shrink_scale: float = 0.15
+@export var magnet_fade_out: bool = true
+@export var disable_player_collision_on_capture: bool = true
+@export var portal_absorb_pulse_scale: float = 1.25
+@export var portal_absorb_pulse_time: float = 0.2
+
 @onready var portal_sprite: Node2D = $PortalSprite
 @onready var outer_ring: Node2D = $PortalSprite/OuterRing
 @onready var inner_glow: Node2D = $PortalSprite/InnerGlow
@@ -14,6 +23,8 @@ class_name LevelPortal
 
 var is_activated: bool = false
 var glow_tween: Tween
+var capture_tween: Tween
+var captured_player: Player
 
 func _ready():
 	# Connect signals
@@ -64,20 +75,83 @@ func _on_body_entered(body):
 	print("🌀 Portal collision detected with: ", body.name, " (groups: ", body.get_groups(), ")")
 	if body is Player and not is_activated:
 		print("🌀 Valid player collision, activating portal")
-		_activate_portal(body)
+		_begin_magnet_capture(body)
 	else:
 		print("🌀 Invalid collision or already activated")
 
-func _activate_portal(player: Player):
+func _begin_magnet_capture(player: Player):
 	if is_activated:
 		return
-		
 	is_activated = true
+	captured_player = player
+
+	# Safety: stop player control and physics
+	player.velocity = Vector2.ZERO
+	player.set_physics_process(false)
+	if disable_player_collision_on_capture and player.collision_shape:
+		player.collision_shape.disabled = true
+
+	# Optional: play a compact/brace animation if available
+	if player.character_sprite:
+		# Use an existing anim as placeholder for entry
+		if player.character_sprite.animation != "duck":
+			player.character_sprite.play("duck")
+
+	# Kick off absorb pulse on the portal
+	_play_absorb_pulse()
+
+	# Enhance particles to look like suction
+	if particles:
+		particles.emitting = true
+		particles.initial_velocity_max = 120.0
+		particles.amount = max(particles.amount, 120)
+
+	# Tween the player into the core with spin+shrink+fade
+	var target_pos: Vector2 = core.get_global_position() if core else global_position
+	capture_tween = create_tween()
+	capture_tween.set_parallel(true)
+	# Position pull
+	capture_tween.tween_property(player, "global_position", target_pos, magnet_duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	# Spin
+	capture_tween.tween_property(player, "rotation", player.rotation + TAU * magnet_spin_rotations, magnet_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	# Shrink (scale on whole player keeps sprite + children consistent)
+	capture_tween.tween_property(player, "scale", Vector2(magnet_shrink_scale, magnet_shrink_scale), magnet_duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	# Fade
+	if magnet_fade_out:
+		var start_mod := player.modulate
+		start_mod.a = 1.0
+		player.modulate = start_mod
+		var end_mod := start_mod
+		end_mod.a = 0.0
+		capture_tween.tween_property(player, "modulate", end_mod, magnet_duration * 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+
+	# After capture completes, trigger portal celebration and level complete
+	capture_tween.tween_callback(func():
+		_activate_portal(player)
+	)
+
+func _play_absorb_pulse():
+	# Quick pulse to sell suction
+	if not portal_sprite:
+		return
+	var pulse = create_tween()
+	pulse.set_parallel(false)
+	var base_scale: Vector2 = portal_sprite.scale
+	pulse.tween_property(portal_sprite, "scale", base_scale * portal_absorb_pulse_scale, portal_absorb_pulse_time)
+	pulse.tween_property(portal_sprite, "scale", base_scale, portal_absorb_pulse_time)
+
+func _activate_portal(player: Player):
+	if is_activated:
+		# Proceed with effects if we haven't yet (we may get here only via capture)
+		pass
+		
 	print("🌀 Player entered portal: ", portal_name)
 	
 	# Stop player movement
 	player.velocity = Vector2.ZERO
 	player.set_physics_process(false)
+	# Hide the player after absorb
+	player.visible = false
 	
 	# Visual effects
 	_play_completion_effects()
