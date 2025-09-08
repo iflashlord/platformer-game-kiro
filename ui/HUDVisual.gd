@@ -17,9 +17,12 @@ class_name HUDVisual
 @export_enum("Both","A","B") var visible_in_dimension: int = 0: set = set_visible_in_dimension
 
 var _current_layer: String = "A"
-@onready var _dimension_manager: Node = get_node("/root/DimensionManager")
+var _dimension_manager: Node = null
 
 func _ready():
+    # Safely resolve DimensionManager (may not exist in editor preview)
+    if _dimension_manager == null:
+        _dimension_manager = get_node_or_null("/root/DimensionManager")
     _apply_texture()
     _connect_dimension_manager()
     _update_dimension_visibility()

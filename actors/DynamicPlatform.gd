@@ -36,7 +36,8 @@ enum PlatformType {
 	CACTUS,
 	BUSH,
 	BRICKS_BROWN,
-	BRICKS_GREY
+	BRICKS_GREY,
+	FENCE
 }
 
 # Core platform properties - simple and direct
@@ -107,6 +108,7 @@ var platform_textures = {
 	PlatformType.BUSH: preload("res://content/Graphics/Sprites/Tiles/Default/bush.png"),
 	PlatformType.BRICKS_BROWN: preload("res://content/Graphics/Sprites/Tiles/Default/bricks_brown.png"),
 	PlatformType.BRICKS_GREY: preload("res://content/Graphics/Sprites/Tiles/Default/bricks_grey.png"),
+	PlatformType.FENCE: preload("res://content/Graphics/Sprites/Tiles/Default/fence.png"),
 }
 
 func _ready():
