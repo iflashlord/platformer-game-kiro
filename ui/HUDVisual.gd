@@ -12,8 +12,47 @@ class_name HUDVisual
 @export var custom_texture: Texture2D: set = set_custom_texture
 @export var auto_scale_to_pixel_size: bool = false
 
+@export_group("Dimension")
+# 0=Both, 1=Only A, 2=Only B
+@export_enum("Both","A","B") var visible_in_dimension: int = 0: set = set_visible_in_dimension
+
+var _current_layer: String = "A"
+@onready var _dimension_manager: Node = get_node("/root/DimensionManager")
+
 func _ready():
     _apply_texture()
+    _connect_dimension_manager()
+    _update_dimension_visibility()
+
+func _connect_dimension_manager() -> void:
+    if _dimension_manager and _dimension_manager.has_signal("layer_changed"):
+        if not _dimension_manager.layer_changed.is_connected(_on_layer_changed):
+            _dimension_manager.layer_changed.connect(_on_layer_changed)
+        if _dimension_manager.has_method("get_current_layer"):
+            _current_layer = _dimension_manager.get_current_layer()
+
+func _on_layer_changed(new_layer: String) -> void:
+    _current_layer = new_layer
+    _update_dimension_visibility()
+
+func set_visible_in_dimension(value: int) -> void:
+    visible_in_dimension = value
+    _update_dimension_visibility()
+
+func _update_dimension_visibility() -> void:
+    # Always visible in the editor viewport
+    if Engine.is_editor_hint():
+        visible = true
+        return
+    match visible_in_dimension:
+        0: # Both
+            visible = true
+        1: # A
+            visible = (_current_layer == "A")
+        2: # B
+            visible = (_current_layer == "B")
+        _:
+            visible = true
 
 func set_preset(value: int) -> void:
     preset = value
@@ -68,4 +107,3 @@ func _maybe_auto_scale() -> void:
     # Set scale so that 1 texture pixel maps to 1 world unit if desired
     # Assuming project uses 1 unit = 1 pixel for HUD; otherwise user can adjust.
     scale = Vector2.ONE
-
