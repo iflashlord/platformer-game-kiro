@@ -91,3 +91,5 @@ coverage/
 local/
 dev/
 debug/
+
+game_config.json

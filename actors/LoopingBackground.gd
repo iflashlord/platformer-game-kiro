@@ -45,6 +45,8 @@ var _texture_size: Vector2
 var _current_offset: Vector2 = Vector2.ZERO
 var _current_layer: String = "A"
 var is_active_in_current_layer: bool = true
+var _cols: int = 0
+var _rows: int = 0
 
 @onready var _dimension_manager: Node = get_node("/root/DimensionManager")
 
@@ -135,7 +137,9 @@ func _setup_background():
 			
 			_sprites.append(sprite)
 	
-	print("🖼️ Created ", _sprites.size(), " background sprites")
+	_cols = sprites_needed_x
+	_rows = sprites_needed_y
+	print("🖼️ Created ", _sprites.size(), " background sprites (", _cols, "x", _rows, ")")
 
 func _process(delta):
 	if not auto_scroll:
@@ -166,6 +170,7 @@ func _process(delta):
 	# Handle looping
 	if loop_seamlessly:
 		_handle_looping()
+		_wrap_sprites_x()
 
 func _handle_looping():
 	"""Reset position when we've scrolled far enough to maintain seamless loop while respecting loop limits and directions"""
@@ -271,3 +276,27 @@ func set_texture_for_layer(layer: String, new_texture: Texture2D):
 func get_current_scroll_offset() -> Vector2:
 	"""Get the current scroll offset"""
 	return _current_offset
+
+func _wrap_sprites_x():
+	"""Wrap sprite columns horizontally so textures repeat infinitely along X regardless of camera movement."""
+	if _sprites.is_empty() or _cols <= 0:
+		return
+	if not _camera:
+		return
+	var vp_size: Vector2 = get_viewport().get_visible_rect().size
+	var left_bound: float = _camera.global_position.x - (vp_size.x * 0.5) - _texture_size.x
+	var right_bound: float = _camera.global_position.x + (vp_size.x * 0.5) + _texture_size.x
+	var total_width: float = _texture_size.x * _cols
+	for sprite in _sprites:
+		if not is_instance_valid(sprite):
+			continue
+		var gx: float = sprite.global_position.x
+		if gx < left_bound:
+			# shift right by multiples of total width to bring inside bounds
+			var dx: float = left_bound - gx
+			var steps: int = int(floor(dx / total_width)) + 1
+			sprite.position.x += total_width * steps
+		elif gx > right_bound:
+			var dx2: float = gx - right_bound
+			var steps2: int = int(floor(dx2 / total_width)) + 1
+			sprite.position.x -= total_width * steps2
