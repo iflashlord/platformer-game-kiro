@@ -60,7 +60,7 @@ sprite_frames = SubResource("SpriteFrames_hgd25")
 animation = &"checked"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-1, 30)
+position = Vector2(-0.9, 30)
 scale = Vector2(0.208, 0.208)
 texture = ExtResource("6_muqop")
 flip_v = true

@@ -6,7 +6,9 @@ signal enemy_stomped(enemy: FlyingEnemy, player: Node2D, points: int)
 signal player_detected(enemy: FlyingEnemy, player: Node2D)
 signal player_damaged(enemy: FlyingEnemy, player: Node2D, damage: int)
 
-@export_enum("bee", "fly", "ladybug_fly", "bat", "wasp") var enemy_type: String = "bee" : set = _set_enemy_type
+@export_enum("bee", "fly", "ladybug_fly", "bat", "wasp") var enemy_type: String:
+	set = _set_enemy_type, get = _get_enemy_type
+var _enemy_type: String = "bee"
 @export var flight_speed: float = 80.0
 @export var damage_amount: int = 1
 @export var points_value: int = 200
@@ -521,8 +523,13 @@ func _update_for_layer(current_layer: String):
 
  
 func _set_enemy_type(value: String):
+	# Store the selected type and refresh appearance
+	_enemy_type = value
 	if is_inside_tree():
 		setup_enemy_appearance()
-		# Force update in editor
-		if Engine.is_editor_hint():
-			notify_property_list_changed()
+	# Force update in editor to reflect changes immediately
+	if Engine.is_editor_hint():
+		notify_property_list_changed()
+
+func _get_enemy_type() -> String:
+	return _enemy_type
