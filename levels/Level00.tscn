@@ -262,7 +262,19 @@ preset = 2
 
 [node name="DeathZones" type="Node2D" parent="."]
 show_behind_parent = true
-top_level = true
+
+[node name="DynamicPlatform21" parent="DeathZones" instance=ExtResource("7_8bey8")]
+position = Vector2(-216, 568)
+scale = Vector2(0.5, 0.5)
+width = 300.0
+height = 370.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 6
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 
 [node name="DynamicPlatform32" parent="DeathZones" instance=ExtResource("7_8bey8")]
 position = Vector2(696, 552)
@@ -276,10 +288,6 @@ patch_margin_bottom = 0.0
 platform_type = 6
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-
-[node name="DeathZone2" parent="DeathZones/DynamicPlatform32" instance=ExtResource("15_080q8")]
-position = Vector2(0, -16)
-width = 1000
 
 [node name="DynamicPlatform33" parent="DeathZones" instance=ExtResource("7_8bey8")]
 position = Vector2(-1904, 1184)
@@ -295,15 +303,21 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
-[node name="DeathZone2" parent="DeathZones/DynamicPlatform33" instance=ExtResource("15_080q8")]
-position = Vector2(0, -16)
+[node name="DeathZone2" parent="DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(696, 544)
+scale = Vector2(0.5, 0.5)
+width = 1000
+
+[node name="DeathZone3" parent="DeathZones" instance=ExtResource("15_080q8")]
+position = Vector2(-1904, 1177)
+scale = Vector2(0.5, 0.5)
 width = 15000
 visible_in_both_dimensions = true
 
 [node name="DeathZone" parent="DeathZones" instance=ExtResource("15_080q8")]
 position = Vector2(-216, 560)
 scale = Vector2(0.5, 0.5)
-width = 300
+width = 296
 
 [node name="Checkpoints" type="Node2D" parent="."]
 
@@ -634,19 +648,6 @@ visible_in_both_dimensions = true
 position = Vector2(-68, 720)
 scale = Vector2(0.5, 0.5)
 platform_type = 23
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform24" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-68, 520)
-scale = Vector2(0.5, 0.5)
-height = 400.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 21
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform25" parent="." instance=ExtResource("7_8bey8")]
@@ -1042,6 +1043,19 @@ scale = Vector2(0.5, 0.5)
 platform_type = 24
 visible_in_both_dimensions = true
 
+[node name="DynamicPlatform24" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-68, 520)
+scale = Vector2(0.5, 0.5)
+height = 400.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 21
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
 [node name="DynamicPlatform131" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3128, 846)
 scale = Vector2(0.5, 0.5)
@@ -1368,19 +1382,6 @@ patch_margin_bottom = 0.0
 platform_type = 22
 axis_stretch_vertical = 1
 visible_in_both_dimensions = true
-
-[node name="DynamicPlatform21" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-216, 568)
-scale = Vector2(0.5, 0.5)
-width = 300.0
-height = 370.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 6
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
 
 [node name="CollectableHeart2" parent="." instance=ExtResource("23_ax175")]
 position = Vector2(2224, 304)
