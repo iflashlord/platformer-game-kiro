@@ -285,6 +285,12 @@ func set_high_contrast_enabled(enabled: bool):
 # Save functions
 func _save_game_config():
 	"""Save game configuration to file"""
+
+	# do not save if on development mode
+	if OS.is_debug_build():
+		return
+
+
 	var file = FileAccess.open(GAME_CONFIG_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(game_config, "\t"))
