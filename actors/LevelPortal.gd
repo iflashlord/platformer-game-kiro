@@ -89,7 +89,8 @@ func _begin_magnet_capture(player: Player):
 	player.velocity = Vector2.ZERO
 	player.set_physics_process(false)
 	if disable_player_collision_on_capture and player.collision_shape:
-		player.collision_shape.disabled = true
+		# Defer collision shape change to avoid flushing queries error
+		player.collision_shape.set_deferred("disabled", true)
 
 	# Optional: play a compact/brace animation if available
 	if player.character_sprite:

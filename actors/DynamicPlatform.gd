@@ -132,11 +132,9 @@ func _ready():
 		if is_breakable:
 			_setup_player_detection()
 		
-		print("🧱 DynamicPlatform created - Type: ", PlatformType.keys()[platform_type], " Size: ", Vector2(width, height), " Breakable: ", is_breakable, " Collision: ", "Disabled" if collision_disabled else "Enabled")
 	else:
 		# Editor setup - ensure platform is visible and properly configured
 		_update_visual_and_collision()
-		print("🎨 DynamicPlatform in editor - Type: ", PlatformType.keys()[platform_type], " Size: ", Vector2(width, height))
 
 func _setup_dimension_system():
 	# Only setup dimension system at runtime
