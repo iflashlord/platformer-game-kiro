@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" uid="uid://c8yay2n7m6wqp" path="res://ui/HintDisplay.tscn" id="4_hint"]
+[ext_resource type="Texture2D" uid="uid://crikv87u561tk" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_hills_large.png" id="5_53pyl"]
+[ext_resource type="Texture2D" uid="uid://dq4x7ooj1ujrf" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds_large.png" id="6_53pyl"]
 [ext_resource type="PackedScene" uid="uid://bvq8j5x8qwxpd" path="res://actors/DynamicPlatform.tscn" id="7_8bey8"]
 [ext_resource type="PackedScene" uid="uid://dliaposygu1e" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
@@ -18,17 +20,15 @@
 [ext_resource type="PackedScene" uid="uid://c8y7qkr8wbqxv" path="res://actors/ParallaxBackgroundSystem.tscn" id="19_88x2b"]
 [ext_resource type="Script" uid="uid://bxm5g8u8h5004" path="res://actors/BackgroundLayerConfig.gd" id="20_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="21_crate"]
-[ext_resource type="Texture2D" uid="uid://dg8la8ddwnn1b" path="res://content/Graphics/Sprites/Backgrounds/Double/background_fade_desert.png" id="21_w2yij"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx7" path="res://actors/JumpPad.tscn" id="22_jump_pad"]
 [ext_resource type="PackedScene" uid="uid://cgrshje24m0s0" path="res://actors/CollectableHeart.tscn" id="23_ax175"]
-[ext_resource type="Texture2D" uid="uid://d0p4ljhuc7slm" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds.png" id="23_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx5" path="res://actors/DangerousSpike.tscn" id="24_ax175"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="24_enemy"]
 [ext_resource type="PackedScene" uid="uid://g578emkoewtw" path="res://actors/Collectible.tscn" id="25_53pyl"]
 
 [sub_resource type="Resource" id="Resource_88x2b"]
 script = ExtResource("20_blrwf")
-texture = ExtResource("21_w2yij")
+texture = ExtResource("5_53pyl")
 use_different_textures_per_layer = false
 scroll_speed = Vector2(-50, 0)
 parallax_factor = Vector2(0.5, 0.5)
@@ -36,7 +36,7 @@ auto_scroll = true
 loop_seamlessly = true
 horizontal_gap = -100
 vertical_gap = 0
-loop_start_point = Vector2(0, -100)
+loop_start_point = Vector2(0, 900)
 loop_end_point = Vector2(0, 0)
 reset_position = Vector2(0, 0)
 loop_left = true
@@ -57,7 +57,7 @@ metadata/_custom_type_script = "uid://bxm5g8u8h5004"
 
 [sub_resource type="Resource" id="Resource_ax175"]
 script = ExtResource("20_blrwf")
-texture = ExtResource("23_blrwf")
+texture = ExtResource("6_53pyl")
 use_different_textures_per_layer = false
 scroll_speed = Vector2(-50, 0)
 parallax_factor = Vector2(0.5, 0.5)
@@ -65,7 +65,7 @@ auto_scroll = true
 loop_seamlessly = true
 horizontal_gap = -300
 vertical_gap = -400
-loop_start_point = Vector2(0, -400)
+loop_start_point = Vector2(0, -1400)
 loop_end_point = Vector2(0, 0)
 reset_position = Vector2(0, 0)
 loop_left = true
@@ -91,13 +91,11 @@ script = ExtResource("1_level00")
 script = ExtResource("18_level_manager")
 
 [node name="ParallaxBackgroundSystem" parent="." instance=ExtResource("19_88x2b")]
-main_bg_color = Color(1, 0.231373, 0.580392, 1)
-layer_a_bg_color = Color(0.0862745, 0.486275, 0.560784, 1)
-layer_b_bg_color = Color(0.972549, 0.411765, 0, 1)
+main_bg_color = Color(1, 1, 1, 1)
 background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_ax175")])
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(1328, 344)
+position = Vector2(-296, 312)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -763,6 +761,13 @@ visible_in_both_dimensions = true
 position = Vector2(3088, -200)
 scale = Vector2(0.5, 0.5)
 width = 150.0
+platform_type = 3
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform84" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3216, -200)
+scale = Vector2(0.5, 0.5)
+width = 10000.0
 platform_type = 3
 visible_in_both_dimensions = true
 
