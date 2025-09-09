@@ -69,7 +69,8 @@ func _ready():
 		_setup_dimension_system()
 
 func _physics_process(delta):
-	if not is_alive:
+	# Don't simulate when dead or not active in this dimension
+	if not is_alive or not is_active_in_current_layer:
 		return
 	
 	# Update damage cooldown
@@ -517,3 +518,9 @@ func _update_for_layer(current_layer: String):
 	if damage_area:
 		damage_area.collision_layer = 8 if is_active_in_current_layer else 0
 		damage_area.collision_mask = 2 if is_active_in_current_layer else 0
+
+	# Pause/resume processing so the enemy doesn't fall while hidden
+	set_process(is_active_in_current_layer)
+	set_physics_process(is_active_in_current_layer)
+	if not is_active_in_current_layer:
+		velocity = Vector2.ZERO
