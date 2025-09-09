@@ -30,9 +30,19 @@ auto_scroll = true
 loop_seamlessly = true
 horizontal_gap = -100
 vertical_gap = 0
+loop_start_point = Vector2(0, 0)
+loop_end_point = Vector2(0, 0)
+reset_position = Vector2(0, 0)
+loop_left = true
+loop_right = true
+loop_up = true
+loop_down = true
 modulate_color = Color(0.8, 0.8, 1, 0.7)
 z_index = -20
 scale_factor = Vector2(1.2, 1.2)
+background_color_main = Color(0, 0, 0, 0)
+background_color_a = Color(0, 0, 0, 0)
+background_color_b = Color(0, 0, 0, 0)
 layer_name = "Desert Background"
 description = "Boss arena desert background"
 target_layer = "A"
@@ -48,9 +58,19 @@ auto_scroll = true
 loop_seamlessly = true
 horizontal_gap = -200
 vertical_gap = -100
+loop_start_point = Vector2(0, 0)
+loop_end_point = Vector2(0, 0)
+reset_position = Vector2(0, 0)
+loop_left = true
+loop_right = true
+loop_up = true
+loop_down = true
 modulate_color = Color(1, 1, 1, 0.5)
 z_index = -15
 scale_factor = Vector2(1, 1)
+background_color_main = Color(0, 0, 0, 0)
+background_color_a = Color(0, 0, 0, 0)
+background_color_b = Color(0, 0, 0, 0)
 layer_name = "Clouds"
 description = "Atmospheric clouds"
 target_layer = "A"
@@ -127,11 +147,8 @@ position = Vector2(200, 600)
 [node name="GameHUD" parent="UI" instance=ExtResource("6_hud")]
 
 [node name="HintDisplay" parent="UI" instance=ExtResource("7_hint")]
-grow_horizontal = 2
-grow_vertical = 0
 
 [node name="BossHealthUI" parent="UI" instance=ExtResource("3_boss_ui")]
-grow_horizontal = 2
 
 [node name="VictoryUI" type="Control" parent="UI"]
 visible = false

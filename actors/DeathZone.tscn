@@ -23,9 +23,9 @@ offset_bottom = 25.0
 color = Color(0.1, 0.1, 0.1, 0.8)
 
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
-offset_top = -25.0
+offset_top = -31.0
 offset_right = 200.0
-offset_bottom = 25.0
+offset_bottom = 19.0
 texture = ExtResource("2_nlkpc")
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
