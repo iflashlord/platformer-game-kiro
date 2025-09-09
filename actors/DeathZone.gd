@@ -6,7 +6,7 @@ signal player_killed(death_zone: DeathZone, player: Node2D)
 
 @export var damage_amount: int = 1
 @export var instant_kill: bool = true
-@export var zone_type: String = "pit"
+@export_enum("pit", "lava", "water", "void", "spikes") var zone_type: String = "pit"
 @export var respawn_player: bool = true
 @export var width: int = 200 : set = set_width
 @export var height: int = 50 : set = set_height
@@ -88,6 +88,7 @@ func setup_zone_appearance():
 			visual_indicator.color = Color(1, 0.3, 0, 0.8)  # Orange lava
 		"water":
 			visual_indicator.color = Color(0, 0.3, 1, 0.6)  # Blue water
+			visual_graphics.texture = preload("res://content/Graphics/Sprites/Tiles/Default/water_top_low.png")
 		"void":
 			visual_indicator.color = Color(0.2, 0, 0.5, 0.9)  # Purple void
 		"spikes":
