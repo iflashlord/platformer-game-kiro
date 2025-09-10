@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://do2g5aru41o4q"]
+[gd_scene load_steps=41 format=3 uid="uid://do2g5aru41o4q"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_cjipt"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -37,6 +37,7 @@
 [ext_resource type="Texture2D" uid="uid://d04v2qtwc4t1t" path="res://content/Graphics/Sprites/Tiles/Default/rope.png" id="36_5uqs5"]
 [ext_resource type="PackedScene" uid="uid://g578emkoewtw" path="res://actors/Collectible.tscn" id="37_1erut"]
 [ext_resource type="PackedScene" path="res://actors/TorchLight.tscn" id="37_5uqs5"]
+[ext_resource type="PackedScene" path="res://actors/DimensionSwitchNoCooldown.tscn" id="38_l6p5p"]
 
 [sub_resource type="Resource" id="Resource_88x2b"]
 script = ExtResource("20_blrwf")
@@ -2858,4 +2859,8 @@ position = Vector2(2280, 479)
 [node name="GoblinPatrol4" parent="." instance=ExtResource("24_enemy")]
 position = Vector2(2329, 480)
 enemy_type = "slime_fire"
+target_layer = "B"
+
+[node name="DimensionSwitchNoCooldown" parent="." instance=ExtResource("38_l6p5p")]
+position = Vector2(2176, 456)
 target_layer = "B"

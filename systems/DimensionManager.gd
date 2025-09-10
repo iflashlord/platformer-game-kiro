@@ -114,6 +114,46 @@ func toggle_layer():
 	var new_layer = "B" if current_layer == "A" else "A"
 	set_layer(new_layer)
 
+func force_set_layer(new_layer: String, apply_cooldown: bool = false):
+	"""
+	Force switch to a layer, ignoring the global cooldown.
+	- new_layer: "A" or "B"
+	- apply_cooldown: if true, applies normal cooldown after switch; otherwise no cooldown
+	"""
+	if new_layer == current_layer:
+		return
+
+	# Still avoid overlapping switches while effect is running
+	if is_switching:
+		print("🌀 Forced switch blocked - already switching")
+		return
+
+	var old_layer = current_layer
+	current_layer = new_layer
+	is_switching = true
+
+	print("🌀 Forced switching from layer ", old_layer, " to ", new_layer)
+
+	# Trigger glitch effect and audio like a normal switch
+	_trigger_dimension_glitch_effect()
+	if Audio:
+		Audio.play_sfx("dimension")
+
+	# Brief delay to let the effect register
+	await get_tree().create_timer(0.5).timeout
+
+	# Update all registered layer objects
+	_update_layer_objects()
+
+	# Emit signal for other systems
+	layer_changed.emit(new_layer)
+
+	# Apply or clear cooldown depending on flag
+	switch_cooldown = switch_cooldown_time if apply_cooldown else 0.0
+	is_switching = false
+	
+	print("🌀 Forced dimension switch completed - cooldown ", "applied" if apply_cooldown else "skipped")
+
 func can_switch_dimension() -> bool:
 	"""Check if dimension switching is currently allowed"""
 	return switch_cooldown <= 0 and not is_switching

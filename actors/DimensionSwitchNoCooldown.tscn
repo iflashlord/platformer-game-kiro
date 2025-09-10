@@ -1,0 +1,62 @@
+[gd_scene load_steps=7 format=3 uid="uid://dimen_switch_nocooldown"]
+
+[ext_resource type="Script" path="res://actors/DimensionSwitchNoCooldown.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b5c5m4qj7amlk" path="res://content/Graphics/Sprites/Tiles/Default/lever.png" id="2_tex_default"]
+[ext_resource type="Texture2D" uid="uid://crhe4d87napqc" path="res://content/Graphics/Sprites/Tiles/Default/lever_left.png" id="3_tex_left"]
+[ext_resource type="Texture2D" uid="uid://csds51d0qd580" path="res://content/Graphics/Sprites/Tiles/Default/lever_right.png" id="4_tex_right"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_frames"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": ExtResource("2_tex_default")}],
+"loop": true, "name": &"default", "speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("3_tex_left")}],
+"loop": true, "name": &"left", "speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("4_tex_right")}],
+"loop": true, "name": &"right", "speed": 5.0
+}]
+
+[node name="DimensionSwitchNoCooldown" type="Area2D"]
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="SwitchSprite" type="ColorRect" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(0, 1, 1, 1)
+
+[node name="LayerLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -24.0
+offset_right = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, 16)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_frames")
+animation = &"right"
+
