@@ -206,7 +206,7 @@ position = Vector2(3073, -224)
 target_layer = "B"
 
 [node name="TNTCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(2240, 478)
+position = Vector2(2240, 479)
 crate_type = "tnt"
 visible_in_both_dimensions = true
 
@@ -1766,10 +1766,12 @@ points_per_fruit = 15
 [node name="BounceCrate3" parent="." instance=ExtResource("9_ub75y")]
 position = Vector2(2433, 350)
 points_per_fruit = 15
+visible_in_dimension = 1
 
 [node name="BounceCrate12" parent="." instance=ExtResource("9_ub75y")]
 position = Vector2(2388, 390)
 points_per_fruit = 15
+visible_in_dimension = 2
 
 [node name="BounceCrate10" parent="." instance=ExtResource("9_ub75y")]
 position = Vector2(2471, 478)
@@ -2726,14 +2728,6 @@ axis_stretch_vertical = 1
 target_layer = "B"
 visible_in_both_dimensions = true
 
-[node name="GoblinPatrol4" parent="." instance=ExtResource("24_enemy")]
-position = Vector2(2329, 480)
-enemy_type = "slime_fire"
-target_layer = "B"
-
-[node name="GoblinPatrol5" parent="." instance=ExtResource("24_enemy")]
-position = Vector2(2280, 479)
-
 [node name="HUDVisual14" parent="." instance=ExtResource("13_0eybk")]
 position = Vector2(2035, 489)
 scale = Vector2(0.640625, 0.640625)
@@ -2849,3 +2843,11 @@ light_texture_scale = 0.3
 flicker_amount = 0.5
 wind_radius = 50.0
 flame_amount = 15
+
+[node name="GoblinPatrol5" parent="." instance=ExtResource("24_enemy")]
+position = Vector2(2280, 479)
+
+[node name="GoblinPatrol4" parent="." instance=ExtResource("24_enemy")]
+position = Vector2(2329, 480)
+enemy_type = "slime_fire"
+target_layer = "B"
