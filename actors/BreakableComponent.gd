@@ -349,13 +349,14 @@ func _set_particle_emission_level(level: String):
 	# Scale particle amount based on platform size
 	var platform_area = platform.width * platform.height
 	var base_area = 96.0 * 32.0  # Default platform size
-	var particle_scale = platform_area / base_area
+	var particle_scale = (platform_area / base_area) / 2.0  # Scale down for performance
 	
 	if level == "shaking":
 		# Low emission during shaking - just dust/debris
-		break_particles.amount = int(15 * particle_scale)
+		break_particles.amount = int(10 * particle_scale)
 		break_particles.visible = true
 		break_particles.emitting = true
+		break_particles.position = platform.position + Vector2( 0.0 , platform.height / 2)
 		var material = break_particles.process_material as ParticleProcessMaterial
 		if material:
 			material.initial_velocity_min = 10.0
