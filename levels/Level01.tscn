@@ -248,6 +248,14 @@ visible_in_both_dimensions = true
 [node name="JumpPad1" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
 position = Vector2(2936, 486)
 
+[node name="JumpPad4" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
+position = Vector2(3143, 487)
+visible_in_dimension = 2
+
+[node name="JumpPad3" parent="InteractiveElements" instance=ExtResource("22_jump_pad")]
+position = Vector2(2747, 489)
+visible_in_dimension = 1
+
 [node name="DimensionSwitch" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
 position = Vector2(2152, -56)
 
