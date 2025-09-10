@@ -37,6 +37,9 @@ func activate():
 	 
 	flag_sprite.play("checked")
 	
+	# Floating "Checkpoint" text effect (reuse collectible score animation style)
+	_create_checkpoint_text_effect()
+
 	# Screen flash
 	if FX and FX.has_method("flash_screen"):
 		FX.flash_screen(Color.GREEN * 0.3, 0.2)
@@ -53,3 +56,23 @@ func activate():
 func reset():
 	is_activated = false
 	flag_sprite.play("default")
+
+# Creates a floating label that fades out, matching Collectible.gd style
+func _create_checkpoint_text_effect():
+	var effect_label := Label.new()
+	effect_label.text = "Checkpoint"
+	effect_label.add_theme_font_size_override("font_size", 16)
+	effect_label.add_theme_color_override("font_color", Color.BLACK)
+	effect_label.position = global_position + Vector2(-20, -30)
+	
+	if get_tree() and get_tree().current_scene:
+		get_tree().current_scene.add_child(effect_label)
+	else:
+		add_child(effect_label)
+
+	var tween := create_tween()
+	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
+	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
+	tween.tween_callback(func():
+		effect_label.queue_free()
+	)
