@@ -12,7 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://dliaposygu1e" path="res://actors/LevelPortal.tscn" id="7_portal"]
 [ext_resource type="Texture2D" uid="uid://c07mifot4yvcn" path="res://content/Graphics/Sprites/Backgrounds/Double/background_clouds_large_b.png" id="8_qxkwm"]
 [ext_resource type="PackedScene" uid="uid://cx0yw6rkqh2ll" path="res://actors/BounceCrate.tscn" id="9_ub75y"]
-[ext_resource type="PackedScene" uid="uid://dt4gkyxqmr5ws" path="res://actors/DimensionSwitch.tscn" id="12_blrwf"]
 [ext_resource type="PackedScene" uid="uid://bx0yw8rkqh4nn" path="res://actors/TeleportGate.tscn" id="12_hrxks"]
 [ext_resource type="PackedScene" uid="uid://bvq8x7y2n8wqr" path="res://actors/HintArea.tscn" id="12_ll6ei"]
 [ext_resource type="PackedScene" uid="uid://1i32l3lwnelj" path="res://actors/DeathZone.tscn" id="15_080q8"]
@@ -39,6 +38,7 @@
 [ext_resource type="Texture2D" uid="uid://bwqnorcxft68q" path="res://content/Graphics/Sprites/Tiles/Default/hud_character_5.png" id="34_oyldk"]
 [ext_resource type="Texture2D" uid="uid://uhic7kl2stf0" path="res://content/Graphics/Sprites/Tiles/Default/hud_character_8.png" id="35_wxwmg"]
 [ext_resource type="Texture2D" uid="uid://de4ha4sgie3e1" path="res://content/Graphics/Sprites/Tiles/Default/sign_right.png" id="38_k6kyh"]
+[ext_resource type="PackedScene" path="res://actors/DimensionSwitchNoCooldown.tscn" id="40_od7hi"]
 
 [sub_resource type="Resource" id="Resource_88x2b"]
 script = ExtResource("20_blrwf")
@@ -351,7 +351,7 @@ target_layer = "Both"
 position = Vector2(3712, 992)
 
 [node name="BounceCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(3848, 248)
+position = Vector2(3823, 273)
 target_layer = "B"
 
 [node name="TNTCrate1" parent="InteractiveElements" instance=ExtResource("21_crate")]
@@ -365,7 +365,7 @@ crate_type = "tnt"
 visible_in_both_dimensions = true
 
 [node name="BasicCrate2" parent="InteractiveElements" instance=ExtResource("21_crate")]
-position = Vector2(3768, 248)
+position = Vector2(3751, 274)
 crate_type = "tnt"
 visible_in_both_dimensions = true
 
@@ -436,15 +436,6 @@ hint_title = "Enemy Combat"
 narration_audio = "EnemyCombat"
 target_layer = "Both"
 
-[node name="DimensionSwitch" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
-position = Vector2(656, 456)
-
-[node name="DimensionSwitch2" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
-position = Vector2(1224, 456)
-
-[node name="DimensionSwitch3" parent="InteractiveElements" instance=ExtResource("12_blrwf")]
-position = Vector2(3112, 801)
-
 [node name="HUDVisual" parent="InteractiveElements" instance=ExtResource("28_g6fao")]
 position = Vector2(2768, 505)
 scale = Vector2(0.5, 0.5)
@@ -489,7 +480,7 @@ enemy_type = "wasp"
 visible_in_both_dimensions = true
 
 [node name="FlyingEnemy3" parent="." instance=ExtResource("16_ll6ei")]
-position = Vector2(3816, 326)
+position = Vector2(4264, 296)
 enemy_type = "bat"
 flight_pattern = "Chase Player"
 visible_in_both_dimensions = true
@@ -1013,36 +1004,6 @@ scale = Vector2(0.5, 0.5)
 platform_type = 25
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform126" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(3064, 832)
-scale = Vector2(0.5, 0.5)
-platform_type = 17
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform127" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(3096, 832)
-scale = Vector2(0.5, 0.5)
-platform_type = 18
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform128" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(3128, 832)
-scale = Vector2(0.5, 0.5)
-platform_type = 19
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform129" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(3064, 846)
-scale = Vector2(0.5, 0.5)
-platform_type = 23
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform130" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(3096, 846)
-scale = Vector2(0.5, 0.5)
-platform_type = 24
-visible_in_both_dimensions = true
-
 [node name="DynamicPlatform24" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-68, 520)
 scale = Vector2(0.5, 0.5)
@@ -1054,12 +1015,6 @@ patch_margin_bottom = 0.0
 platform_type = 21
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform131" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(3128, 846)
-scale = Vector2(0.5, 0.5)
-platform_type = 25
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform132" parent="." instance=ExtResource("7_8bey8")]
@@ -1600,71 +1555,76 @@ float_speed = 0.0
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit50" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3607, 364)
+position = Vector2(3607, 372)
 collectable_type = "coin_gold"
 float_speed = 0.0
 target_layer = "B"
 
 [node name="CollectibleFruit51" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3641, 320)
+position = Vector2(3640, 338)
 collectable_type = "coin_gold"
 float_speed = 0.0
 target_layer = "B"
 
 [node name="CollectibleFruit52" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3720, 248)
+position = Vector2(3714, 268)
 collectable_type = "coin_gold"
 float_speed = 0.0
 target_layer = "B"
 
 [node name="CollectibleFruit54" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3760, 208)
+position = Vector2(3751, 234)
 collectable_type = "coin_gold"
 float_speed = 0.0
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit55" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3856, 208)
+position = Vector2(3825, 233)
 collectable_type = "coin_gold"
 float_speed = 0.0
 
 [node name="CollectibleFruit56" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3888, 248)
+position = Vector2(3862, 267)
 collectable_type = "coin_gold"
 float_speed = 0.0
 
 [node name="CollectibleFruit57" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3928, 288)
+position = Vector2(3897, 301)
 collectable_type = "coin_gold"
 float_speed = 0.0
 
 [node name="CollectibleFruit58" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3968, 326)
+position = Vector2(3933, 335)
 collectable_type = "coin_gold"
 float_speed = 0.0
 
 [node name="CollectibleFruit59" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(4016, 364)
+position = Vector2(4000, 335)
+collectable_type = "coin_gold"
+float_speed = 0.0
+
+[node name="CollectibleFruit63" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(3968, 370)
 collectable_type = "coin_gold"
 float_speed = 0.0
 
 [node name="CollectibleFruit60" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(4056, 320)
+position = Vector2(4038, 300)
 collectable_type = "coin_gold"
 float_speed = 0.0
 
 [node name="CollectibleFruit61" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(4152, 326)
+position = Vector2(4112, 370)
 collectable_type = "coin_gold"
 float_speed = 0.0
 
 [node name="CollectibleFruit62" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(4152, 326)
+position = Vector2(4078, 335)
 collectable_type = "coin_gold"
 float_speed = 0.0
 
 [node name="CollectibleFruit53" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3680, 282)
+position = Vector2(3680, 303)
 collectable_type = "coin_gold"
 float_speed = 0.0
 target_layer = "B"
@@ -1887,7 +1847,7 @@ proximity_sound_max_distance = 400.0
 visible_in_both_dimensions = true
 
 [node name="HiddenGem" parent="." instance=ExtResource("16_6oto5")]
-position = Vector2(3808, 168)
+position = Vector2(3788, 195)
 scale = Vector2(1, 0.957695)
 gem_type = "multicolor"
 
@@ -1897,12 +1857,12 @@ scale = Vector2(1, 0.957695)
 gem_type = "emerald"
 
 [node name="InteractiveCrate" parent="." instance=ExtResource("21_crate")]
-position = Vector2(3688, 328)
+position = Vector2(3679, 343)
 crate_type = "tnt"
 visible_in_both_dimensions = true
 
 [node name="InteractiveCrate5" parent="." instance=ExtResource("21_crate")]
-position = Vector2(3648, 368)
+position = Vector2(3643, 378)
 target_layer = "B"
 
 [node name="InteractiveCrate8" parent="." instance=ExtResource("21_crate")]
@@ -1910,46 +1870,46 @@ position = Vector2(3607, 412)
 target_layer = "B"
 
 [node name="InteractiveCrate6" parent="." instance=ExtResource("21_crate")]
-position = Vector2(3968, 368)
+position = Vector2(3930, 375)
 crate_type = "tnt"
 visible_in_both_dimensions = true
 
 [node name="InteractiveCrate7" parent="." instance=ExtResource("21_crate")]
-position = Vector2(3928, 328)
+position = Vector2(3895, 341)
 target_layer = "B"
 
 [node name="InteractiveCrate9" parent="." instance=ExtResource("21_crate")]
-position = Vector2(4016, 408)
+position = Vector2(3966, 410)
 target_layer = "B"
 
 [node name="InteractiveCrate10" parent="." instance=ExtResource("21_crate")]
-position = Vector2(4064, 368)
+position = Vector2(4002, 375)
 target_layer = "B"
 
 [node name="InteractiveCrate11" parent="." instance=ExtResource("21_crate")]
-position = Vector2(4105, 328)
+position = Vector2(4038, 340)
 target_layer = "B"
 
 [node name="InteractiveCrate12" parent="." instance=ExtResource("21_crate")]
-position = Vector2(4144, 368)
+position = Vector2(4074, 375)
 target_layer = "B"
 
 [node name="InteractiveCrate13" parent="." instance=ExtResource("21_crate")]
-position = Vector2(4188, 408)
+position = Vector2(4110, 410)
 target_layer = "B"
 
 [node name="InteractiveCrate2" parent="." instance=ExtResource("21_crate")]
-position = Vector2(3888, 288)
+position = Vector2(3859, 307)
 crate_type = "tnt"
 visible_in_both_dimensions = true
 
 [node name="InteractiveCrate3" parent="." instance=ExtResource("21_crate")]
-position = Vector2(3808, 208)
+position = Vector2(3787, 239)
 crate_type = "bounce"
 target_layer = "B"
 
 [node name="InteractiveCrate4" parent="." instance=ExtResource("21_crate")]
-position = Vector2(3728, 288)
+position = Vector2(3715, 308)
 target_layer = "B"
 
 [node name="DynamicPlatform4" parent="." instance=ExtResource("7_8bey8")]
@@ -1998,3 +1958,50 @@ position = Vector2(4072, 480)
 position = Vector2(2672, 530)
 scale = Vector2(0.5, 0.5)
 preset = 0
+
+[node name="DimensionSwitchNoCooldown" parent="." instance=ExtResource("40_od7hi")]
+position = Vector2(664, 457)
+target_layer = "B"
+
+[node name="DimensionSwitchNoCooldown3" parent="." instance=ExtResource("40_od7hi")]
+position = Vector2(3112, 802)
+target_layer = "B"
+
+[node name="DimensionSwitchNoCooldown2" parent="." instance=ExtResource("40_od7hi")]
+position = Vector2(1224, 456)
+
+[node name="DynamicPlatform126" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3064, 832)
+scale = Vector2(0.5, 0.5)
+platform_type = 17
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform127" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3096, 832)
+scale = Vector2(0.5, 0.5)
+platform_type = 18
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform128" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3128, 832)
+scale = Vector2(0.5, 0.5)
+platform_type = 19
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform129" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3064, 846)
+scale = Vector2(0.5, 0.5)
+platform_type = 23
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform130" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3096, 846)
+scale = Vector2(0.5, 0.5)
+platform_type = 24
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform131" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(3128, 846)
+scale = Vector2(0.5, 0.5)
+platform_type = 25
+visible_in_both_dimensions = true
