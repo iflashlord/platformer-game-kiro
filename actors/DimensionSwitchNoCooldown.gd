@@ -45,7 +45,7 @@ func _setup_visuals():
 func _update_visual_state(current_layer: String):
     if no_visuals:
         return
-    layer_label.text = current_layer
+    layer_label.text = "3D" if current_layer == "A" else "4D"
     layer_label.add_theme_font_size_override("font_size", 24)
 
     match current_layer:

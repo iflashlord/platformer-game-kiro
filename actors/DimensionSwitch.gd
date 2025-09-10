@@ -82,7 +82,7 @@ func update_visual_state(current_layer: String):
 	if no_visuals:
 		return
 	# Update label to show current layer
-	layer_label.text = current_layer
+	layer_label.text = "3D" if current_layer == "A" else "4D"
 	layer_label.add_theme_font_size_override("font_size", 24)
 	layer_label.add_theme_color_override("font_color", Color.WHITE)
 	
