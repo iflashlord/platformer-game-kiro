@@ -193,15 +193,23 @@ func start_explosion_countdown():
 	collision_layer = 0
 
 func create_explosion_radius_indicator():
-	# Create a visual circle to show explosion radius
-	var radius_indicator = ColorRect.new()
+	# Create a visual circular indicator (filled) for the explosion radius
+	var radius_indicator := Polygon2D.new()
 	radius_indicator.name = "ExplosionRadiusIndicator"
-	radius_indicator.size = Vector2(explosion_radius * 2, explosion_radius * 2)
-	radius_indicator.position = Vector2(-explosion_radius, -explosion_radius)
-	radius_indicator.color = Color(1, 0, 0, 0.2)  # Semi-transparent red
+	# Build an approximated circle polygon
+	var segments := 64
+	var pts := PackedVector2Array()
+	for i in range(segments):
+		var angle := TAU * float(i) / float(segments)
+		pts.push_back(Vector2(cos(angle), sin(angle)) * explosion_radius)
+	# Assign polygon and color (semi-transparent red)
+	radius_indicator.polygon = pts
+	radius_indicator.color = Color(1, 0, 0, 0.2)
+	# Ensure it renders beneath the crate visuals
+	radius_indicator.z_index = -1
 	add_child(radius_indicator)
 	
-	# Animate the indicator
+	# Animate the indicator (blink by alpha)
 	var tween = create_tween()
 	tween.set_loops(10)
 	tween.tween_property(radius_indicator, "modulate:a", 0.1, 0.5)
@@ -387,11 +395,17 @@ func transform_to_temporary_platform():
 	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
 
 func create_explosion_effect():
-	# Create explosion visual
-	var explosion_sprite = ColorRect.new()
-	explosion_sprite.size = Vector2(explosion_radius * 2, explosion_radius * 2)
-	explosion_sprite.position = Vector2(-explosion_radius, -explosion_radius)
+	# Create explosion visual as a circular polygon (orange flash)
+	var explosion_sprite := Polygon2D.new()
+	var segments := 64
+	var pts := PackedVector2Array()
+	for i in range(segments):
+		var angle := TAU * float(i) / float(segments)
+		pts.push_back(Vector2(cos(angle), sin(angle)) * explosion_radius)
+	explosion_sprite.polygon = pts
 	explosion_sprite.color = Color(1, 0.5, 0, 0.7)  # Orange explosion
+	# Render above crate visuals
+	explosion_sprite.z_index = 10
 	add_child(explosion_sprite)
 	
 	# Explosion animation
