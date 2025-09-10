@@ -7,6 +7,7 @@ signal dimension_switched(switch: DimensionSwitch, new_layer: String)
 @export var target_layer: String = ""  # For specific switches, empty for toggle
 @export var cooldown_time: float = 0.5
 @export var blink_duration: float = 2.0  # How long to blink when in cooldown
+@export var no_visuals: bool = false  # If true, hide all visual elements
 
 var is_on_cooldown: bool = false
 var cooldown_timer: float = 0.0
@@ -58,16 +59,28 @@ func _process(delta):
 			stop_blinking()
 		else:
 			# Create blinking effect
-			var blink_alpha = 0.3 + 0.7 * abs(sin(blink_timer * 10))  # Fast blink
-			switch_sprite.modulate.a = blink_alpha
-			layer_label.modulate.a = blink_alpha
+			if not no_visuals:
+				var blink_alpha = 0.3 + 0.7 * abs(sin(blink_timer * 10))  # Fast blink
+				switch_sprite.modulate.a = blink_alpha
+				layer_label.modulate.a = blink_alpha
 
 func setup_switch_appearance():
+	# If visuals disabled, just hide and return
+	if no_visuals:
+		if is_instance_valid(switch_sprite):
+			switch_sprite.visible = false
+		if is_instance_valid(layer_label):
+			layer_label.visible = false
+		if is_instance_valid(graphic):
+			graphic.visible = false
+		return
 	# Set switch color based on current dimension
 	var current_layer = DimensionManager.get_current_layer() if DimensionManager else "A"
 	update_visual_state(current_layer)
 	
 func update_visual_state(current_layer: String):
+	if no_visuals:
+		return
 	# Update label to show current layer
 	layer_label.text = current_layer
 	layer_label.add_theme_font_size_override("font_size", 24)

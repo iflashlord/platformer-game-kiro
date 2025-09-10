@@ -2862,5 +2862,6 @@ enemy_type = "slime_fire"
 target_layer = "B"
 
 [node name="DimensionSwitchNoCooldown" parent="." instance=ExtResource("38_l6p5p")]
-position = Vector2(2176, 456)
+position = Vector2(2171, 465)
 target_layer = "B"
+no_visuals = true

@@ -5,6 +5,7 @@ signal dimension_switched(switch: DimensionSwitchNoCooldown, new_layer: String)
 
 @export var switch_type: String = "specific"  # "toggle" or "specific"
 @export var target_layer: String = "A"        # For specific switches, default to "A"
+@export var no_visuals: bool = false          # If true, hide all visual elements
 
 var player_in_area: bool = false
 
@@ -30,10 +31,20 @@ func _ready():
         DimensionManager.layer_changed.connect(_on_layer_changed)
 
 func _setup_visuals():
+    if no_visuals:
+        if is_instance_valid(switch_sprite):
+            switch_sprite.visible = false
+        if is_instance_valid(layer_label):
+            layer_label.visible = false
+        if is_instance_valid(graphic):
+            graphic.visible = false
+        return
     var current_layer = DimensionManager.get_current_layer() if DimensionManager else "A"
     _update_visual_state(current_layer)
 
 func _update_visual_state(current_layer: String):
+    if no_visuals:
+        return
     layer_label.text = current_layer
     layer_label.add_theme_font_size_override("font_size", 24)
 
@@ -110,4 +121,3 @@ func set_toggle_mode():
     switch_type = "toggle"
     target_layer = ""
     _setup_visuals()
-
