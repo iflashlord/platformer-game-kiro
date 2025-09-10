@@ -23,6 +23,7 @@ var is_active_in_current_layer: bool = true
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var visual_graphics: NinePatchRect = $NinePatchRect
 var visual_indicator: ColorRect = null
+const SOUL_TEXTURE := preload("res://content/Graphics/Sprites/Characters/Double/character_beige_front.png")
 
 func _ready():
 	# Always setup visuals for editor preview
@@ -172,16 +173,18 @@ func kill_player(player):
 		if not damage_applied and player.has_method("take_damage"):
 			player.take_damage(damage_amount)
 	
-	# Visual feedback
+	# Play visual feedback; let Player.die()/HealthSystem handle respawn timing
 	create_death_effect(player)
-	
-	# Respawn player if configured
-	if respawn_player and has_node("/root/Respawn"):
-		var respawn_system = get_node("/root/Respawn")
-		if respawn_system.has_method("respawn_player"):
-			# Small delay before respawn
-			await get_tree().create_timer(0.5).timeout
-			respawn_system.respawn_player()
+
+
+	# Helper to make a circle polygon
+func _make_circle(radius: float, segments: int = 24) -> PackedVector2Array:
+	var points: PackedVector2Array = PackedVector2Array()
+	for i in range(segments):
+		var ang = TAU * float(i) / float(segments)
+		points.append(Vector2(cos(ang), sin(ang)) * radius)
+	return points
+
 
 func create_death_effect(player):
 	# Screen flash
@@ -195,26 +198,58 @@ func create_death_effect(player):
 				FX.flash_screen(Color.PURPLE, 0.3)
 			_:
 				FX.flash_screen(Color.RED, 0.3)
-	
+
 	# Screen shake
 	if FX and FX.has_method("shake"):
 		FX.shake(200)
-	
-	# Death particles effect (simple color animation)
-	var death_effect = ColorRect.new()
-	death_effect.size = Vector2(45, 45)
-	death_effect.position = player.global_position + Vector2(-30, -30)
-	death_effect.color = Color.RED
-	
+
+	# Derive color by zone type
+	var zone_color: Color
+	match zone_type:
+		"lava":
+			zone_color = Color(1, 0.3, 0, 0.8)  # Orange
+		"water":
+			zone_color = Color(0, 0.3, 1, 0.8)  # Blue
+		"void":
+			zone_color = Color(0.5, 0, 0.5, 0.8)  # Purple
+		"spikes":
+			zone_color = Color(0.8, 0.8, 0.8, 0.8)  # Light gray
+		_:
+			zone_color = Color(1, 0, 0, 0.8)  # Red
+
 	# Safely add to scene tree
 	if get_tree() and get_tree().current_scene:
-		get_tree().current_scene.add_child(death_effect)
-		
-		# Animate death effect
-		var tween = create_tween()
-		tween.parallel().tween_property(death_effect, "scale", Vector2(2.0, 2.0), 0.5)
-		tween.parallel().tween_property(death_effect, "modulate:a", 0.0, 0.5)
-		tween.tween_callback(death_effect.queue_free)
+		var root = get_tree().current_scene
+
+		# Circular burst effect (instead of square)
+		var ring := Polygon2D.new()
+		ring.polygon = _make_circle(18.0)
+		ring.color = zone_color
+		ring.global_position = player.global_position
+		root.add_child(ring)
+		var ring_tween = create_tween()
+		ring_tween.parallel().tween_property(ring, "scale", Vector2(2.0, 2.0), 0.5)
+		ring_tween.parallel().tween_property(ring, "modulate:a", 0.0, 0.5)
+		ring_tween.tween_callback(ring.queue_free)
+
+		# Soul rising effect using front character texture (2 seconds, alpha 0.4)
+		var soul := Sprite2D.new()
+		soul.texture = SOUL_TEXTURE
+		soul.global_position = player.global_position
+		soul.modulate = Color(1, 1, 1, 0.4)
+		soul.scale = Vector2(0.2, 0.2)
+		root.add_child(soul)
+		# Animate the soul rising
+		var soul_tween = create_tween()
+		soul_tween.parallel().tween_property(soul, "global_position", soul.global_position + Vector2(0, -80), 2.0)
+		# Keep alpha constant; add subtle scale up to match feel
+		soul_tween.parallel().tween_property(soul, "scale", Vector2(0.24, 0.24), 2.0)
+		soul_tween.tween_callback(soul.queue_free)
+		# Wait for the soul animation to finish before returning
+		await soul_tween.finished
+	else:
+		# If no scene tree, just wait 2s to simulate animation duration
+		await get_tree().create_timer(2.0).timeout
 
 func _update_visual_and_collision():
 	# Update visual graphics (NinePatchRect)
