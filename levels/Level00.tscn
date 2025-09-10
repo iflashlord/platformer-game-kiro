@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://dwp014ul6yvbf"]
+[gd_scene load_steps=46 format=3 uid="uid://dwp014ul6yvbf"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_level00"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -38,7 +38,11 @@
 [ext_resource type="Texture2D" uid="uid://bwqnorcxft68q" path="res://content/Graphics/Sprites/Tiles/Default/hud_character_5.png" id="34_oyldk"]
 [ext_resource type="Texture2D" uid="uid://uhic7kl2stf0" path="res://content/Graphics/Sprites/Tiles/Default/hud_character_8.png" id="35_wxwmg"]
 [ext_resource type="Texture2D" uid="uid://de4ha4sgie3e1" path="res://content/Graphics/Sprites/Tiles/Default/sign_right.png" id="38_k6kyh"]
+[ext_resource type="Texture2D" uid="uid://2h0lkj3l5sbb" path="res://content/Graphics/Sprites/Tiles/Default/rop_attached.png" id="40_a73wj"]
 [ext_resource type="PackedScene" path="res://actors/DimensionSwitchNoCooldown.tscn" id="40_od7hi"]
+[ext_resource type="Texture2D" uid="uid://d04v2qtwc4t1t" path="res://content/Graphics/Sprites/Tiles/Default/rope.png" id="41_gyeng"]
+[ext_resource type="Texture2D" uid="uid://ccw88dewsn4uj" path="res://content/Graphics/Sprites/Tiles/Default/torch_on_a.png" id="42_8xvvy"]
+[ext_resource type="PackedScene" path="res://actors/TorchLight.tscn" id="43_iwkiy"]
 
 [sub_resource type="Resource" id="Resource_88x2b"]
 script = ExtResource("20_blrwf")
@@ -337,7 +341,7 @@ target_layer = "Both"
 auto_register_layer = false
 
 [node name="TeleportGate3" parent="InteractiveElements" node_paths=PackedStringArray("teleport_target") instance=ExtResource("12_hrxks")]
-position = Vector2(4240, 936)
+position = Vector2(4704, 886)
 teleport_target = NodePath("../TeleportGate2")
 target_layer = "B"
 auto_register_layer = false
@@ -816,18 +820,6 @@ visible_in_both_dimensions = true
 [node name="Checkpoint" parent="." instance=ExtResource("4_checkpoint")]
 position = Vector2(1648, 448)
 
-[node name="DynamicPlatform37" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(1208, 488)
-scale = Vector2(0.5, 0.5)
-width = 2800.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 18
-axis_stretch_horizontal = 1
-visible_in_both_dimensions = true
-
 [node name="DynamicPlatform38" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1224, 720)
 scale = Vector2(0.5, 0.5)
@@ -1094,36 +1086,60 @@ position = Vector2(3368, 1056)
 scale = Vector2(0.5, 0.5)
 platform_type = 17
 target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 50.0
+move_speed = 20.0
 
 [node name="DynamicPlatform145" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3400, 1056)
 scale = Vector2(0.5, 0.5)
 platform_type = 18
 target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 50.0
+move_speed = 20.0
 
 [node name="DynamicPlatform146" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3432, 1056)
 scale = Vector2(0.5, 0.5)
 platform_type = 19
 target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 50.0
+move_speed = 20.0
 
 [node name="DynamicPlatform147" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3368, 1070)
 scale = Vector2(0.5, 0.5)
 platform_type = 23
 target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 50.0
+move_speed = 20.0
 
 [node name="DynamicPlatform148" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3400, 1070)
 scale = Vector2(0.5, 0.5)
 platform_type = 24
 target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 50.0
+move_speed = 20.0
 
 [node name="DynamicPlatform149" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3432, 1070)
 scale = Vector2(0.5, 0.5)
 platform_type = 25
 target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 50.0
+move_speed = 20.0
 
 [node name="DynamicPlatform89" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3544, 1056)
@@ -1220,6 +1236,78 @@ position = Vector2(4248, 1014)
 scale = Vector2(0.5, 0.5)
 platform_type = 25
 target_layer = "B"
+
+[node name="DynamicPlatform150" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(4324, 993)
+scale = Vector2(0.5, 0.5)
+platform_type = 17
+target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 400.0
+move_speed = 100.0
+
+[node name="DynamicPlatform151" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(4356, 993)
+scale = Vector2(0.5, 0.5)
+width = 120.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 18
+axis_stretch_horizontal = 1
+target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 400.0
+move_speed = 100.0
+
+[node name="DynamicPlatform152" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(4404, 993)
+scale = Vector2(0.5, 0.5)
+platform_type = 19
+target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 400.0
+move_speed = 100.0
+
+[node name="DynamicPlatform153" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(4324, 1015)
+scale = Vector2(0.5, 0.5)
+platform_type = 23
+target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 400.0
+move_speed = 100.0
+
+[node name="DynamicPlatform154" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(4356, 1015)
+scale = Vector2(0.5, 0.5)
+width = 120.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 24
+axis_stretch_horizontal = 1
+target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 400.0
+move_speed = 100.0
+
+[node name="DynamicPlatform155" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(4404, 1015)
+scale = Vector2(0.5, 0.5)
+platform_type = 25
+target_layer = "B"
+movement_enabled = true
+move_direction = 4
+move_distance = 400.0
+move_speed = 100.0
 
 [node name="DynamicPlatform41" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(2602, 720)
@@ -1386,7 +1474,7 @@ respawn_delay = 3.0
 target_layer = "B"
 
 [node name="DynamicPlatform32" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-832, 488)
+position = Vector2(-830, 408)
 scale = Vector2(0.5, 0.5)
 width = 188.0
 height = 30.0
@@ -1397,9 +1485,12 @@ patch_margin_bottom = 0.0
 platform_type = 5
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-is_breakable = true
 respawn_delay = 3.0
 target_layer = "B"
+movement_enabled = true
+move_direction = 2
+move_distance = 200.0
+move_speed = 20.0
 
 [node name="DynamicPlatform88" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-664, 488)
@@ -1765,31 +1856,85 @@ float_speed = 0.0
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit32" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(3968, 966)
+position = Vector2(3960, 966)
 collectable_type = "coin_gold"
 float_speed = 0.0
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit33" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(4000, 926)
+position = Vector2(3984, 926)
 collectable_type = "coin_gold"
 float_speed = 0.0
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit34" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(4040, 904)
+position = Vector2(4024, 904)
 collectable_type = "coin_gold"
 float_speed = 0.0
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit35" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(4072, 934)
+position = Vector2(4066, 926)
 collectable_type = "coin_gold"
 float_speed = 0.0
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit36" parent="." instance=ExtResource("25_53pyl")]
-position = Vector2(4096, 966)
+position = Vector2(4091, 966)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit64" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4128, 966)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit65" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4152, 926)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit66" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4192, 904)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit67" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4234, 926)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit68" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4259, 966)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit69" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4386, 944)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit70" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4496, 944)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit71" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4600, 944)
+collectable_type = "coin_gold"
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit72" parent="." instance=ExtResource("25_53pyl")]
+position = Vector2(4704, 944)
 collectable_type = "coin_gold"
 float_speed = 0.0
 visible_in_both_dimensions = true
@@ -2005,3 +2150,219 @@ position = Vector2(3128, 846)
 scale = Vector2(0.5, 0.5)
 platform_type = 25
 visible_in_both_dimensions = true
+
+[node name="DynamicPlatform37" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(1208, 488)
+scale = Vector2(0.5, 0.5)
+width = 2800.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 18
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="HUDVisual58" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4435.5, 786)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("40_a73wj")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("40_a73wj")
+
+[node name="HUDVisual59" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4435.5, 806.429)
+scale = Vector2(0.5, 0.464234)
+texture = ExtResource("41_gyeng")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("41_gyeng")
+
+[node name="HUDVisual60" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4435.5, 812)
+scale = Vector2(0.546875, 0.546875)
+texture = ExtResource("42_8xvvy")
+preset = 0
+custom_texture = ExtResource("42_8xvvy")
+
+[node name="TorchLight13" parent="." instance=ExtResource("43_iwkiy")]
+position = Vector2(4435.5, 817)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15
+
+[node name="HUDVisual73" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4705.5, 786)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("40_a73wj")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("40_a73wj")
+
+[node name="HUDVisual74" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4705.5, 806.429)
+scale = Vector2(0.5, 0.464234)
+texture = ExtResource("41_gyeng")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("41_gyeng")
+
+[node name="HUDVisual75" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4705.5, 812)
+scale = Vector2(0.546875, 0.546875)
+texture = ExtResource("42_8xvvy")
+preset = 0
+custom_texture = ExtResource("42_8xvvy")
+
+[node name="TorchLight18" parent="." instance=ExtResource("43_iwkiy")]
+position = Vector2(4705.5, 817)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15
+
+[node name="HUDVisual61" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4166.5, 786)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("40_a73wj")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("40_a73wj")
+
+[node name="HUDVisual62" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4166.5, 806.429)
+scale = Vector2(0.5, 0.464234)
+texture = ExtResource("41_gyeng")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("41_gyeng")
+
+[node name="HUDVisual63" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(4166.5, 812)
+scale = Vector2(0.546875, 0.546875)
+texture = ExtResource("42_8xvvy")
+preset = 0
+custom_texture = ExtResource("42_8xvvy")
+
+[node name="TorchLight14" parent="." instance=ExtResource("43_iwkiy")]
+position = Vector2(4166.5, 817)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15
+
+[node name="HUDVisual64" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3929.5, 786)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("40_a73wj")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("40_a73wj")
+
+[node name="HUDVisual65" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3929.5, 806.429)
+scale = Vector2(0.5, 0.464234)
+texture = ExtResource("41_gyeng")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("41_gyeng")
+
+[node name="HUDVisual66" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3929.5, 812)
+scale = Vector2(0.546875, 0.546875)
+texture = ExtResource("42_8xvvy")
+preset = 0
+custom_texture = ExtResource("42_8xvvy")
+
+[node name="TorchLight15" parent="." instance=ExtResource("43_iwkiy")]
+position = Vector2(3929.5, 817)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15
+
+[node name="HUDVisual67" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3673.5, 786)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("40_a73wj")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("40_a73wj")
+
+[node name="HUDVisual68" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3673.5, 806.429)
+scale = Vector2(0.5, 0.464234)
+texture = ExtResource("41_gyeng")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("41_gyeng")
+
+[node name="HUDVisual69" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3673.5, 812)
+scale = Vector2(0.546875, 0.546875)
+texture = ExtResource("42_8xvvy")
+preset = 0
+custom_texture = ExtResource("42_8xvvy")
+
+[node name="TorchLight16" parent="." instance=ExtResource("43_iwkiy")]
+position = Vector2(3673.5, 817)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15
+
+[node name="HUDVisual70" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3385.5, 786)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("40_a73wj")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("40_a73wj")
+
+[node name="HUDVisual71" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3385.5, 806.429)
+scale = Vector2(0.5, 0.464234)
+texture = ExtResource("41_gyeng")
+offset = Vector2(0, -20)
+preset = 0
+custom_texture = ExtResource("41_gyeng")
+
+[node name="HUDVisual72" parent="." instance=ExtResource("28_g6fao")]
+show_behind_parent = true
+position = Vector2(3385.5, 812)
+scale = Vector2(0.546875, 0.546875)
+texture = ExtResource("42_8xvvy")
+preset = 0
+custom_texture = ExtResource("42_8xvvy")
+
+[node name="TorchLight17" parent="." instance=ExtResource("43_iwkiy")]
+position = Vector2(3385.5, 817)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15

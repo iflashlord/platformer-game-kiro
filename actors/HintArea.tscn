@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://qh2llreryeew" path="res://actors/HintArea.gd" id="1_0x8y9"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(100, 100)
+size = Vector2(100, 123)
 
 [node name="HintArea" type="Area2D"]
 collision_layer = 0
@@ -12,6 +12,7 @@ script = ExtResource("1_0x8y9")
 hint_message = "This is a hint message!"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -11.5)
 shape = SubResource("RectangleShape2D_1")
 
 [node name="DebugVisual" type="ColorRect" parent="."]

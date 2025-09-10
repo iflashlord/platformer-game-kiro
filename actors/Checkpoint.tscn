@@ -53,14 +53,13 @@ offset_bottom = -21.0
 text = "CHECKPOINT"
 horizontal_alignment = 1
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, 23.656)
+scale = Vector2(0.207, 0.259)
+texture = ExtResource("6_muqop")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(-1, 4)
+position = Vector2(1, 4)
 scale = Vector2(0.207564, 0.207564)
 sprite_frames = SubResource("SpriteFrames_hgd25")
 animation = &"checked"
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-0.9, 30)
-scale = Vector2(0.208, 0.208)
-texture = ExtResource("6_muqop")
-flip_v = true
