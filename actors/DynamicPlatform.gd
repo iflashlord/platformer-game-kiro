@@ -64,6 +64,14 @@ enum PlatformType {
 @export var target_layer: String = "A"  # For dimension system compatibility
 @export var visible_in_both_dimensions: bool = false  # Show in both dimensions A and B
 
+# Movement
+@export_group("Movement")
+enum MoveDirection { NONE, UP, DOWN, LEFT, RIGHT }
+@export var movement_enabled: bool = false: set = _set_movement_enabled
+@export var move_direction: MoveDirection = MoveDirection.NONE: set = _set_move_direction
+@export var move_distance: float = 0.0: set = _set_move_distance  # pixels from start
+@export var move_speed: float = 0.0: set = _set_move_speed        # pixels/sec
+
 # Node references - using NinePatchRect for proper 9-slice
 @onready var nine_patch: NinePatchRect = $NinePatchRect
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -72,6 +80,12 @@ enum PlatformType {
 # Dimension system compatibility
 var dimension_manager: Node
 var is_active_in_current_layer: bool = true
+
+# Movement state
+var _start_position: Vector2
+var _move_axis: Vector2 = Vector2.ZERO
+var _progress: float = 0.0
+var _dir_sign: float = 1.0
 
 # Platform textures
 var platform_textures = {
@@ -123,6 +137,10 @@ func _ready():
 	
 	# Runtime-only setup
 	if not Engine.is_editor_hint():
+		set_physics_process(true)
+		# Initialize movement
+		_start_position = global_position
+		_update_move_axis()
 		# Setup dimension system
 		_setup_dimension_system()
 		
@@ -137,6 +155,42 @@ func _ready():
 	else:
 		# Editor setup - ensure platform is visible and properly configured
 		_update_visual_and_collision()
+		# Cache start position for editor changes
+		_start_position = global_position
+		_update_move_axis()
+
+func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+	if not movement_enabled:
+		constant_linear_velocity = Vector2.ZERO
+		return
+	if move_distance <= 0.0 or move_speed <= 0.0:
+		constant_linear_velocity = Vector2.ZERO
+		return
+	if move_direction == MoveDirection.NONE:
+		constant_linear_velocity = Vector2.ZERO
+		return
+	if not is_active_in_current_layer:
+		constant_linear_velocity = Vector2.ZERO
+		return
+
+	# Advance progress and ping-pong between 0 and move_distance
+	_progress += move_speed * delta * _dir_sign
+	if _progress >= move_distance:
+		_progress = move_distance
+		_dir_sign = -1.0
+	elif _progress <= 0.0:
+		_progress = 0.0
+		_dir_sign = 1.0
+
+	# Apply position along the selected axis from the cached start position
+	var new_pos = _start_position + _move_axis * _progress
+	# Set a velocity so characters are carried properly
+	var displacement = new_pos - global_position
+	if delta > 0.0:
+		constant_linear_velocity = displacement / delta
+	global_position = new_pos
 
 func _setup_dimension_system():
 	# Only setup dimension system at runtime
@@ -293,6 +347,26 @@ func _update_for_layer(current_layer: String):
 	# Notify breakable component about dimension change (for particle visibility)
 	if breakable_component and breakable_component.has_method("_on_dimension_changed"):
 		breakable_component._on_dimension_changed(is_active_in_current_layer)
+
+func _update_move_axis() -> void:
+	match move_direction:
+		MoveDirection.UP:
+			_move_axis = Vector2.UP
+		MoveDirection.DOWN:
+			_move_axis = Vector2.DOWN
+		MoveDirection.LEFT:
+			_move_axis = Vector2.LEFT
+		MoveDirection.RIGHT:
+			_move_axis = Vector2.RIGHT
+		_:
+			_move_axis = Vector2.ZERO
+
+func restart_movement_from_start():
+	# Public helper to snap back and restart the loop
+	_start_position = global_position
+	_progress = 0.0
+	_dir_sign = 1.0
+	_update_move_axis()
 	
 
 
@@ -472,6 +546,8 @@ func refresh_platform():
 func _on_break_started():
 	print("🧱 Platform break sequence started")
 	# Could add visual effects, sound, etc.
+	# Pause movement while breaking
+	movement_enabled = false
 
 func _on_shake_started():
 	print("🧱 Platform started shaking")
@@ -480,6 +556,8 @@ func _on_shake_started():
 func _on_break_completed():
 	print("🧱 Platform break completed")
 	# Platform is now broken and invisible
+	# Keep movement disabled until respawn logic (if any) re-enables
+	movement_enabled = false
 
 # Simple player detection for breakable platforms using collision detection
 func _setup_player_detection():
@@ -574,3 +652,27 @@ func _set_axis_stretch_vertical(value: NinePatchRect.AxisStretchMode):
 		# Force update in editor
 		if Engine.is_editor_hint():
 			notify_property_list_changed()
+
+# Movement property setters
+func _set_movement_enabled(value: bool):
+	movement_enabled = value
+	if Engine.is_editor_hint():
+		# In editor, reflect start position if toggled
+		_start_position = global_position
+		_update_move_axis()
+
+func _set_move_direction(value: MoveDirection):
+	move_direction = value
+	_update_move_axis()
+	if Engine.is_editor_hint():
+		notify_property_list_changed()
+
+func _set_move_distance(value: float):
+	move_distance = maxf(value, 0.0)
+	if Engine.is_editor_hint():
+		notify_property_list_changed()
+
+func _set_move_speed(value: float):
+	move_speed = maxf(value, 0.0)
+	if Engine.is_editor_hint():
+		notify_property_list_changed()
