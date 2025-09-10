@@ -51,13 +51,17 @@ func find_collision_shapes(node: Node):
 	for child in node.get_children():
 		find_collision_shapes(child)
 
+
 func find_sprites(node: Node):
-	# Look for visual nodes (Sprite2D, AnimatedSprite2D, etc.)
+	# Look for visual nodes (Sprite2D, AnimatedSprite2D, lights, etc.)
 	if node is Sprite2D or node is AnimatedSprite2D or node is TextureRect or node is ColorRect:
 		sprites.append(node)
 	elif node is CPUParticles2D or node is GPUParticles2D:
 		sprites.append(node)
 	elif node is Label:
+		sprites.append(node)
+	elif node is PointLight2D:
+		# Include 2D lights so dimension visibility toggles them as well
 		sprites.append(node)
 	
 	for child in node.get_children():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://do2g5aru41o4q"]
+[gd_scene load_steps=40 format=3 uid="uid://do2g5aru41o4q"]
 
 [ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_cjipt"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
@@ -36,6 +36,7 @@
 [ext_resource type="Texture2D" uid="uid://2h0lkj3l5sbb" path="res://content/Graphics/Sprites/Tiles/Default/rop_attached.png" id="35_swylg"]
 [ext_resource type="Texture2D" uid="uid://d04v2qtwc4t1t" path="res://content/Graphics/Sprites/Tiles/Default/rope.png" id="36_5uqs5"]
 [ext_resource type="PackedScene" uid="uid://g578emkoewtw" path="res://actors/Collectible.tscn" id="37_1erut"]
+[ext_resource type="PackedScene" path="res://actors/TorchLight.tscn" id="37_5uqs5"]
 
 [sub_resource type="Resource" id="Resource_88x2b"]
 script = ExtResource("20_blrwf")
@@ -1800,7 +1801,7 @@ proximity_sound_max_distance = 400.0
 visible_in_both_dimensions = true
 
 [node name="DangerousSpike9" parent="." instance=ExtResource("24_ax175")]
-position = Vector2(3368, 302)
+position = Vector2(3368, 303)
 auto_retract_cycle = true
 spike_scale = 0.3
 retract_sound = ""
@@ -2307,6 +2308,7 @@ position = Vector2(3296, 322)
 scale = Vector2(0.5, 0.5)
 platform_type = 8
 target_layer = "B"
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform192" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3312, 322)
@@ -2319,18 +2321,21 @@ patch_margin_bottom = 0.0
 platform_type = 9
 axis_stretch_horizontal = 1
 target_layer = "B"
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform193" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3408, 322)
 scale = Vector2(0.5, 0.5)
 platform_type = 10
 target_layer = "B"
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform194" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3296, 336)
 scale = Vector2(0.5, 0.5)
 platform_type = 14
 target_layer = "B"
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform195" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3312, 336)
@@ -2343,12 +2348,14 @@ patch_margin_bottom = 0.0
 platform_type = 15
 axis_stretch_horizontal = 1
 target_layer = "B"
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform196" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(3408, 336)
 scale = Vector2(0.5, 0.5)
 platform_type = 16
 target_layer = "B"
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform160" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1037, 351)
@@ -2818,3 +2825,27 @@ position = Vector2(51, 33)
 [node name="HiddenGem3" parent="." instance=ExtResource("16_6oto5")]
 position = Vector2(370, -400)
 gem_type = "multicolor"
+
+[node name="TorchLight3" parent="." instance=ExtResource("37_5uqs5")]
+position = Vector2(3366, 425)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15
+
+[node name="TorchLight4" parent="." instance=ExtResource("37_5uqs5")]
+position = Vector2(3202, 327)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15
+
+[node name="TorchLight5" parent="." instance=ExtResource("37_5uqs5")]
+position = Vector2(2568, 326)
+light_energy = 0.2
+light_texture_scale = 0.3
+flicker_amount = 0.5
+wind_radius = 50.0
+flame_amount = 15
