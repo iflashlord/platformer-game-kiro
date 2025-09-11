@@ -4,6 +4,9 @@ class_name CreditsMenu
 @onready var back_button: Button = $UI/MainContainer/BackButton
 
 func _ready():
+	if Audio:
+		Audio.play_music("credits", 0.5)
+		
 	_setup_ui()
 	_connect_signals()
 
