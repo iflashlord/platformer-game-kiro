@@ -740,6 +740,11 @@ func _execute_smart_tnt_attack():
 		elif use_tnt and current_tnt_crates_dropped < max_tnt:
 			# TNT can be placed strategically at specific positions
 			var tnt_instance = tnt_scene.instantiate()
+			tnt_instance.crate_type = "tnt"
+			var random_boolean = randf() < 0.5
+			tnt_instance.visible_in_both_dimensions = random_boolean
+			var random_A_or_B = "A" if randf() < 0.5 else "B"
+			tnt_instance.target_layer = random_A_or_B
 			get_parent().add_child(tnt_instance)
 			
 			# Wait for TNT to be ready
@@ -748,6 +753,10 @@ func _execute_smart_tnt_attack():
 			# Set TNT type
 			if "crate_type" in tnt_instance:
 				tnt_instance.crate_type = "tnt"
+				var random_boolean_2 = randf() < 0.5
+				tnt_instance.visible_in_both_dimensions = random_boolean_2
+				var random_A_or_B_2 = "A" if randf() < 0.5 else "B"
+				tnt_instance.target_layer = random_A_or_B_2
 			
 			# Place TNT at strategic position
 			tnt_instance.global_position = pos
@@ -872,6 +881,11 @@ func _drop_tnt():
 			return
 		
 		var tnt_instance = tnt_scene.instantiate()
+		tnt_instance.crate_type = "tnt"
+		var random_boolean = randf() < 0.5
+		tnt_instance.visible_in_both_dimensions = random_boolean
+		var random_A_or_B = "A" if randf() < 0.5 else "B"
+		tnt_instance.target_layer = random_A_or_B
 		get_parent().add_child(tnt_instance)
 		
 		# Wait for TNT to be ready
@@ -880,7 +894,10 @@ func _drop_tnt():
 		# Set to TNT type (for InteractiveCrate)
 		if "crate_type" in tnt_instance:
 			tnt_instance.crate_type = "tnt"
-		
+			var random_boolean_3 = randf() < 0.5
+			tnt_instance.visible_in_both_dimensions = random_boolean_3
+			var random_A_or_B_3 = "A" if randf() < 0.5 else "B"
+			tnt_instance.target_layer = random_A_or_B_3
 		# Start TNT from boss center and throw it
 		tnt_instance.global_position = global_position
 		_throw_item_from_boss(tnt_instance, Vector2(direction * randf_range(60, 120), 40))
@@ -1010,7 +1027,7 @@ func _throw_item_from_boss(item: Node, target_offset: Vector2):
 	
 	# Handle other items (like TNT crates) with tween animation
 	else:
-		var throw_tween = create_tween()
+		var throw_tween: Tween = create_tween()
 		throw_tween.set_parallel(true)
 		
 		# Animate position with arc trajectory
@@ -1094,7 +1111,7 @@ func _show_attack_warning(warning_text: String):
 					new_speech_label.text = warning_text
 	
 	# Visual warning on boss (flash red)
-	var flash_tween = create_tween()
+	var flash_tween: Tween = create_tween()
 	flash_tween.set_loops(int(attack_warning_duration * 5))  # Flash 5 times per second
 	flash_tween.tween_property(sprite, "modulate", Color.RED, 0.1)
 	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
@@ -1209,7 +1226,7 @@ func _create_attack_telegraph(attack_position: Vector2, attack_type: String = "b
 			indicator_sprite.modulate = Color.YELLOW
 	
 	# Scale animation for telegraph
-	var scale_tween = create_tween()
+	var scale_tween: Tween = create_tween()
 	scale_tween.set_loops(-1)
 	scale_tween.tween_property(indicator_sprite, "scale", Vector2(1.5, 1.5), 0.5)
 	scale_tween.tween_property(indicator_sprite, "scale", Vector2(1.0, 1.0), 0.5)
@@ -1293,6 +1310,11 @@ func _tnt_rain_attack():
 			func():
 				if tnt_scene:
 					var tnt = tnt_scene.instantiate()
+					tnt.crate_type = "tnt"
+					var random_boolean = randf() < 0.5
+					tnt.visible_in_both_dimensions = random_boolean
+					var random_A_or_B = "A" if randf() < 0.5 else "B"
+					tnt.target_layer = random_A_or_B
 					get_parent().add_child(tnt)
 					tnt.global_position = global_position + Vector2(randf_range(-100, 100), -100 + i * 20)
 					await get_tree().process_frame
@@ -2259,7 +2281,7 @@ func _create_hit_effect():
 		hit_effect.emitting = true
 	
 	# Enhanced flash effect for damage
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(sprite, "modulate", Color.RED, 0.1)
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
 	tween.tween_property(sprite, "modulate", Color.YELLOW, 0.1) # Additional flash
