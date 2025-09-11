@@ -59,6 +59,7 @@ func _ready():
 
 	# Audio feedback
 	if Audio:
+		Audio.stop_music()
 		Audio.play_music(level_id, 0.4)
 	
 	# Connect health system to HUD

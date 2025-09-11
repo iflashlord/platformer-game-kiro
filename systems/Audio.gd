@@ -130,23 +130,29 @@ func _load_sfx(sfx_name: String) -> AudioStream:
 	return null
 
 func _load_music(track: String) -> AudioStream:
+	# Check cache first
 	if track in music_cache:
 		return music_cache[track]
-	
-	var path = "res://audio/music/" + track + ".ogg"
-	if ResourceLoader.exists(path):
-		var stream = load(path)
-		music_cache[track] = stream
-		return stream
-	
-	# Try .wav extension
-	path = "res://audio/music/" + track + ".wav"
-	if ResourceLoader.exists(path):
-		var stream = load(path)
-		music_cache[track] = stream
-		return stream
-	
-	print("Music not found: ", track)
+
+	# Build candidate paths to be robust across case differences in exports
+	var candidates: Array[String] = []
+	candidates.append("res://audio/music/%s.ogg" % track)
+	candidates.append("res://audio/music/%s.wav" % track)
+
+	var lower = track.to_lower()
+	if lower != track:
+		candidates.append("res://audio/music/%s.ogg" % lower)
+		candidates.append("res://audio/music/%s.wav" % lower)
+
+	# Attempt to load the first existing candidate
+	for p in candidates:
+		if ResourceLoader.exists(p):
+			var stream: AudioStream = load(p)
+			music_cache[track] = stream
+			return stream
+
+	# Not found; log helpful message
+	print("Music not found for track '", track, "'. Tried: ", candidates)
 	return null
 
 func play_narration(narration_name: String):
