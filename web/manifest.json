@@ -1,5 +1,5 @@
 {
-  "name": "Glitch Dimension",
+  "name": "Glitch Dimension - Broken Reality",
   "short_name": "Glitch Dimension",
   "description": "A 2D platformer with dimension-shifting mechanics",
   "start_url": "./",
@@ -19,7 +19,7 @@
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

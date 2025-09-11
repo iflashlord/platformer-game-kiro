@@ -189,7 +189,7 @@ func _check_web_requirements() -> bool:
 	var web_files = [
 		"res://web/manifest.json",
 		"res://web/icon-192.png",
-		"res://web/icon-512.png"
+		"res://web/icon-512x512.png"
 	]
 	
 	for file_path in web_files:
@@ -306,7 +306,7 @@ func _post_build_web(config: Dictionary):
 	var web_files = [
 		"res://web/manifest.json",
 		"res://web/icon-192.png",
-		"res://web/icon-512.png"
+		"res://web/icon-512x512.png"
 	]
 	
 	var output_dir = config.output_path.get_base_dir()

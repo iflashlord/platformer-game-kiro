@@ -69,7 +69,6 @@ secrets.json
 /windows/
 /linux/
 /macos/
-/web/
 # Keep required web assets tracked
 !web/favicon.ico
 !web/icon-144.png

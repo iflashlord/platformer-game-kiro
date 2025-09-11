@@ -17,7 +17,7 @@ The exported web game is placed in `web-dist/` (index.html/js/wasm/pck). If you 
 ### App Icons (optional PWA)
 - **144x144**: `web-dist/icon-144.png`
 - **180x180**: `web-dist/icon-180.png`
-- **512x512**: `web-dist/icon-512.png`
+- **512x512**: `web-dist/icon-512x512.png`
 
 ## Creating Assets
 
