@@ -1233,7 +1233,7 @@ func _create_attack_telegraph(attack_position: Vector2, attack_type: String = "b
 		"tnt":
 			indicator_sprite.modulate = Color.ORANGE
 		"charge":
-			indicator_sprite.modulate = Color.YELLOW
+			indicator_sprite.modulate = Color.PURPLE
 	
 	# Scale animation for telegraph
 	var scale_tween: Tween = create_tween()
@@ -2172,7 +2172,7 @@ func _setup_phase(phase: MovementPhase):
 				phase_indicator.modulate = Color.WHITE
 			MovementPhase.JUMPING:
 				phase_indicator.text = "JUMPING"
-				phase_indicator.modulate = Color.YELLOW
+				phase_indicator.modulate = Color.PURPLE
 			MovementPhase.CHARGING:
 				phase_indicator.text = "CHARGING"
 				phase_indicator.modulate = Color.ORANGE
@@ -2294,7 +2294,7 @@ func _create_hit_effect():
 	var tween: Tween = create_tween()
 	tween.tween_property(sprite, "modulate", Color.RED, 0.1)
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
-	tween.tween_property(sprite, "modulate", Color.YELLOW, 0.1) # Additional flash
+	tween.tween_property(sprite, "modulate", Color.PURPLE, 0.1) # Additional flash
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
 
 func _create_dust_effect():
@@ -2369,7 +2369,7 @@ func _update_phase_indicator_for_current_phase():
 			phase_indicator.modulate = Color.WHITE
 		MovementPhase.JUMPING:
 			phase_indicator.text = "JUMPING"
-			phase_indicator.modulate = Color.YELLOW
+			phase_indicator.modulate = Color.PURPLE
 		MovementPhase.CHARGING:
 			phase_indicator.text = "CHARGING"
 			phase_indicator.modulate = Color.ORANGE

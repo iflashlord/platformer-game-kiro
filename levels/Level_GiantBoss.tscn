@@ -131,7 +131,7 @@ position = Vector2(-69, -274.5)
 shape = SubResource("RectangleShape2D_2")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="LeftWall"]
-position = Vector2(781, -1040)
+position = Vector2(784, -1120)
 rotation = 1.5708
 shape = SubResource("RectangleShape2D_2")
 
@@ -1293,8 +1293,24 @@ axis_stretch_vertical = 1
 collision_disabled = true
 visible_in_both_dimensions = true
 
+[node name="DynamicPlatform107" parent="DynamicPlatform20" instance=ExtResource("18_platform")]
+position = Vector2(158, -3078)
+rotation = 1.5708
+scale = Vector2(0.5, 0.5)
+width = 200.0
+height = 6900.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 7
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+collision_disabled = true
+visible_in_both_dimensions = true
+
 [node name="DynamicPlatform106" parent="DynamicPlatform20" instance=ExtResource("18_platform")]
-position = Vector2(64, -2998)
+position = Vector2(64, -2982)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 height = 8000.0
@@ -1723,6 +1739,180 @@ target_layer = "B"
 
 [node name="DynamicPlatform5" parent="." instance=ExtResource("18_platform")]
 position = Vector2(16, -441)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 12
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+target_layer = "B"
+
+[node name="DynamicPlatform9" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-152, -816)
+scale = Vector2(0.5, 0.5)
+platform_type = 8
+target_layer = "B"
+
+[node name="DynamicPlatform10" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-120, -816)
+scale = Vector2(0.5, 0.5)
+width = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 9
+axis_stretch_horizontal = 1
+target_layer = "B"
+
+[node name="DynamicPlatform14" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-70, -816)
+scale = Vector2(0.5, 0.5)
+platform_type = 10
+target_layer = "B"
+
+[node name="DynamicPlatform21" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-152, -752)
+scale = Vector2(0.5, 0.5)
+platform_type = 14
+target_layer = "B"
+
+[node name="DynamicPlatform22" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-120, -752)
+scale = Vector2(0.5, 0.5)
+width = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 15
+axis_stretch_horizontal = 1
+target_layer = "B"
+
+[node name="DynamicPlatform27" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-70, -752)
+scale = Vector2(0.5, 0.5)
+platform_type = 16
+target_layer = "B"
+
+[node name="DynamicPlatform37" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-120, -784)
+scale = Vector2(0.5, 0.5)
+width = 100.0
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 11
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+target_layer = "B"
+
+[node name="DynamicPlatform39" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-70, -784)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 13
+axis_stretch_vertical = 1
+target_layer = "B"
+
+[node name="DynamicPlatform40" parent="." instance=ExtResource("18_platform")]
+position = Vector2(-152, -784)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 12
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+target_layer = "B"
+
+[node name="DynamicPlatform41" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1528, -808)
+scale = Vector2(0.5, 0.5)
+platform_type = 8
+target_layer = "B"
+
+[node name="DynamicPlatform42" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1560, -808)
+scale = Vector2(0.5, 0.5)
+width = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 9
+axis_stretch_horizontal = 1
+target_layer = "B"
+
+[node name="DynamicPlatform43" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1610, -808)
+scale = Vector2(0.5, 0.5)
+platform_type = 10
+target_layer = "B"
+
+[node name="DynamicPlatform44" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1528, -744)
+scale = Vector2(0.5, 0.5)
+platform_type = 14
+target_layer = "B"
+
+[node name="DynamicPlatform45" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1560, -744)
+scale = Vector2(0.5, 0.5)
+width = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 15
+axis_stretch_horizontal = 1
+target_layer = "B"
+
+[node name="DynamicPlatform46" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1610, -744)
+scale = Vector2(0.5, 0.5)
+platform_type = 16
+target_layer = "B"
+
+[node name="DynamicPlatform47" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1560, -776)
+scale = Vector2(0.5, 0.5)
+width = 100.0
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 11
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+target_layer = "B"
+
+[node name="DynamicPlatform50" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1610, -776)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 13
+axis_stretch_vertical = 1
+target_layer = "B"
+
+[node name="DynamicPlatform51" parent="." instance=ExtResource("18_platform")]
+position = Vector2(1528, -776)
 scale = Vector2(0.5, 0.5)
 height = 100.0
 patch_margin_left = 0.0

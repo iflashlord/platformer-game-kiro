@@ -11,7 +11,7 @@
 			"color_incomplete": "#757575"
 		},
 		"dev_mode": {
-			"unlock_all": true,
+			"unlock_all": false,
 			"show_debug_info": true
 		}
 	},
