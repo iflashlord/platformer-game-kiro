@@ -70,6 +70,12 @@ secrets.json
 /linux/
 /macos/
 /web/
+# Keep required web assets tracked
+!web/favicon.ico
+!web/icon-144.png
+!web/icon-180.png
+!web/icon-512x512.png
+!web/manifest.json
 
 # Vercel deployment
 .vercel/
