@@ -23,6 +23,11 @@ var level_nodes_data: Array = []
 var created_level_cards: Array[LevelCard] = []
 var dev_mode: bool = false
 
+# Cheat code state (press '0' five times)
+var _cheat_press_count: int = 0
+var _cheat_reset_timeout: float = 1.5
+var _cheat_timer: Timer
+
 # Navigation
 var selected_index: int = 0
 var cards_visible: float = 2.5  # Show 2.5 cards at once
@@ -599,6 +604,13 @@ func _ready():
 	_create_level_grid()
 	_update_progress()
 	_setup_keyboard_navigation()
+
+	# Setup cheat code timer (resets the sequence if user pauses too long)
+	_cheat_timer = Timer.new()
+	_cheat_timer.one_shot = true
+	_cheat_timer.wait_time = _cheat_reset_timeout
+	_cheat_timer.timeout.connect(_on_cheat_timer_timeout)
+	add_child(_cheat_timer)
 	
 	# Connect to level unlock events
 	if EventBus and EventBus.has_signal("level_unlocked"):
@@ -1042,6 +1054,17 @@ func _load_level(level_id: String, time_trial: bool = false):
 # Input handling
 func _input(event):
 	"""Handle input events"""
+	# Cheat code: press '0' five times quickly to unlock all levels (like dev mode)
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_0:
+			_cheat_press_count += 1
+			_cheat_timer.start()
+			if _cheat_press_count >= 5:
+				_cheat_press_count = 0
+				_cheat_timer.stop()
+				_activate_cheat_unlock()
+		# Don't reset on other keys; the timer handles sequence expiry
+
 	if Input.is_action_just_pressed("ui_cancel") or Input.is_action_just_pressed("pause"):
 		_on_back_pressed()
 		get_viewport().set_input_as_handled()
@@ -1063,6 +1086,48 @@ func _input(event):
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_navigate_selection(1)
 			get_viewport().set_input_as_handled()
+
+func _on_cheat_timer_timeout():
+	_cheat_press_count = 0
+
+func _activate_cheat_unlock():
+	# Enable dev mode behavior (unlocks all levels in this view)
+	if not dev_mode:
+		dev_mode = true
+		print("🧪 Cheat activated: DEV MODE ON (all levels unlocked)")
+		if dev_button:
+			dev_button.text = "DEV: ON"
+			dev_button.modulate = Color.YELLOW
+	else:
+		print("🧪 Cheat activated again: DEV MODE already ON")
+
+	# Feedback
+	if Audio and Audio.has_method("play_sfx"):
+		Audio.play_sfx("ui_level_unlock")
+
+	# Show a quick on-screen message
+	_show_cheat_message()
+
+	# Refresh grid/navigation using dev_mode rules
+	_create_level_grid()
+	_setup_keyboard_navigation()
+
+func _show_cheat_message():
+	var message = "Cheat Activated: All levels unlocked!"
+	# Prefer global hint system if available
+	if EventBus and EventBus.has_signal("hint_requested"):
+		EventBus.hint_requested.emit(message, "DEV MODE")
+		return
+	# Fallback: flash the progress label text briefly
+	if progress_label:
+		var old_text = progress_label.text
+		progress_label.text = message
+		var tween: Tween = create_tween()
+		tween.tween_property(progress_label, "modulate", Color(1.0, 1.0, 0.4, 1.0), 0.15)
+		tween.tween_interval(1.2)
+		tween.tween_property(progress_label, "modulate", Color(1, 1, 1, 1), 0.25)
+		await get_tree().create_timer(1.4).timeout
+		progress_label.text = old_text
 
 func _navigate_selection(direction: int):
 	"""Navigate selection with keyboard"""

@@ -12,7 +12,7 @@
 		},
 		"dev_mode": {
 			"unlock_all": false,
-			"show_debug_info": true
+			"show_debug_info": false
 		}
 	},
 	"level_nodes": [
