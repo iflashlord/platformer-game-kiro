@@ -115,7 +115,7 @@ main_bg_color = Color(1, 1, 1, 1)
 background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_ax175")])
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(4148, -226)
+position = Vector2(-624, 430)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -149,7 +149,7 @@ axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
 [node name="DeathZone" parent="DeathZones" instance=ExtResource("15_080q8")]
-position = Vector2(-216, 497)
+position = Vector2(77, 721)
 scale = Vector2(0.5, 0.5)
 zone_type = "water"
 width = 240
@@ -280,7 +280,7 @@ position = Vector2(24, 416)
 enemy_type = "worm_blue"
 
 [node name="GoblinPatrol3" parent="Enemies" instance=ExtResource("24_enemy")]
-position = Vector2(-120, 488)
+position = Vector2(173, 712)
 enemy_type = "fish_blue"
 target_layer = "B"
 
@@ -622,9 +622,9 @@ preset = 0
 custom_texture = ExtResource("30_u21dw")
 
 [node name="DynamicPlatform" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-1584, 182)
+position = Vector2(-1600, 182)
 scale = Vector2(0.5, 0.5)
-platform_type = 8
+platform_type = 37
 target_layer = "B"
 
 [node name="DynamicPlatform2" parent="." instance=ExtResource("7_8bey8")]
@@ -635,126 +635,39 @@ patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 9
+platform_type = 36
 axis_stretch_horizontal = 1
 target_layer = "B"
 
 [node name="DynamicPlatform3" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(-1472, 182)
 scale = Vector2(0.5, 0.5)
-platform_type = 10
+platform_type = 38
 target_layer = "B"
 
 [node name="DynamicPlatform7" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-1584, 246)
+position = Vector2(-1600, 262)
 scale = Vector2(0.5, 0.5)
-platform_type = 14
+platform_type = 42
 target_layer = "B"
 
 [node name="DynamicPlatform8" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-1568, 246)
+position = Vector2(-1568, 262)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 15
+platform_type = 43
 axis_stretch_horizontal = 1
 target_layer = "B"
 
 [node name="DynamicPlatform25" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-1472, 246)
+position = Vector2(-1472, 262)
 scale = Vector2(0.5, 0.5)
-platform_type = 16
+platform_type = 44
 target_layer = "B"
-
-[node name="DynamicPlatform11" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-504, 488)
-scale = Vector2(0.5, 0.5)
-platform_type = 8
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform12" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-504, 720)
-scale = Vector2(0.5, 0.5)
-platform_type = 14
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform13" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-504, 520)
-scale = Vector2(0.5, 0.5)
-height = 400.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 12
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform15" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-472, 488)
-scale = Vector2(0.5, 0.5)
-width = 450.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 9
-axis_stretch_horizontal = 1
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform16" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-472, 720)
-scale = Vector2(0.5, 0.5)
-width = 450.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 15
-axis_stretch_horizontal = 1
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform17" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-472, 520)
-scale = Vector2(0.5, 0.5)
-width = 450.0
-height = 400.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 11
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform18" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-248, 488)
-scale = Vector2(0.5, 0.5)
-platform_type = 10
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform19" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-248, 720)
-scale = Vector2(0.5, 0.5)
-platform_type = 16
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform20" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-248, 520)
-scale = Vector2(0.5, 0.5)
-height = 400.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 13
-axis_stretch_vertical = 1
-visible_in_both_dimensions = true
 
 [node name="DynamicPlatform104" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(1930, 40)
@@ -855,7 +768,7 @@ checkpoint_id = "checkpoint_03"
 checkpoint_name = "Checkpoint 3"
 
 [node name="DynamicPlatform21" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-216, 505)
+position = Vector2(77, 729)
 scale = Vector2(0.5, 0.5)
 width = 240.0
 height = 80.0
@@ -965,7 +878,7 @@ respawn_delay = 3.0
 target_layer = "B"
 
 [node name="DynamicPlatform88" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-664, 480)
+position = Vector2(-888, 476)
 scale = Vector2(0.5, 0.5)
 width = 188.0
 height = 30.0
@@ -979,21 +892,6 @@ axis_stretch_vertical = 1
 is_breakable = true
 respawn_delay = 3.0
 target_layer = "B"
-
-[node name="DynamicPlatform66" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-204, 464)
-scale = Vector2(0.5, 0.5)
-width = 192.0
-height = 35.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 4
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-is_breakable = true
-respawn_delay = 3.0
 
 [node name="DynamicPlatform87" parent="." instance=ExtResource("7_8bey8")]
 position = Vector2(72, 456)
@@ -1591,11 +1489,11 @@ crate_type = "bounce"
 target_layer = "B"
 
 [node name="CollectibleFruit" parent="." instance=ExtResource("34_la301")]
-position = Vector2(-360, 408)
+position = Vector2(-56, 297)
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit2" parent="." instance=ExtResource("34_la301")]
-position = Vector2(-360, 248)
+position = Vector2(-152, 257)
 float_speed = 0.0
 target_layer = "B"
 visible_in_both_dimensions = true
@@ -1637,14 +1535,14 @@ float_speed = 0.0
 target_layer = "B"
 
 [node name="CollectibleFruit3" parent="." instance=ExtResource("34_la301")]
-position = Vector2(-360, 136)
+position = Vector2(-72, 241)
 collectable_type = "coin_gold"
 float_speed = 0.0
 target_layer = "B"
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit4" parent="." instance=ExtResource("34_la301")]
-position = Vector2(-360, 192)
+position = Vector2(-80, 192)
 collectable_type = "coin_gold"
 visible_in_both_dimensions = true
 
@@ -1744,7 +1642,62 @@ collectable_type = "coin_gold"
 target_layer = "B"
 
 [node name="CollectibleFruit5" parent="." instance=ExtResource("34_la301")]
-position = Vector2(-424, 248)
+position = Vector2(-456, 333)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit57" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-504, 333)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit14" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-408, 333)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit15" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-360, 333)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit16" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-312, 333)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit17" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-264, 333)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit51" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-288, 293)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit52" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-288, 373)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit53" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-328, 397)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit54" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-328, 269)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit55" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-376, 253)
+float_speed = 0.0
+visible_in_both_dimensions = true
+
+[node name="CollectibleFruit56" parent="." instance=ExtResource("34_la301")]
+position = Vector2(-376, 413)
 float_speed = 0.0
 visible_in_both_dimensions = true
 
@@ -2448,7 +2401,7 @@ float_speed = 0.0
 visible_in_both_dimensions = true
 
 [node name="CollectibleFruit7" parent="." instance=ExtResource("34_la301")]
-position = Vector2(-296, 248)
+position = Vector2(-35, 183)
 float_speed = 0.0
 visible_in_both_dimensions = true
 
@@ -2586,7 +2539,7 @@ patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 11
+platform_type = 40
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 target_layer = "B"
@@ -2599,237 +2552,600 @@ patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 13
+platform_type = 41
 axis_stretch_vertical = 1
 target_layer = "B"
 
 [node name="DynamicPlatform5" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-1584, 214)
+position = Vector2(-1600, 214)
 scale = Vector2(0.5, 0.5)
 height = 100.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 12
+platform_type = 39
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 target_layer = "B"
 
-[node name="DynamicPlatform26" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-96, 456)
+[node name="DynamicPlatform9" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 568)
 scale = Vector2(0.5, 0.5)
-platform_type = 8
-target_layer = "B"
+platform_type = 37
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform27" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-80, 456)
+[node name="DynamicPlatform14" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 568)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 9
+platform_type = 36
 axis_stretch_horizontal = 1
-target_layer = "B"
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform28" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(16, 456)
+[node name="DynamicPlatform39" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 568)
 scale = Vector2(0.5, 0.5)
-platform_type = 10
-target_layer = "B"
+platform_type = 38
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform29" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-96, 565)
+[node name="DynamicPlatform11" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1025, 576)
 scale = Vector2(0.5, 0.5)
-platform_type = 14
-target_layer = "B"
+height = 50.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 46
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform30" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-80, 565)
+[node name="DynamicPlatform13" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-841, 605)
+scale = Vector2(0.5, 0.5)
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 45
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform15" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-993, 576)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+height = 50.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 47
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform46" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-893, 576)
+scale = Vector2(0.5, 0.5)
+height = 50.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 48
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform12" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1025, 633)
+scale = Vector2(0.5, 0.5)
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 46
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform16" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-993, 633)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 15
+platform_type = 47
 axis_stretch_horizontal = 1
-target_layer = "B"
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform31" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(16, 565)
+[node name="DynamicPlatform47" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-893, 633)
 scale = Vector2(0.5, 0.5)
-platform_type = 16
-target_layer = "B"
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 48
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform40" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 648)
+scale = Vector2(0.5, 0.5)
+platform_type = 42
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform41" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 648)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 43
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform42" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 648)
+scale = Vector2(0.5, 0.5)
+platform_type = 44
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform43" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 600)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 40
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform44" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 600)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 41
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform45" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 600)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 39
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform70" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-218, 520)
+position = Vector2(-650, 456)
 scale = Vector2(0.5, 0.5)
-platform_type = 14
-target_layer = "B"
+platform_type = 37
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform71" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-188, 520)
+position = Vector2(-618, 456)
 scale = Vector2(0.5, 0.5)
-width = 150.0
+width = 1100.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 15
+platform_type = 36
 axis_stretch_horizontal = 1
-target_layer = "B"
+visible_in_both_dimensions = true
 
 [node name="DynamicPlatform72" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-126, 520)
+position = Vector2(-69, 456)
 scale = Vector2(0.5, 0.5)
-platform_type = 16
-target_layer = "B"
-
-[node name="DynamicPlatform53" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-80, 488)
-scale = Vector2(0.5, 0.5)
-width = 200.0
-height = 180.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 11
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-target_layer = "B"
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform64" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(16, 488)
-scale = Vector2(0.5, 0.5)
-height = 180.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 13
-axis_stretch_vertical = 1
-target_layer = "B"
-visible_in_both_dimensions = true
-
-[node name="DynamicPlatform65" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(-96, 488)
-scale = Vector2(0.5, 0.5)
-height = 180.0
-patch_margin_left = 0.0
-patch_margin_right = 0.0
-patch_margin_top = 0.0
-patch_margin_bottom = 0.0
-platform_type = 12
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-target_layer = "B"
+platform_type = 38
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform73" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(448, 344)
+position = Vector2(-650, 536)
 scale = Vector2(0.5, 0.5)
-platform_type = 8
-target_layer = "B"
+platform_type = 42
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform74" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-618, 536)
+scale = Vector2(0.5, 0.5)
+width = 1100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 43
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform75" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-69, 536)
+scale = Vector2(0.5, 0.5)
+platform_type = 44
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform76" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(464, 344)
+position = Vector2(-618, 488)
 scale = Vector2(0.5, 0.5)
-width = 200.0
+width = 1100.0
+height = 100.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 9
+platform_type = 40
 axis_stretch_horizontal = 1
-target_layer = "B"
+axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform77" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(560, 344)
+position = Vector2(-69, 488)
 scale = Vector2(0.5, 0.5)
-platform_type = 10
-target_layer = "B"
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 41
+axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform78" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(448, 565)
+position = Vector2(-650, 488)
 scale = Vector2(0.5, 0.5)
-platform_type = 14
-target_layer = "B"
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 39
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform79" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(464, 565)
+[node name="DynamicPlatform17" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 720)
+scale = Vector2(0.5, 0.5)
+platform_type = 49
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform18" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 720)
 scale = Vector2(0.5, 0.5)
 width = 200.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 15
+platform_type = 50
 axis_stretch_horizontal = 1
-target_layer = "B"
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform80" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(560, 565)
+[node name="DynamicPlatform48" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 720)
 scale = Vector2(0.5, 0.5)
-platform_type = 16
-target_layer = "B"
+platform_type = 51
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform81" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(464, 376)
+[node name="DynamicPlatform19" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1025, 728)
+scale = Vector2(0.5, 0.5)
+height = 50.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 69
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform20" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-841, 757)
+scale = Vector2(0.5, 0.5)
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 58
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform26" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-993, 728)
 scale = Vector2(0.5, 0.5)
 width = 200.0
-height = 400.0
+height = 50.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 11
+platform_type = 70
 axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-target_layer = "B"
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform82" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(560, 376)
+[node name="DynamicPlatform49" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-893, 728)
 scale = Vector2(0.5, 0.5)
-height = 400.0
+height = 50.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 13
-axis_stretch_vertical = 1
-target_layer = "B"
+platform_type = 71
 visible_in_both_dimensions = true
 
-[node name="DynamicPlatform83" parent="." instance=ExtResource("7_8bey8")]
-position = Vector2(448, 376)
+[node name="DynamicPlatform27" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1025, 785)
 scale = Vector2(0.5, 0.5)
-height = 400.0
 patch_margin_left = 0.0
 patch_margin_right = 0.0
 patch_margin_top = 0.0
 patch_margin_bottom = 0.0
-platform_type = 12
+platform_type = 69
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform28" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-993, 785)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 70
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform50" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-893, 785)
+scale = Vector2(0.5, 0.5)
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 71
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform51" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 800)
+scale = Vector2(0.5, 0.5)
+platform_type = 55
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform52" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 800)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 56
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform53" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 800)
+scale = Vector2(0.5, 0.5)
+platform_type = 57
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform54" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 752)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 53
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-target_layer = "B"
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform55" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 752)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 54
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform56" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 752)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 52
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform29" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 872)
+scale = Vector2(0.5, 0.5)
+platform_type = 59
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform30" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 872)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 60
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform57" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 872)
+scale = Vector2(0.5, 0.5)
+platform_type = 61
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform31" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1025, 880)
+scale = Vector2(0.5, 0.5)
+height = 50.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 72
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform58" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-841, 909)
+scale = Vector2(0.5, 0.5)
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 68
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform59" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-993, 880)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+height = 50.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 73
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform60" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-897, 880)
+scale = Vector2(0.5, 0.5)
+height = 50.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 74
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform61" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1025, 937)
+scale = Vector2(0.5, 0.5)
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 72
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform62" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-993, 937)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 73
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform63" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-897, 937)
+scale = Vector2(0.5, 0.5)
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 74
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform64" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 952)
+scale = Vector2(0.5, 0.5)
+platform_type = 65
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform65" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 952)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 66
+axis_stretch_horizontal = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform66" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 952)
+scale = Vector2(0.5, 0.5)
+platform_type = 67
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform67" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1177, 904)
+scale = Vector2(0.5, 0.5)
+width = 200.0
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 63
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform68" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1081, 904)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 64
+axis_stretch_vertical = 1
+visible_in_both_dimensions = true
+
+[node name="DynamicPlatform69" parent="." instance=ExtResource("7_8bey8")]
+position = Vector2(-1209, 904)
+scale = Vector2(0.5, 0.5)
+height = 100.0
+patch_margin_left = 0.0
+patch_margin_right = 0.0
+patch_margin_top = 0.0
+patch_margin_bottom = 0.0
+platform_type = 62
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 visible_in_both_dimensions = true
 
 [node name="DynamicPlatform89" parent="." instance=ExtResource("7_8bey8")]
@@ -3393,17 +3709,8 @@ platform_type = 16
 target_layer = "B"
 visible_in_both_dimensions = true
 
-[node name="JumpPad" parent="." instance=ExtResource("22_jump_pad")]
-position = Vector2(-360, 480)
-
-[node name="JumpPad2" parent="." instance=ExtResource("22_jump_pad")]
-position = Vector2(-296, 480)
-
-[node name="JumpPad3" parent="." instance=ExtResource("22_jump_pad")]
-position = Vector2(-424, 480)
-
 [node name="BounceCrate4" parent="." instance=ExtResource("9_ub75y")]
-position = Vector2(-360, 320)
+position = Vector2(-3, 148)
 
 [node name="HintArea" parent="." instance=ExtResource("12_ll6ei")]
 position = Vector2(4232, 447)
