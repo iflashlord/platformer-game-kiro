@@ -77,8 +77,7 @@ text = "Behrouz Pooladrak
 www.behrouz.nl
 
 Built with Godot Engine 4.4+
-GDScript Programming
-Web Deployment via Vercel"
+GDScript Programming"
 horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
@@ -118,7 +117,8 @@ text = "Dimension Shifting Mechanics
 Advanced Platformer Physics
 Cross-Platform Compatibility
 Progressive Web App Support
-Object Pooling Optimization"
+Object Pooling Optimization
+Narrations & Music inspired by AI"
 horizontal_alignment = 1
 
 [node name="Spacer4" type="Control" parent="UI/MainContainer/CreditsContent/CreditsText"]
@@ -171,8 +171,8 @@ horizontal_alignment = 1
 [node name="ThanksInfo" type="Label" parent="UI/MainContainer/CreditsContent/CreditsText"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Kenney - For providing amazing game assets
-Kiro IDE Team - For the amazing development environment
+text = "Amazon for Kiro IDE Team - For the amazing development environment
+Kenney - For providing amazing game assets
 Godot Community - Engine Development
 Open Source Contributors
 Web Gaming Community
