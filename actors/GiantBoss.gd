@@ -1189,20 +1189,30 @@ func _refresh_platform_exceptions():
 	# Find all DynamicPlatforms and add them to collision exceptions
 	var platforms = get_tree().get_nodes_in_group("dynamic_platforms")
 	var exceptions_added = 0
-	
+
 	for platform in platforms:
 		if platform is StaticBody2D and is_instance_valid(platform):
 			add_collision_exception_with(platform)
+			# Ensure detectors ignore dynamic platforms too, so AI doesn't turn around
+			if wall_detector:
+				wall_detector.add_exception(platform)
+			if ground_detector:
+				ground_detector.add_exception(platform)
 			exceptions_added += 1
-	
+
 	# Also find platforms by class type in case they're not grouped yet
 	var all_nodes = get_tree().get_nodes_in_group("platforms")
 	for node in all_nodes:
 		if node.has_method("_set_platform_type"):  # Duck typing to identify DynamicPlatforms
 			if node is StaticBody2D and is_instance_valid(node):
 				add_collision_exception_with(node)
+				# Also ignore in detectors
+				if wall_detector:
+					wall_detector.add_exception(node)
+				if ground_detector:
+					ground_detector.add_exception(node)
 				exceptions_added += 1
-	
+
 	if exceptions_added > 0:
 		print("🚫 Added ", exceptions_added, " platform collision exceptions for boss mobility")
 
