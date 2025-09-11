@@ -177,7 +177,7 @@ func create_bounce_effect():
 		Audio.play_sfx("spring")
 
 	# Visual bounce animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1.2, 0.8), 0.1)
 	tween.tween_property(self, "scale", Vector2.ONE, 0.2)
 	
@@ -186,7 +186,7 @@ func create_bounce_effect():
 		FX.shake(100)
 	
 	# Particle effect (simple color flash)
-	var flash_tween = create_tween()
+	var flash_tween: Tween = create_tween()
 	flash_tween.tween_property(spring_sprite, "modulate", Color.WHITE, 0.1)
  
 func start_cooldown():

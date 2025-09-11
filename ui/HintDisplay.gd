@@ -91,7 +91,7 @@ func _show_hint():
 	modulate.a = 0.0
 	
 	# Create smooth slide-up and fade-in animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_parallel(true)  # Allow multiple properties to animate simultaneously
 	tween.tween_property(self, "position", target_position, 0.4).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(self, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
@@ -105,7 +105,7 @@ func _hide_hint():
 	print("💡 HintDisplay: Hiding hint with animation")
 	
 	# Create smooth slide-down and fade-out animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_parallel(true)  # Allow multiple properties to animate simultaneously
 	tween.tween_property(self, "position:y", position.y + 30, 0.3).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(self, "modulate:a", 0.0, 0.2).set_ease(Tween.EASE_IN)

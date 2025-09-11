@@ -173,7 +173,7 @@ func create_activation_effect():
 		Audio.play_sfx("dimension")
 	
 	# Visual activation animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_parallel(true)
 	
 	# Pulse effect

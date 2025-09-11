@@ -71,14 +71,14 @@ func _on_gem_collected(gem_type: int, total_count: int):
 	animate_collectible_pickup(gem_icon)
 
 func animate_collectible_pickup(icon: Sprite2D):
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(icon, "scale", Vector2(1.3, 1.3), 0.1)
 	tween.tween_property(icon, "scale", Vector2(1.0, 1.0), 0.1)
 
 func _on_dimension_changed(active_layer: int):
 	# Visual feedback for dimension changes
 	var flash_color = Color.MAGENTA if active_layer == 0 else Color.CYAN
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(self, "modulate", flash_color, 0.05)
 	tween.tween_property(self, "modulate", Color.WHITE, 0.15)
 

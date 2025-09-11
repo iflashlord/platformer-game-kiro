@@ -227,7 +227,7 @@ func create_death_effect(player):
 		ring.color = zone_color
 		ring.global_position = player.global_position
 		root.add_child(ring)
-		var ring_tween = create_tween()
+		var ring_tween: Tween = create_tween()
 		ring_tween.parallel().tween_property(ring, "scale", Vector2(2.0, 2.0), 0.5)
 		ring_tween.parallel().tween_property(ring, "modulate:a", 0.0, 0.5)
 		ring_tween.tween_callback(ring.queue_free)
@@ -240,7 +240,7 @@ func create_death_effect(player):
 		soul.scale = Vector2(0.2, 0.2)
 		root.add_child(soul)
 		# Animate the soul rising
-		var soul_tween = create_tween()
+		var soul_tween: Tween = create_tween()
 		soul_tween.parallel().tween_property(soul, "global_position", soul.global_position + Vector2(0, -80), 2.0)
 		# Keep alpha constant; add subtle scale up to match feel
 		soul_tween.parallel().tween_property(soul, "scale", Vector2(0.24, 0.24), 2.0)

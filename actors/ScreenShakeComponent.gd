@@ -5,7 +5,7 @@ func shake(intensity: float = 1.0):
 	# Simple screen shake implementation
 	var camera = get_viewport().get_camera_2d()
 	if camera:
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		var original_pos = camera.global_position
 		
 		for i in range(10):

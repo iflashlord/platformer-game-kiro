@@ -309,7 +309,7 @@ func _create_glitch_flash(color: Color, glitch_layer: CanvasLayer):
 	flash_overlay.position = Vector2.ZERO
 	
 	# Quick flash animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(flash_overlay, "modulate:a", 0.0, 0.08)
 	tween.tween_callback(func():
 		if is_instance_valid(flash_overlay):
@@ -331,7 +331,7 @@ func _create_scanline_effect(glitch_layer: CanvasLayer):
 	scanlines.position = Vector2.ZERO
 	
 	# Create moving scanline pattern with more dramatic effect
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	for i in range(8): # More flickers
 		var alpha = 0.7 if i % 2 == 0 else 0.2
 		var color_shift = Color(randf_range(0.0, 0.3), 1.0, randf_range(0.8, 1.0), alpha)
@@ -355,7 +355,7 @@ func _create_static_noise_effect(glitch_layer: CanvasLayer):
 	noise_overlay.position = Vector2.ZERO
 	
 	# Create rapid flickering noise effect with more intensity
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	for i in range(15): # More flickers
 		var noise_alpha = randf_range(0.2, 0.6)
 		var noise_color = Color(randf(), randf(), randf(), noise_alpha)
@@ -379,7 +379,7 @@ func _create_main_glitch_overlay(glitch_layer: CanvasLayer):
 	main_overlay.position = Vector2.ZERO
 	
 	# Create pulsing effect
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_loops(4)
 	tween.tween_property(main_overlay, "modulate:a", 0.8, 0.06)
 	tween.tween_property(main_overlay, "modulate:a", 0.2, 0.06)
@@ -414,7 +414,7 @@ func _create_chromatic_aberration_effect(glitch_layer: CanvasLayer):
 	blue_overlay.position = Vector2(-5, 0)
 	
 	# Animate the aberration
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_parallel(true)
 	
 	# Red channel animation
@@ -455,7 +455,7 @@ func _create_temporal_spiral_effect(glitch_layer: CanvasLayer):
 		# Make it circular by using a custom draw (approximated with rotation)
 		spiral_overlay.rotation = ring * PI / 3
 		
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.set_parallel(true)
 		
 		# Expand the ring outward and center it properly
@@ -500,7 +500,7 @@ func _create_noise_rect_effect(glitch_layer: CanvasLayer):
 		var rand_y = randf_range(0, screen_size.y - rect_size.y)
 		glitch_rect.position = Vector2(rand_x, rand_y)
 		glitch_layer.add_child(glitch_rect)
-		var glitch_tween = create_tween()
+		var glitch_tween: Tween = create_tween()
 		glitch_tween.tween_property(glitch_rect, "modulate:a", 0.0, randf_range(0.15, 0.28))
 		glitch_tween.tween_callback(glitch_rect.queue_free)
 
@@ -526,7 +526,7 @@ func _create_reality_distortion_effect(glitch_layer: CanvasLayer):
 		if not is_instance_valid(distortion_overlay):
 			continue
 		
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.set_parallel(true)
 		
 		# Expand vertically while moving
@@ -570,7 +570,7 @@ func _create_temporal_echo_effect(glitch_layer: CanvasLayer):
 		var offset = Vector2(i * 8 - 8, i * 4 - 4)
 		echo_overlay.position = offset
 		
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.set_parallel(true)
 		
 		# Create stuttering motion
@@ -611,14 +611,14 @@ func _create_time_fracture_effect(glitch_layer: CanvasLayer):
 			fracture_line.position = Vector2(0, randf_range(0, screen_size.y))
 			fracture_line.rotation = randf_range(-0.1, 0.1)
 		
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.set_parallel(true)
 		
 		# Fracture appears suddenly then fades
 		tween.tween_property(fracture_line, "modulate:a", 0.0, 0.15)
 		
 		# Add crackling motion using tween chains
-		var crack_tween = create_tween()
+		var crack_tween: Tween = create_tween()
 		for crack in range(3):
 			var crack_delay = crack * 0.02
 			var crack_intensity = randf_range(0.5, 1.0)

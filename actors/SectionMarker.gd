@@ -36,7 +36,7 @@ func _activate_section():
 		Respawn.set_checkpoint(global_position)
 		
 		# Visual feedback for checkpoint
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.tween_property(self, "modulate:a", 1.0, 0.2)
 		tween.tween_property(self, "modulate:a", 0.3, 0.3)
 		

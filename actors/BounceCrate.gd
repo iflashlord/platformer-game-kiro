@@ -132,7 +132,7 @@ func consume_fruit():
 		update_display()
 		
 		# Visual bounce effect
-		var bounce_tween = create_tween()
+		var bounce_tween: Tween = create_tween()
 		bounce_tween.parallel().tween_property(self, "scale", Vector2(1.2, 0.8), 0.1)
 		bounce_tween.chain().tween_property(self, "scale", Vector2(1.0, 1.0), 0.2)
 		
@@ -193,7 +193,7 @@ func transform_to_block():
 	collision_mask = 2   # Player layer
 	
 	# Visual transformation effect
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(self, "scale", Vector2(1.2, 1.2), 0.1)
 	tween.parallel().tween_property(self, "modulate", Color(0.4, 0.4, 0.5, 1), 0.2)
 	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)

@@ -102,7 +102,7 @@ func _activate_switch():
     # Audio and simple pulse
     if Audio:
         Audio.play_sfx("dimension")
-    var t = create_tween()
+    var t: Tween = create_tween()
     t.set_parallel(true)
     t.tween_property(self, "scale", Vector2(1.2, 1.2), 0.1)
     t.tween_property(self, "scale", Vector2.ONE, 0.15)

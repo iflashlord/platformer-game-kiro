@@ -386,7 +386,7 @@ func take_damage(amount: int = 1, from_stomp: bool = false):
 	
 	# Visual feedback for taking damage
 	enemy_sprite.modulate = Color.RED
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(enemy_sprite, "modulate", Color.WHITE, 0.2)
 	
 	if from_stomp:
@@ -460,7 +460,7 @@ func create_defeat_effect(from_stomp: bool = false):
 
 	
 	# Different death animation for stomp
-	var death_tween = create_tween()
+	var death_tween: Tween = create_tween()
 	if from_stomp:
 		# Squash effect for stomp
 		death_tween.parallel().tween_property(self, "scale", Vector2(1.2, 0.3), 0.2)

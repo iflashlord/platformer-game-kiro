@@ -473,7 +473,7 @@ patrol_speed = 50.0
 patrol_distance = 80.0
 
 [node name="LevelPortal" parent="." instance=ExtResource("7_portal")]
-position = Vector2(4752, 422)
+position = Vector2(4767, 370)
 current_game_level = "Level00"
 
 [node name="Instructions" type="CanvasLayer" parent="."]

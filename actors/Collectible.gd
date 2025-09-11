@@ -187,7 +187,7 @@ func create_collection_effect():
 	get_tree().current_scene.add_child(effect_label)
 
 	# Animate both the effect label and the fruit, then remove both
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
 	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
 	tween.parallel().tween_property(self, "scale", Vector2(1.5, 1.5), 0.2)

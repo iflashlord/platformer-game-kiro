@@ -284,7 +284,7 @@ func _animate_button_selection(button: Button, selected: bool):
 	if not button:
 		return
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	if tween:
 		tween.set_ease(Tween.EASE_OUT)
 		tween.set_trans(Tween.TRANS_BACK)

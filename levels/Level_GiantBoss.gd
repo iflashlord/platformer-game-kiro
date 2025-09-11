@@ -45,7 +45,7 @@ func _on_boss_defeated():
 		level_portal.set_deferred("monitoring", true)
 		
 		# Add dramatic portal activation effect
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		level_portal.scale = Vector2(0.5, 0.5)
 		level_portal.modulate = Color.TRANSPARENT
 		tween.parallel().tween_property(level_portal, "scale", Vector2(1.0, 1.0), 1.0)
@@ -74,6 +74,6 @@ func _on_tnt_placed(tnt_position: Vector2):
 func _show_victory():
 	if victory_ui:
 		victory_ui.visible = true
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		victory_ui.modulate.a = 0.0
 		tween.tween_property(victory_ui, "modulate:a", 1.0, 1.0)

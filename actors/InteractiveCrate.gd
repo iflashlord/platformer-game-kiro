@@ -136,7 +136,7 @@ func _on_body_entered(body):
 func interact_with_player(player):
 
 	# Visual bounce effect
-	var bounce_tween = create_tween()
+	var bounce_tween: Tween = create_tween()
 	bounce_tween.parallel().tween_property(self, "scale", Vector2(1.2, 0.8), 0.1)
 	bounce_tween.chain().tween_property(self, "scale", Vector2(1.0, 1.0), 0.2)
 	
@@ -210,7 +210,7 @@ func create_explosion_radius_indicator():
 	add_child(radius_indicator)
 	
 	# Animate the indicator (blink by alpha)
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_loops(10)
 	tween.tween_property(radius_indicator, "modulate:a", 0.1, 0.5)
 	tween.tween_property(radius_indicator, "modulate:a", 0.3, 0.5)
@@ -303,7 +303,7 @@ func create_destruction_effect():
 	collision_mask = 0
 	 
 	# Animate the crate destruction
-	var item_tween = create_tween()
+	var item_tween: Tween = create_tween()
 	item_tween.parallel().tween_property(self, "scale", Vector2(1.2, 1.2), 0.1)
 	item_tween.parallel().tween_property(self, "modulate", Color.GRAY, 0.1)
 	item_tween.tween_property(self, "scale", Vector2(0.8, 0.8), 0.2)
@@ -362,7 +362,7 @@ func transform_to_block():
 	monitorable = false
 	
 	# Visual transformation effect
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(self, "scale", Vector2(1.2, 1.2), 0.1)
 	tween.parallel().tween_property(self, "modulate", Color(0.4, 0.4, 0.5, 1), 0.2)
 	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
@@ -389,7 +389,7 @@ func transform_to_temporary_platform():
 	add_child(static_body)
 	
 	# Visual transformation effect
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(self, "scale", Vector2(1.1, 1.1), 0.1)
 	tween.parallel().tween_property(self, "modulate", Color(1, 0.5, 0.5, 1), 0.1)
 	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
@@ -409,7 +409,7 @@ func create_explosion_effect():
 	add_child(explosion_sprite)
 	
 	# Explosion animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(explosion_sprite, "scale", Vector2(1.5, 1.5), 0.3)
 	tween.parallel().tween_property(explosion_sprite, "modulate:a", 0.0, 0.3)
 	

@@ -179,7 +179,7 @@ func create_collection_effect():
 		Audio.play_sfx("collect_heart")
 	
 	# Animate the heart disappearing with smoother movement
-	var item_tween = create_tween()
+	var item_tween: Tween = create_tween()
 	item_tween.set_parallel(true)
 	item_tween.tween_property(self, "scale", Vector2(1.8, 1.8), 0.15)
 	item_tween.tween_property(self, "modulate:a", 0.0, 0.25)

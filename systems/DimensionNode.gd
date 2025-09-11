@@ -99,7 +99,7 @@ func fade_to_state(visible: bool):
 	
 	for sprite in sprites:
 		if is_instance_valid(sprite) and sprite.has_property("modulate"):
-			var tween = create_tween()
+			var tween: Tween = create_tween()
 			tween.tween_property(sprite, "modulate:a", target_alpha, fade_duration)
 
 func add_to_layer(layer: int):

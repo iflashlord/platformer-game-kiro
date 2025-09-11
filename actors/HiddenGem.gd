@@ -89,7 +89,7 @@ func reveal():
 	is_hidden = false
 	
 	# Reveal animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(self, "modulate:a", 1.0, 0.5)
 	tween.parallel().tween_property(self, "scale",  Vector2(0.4, 0.4), 0.3)
 	
@@ -145,7 +145,7 @@ func collect():
 	get_tree().current_scene.add_child(effect_label)
 
 	# Collection animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -50), 1.0)
 	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
 	tween.parallel().tween_property(sprite, "scale", Vector2(2.0, 2.0), 0.3)

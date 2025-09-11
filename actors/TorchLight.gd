@@ -195,11 +195,11 @@ func _on_body_entered(body: Node):
 		_flicker_t += 1.2
 		# Brief energy punch for both lights
 		if point_light:
-			var tw = create_tween()
+			var tw: Tween = create_tween()
 			tw.tween_property(point_light, "energy", point_light.energy + 0.5, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 			tw.tween_property(point_light, "energy", max(_base_energy * 0.9, _base_energy), 0.18)
 		if inner_light:
-			var tw2 = create_tween()
+			var tw2: Tween = create_tween()
 			tw2.tween_property(inner_light, "energy", inner_light.energy + 0.3, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 			tw2.tween_property(inner_light, "energy", (_base_energy * 0.75), 0.18)
 		# Ember burst upward

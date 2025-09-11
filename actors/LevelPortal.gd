@@ -49,12 +49,12 @@ func _start_portal_animation():
 	glow_tween.parallel().tween_property(core, "modulate", Color(1, 1, 1, 1), 1.5)
 	
 	# Continuous rotation for outer ring
-	var rotation_tween = create_tween()
+	var rotation_tween: Tween = create_tween()
 	rotation_tween.set_loops(10)
 	rotation_tween.tween_property(outer_ring, "rotation", TAU, 3.0)
 	
 	# Counter-rotation for inner glow
-	var inner_rotation_tween = create_tween()
+	var inner_rotation_tween: Tween = create_tween()
 	inner_rotation_tween.set_loops(10)
 	inner_rotation_tween.tween_property(inner_glow, "rotation", -TAU, 4.0)
 
@@ -135,7 +135,7 @@ func _play_absorb_pulse():
 	# Quick pulse to sell suction
 	if not portal_sprite:
 		return
-	var pulse = create_tween()
+	var pulse: Tween = create_tween()
 	pulse.set_parallel(false)
 	var base_scale: Vector2 = portal_sprite.scale
 	pulse.tween_property(portal_sprite, "scale", base_scale * portal_absorb_pulse_scale, portal_absorb_pulse_time)
@@ -191,7 +191,7 @@ func _play_completion_effects():
 		completion_particles.initial_velocity_max = 200.0
 	
 	# Portal expansion and glow animation
-	var completion_tween = create_tween()
+	var completion_tween: Tween = create_tween()
 	completion_tween.set_parallel(true)
 	
 	# Scale up the entire portal
@@ -212,7 +212,7 @@ func _play_completion_effects():
 	completion_tween.tween_property(inner_glow, "rotation", inner_glow.rotation - PI * 4, 1.5)
 	
 	# Pulsing effect
-	var pulse_tween = create_tween()
+	var pulse_tween: Tween = create_tween()
 	pulse_tween.set_loops(3)
 	pulse_tween.tween_property(portal_sprite, "scale", Vector2(2.2, 2.2), 0.2)
 	pulse_tween.tween_property(portal_sprite, "scale", Vector2(1.8, 1.8), 0.2)

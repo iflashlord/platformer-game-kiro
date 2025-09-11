@@ -71,7 +71,7 @@ func _on_heart_lost():
 	var original_position = heart.position
 	var original_modulate = heart.modulate
 
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	# Shake horizontally
 	tween.tween_property(heart, "position", original_position + Vector2(10, 0), 0.05)
 	tween.tween_property(heart, "position", original_position - Vector2(10, 0), 0.05)
@@ -100,7 +100,7 @@ func _update_score_display(score: int):
 	score_display.text = str(score)
 	
 	# Score increase animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(score_display, "scale", Vector2(1.2, 1.2), 0.1)
 	tween.tween_property(score_display, "scale", Vector2.ONE, 0.1)
 

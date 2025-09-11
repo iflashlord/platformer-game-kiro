@@ -1,17 +1,23 @@
-[gd_scene load_steps=19 format=3 uid="uid://kuwc58wcfuui"]
+[gd_scene load_steps=25 format=3 uid="uid://kuwc58wcfuui"]
 
 [ext_resource type="Script" uid="uid://c66rtrym5d67x" path="res://actors/GiantBoss.gd" id="1_boss"]
 [ext_resource type="PackedScene" uid="uid://00mkiltltuwb" path="res://actors/FlyingEnemy.tscn" id="4_flying"]
+[ext_resource type="Texture2D" uid="uid://t8ralgeyx8t" path="res://content/Graphics/Sprites/Enemies/Double/slime_fire_walk_a.png" id="5_l8y5u"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx6" path="res://actors/PatrolEnemy.tscn" id="5_patrol"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx4" path="res://actors/InteractiveCrate.tscn" id="6_crate"]
-[ext_resource type="Texture2D" uid="uid://ciommnr67cf81" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_walk_a.png" id="10_walk_a"]
-[ext_resource type="Texture2D" uid="uid://qbbp2h475peq" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_walk_b.png" id="11_walk_b"]
-[ext_resource type="Texture2D" uid="uid://ihd5vm35mvdy" path="res://content/Graphics/Sprites/Enemies/Default/slime_block_jump.png" id="12_jump"]
-[ext_resource type="Texture2D" uid="uid://0iet7d6qa6xl" path="res://content/Graphics/Sprites/Enemies/Default/slime_fire_walk_a.png" id="13_charge_a"]
-[ext_resource type="Texture2D" uid="uid://dn7xsrj7ug7fy" path="res://content/Graphics/Sprites/Enemies/Default/slime_fire_walk_b.png" id="14_charge_b"]
-[ext_resource type="Texture2D" uid="uid://dd2r43hrwxvfj" path="res://content/Graphics/Sprites/Enemies/Default/fly_a.png" id="15_fly_a"]
-[ext_resource type="Texture2D" uid="uid://bfldi16i0a0am" path="res://content/Graphics/Sprites/Enemies/Default/fly_b.png" id="16_fly_b"]
-[ext_resource type="Texture2D" uid="uid://dgam7pc1bdgen" path="res://content/Graphics/Sprites/Enemies/Default/slime_normal_flat.png" id="17_defeat"]
+[ext_resource type="Texture2D" uid="uid://b0084y22tr02o" path="res://content/Graphics/Sprites/Enemies/Double/slime_fire_walk_b.png" id="6_eyntx"]
+[ext_resource type="Texture2D" uid="uid://dgek0n2r40j1l" path="res://content/Graphics/Sprites/Enemies/Default/fly_rest.png" id="7_l8y5u"]
+[ext_resource type="Texture2D" uid="uid://hwf76uwcmbl" path="res://content/Graphics/Sprites/Enemies/Double/fly_a.png" id="8_7byf4"]
+[ext_resource type="Texture2D" uid="uid://ct7402qlsp1to" path="res://content/Graphics/Sprites/Enemies/Double/fly_b.png" id="9_qbik8"]
+[ext_resource type="Texture2D" uid="uid://bx67dd2rbklsp" path="res://content/Graphics/Sprites/Enemies/Double/bee_a.png" id="10_n61s0"]
+[ext_resource type="Texture2D" uid="uid://bhbpaoodsu5re" path="res://content/Graphics/Sprites/Enemies/Double/bee_b.png" id="11_j2ja2"]
+[ext_resource type="Texture2D" uid="uid://lwks55h04a22" path="res://content/Graphics/Sprites/Enemies/Double/slime_block_jump.png" id="12_mxdb8"]
+[ext_resource type="Texture2D" uid="uid://de1ieqqoxkt2v" path="res://content/Graphics/Sprites/Enemies/Double/slime_block_walk_b.png" id="13_a28gd"]
+[ext_resource type="Texture2D" uid="uid://bf321p4dij4ri" path="res://content/Graphics/Sprites/Enemies/Double/slime_block_walk_a.png" id="14_f3r36"]
+[ext_resource type="Texture2D" uid="uid://rxmfip4r2667" path="res://content/Graphics/Sprites/Enemies/Double/saw_a.png" id="15_bdqjp"]
+[ext_resource type="Texture2D" uid="uid://d070tqlp6hh1u" path="res://content/Graphics/Sprites/Enemies/Double/saw_b.png" id="16_iwvr8"]
+[ext_resource type="Texture2D" uid="uid://xv1qxqtpqv4f" path="res://content/Graphics/Sprites/Enemies/Double/barnacle_attack_a.png" id="17_inb0g"]
+[ext_resource type="Texture2D" uid="uid://cy6g53t67sn0q" path="res://content/Graphics/Sprites/Enemies/Double/barnacle_attack_b.png" id="18_rvyxw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(102, 127)
@@ -20,10 +26,10 @@ size = Vector2(102, 127)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("13_charge_a")
+"texture": ExtResource("5_l8y5u")
 }, {
 "duration": 1.0,
-"texture": ExtResource("14_charge_b")
+"texture": ExtResource("6_eyntx")
 }],
 "loop": true,
 "name": &"charge",
@@ -31,7 +37,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("17_defeat")
+"texture": ExtResource("7_l8y5u")
 }],
 "loop": false,
 "name": &"defeat",
@@ -39,10 +45,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("15_fly_a")
+"texture": ExtResource("8_7byf4")
 }, {
 "duration": 1.0,
-"texture": ExtResource("16_fly_b")
+"texture": ExtResource("9_qbik8")
 }],
 "loop": true,
 "name": &"fly",
@@ -50,7 +56,24 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("12_jump")
+"texture": ExtResource("10_n61s0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_j2ja2")
+}],
+"loop": true,
+"name": &"fly2",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_mxdb8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_a28gd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_f3r36")
 }],
 "loop": true,
 "name": &"jump",
@@ -58,10 +81,21 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("10_walk_a")
+"texture": ExtResource("15_bdqjp")
 }, {
 "duration": 1.0,
-"texture": ExtResource("11_walk_b")
+"texture": ExtResource("16_iwvr8")
+}],
+"loop": true,
+"name": &"saw",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_inb0g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_rvyxw")
 }],
 "loop": true,
 "name": &"walk",
@@ -101,9 +135,10 @@ position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_1")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
-scale = Vector2(2, 2)
+position = Vector2(0, -15)
+scale = Vector2(1.2, 1.2)
 sprite_frames = SubResource("SpriteFrames_1")
-animation = &"charge"
+animation = &"walk"
 
 [node name="DamageArea" type="Area2D" parent="."]
 collision_layer = 8

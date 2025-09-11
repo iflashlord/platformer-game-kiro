@@ -1,6 +1,6 @@
 [gd_scene load_steps=42 format=3 uid="uid://do2g5aru41o4q"]
 
-[ext_resource type="Script" uid="uid://cl5rdwc2m0rgl" path="res://levels/Level00.gd" id="1_cjipt"]
+[ext_resource type="Script" uid="uid://gra7fkfogri0" path="res://levels/Level01.gd" id="1_cjipt"]
 [ext_resource type="PackedScene" uid="uid://ca03v34a42d3i" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bxvw8y7qkqx1" path="res://ui/GameHUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://cxu2llg8aiye1" path="res://actors/Checkpoint.tscn" id="4_checkpoint"]
@@ -52,7 +52,7 @@ auto_scroll = true
 loop_seamlessly = true
 horizontal_gap = -100
 vertical_gap = 0
-loop_start_point = Vector2(0, 900)
+loop_start_point = Vector2(0, 1250)
 loop_end_point = Vector2(0, 0)
 reset_position = Vector2(0, 0)
 loop_left = true
@@ -83,7 +83,7 @@ auto_scroll = true
 loop_seamlessly = true
 horizontal_gap = -300
 vertical_gap = -400
-loop_start_point = Vector2(0, -1200)
+loop_start_point = Vector2(0, -1000)
 loop_end_point = Vector2(0, 0)
 reset_position = Vector2(0, 0)
 loop_left = true
@@ -115,7 +115,7 @@ main_bg_color = Color(1, 1, 1, 1)
 background_layers = Array[ExtResource("20_blrwf")]([SubResource("Resource_88x2b"), SubResource("Resource_ax175")])
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(2120, -286)
+position = Vector2(-480, 453)
 
 [node name="UI" type="CanvasLayer" parent="."]
 

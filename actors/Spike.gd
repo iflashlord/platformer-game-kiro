@@ -291,7 +291,7 @@ func _animate_retract():
 	if not spike_sprite:
 		return
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_ease(Tween.EASE_OUT)
 	tween.set_trans(Tween.TRANS_BACK)
 	tween.parallel().tween_property(spike_sprite, "scale", Vector2(0.5, 0.5), 0.3)
@@ -302,7 +302,7 @@ func _animate_extend():
 	if not spike_sprite:
 		return
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_ease(Tween.EASE_OUT)
 	tween.set_trans(Tween.TRANS_BACK)
 	tween.parallel().tween_property(spike_sprite, "scale", Vector2(1.0, 1.0), 0.2)
@@ -313,7 +313,7 @@ func _animate_warning():
 	if not spike_sprite:
 		return
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_loops()
 	tween.tween_property(spike_sprite, "modulate", Color.YELLOW, 0.2)
 	tween.tween_property(spike_sprite, "modulate", original_color, 0.2)
@@ -342,7 +342,7 @@ func _flash_damage():
 	if not spike_sprite:
 		return
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(spike_sprite, "modulate", Color.RED, 0.1)
 	tween.tween_property(spike_sprite, "modulate", original_color, 0.1)
 

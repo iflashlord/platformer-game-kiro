@@ -369,7 +369,7 @@ class LevelCard extends Control:
 		add_child(sparkle_timer)
 	
 	func _sparkle_pulse():
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.tween_property(main_panel, "modulate", Color(1.4, 1.3, 1.0), 0.5)
 		tween.tween_property(main_panel, "modulate", Color(1.2, 1.1, 0.8), 0.5)
 	
@@ -949,7 +949,7 @@ func _update_progress():
 	# Update progress bar with smooth animation
 	if progress_bar:
 		var progress_percent = (float(completed_levels) / float(total_levels)) * 100.0
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.tween_property(progress_bar, "value", progress_percent, 0.5)
 		tween.set_ease(Tween.EASE_OUT)
 
@@ -1127,7 +1127,7 @@ func _scroll_to_selected():
 	target_scroll = max(0, target_scroll)
 	
 	# Animate scroll
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(scroll_container, "scroll_horizontal", int(target_scroll), 0.3)
 	tween.set_ease(Tween.EASE_OUT)
 	tween.set_trans(Tween.TRANS_CUBIC)
@@ -1143,7 +1143,7 @@ func _animate_card_entrance(card: LevelCard, index: int):
 	
 	await get_tree().create_timer(delay).timeout
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(card, "modulate:a", 1.0, 0.3)
 	tween.parallel().tween_property(card, "scale", Vector2(1.0, 1.0), 0.3)
 	tween.set_ease(Tween.EASE_OUT)
@@ -1277,7 +1277,7 @@ func _animate_button_selection(button: Button, selected: bool):
 	
 	if selected:
 		# Enhanced selection: 1.15x scale, golden glow, cyan border
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.parallel().tween_property(button, "scale", Vector2(1.15, 1.15), 0.2)
 		tween.parallel().tween_property(button, "modulate", Color(1.3, 1.2, 0.8), 0.2)
 		
@@ -1299,7 +1299,7 @@ func _animate_button_selection(button: Button, selected: bool):
 		tween.set_trans(Tween.TRANS_BACK)
 	else:
 		# Reset to normal state
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.parallel().tween_property(button, "scale", Vector2(1.0, 1.0), 0.15)
 		tween.parallel().tween_property(button, "modulate", Color.WHITE, 0.15)
 		

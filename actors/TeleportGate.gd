@@ -110,7 +110,7 @@ func create_simple_effect(pos: Vector2):
 		get_tree().current_scene.add_child(particle)
 		
 		# Simple fade animation
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.tween_property(particle, "modulate:a", 0.0, 0.5)
 		tween.tween_callback(particle.queue_free)
 

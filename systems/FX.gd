@@ -14,7 +14,7 @@ func camera_shake(camera: Camera2D, strength: float, duration: float):
 	if camera == null:
 		return
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	var original_offset = camera.offset if camera != null else Vector2.ZERO
 	var shake_count = int(duration * 60) # 60 FPS
 	# Improved shake: use random offset per frame, but interpolate smoothly
@@ -55,7 +55,7 @@ func flash_screen(color: Color = Color.WHITE, duration: float = 0.1, start_alpha
 	scene.add_child(flash)
 	flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(flash, "modulate:a", 0.0, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(flash.queue_free)
 
@@ -67,7 +67,7 @@ func fade_in(duration: float = 1.0):
 	get_tree().current_scene.add_child(fade)
 	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(fade, "modulate:a", 0.0, duration)
 	tween.tween_callback(fade.queue_free)
 
@@ -80,7 +80,7 @@ func fade_out(duration: float = 1.0):
 	get_tree().current_scene.add_child(fade)
 	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(fade, "modulate:a", 1.0, duration)
 
 func hit_stop(duration_ms: float):

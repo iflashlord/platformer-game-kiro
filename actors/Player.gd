@@ -482,7 +482,7 @@ func _squash_sprite():
 		return
 	
 	is_squashing = true
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	
 	# Preserve horizontal flip direction
 	var flip_sign = sign(character_sprite.scale.x)
@@ -499,7 +499,7 @@ func _stretch_sprite():
 		return
 	
 	is_squashing = true
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	
 	# Preserve horizontal flip direction
 	var flip_sign = sign(character_sprite.scale.x)

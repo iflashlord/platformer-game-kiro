@@ -235,7 +235,7 @@ func create_damage_effect():
 	get_tree().current_scene.add_child(damage_label)
 	
 	# Animate damage number
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(damage_label, "position", damage_label.position + Vector2(0, -40), 0.8)
 	tween.parallel().tween_property(damage_label, "modulate:a", 0.0, 0.8)
 	tween.tween_callback(damage_label.queue_free)
@@ -258,7 +258,7 @@ func retract_spike():
 
 	# Visual retraction - animate the sprite
 	if spike_sprite:
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.set_ease(Tween.EASE_OUT)
 		tween.set_trans(Tween.TRANS_BACK)
 		# Always scale down
@@ -297,7 +297,7 @@ func extend_spike():
 	
 	# Visual extension - animate the sprite back to normal
 	if spike_sprite:
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.set_ease(Tween.EASE_OUT)
 		tween.set_trans(Tween.TRANS_BACK)
 		# Scale back up
@@ -499,11 +499,11 @@ func _fade_to_dimension_state():
 	var target_alpha = 1.0 if is_active_in_current_layer else 0.3
 	
 	if spike_sprite:
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.tween_property(spike_sprite, "modulate:a", target_alpha, dimension_transition_time)
 	
 	if background_rect and background_rect.visible:
-		var tween2 = create_tween()
+		var tween2: Tween = create_tween()
 		tween2.tween_property(background_rect, "modulate:a", target_alpha, dimension_transition_time)
 
 # Property setters for dimensions

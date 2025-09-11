@@ -149,7 +149,7 @@ func reveal():
 	print("✨ Hidden gem revealed!")
 	
 	# Reveal animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(self, "modulate:a", 1.0, 0.5)
 	tween.parallel().tween_property(self, "scale", Vector2.ONE, 0.5)
 	
@@ -199,13 +199,13 @@ func create_collection_effect():
 	get_tree().current_scene.add_child(effect_label)
 	
 	# Animate the effect
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(effect_label, "position", effect_label.position + Vector2(0, -60), 1.2)
 	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.2)
 	tween.tween_callback(effect_label.queue_free)
 	
 	# Animate the gem disappearing with sparkle
-	var item_tween = create_tween()
+	var item_tween: Tween = create_tween()
 	item_tween.parallel().tween_property(self, "scale", Vector2(2.0, 2.0), 0.3)
 	item_tween.parallel().tween_property(self, "modulate:a", 0.0, 0.4)
 	item_tween.tween_callback(queue_free)

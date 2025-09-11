@@ -22,12 +22,12 @@ func show_boss_ui(boss_name_text: String = "GIANT BOSS"):
 	visible = true
 	
 	# Animate in
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	modulate.a = 0.0
 	tween.tween_property(self, "modulate:a", 1.0, 0.5)
 
 func hide_boss_ui():
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.5)
 	await tween.finished
 	visible = false
@@ -78,7 +78,7 @@ func _update_phase_indicator(health: int, _max_hp: int):
 
 func _animate_damage_effect():
 	# Flash effect when boss takes damage
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(health_bar, "modulate", Color.WHITE, 0.1)
 	tween.tween_property(health_bar, "modulate", _get_health_color(), 0.1)
 	

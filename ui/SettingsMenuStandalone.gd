@@ -224,7 +224,7 @@ func _animate_button_selection(element: Control, selected: bool, scale_factor: f
 	if not element:
 		return
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_parallel(true)
 	
 	if selected:

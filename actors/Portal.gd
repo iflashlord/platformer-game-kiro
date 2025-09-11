@@ -68,28 +68,28 @@ func _setup_portal_appearance():
 
 func _create_portal_animation():
 	# Outer ring rotation (slow)
-	var outer_tween = create_tween()
+	var outer_tween: Tween = create_tween()
 	outer_tween.set_loops(10)
 	outer_tween.tween_property(outer_ring, "rotation", TAU, 4.0)
 	
 	# Middle ring rotation (medium, opposite direction)
-	var middle_tween = create_tween()
+	var middle_tween: Tween = create_tween()
 	middle_tween.set_loops(10)
 	middle_tween.tween_property(middle_ring, "rotation", -TAU, 3.0)
 	
 	# Inner core rotation (fast)
-	var core_tween = create_tween()
+	var core_tween: Tween = create_tween()
 	core_tween.set_loops(10)
 	core_tween.tween_property(inner_core, "rotation", TAU, 2.0)
 	
 	# Pulsing animation for middle ring
-	var pulse_tween = create_tween()
+	var pulse_tween: Tween = create_tween()
 	pulse_tween.set_loops(10)
 	pulse_tween.tween_property(middle_ring, "scale", Vector2(1.1, 1.1), 1.5)
 	pulse_tween.tween_property(middle_ring, "scale", Vector2(1.0, 1.0), 1.5)
 	
 	# Core pulsing (faster)
-	var core_pulse_tween = create_tween()
+	var core_pulse_tween: Tween = create_tween()
 	core_pulse_tween.set_loops(10)
 	core_pulse_tween.tween_property(inner_core, "scale", Vector2(1.2, 1.2), 1.0)
 	core_pulse_tween.tween_property(inner_core, "scale", Vector2(1.0, 1.0), 1.0)
@@ -221,7 +221,7 @@ func create_entry_effects():
 	activation_particles.restart()
 	
 	# Ring expansion effect
-	var entry_tween = create_tween()
+	var entry_tween: Tween = create_tween()
 	entry_tween.parallel().tween_property(outer_ring, "scale", Vector2(1.3, 1.3), 0.3)
 	entry_tween.parallel().tween_property(middle_ring, "scale", Vector2(1.2, 1.2), 0.3)
 	entry_tween.parallel().tween_property(inner_core, "scale", Vector2(1.4, 1.4), 0.3)
@@ -244,7 +244,7 @@ func create_activation_effects():
 	spiral_particles.restart()
 	
 	# Ring explosion effect
-	var explosion_tween = create_tween()
+	var explosion_tween: Tween = create_tween()
 	explosion_tween.parallel().tween_property(outer_ring, "scale", Vector2(2.0, 2.0), 0.5)
 	explosion_tween.parallel().tween_property(middle_ring, "scale", Vector2(1.8, 1.8), 0.5)
 	explosion_tween.parallel().tween_property(inner_core, "scale", Vector2(2.2, 2.2), 0.5)
@@ -272,7 +272,7 @@ func create_manual_explosion_particles():
 		var distance = randf_range(100, 300)
 		
 		# Animate particle
-		var tween = create_tween()
+		var tween: Tween = create_tween()
 		tween.parallel().tween_property(particle, "position", global_position + direction * distance, 1.5)
 		tween.parallel().tween_property(particle, "modulate:a", 0.0, 1.5)
 		tween.parallel().tween_property(particle, "scale", Vector2(2.0, 2.0), 0.5)

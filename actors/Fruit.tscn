@@ -68,7 +68,7 @@ func collect():
 		particles.emitting = true
 	
 	# Animate collection
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(sprite, \"scale\", Vector2(1.5, 1.5), 0.2)
 	tween.parallel().tween_property(sprite, \"modulate:a\", 0.0, 0.3)
 	tween.tween_callback(_return_to_pool)

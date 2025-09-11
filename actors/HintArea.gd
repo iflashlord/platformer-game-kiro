@@ -8,6 +8,8 @@ class_name HintArea
 @export var hint_title: String = ""
 # Dynamic audio to play when showing/hiding hints
 @export var narration_audio: String = ""
+@export var narration_limit_enabled: bool = false
+@export var narration_max_plays: int = 1
 @export var auto_hide_delay: float = 0.0  # 0 = manual hide only
 @export var show_once_only: bool = false
 @export_enum("A", "B", "Both") var target_layer: String = "A"  # Which dimension layer this hint belongs to
@@ -17,6 +19,7 @@ var _has_been_shown: bool = false
 var _hide_timer: Timer
 var _layer_object: LayerObject
 var _is_currently_showing: bool = false  # Track if this hint area is currently showing a hint
+var _narration_play_count: int = 0
 
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -49,7 +52,15 @@ func _on_body_entered(body: Node2D):
 
 	if narration_audio != "":
 		if Audio and Audio.has_method("play_narration"):
-			Audio.play_narration(narration_audio)
+			var can_play_narration := true
+			if narration_limit_enabled:
+				# Guard against non-positive limits by treating them as zero
+				var max_allowed :int= max(0, narration_max_plays)
+				can_play_narration = _narration_play_count < max_allowed
+			if can_play_narration:
+				Audio.play_narration(narration_audio)
+				if narration_limit_enabled:
+					_narration_play_count += 1
 
 	print("🌀 HintArea: Player entered ", name, " (layer: ", target_layer, ", active: ", is_active_in_current_dimension(), ")")
 	

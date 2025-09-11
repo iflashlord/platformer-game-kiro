@@ -613,7 +613,7 @@ func _animate_button_selection(button: Button, selected: bool):
 	if not button:
 		return
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	if not tween:
 		return
 		
@@ -689,7 +689,7 @@ func _get_unlock_requirements_text(level_id: String) -> String:
 
 func _add_completion_glow():
 	"""Add a golden glow effect for game completion"""
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_loops()
 	tween.tween_property(next_level_button, "modulate", Color(1.2, 1.1, 0.8), 1.0)
 	tween.tween_property(next_level_button, "modulate", Color(0.9, 0.8, 0.6), 1.0)
@@ -700,7 +700,7 @@ func _animate_unlock_button():
 	next_level_button.scale = Vector2(0.95, 0.95)
 	next_level_button.modulate = Color(0.8, 1.2, 0.8)
 	
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(next_level_button, "scale", Vector2(1.0, 1.0), 0.3)
 	tween.parallel().tween_property(next_level_button, "modulate", Color.WHITE, 0.3)
 	tween.set_ease(Tween.EASE_OUT)
