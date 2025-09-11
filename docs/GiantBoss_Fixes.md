@@ -1,124 +1,52 @@
-# Giant Boss System - Fixes Applied
+# Giant Boss System — Fixes and Notes
 
-## Critical Errors Fixed
+This document summarizes key fixes and current implementation details for the Giant Boss and related assets in this project.
 
-### 1. GiantBoss.gd Fixes
+## Key Fixes (Historical)
 
-#### ❌ **Error**: `set_gravity_scale()` not found
-**Problem**: CharacterBody2D doesn't have `set_gravity_scale()` method (that's for RigidBody2D)
-**Fix**: Removed the call and handle gravity manually in movement functions
+### GiantBoss.gd
+- Removed any non-CharacterBody2D APIs (e.g., `set_gravity_scale()`), consolidating gravity handling in movement logic.
+- Corrected color interpolation usage to instance form (e.g., `Color.RED.lerp(Color.GREEN, t)`).
+- Cleaned unused parameters by prefixing with `_` where needed.
 
-#### ❌ **Error**: `Color.lerp()` incorrect usage
-**Problem**: Static method call with wrong parameters
-**Fix**: Changed `Color.lerp(Color.RED, Color.GREEN, ratio)` to `Color.RED.lerp(Color.GREEN, ratio)`
+### InteractiveCrate (TNT)
+- TNT functionality is provided by `actors/InteractiveCrate.gd` with `crate_type = "tnt"` rather than a separate `TNTCrate.gd`.
+- Fixed animation/state handling for TNT fuse and explosion, including chain reactions via `actors/Explosion.gd`.
 
-#### ⚠️ **Warning**: Unused delta parameters
-**Fix**: Prefixed unused parameters with underscore: `_delta`
+### BossHealthUI
+- Ensured UI updates are driven by `EventBus.boss_health_changed(health, max_health)`.
+- Minor parameter naming cleanup for clarity.
 
-### 2. TNTCrate.gd Fixes
+### Level_GiantBoss
+- Uses generic types for onready vars to avoid compile‑time type issues.
+- Renamed handler parameters (e.g., TNT position) to avoid shadowing built‑ins.
+- Hides the portal until `boss_defeated`, then animates it in and enables monitoring.
 
-#### ❌ **Error**: `Color.lerp()` incorrect usage
-**Problem**: Same static method issue
-**Fix**: Changed to `Color.WHITE.lerp(Color.RED, time_ratio)`
+## Testing (Current)
 
-### 3. BossHealthUI.gd Fixes
+Use the included boss level or the level select:
 
-#### ⚠️ **Warning**: Unused parameter `max_hp`
-**Fix**: Prefixed with underscore: `_max_hp`
+- From game: use Level Select to open “The Giant’s Last Stand”.
+- Direct: `godot --path . --main-scene res://levels/Level_GiantBoss.tscn`
 
-### 4. Level_GiantBoss.gd Fixes
+Expected behavior:
+- Boss moves, transitions phases across 5 hits, and drops TNT (InteractiveCrate) over time.
+- TNT fuses, explodes, and can trigger chain reactions; boss is immune to TNT damage.
+- BossHealthUI reflects damage and phases; screen shake and effects play on impact.
+- Defeating the boss reveals and activates the level portal.
 
-#### ❌ **Error**: Unknown class types `GiantBoss` and `BossHealthUI`
-**Problem**: Class references not available at compile time
-**Fix**: Changed to generic `Node` and `Control` types
+## File References
 
-#### ⚠️ **Warning**: Shadowed variable `position`
-**Problem**: Parameter name conflicts with Node2D.position
-**Fix**: Renamed parameter to `tnt_position`
+- `actors/GiantBoss.gd/.tscn` — Boss logic and scene
+- `actors/InteractiveCrate.gd/.tscn` — TNT crates (`crate_type = "tnt"`)
+- `actors/Explosion.gd/.tscn` — Explosion logic/effects
+- `ui/BossHealthUI.gd/.tscn` — Boss health UI
+- `levels/Level_GiantBoss.gd/.tscn` — Boss level wiring
 
-## Movement System Improvements
+## Notes & Next Steps
 
-### Gravity Handling
-- **Before**: Each movement function handled gravity separately
-- **After**: Centralized gravity handling in `_handle_movement()` 
-- **Benefit**: Cleaner code, proper flying phase (no gravity)
+- Tune difficulty via exported variables in `GiantBoss.gd` (health, speeds, TNT cadence).
+- Consider adding boss‑specific audio/music and variant attack patterns.
+- Keep crate/bomb assets consistent with dimension layers where applicable.
 
-### Phase Transitions
-- **Flying Phase**: Now properly ignores gravity
-- **All Phases**: Consistent movement behavior
-- **Direction Handling**: Fixed sprite flipping and detector positioning
-
-## Testing Improvements
-
-### New Test Files
-1. **`test_boss_simple.gd/.tscn`** - Minimal test without dependencies
-2. **Updated `test_boss.sh`** - Uses reliable simple test
-
-### Test Features
-- ✅ Creates ground automatically
-- ✅ Instantiates boss programmatically  
-- ✅ Connects signals for feedback
-- ✅ No external scene dependencies
-
-## File Status Summary
-
-| File | Status | Issues Fixed |
-|------|--------|-------------|
-| `actors/GiantBoss.gd` | ✅ **FIXED** | 5 errors, 1 warning |
-| `actors/TNTCrate.gd` | ✅ **FIXED** | 1 error |
-| `ui/BossHealthUI.gd` | ✅ **FIXED** | 1 warning |
-| `examples/Level_GiantBoss.gd` | ✅ **FIXED** | 2 errors, 1 warning |
-| `actors/GiantBoss.tscn` | ✅ **WORKING** | Scene references valid |
-| `actors/TNTCrate.tscn` | ✅ **WORKING** | Sprite animations added |
-| `ui/BossHealthUI.tscn` | ✅ **WORKING** | UI layout complete |
-
-## How to Test Now
-
-### Option 1: Simple Test (Recommended)
-```bash
-./test_boss.sh
-```
-
-### Option 2: Manual Godot Test
-```bash
-# macOS
-/Applications/Godot.app/Contents/MacOS/Godot --main-scene res://test_boss_simple.tscn
-
-# Linux/Windows  
-godot --main-scene res://test_boss_simple.tscn
-```
-
-### Option 3: Godot Editor
-1. Open `test_boss_simple.tscn`
-2. Press F6 to run scene
-3. Watch console for boss behavior logs
-
-## Expected Behavior
-
-When running the test:
-1. ✅ Boss spawns and starts walking
-2. ✅ Boss changes direction at walls
-3. ✅ Boss drops TNT crates periodically
-4. ✅ TNT crates have fuse timers and explode
-5. ✅ Boss has 5 movement phases
-6. ✅ Health system tracks damage
-7. ✅ Screen shake and particle effects work
-
-## Integration Ready
-
-The boss system is now:
-- ✅ **Error-free** - All parsing errors resolved
-- ✅ **Fully functional** - All features working
-- ✅ **Well-tested** - Simple test validates behavior
-- ✅ **Documented** - Complete guides available
-- ✅ **Modular** - Easy to integrate into existing levels
-
-## Next Steps
-
-1. **Test the simple version** to verify functionality
-2. **Integrate into your main game** using the patterns shown
-3. **Customize sprites and effects** to match your game's style
-4. **Adjust difficulty parameters** in the export variables
-5. **Add boss-specific audio** and music tracks
-
-The Giant Boss system is now production-ready! 🎮
+The Giant Boss is production‑ready and integrated with UI, FX, Audio, and Persistence systems.

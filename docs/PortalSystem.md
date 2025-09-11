@@ -123,7 +123,7 @@ core.color = Color(1.0, 0.9, 1.0, 0.9)
 
 ### **Debug Integration**
 - **Debug Borders**: Cyan border around portal area
-- **F12 Toggle**: Show/hide portal boundaries
+- **Toggle via `debug_toggle` action**: See input map in `project.godot`
 - **Development Aid**: Clear visual indication of interaction zone
 
 ## 🔄 Completion Flow

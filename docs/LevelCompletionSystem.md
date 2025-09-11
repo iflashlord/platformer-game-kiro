@@ -1,174 +1,88 @@
 # Level Completion System
 
-This document describes the comprehensive level completion system with explosion effects, progression tracking, and level map navigation.
+This document reflects the current implementation of completion detection, results UI, persistence, and progression in the project.
 
-## 🎉 Level Completion Flow
+## Flow Overview
 
-### 1. **Completion Detection**
-- Player reaches the "Finish" section marker
-- Level completion is triggered automatically
-- Timer stops and final stats are calculated
+### Completion Detection
+- Player enters `LevelPortal` (emits `EventBus.level_portal_entered`).
+- `levels/BaseLevel.gd` listens and calls `_on_level_completed()`.
+- Timer stops and stats are captured (score, time, deaths, hearts, gems).
 
-### 2. **Explosion Effect**
-- Large celebration explosion at player position (150 radius, non-damaging)
-- Golden screen flash effect (0.5 seconds)
-- Screen shake for impact
-- Celebration particle burst (50 particles)
-- "Level Complete" sound effect
-- 1.5 second delay for visual impact
+### Pause & Cleanup
+- Game pauses: `Game.is_paused = true` and `get_tree().paused = true`.
+- `PauseManager` is told to hide/cleanup any pause menu before showing results.
 
-### 3. **Results Screen**
-- Shows level completion statistics:
-  - **Level Name**: Themed display name
-  - **Completion Time**: MM:SS.MS format
-  - **Hearts Remaining**: X/5 with color coding
-  - **Hidden Gems**: X/Y with collection status
-  - **Final Score**: Calculated with bonuses
-- **Performance Colors**:
-  - 🟢 Green: 4-5 hearts remaining
-  - 🟡 Yellow: 2-3 hearts remaining  
-  - 🔴 Red: 0-1 hearts remaining
-  - 🟡 Gold: Perfect gem collection
-  - 🔵 Cyan: Some gems found
-  - ⚫ Gray: No gems found
+### Optional FX & Audio
+- Optional completion FX via `systems/LevelCompletion.gd` and `systems/FX.gd` (flash/shake).
+- Completion SFX: `Audio.play_sfx("level_complete")` used by the FX path and UI.
 
-### 4. **Navigation Options**
-- **🔄 Retry Level**: Restart same level with full hearts
-- **🗺️ Level Map**: Return to level selection map
-- **🏠 Main Menu**: Return to main menu
+### Results Screen
+- `ui/LevelResults.tscn/gd` is instanced and shown.
+- Displays: Level name, time, hearts remaining, hidden gems found/total, final score.
+- Performance coloring: hearts (green/yellow/red), gems (gold/cyan/gray), score tier tint.
+- “Next Level” button auto-evaluates unlock status; shows lock reason text when locked.
+- Buttons: Next (or Game Complete), Retry, Level Select, Main Menu.
 
-## 🗺️ Level Map System
+## Data Saved
 
-### **Vertical Progression**
-Levels are arranged from bottom to top, representing climbing difficulty:
-
-```
-☁️  LEVEL 03: SKY REALM        (Advanced)
-    ↑ Unlock: Complete Level 02
-    
-🏭  LEVEL 02: INDUSTRIAL ZONE   (Intermediate)  
-    ↑ Unlock: Complete Level 01
-    
-🌲  LEVEL 01: FOREST ADVENTURE  (Beginner)
-    ↑ Unlock: Complete Tutorial
-    
-🎮  TUTORIAL: LEARN THE BASICS  (Always Available)
-```
-
-### **Level Status Display**
-Each level shows:
-- **🔒 Locked**: Gray button, "Complete previous level to unlock"
-- **🆕 Available**: Cyan text, "Not completed yet - ready to play!"
-- **✅ Completed**: Performance-based colors showing best stats
-- **🏆 Perfect**: Gold highlighting for perfect completion
-
-### **Statistics Tracking**
-For each completed level:
-- **⏱️ Best Time**: Fastest completion time
-- **💎 Hidden Gems**: Gems found / Total gems
-- **❤️ Best Hearts**: Most hearts remaining at completion
-- **🏆 Best Score**: Highest score achieved
-
-## 💾 Persistence System
-
-### **Completion Data Structure**
+### Completion Data Structure (BaseLevel)
 ```gdscript
 {
-    "level_name": "Level01",
-    "completion_time": 45.67,
-    "hearts_remaining": 4,
-    "gems_found": 1,
-    "total_gems": 1,
-    "score": 2150,
-    "completed": true,
-    "timestamp": 1234567890
+  "level_name": "Level01",              # or level_id
+  "score": 2150,
+  "completion_time": 45.67,             # seconds
+  "deaths": 1,
+  "hearts_remaining": 4,                # 0..5
+  "gems_found": Game.get_total_gems(),  # total collected (incl. visible)
+  "total_gems": <count of gems in scene>,
+  "hidden_gems_collected": <count>,
+  "total_hidden_gems": <count>,
+  "completed": true
 }
 ```
 
-### **Best Performance Logic**
-New completion is considered "better" if:
-1. **More hearts remaining** (primary)
-2. **More gems found** (secondary)  
-3. **Faster completion time** (tertiary)
+Notes:
+- `BaseLevel` counts gems via groups `gems` and `hidden_gems` (see `_count_total_*` methods).
+- `LevelResults` confirms save by calling `Persistence.save_level_completion` again for safety.
 
-### **Progress Unlocking**
-- **Tutorial**: Always available
-- **Level 01**: Unlocked after Tutorial completion
-- **Level 02**: Unlocked after Level 01 completion
-- **Level 03**: Unlocked after Level 02 completion
+## Results UI Details
 
-## 🎮 Health System Integration
+### Labels
+- Time: formatted as `MM:SS.ms`.
+- Hearts: `X/5` with performance color.
+- Hidden Gems: `found/total` with gold/cyan/gray tint.
+- Score: 4‑digit padded with a color tier.
 
-### **Heart Reset**
-- **New Level Start**: Always begin with 5/5 hearts
-- **Level Retry**: Reset to full health
-- **Death Zones**: Lose 1 heart when falling
-- **Game Over**: When 0 hearts remain
+### Next Level Logic
+- Determines next via `Persistence.get_next_level_in_progression(current)` or hardcoded fallback map.
+- Checks `Persistence.is_level_unlocked(next)` after saving completion.
+- If locked: button disabled with requirement text (e.g., “Need 100 points”).
+- If final level: shows “GAME COMPLETE!” with a subtle glow.
 
-### **Heart Tracking**
-- Hearts remaining at completion are saved
-- Displayed in level map as performance indicator
-- Color-coded for quick visual assessment
+### Navigation
+- Keyboard/gamepad focus across the four buttons, with hover/focus SFX and tweened highlights.
+- Exiting results unpauses the game (`Game.is_paused = false; get_tree().paused = false`).
 
-## 🏆 Scoring System
+## Unlocking & Level Map
 
-### **Base Scores**
-- **Tutorial**: 500 points
-- **Level 01**: 1000 points  
-- **Level 02**: 1500 points
-- **Level 03**: 2000 points
+- Unlock rules are data‑driven (`data/level_map_config.json`).
+- Supported checks: `previous_level` and `min_score`; future fields may appear but are not enforced yet.
+- The Level Map shows lock reasons directly on cards and computes overall progress.
 
-### **Bonus Calculations**
-- **Time Bonus**: Faster completion = more points
-- **Heart Bonus**: 100 points per heart remaining
-- **Gem Bonus**: 100-200 points per gem (varies by level)
-- **Perfect Bonus**: 250-1000 points for 100% completion
+## Health & Retry
 
-### **Performance Tiers**
-- **🥇 Gold**: 2500+ points (perfect performance)
-- **🥈 Silver**: 2000+ points (excellent)
-- **🥉 Bronze**: 1500+ points (good)
-- **✅ Complete**: Any completion
+- Levels start with full hearts; `HealthSystem` integrates with HUD and deaths increment stats.
+- Retry from results uses standard scene reload and resets hearts/timers.
 
-## 🎯 Tutorial System
+## Scoring Notes
 
-### **Tutorial Level**
-- **Purpose**: Teach basic mechanics
-- **Elements**: Movement, jumping, double jump, collectibles, hazards
-- **Completion**: Required to unlock Level 01
-- **Simplified**: Lower difficulty and scoring
+- Score accumulation comes from fruits, gems, enemies, and bonuses implemented per level.
+- Hearts remaining and gem completion are emphasized in results and level select.
 
-### **Learning Objectives**
-- **Movement**: WASD controls
-- **Jumping**: Space for jump, double jump mechanics
-- **Collection**: Orange fruits and purple gems
-- **Hazards**: Gray spikes and red death zones
-- **Completion**: Reach finish marker
+## Debug & Deployment
 
-## 🔧 Debug Features
+- Debug borders and logs are controlled via `DebugSettings` and `DeploymentConfig`.
+- Web/desktop parity maintained; results UI and persistence are export‑safe.
 
-### **Debug Toggle**
-- **F12**: Toggle debug borders during gameplay
-- **Development**: Borders enabled by default
-- **Production**: Easily disabled with single flag
-
-### **Level Testing**
-- **AllLevelsDemo.tscn**: Comprehensive feature showcase
-- **Individual Levels**: Each level can be tested independently
-- **Completion Testing**: Full completion flow testing
-
-## 🚀 Deployment Configuration
-
-### **Production Settings**
-```gdscript
-# In DeploymentConfig.gd
-const PRODUCTION_BUILD = true  # Disable all debug features
-```
-
-### **Debug Removal**
-- Debug borders automatically hidden
-- Debug labels removed
-- Console logs minimized
-- Performance optimized
-
-This system provides a complete, professional level progression experience with visual feedback, performance tracking, and smooth navigation between levels!
+This system pauses cleanly, saves robustly, and guides players forward with clear unlock messaging and a polished results screen.

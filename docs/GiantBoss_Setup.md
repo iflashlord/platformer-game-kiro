@@ -2,53 +2,43 @@
 
 ## Quick Setup
 
-The Giant Boss system has been created with all necessary components. Here's how to get it working:
+The Giant Boss is ready to use in the project. Use the bundled boss level to verify behavior, or integrate the boss into other levels.
 
 ### 1. Files Created
-- ✅ `actors/GiantBoss.gd` & `.tscn` - Main boss
-- ✅ `actors/TNTCrate.gd` & `.tscn` - Explosive crates  
-- ✅ `actors/Explosion.tscn` - Explosion effects
-- ✅ `ui/BossHealthUI.gd` & `.tscn` - Health display
-- ✅ `examples/Level_GiantBoss.gd` & `.tscn` - Test level
-- ✅ `examples/Level_GiantBoss_Simple.tscn` - Fallback test level
+- ✅ `actors/GiantBoss.gd` / `actors/GiantBoss.tscn` — Main boss
+- ✅ `actors/InteractiveCrate.gd` / `actors/InteractiveCrate.tscn` — TNT crates via `crate_type = "tnt"`
+- ✅ `actors/Explosion.gd` / `actors/Explosion.tscn` — Explosion effects
+- ✅ `ui/BossHealthUI.gd` / `ui/BossHealthUI.tscn` — Boss health display
+- ✅ `levels/Level_GiantBoss.gd` / `levels/Level_GiantBoss.tscn` — Boss level (wired and ready)
 
 ### 2. Testing the Boss
 
-#### Option A: Run Test Script
+#### Option A: From Main Menu
+- Run the game and use Level Select to open “The Giant’s Last Stand”.
+
+#### Option B: Direct Scene
 ```bash
-./test_boss.sh
+godot --path . --main-scene res://levels/Level_GiantBoss.tscn
 ```
 
-#### Option B: Manual Testing
-```bash
-# macOS
-/Applications/Godot.app/Contents/MacOS/Godot --main-scene res://examples/Level_GiantBoss.tscn
-
-# Linux/Windows
-godot --main-scene res://examples/Level_GiantBoss.tscn
-```
-
-#### Option C: Open in Godot Editor
-1. Open Godot
-2. Navigate to `examples/Level_GiantBoss.tscn`
-3. Click "Play Scene" (F6)
+#### Option C: Editor
+1. Open `levels/Level_GiantBoss.tscn`
+2. Click Play Scene (F6)
 
 ### 3. If You Get Scene Reference Errors
 
-The autofix may have changed some UIDs. Here's how to fix:
+If UIDs/resources were changed, re-instance the boss/UI references:
 
 #### Method 1: Re-instance Scenes
-1. Open `examples/Level_GiantBoss.tscn` in Godot
+1. Open `levels/Level_GiantBoss.tscn` in Godot
 2. Delete the GiantBoss and Player nodes
 3. Re-add them by dragging from FileSystem:
    - `actors/GiantBoss.tscn` → position at (640, 550)
    - `actors/Player.tscn` → position at (200, 600)
 4. Save the scene
 
-#### Method 2: Use Simple Level
-1. Open `examples/Level_GiantBoss_Simple.tscn`
-2. Manually add the boss and player scenes
-3. Test from there
+#### Method 2: Minimal Test
+- Create a new scene with ground, Player, and GiantBoss; add `ui/BossHealthUI.tscn` under a CanvasLayer.
 
 ### 4. Manual Integration Steps
 
@@ -107,18 +97,18 @@ func _on_tnt_placed(position: Vector2):
 - Verify `show_boss_ui()` is called
 
 #### TNT Not Exploding
-- Check TNT collision layers and masks
-- Ensure explosion area is properly configured
-- Verify timer connections
+- TNT is provided by `actors/InteractiveCrate.tscn` with `crate_type = "tnt"`.
+- Check crate masks and ensure the fuse timer/animation are active.
+- Verify nearby explosions trigger chain reactions (see `actors/Explosion.gd`).
 
 ### 6. Customization
 
 #### Adjust Boss Difficulty
 ```gdscript
-# In GiantBoss.gd, modify export variables:
-@export var max_health: int = 3  # Easier (default: 5)
-@export var walk_speed: float = 30.0  # Slower (default: 50.0)
-@export var tnt_drop_interval: float = 5.0  # Less frequent (default: 3.0)
+# In GiantBoss.gd, modify export variables (examples):
+@export var max_health: int = 5
+@export var walk_speed: float = 50.0
+@export var tnt_drop_interval: float = 3.0
 ```
 
 #### Change Boss Appearance

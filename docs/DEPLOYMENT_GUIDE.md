@@ -9,14 +9,11 @@ This guide covers deploying Glitch Dimension to production environments with all
 ### Development Environment
 - Godot 4.4+ installed
 - Git for version control
-- Node.js (for web deployment tools)
-- Platform-specific SDKs (if targeting native platforms)
+- Node.js (optional, for Vercel CLI)
 
 ### Production Systems
-- Vercel account (for web deployment)
-- Analytics service (optional)
-- Error tracking service (optional)
-- CDN for assets (optional)
+- Vercel account (for web hosting)
+- CDN (optional)
 
 ## 🔧 Build Configuration
 
@@ -28,8 +25,8 @@ Ensure the following export presets are configured in Godot:
 ```
 Name: Web
 Platform: Web
-Features: gl_compatibility
-Export Path: build/web/index.html
+Features: GL Compatibility
+Export Path: web-dist/index.html
 ```
 
 #### Desktop Exports
@@ -59,20 +56,9 @@ audio/buses/default_bus_layout = "res://audio/sfx/default_bus_layout.tres"
 
 ## 🏗️ Build Process
 
-### Automated Build (Recommended)
+### Automated Build (Optional)
 
-Use the BuildManager tool for consistent builds:
-
-```bash
-# Build for web
-godot --script tools/BuildManager.gd -- --build-web
-
-# Build for all platforms
-godot --script tools/BuildManager.gd -- --build-all
-
-# Clean build directory
-godot --script tools/BuildManager.gd -- --clean
-```
+The `tools/BuildManager.gd` script can assist with repeatable exports. For simple web hosting, a manual export is sufficient.
 
 ### Manual Build
 
@@ -80,7 +66,7 @@ For manual builds:
 
 ```bash
 # Web build
-godot --headless --export-release "Web" build/web/index.html
+godot --headless --export-release "Web" web-dist/index.html
 
 # Windows build
 godot --headless --export-release "Windows Desktop" build/windows/glitch-dimension.exe
@@ -99,43 +85,12 @@ godot --headless --export-release "macOS" build/macos/glitch-dimension.zip
 1. **Setup Vercel Project**
    ```bash
    npm install -g vercel
-   cd build/web
+   cd web-dist
    vercel --prod
    ```
 
-2. **Configure vercel.json**
-   ```json
-   {
-     "version": 2,
-     "builds": [
-       {
-         "src": "**/*",
-         "use": "@vercel/static"
-       }
-     ],
-     "routes": [
-       {
-         "src": "/(.*)",
-         "dest": "/$1"
-       }
-     ],
-     "headers": [
-       {
-         "source": "/(.*)",
-         "headers": [
-           {
-             "key": "Cross-Origin-Embedder-Policy",
-             "value": "require-corp"
-           },
-           {
-             "key": "Cross-Origin-Opener-Policy",
-             "value": "same-origin"
-           }
-         ]
-       }
-     ]
-   }
-   ```
+2. **Headers**
+   This repo ships a `vercel.json` configured for Godot Web exports (COOP/COEP, CORS, correct MIME types for wasm/pck, and caching). No additional Vercel config is required.
 
 3. **Environment Variables**
    Set these in Vercel dashboard:
@@ -150,7 +105,7 @@ godot --headless --export-release "macOS" build/macos/glitch-dimension.zip
 For other hosting providers:
 
 1. **Static File Hosting**
-   - Upload entire `build/web/` directory
+   - Upload the `web-dist/` directory
    - Ensure proper MIME types for `.wasm` and `.pck` files
    - Configure CORS headers if needed
 
@@ -192,29 +147,7 @@ godot --headless --export-release "macOS" build/macos/glitch-dimension.zip
 
 ## 📊 Production Configuration
 
-### 1. Analytics Setup
-
-Configure analytics in `systems/Analytics.gd`:
-
-```gdscript
-# Enable analytics for production
-const ANALYTICS_ENABLED = true
-
-# Configure your analytics endpoint
-const ANALYTICS_ENDPOINT = "https://your-analytics-service.com/api/events"
-```
-
-### 2. Error Reporting
-
-Configure error reporting in `systems/ErrorHandler.gd`:
-
-```gdscript
-# Enable error reporting for production
-const ERROR_REPORTING_ENABLED = true
-
-# Configure your error reporting service
-const ERROR_ENDPOINT = "https://your-error-service.com/api/errors"
-```
+Analytics in this project is local-only (no network). See `docs/Analytics.md` for details.
 
 ### 3. Performance Monitoring
 
@@ -256,19 +189,7 @@ Ensure compliance with privacy regulations:
 ## 📈 Monitoring & Maintenance
 
 ### 1. Health Checks
-
-Implement health check endpoints:
-
-```gdscript
-# In your web build, add health check functionality
-func health_check() -> Dictionary:
-    return {
-        "status": "healthy",
-        "version": ProjectSettings.get_setting("application/config/version"),
-        "timestamp": Time.get_datetime_string_from_system(),
-        "performance": PerformanceMonitor.get_performance_data()
-    }
-```
+For static hosting, health checks are typically handled at the CDN/hosting layer.
 
 ### 2. Log Monitoring
 
@@ -295,7 +216,7 @@ For updates:
 
 3. **Deploy**
    ```bash
-   cd build/web
+   cd web-dist
    vercel --prod
    ```
 
@@ -351,7 +272,7 @@ godot --script tools/BuildManager.gd -- --build-all
 ### 2. Deployment
 ```bash
 # Deploy to production
-cd build/web
+cd web-dist
 vercel --prod
 ```
 

@@ -111,13 +111,8 @@ The Giant Boss is a multi-phase enemy that provides an escalating challenge as t
 4. Ensure proper collision layers are set
 
 ### Testing
-```bash
-# Run the test level
-./test_boss.sh
-
-# Or manually:
-godot --main-scene res://examples/Level_GiantBoss.tscn
-```
+- From the game: open “The Giant’s Last Stand” via Level Select.
+- Direct scene: `godot --path . --main-scene res://levels/Level_GiantBoss.tscn`
 
 ### Customization Options
 
@@ -129,8 +124,8 @@ godot --main-scene res://examples/Level_GiantBoss.tscn
 
 #### TNT System
 - `tnt_drop_interval`: Time between TNT drops (default: 3.0)
-- `explosion_radius`: TNT explosion range (default: 100.0)
-- `fuse_time`: TNT fuse duration (default: 3.0)
+- `explosion_radius`: TNT explosion range (configured on `InteractiveCrate`)
+- `fuse_time`: TNT fuse duration (configured on `InteractiveCrate`)
 
 #### Visual Customization
 - Replace sprite animations in `GiantBoss.tscn`
@@ -154,6 +149,10 @@ godot --main-scene res://examples/Level_GiantBoss.tscn
 - Screen shake on damage and wall hits
 - Hit-stop effects for impact feedback
 - Particle systems for visual polish
+
+### Level Flow
+- `levels/Level_GiantBoss.gd` hides the exit portal until `boss_defeated`.
+- On defeat, the portal animates in and allows level completion.
 
 ## Best Practices
 
@@ -180,7 +179,7 @@ godot --main-scene res://examples/Level_GiantBoss.tscn
 ### Common Issues
 - **Boss falls through floor**: Check collision layers
 - **Player can't damage boss**: Verify stomp detector setup
-- **TNT doesn't explode**: Check explosion area configuration
+- **TNT doesn't explode**: InteractiveCrate must be `crate_type = "tnt"`; check fuse/animations
 - **Health UI not updating**: Ensure EventBus connections
 
 ### Debug Features

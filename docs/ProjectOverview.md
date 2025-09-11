@@ -10,200 +10,183 @@
 - **Resolution**: 1280x720 (16:9 aspect ratio)
 - **Renderer**: GL Compatibility (optimal web support)
 
-### Key Features
-- Dimension-shifting mechanics with visual feedback
-- Advanced platformer movement (coyote time, jump buffering)
-- Progressive level system with unlocks
-- Touch controls for mobile devices
-- Audio system with 3-bus architecture
-- Object pooling for performance
-- Signal-based event system
-- Cross-platform save system
+### Current Highlights
+- **Dimension Flip**: Layer A/B switching with FX and audio.
+- **Tight Platforming**: Coyote time, jump buffer, variable/double jump.
+- **Level Select (Pro)**: Data‑driven level map with unlock rules, cards, and thumbnails.
+- **Boss Battle**: Giant Boss with dedicated health UI.
+- **Saves & Progress**: Cross‑platform persistence (web/local file) with per‑level stats.
+- **Pause & Scene Flow**: Central pause manager and scene transitions.
+- **Touch Ready**: On‑screen controls for web/mobile.
+- **Analytics (offline)**: Local gameplay/UI/performance event logging.
 
 ## Project Structure
 
 ### Core Systems (`systems/`)
-- **Game.gd** - Main game state management
-- **LevelLoader.gd** - Async level loading with progress
-- **Audio.gd** - 3-bus audio system with pooling
-- **Persistence.gd** - Cross-platform save system
-- **FX.gd** - Visual effects (shake, hit-stop, flash)
-- **Respawn.gd** - Player respawn management
-- **DimensionManager.gd** - Layer switching mechanics
-- **ObjectPool.gd** - Performance optimization
-- **EventBus.gd** - Signal-based communication
+- `Game.gd` — Game state, scoring, attempts.
+- `LevelLoader.gd` — Async scene loading.
+- `SceneManager.gd` — Scene transitions.
+- `PauseManager.gd` — Pause overlay + flow.
+- `Audio.gd` — Master/Music/SFX buses, SFX pool, volume persistence.
+- `FX.gd` — Screen shake, flashes, hit‑stop.
+- `DimensionManager.gd` — Dimension switching feedback and rules.
+- `Respawn.gd` — Checkpoints and respawn.
+- `Persistence.gd` — Profiles, level completion, stats.
+- `LevelCompletion.gd` — Completion flow and effects.
+- `Analytics.gd` — Local event log (`user://analytics_log.json`).
+- `ObjectPool.gd` — Reuse effects/objects.
+- `HealthSystem.gd`, `GameTimer.gd`, `EventBus.gd`, `PerformanceMonitor.gd` — Support systems.
 
 ### Actors (`actors/`)
-- **Player.tscn/gd** - Main character with advanced movement
-- **EnemyPatrol.tscn/gd** - Patrolling enemy AI
-- **EnemyCharger.tscn/gd** - Charging enemy AI
-- **CollectibleFruit.tscn/gd** - Collectible fruits
-- **HiddenGem.tscn/gd** - Hidden collectible gems
-- **Crate.tscn/gd** - Interactive crates
-- **Spike.tscn/gd** - Hazard spikes
-- **FlipGate.tscn/gd** - Dimension switching gates
-- **SectionMarker.tscn/gd** - Level progression markers
-- **Explosion.tscn/gd** - Explosion effects
+- `Player.*` — Movement, double jump, stomp, i‑frames.
+- `LevelPortal.*` — Exit/complete level.
+- `Collectible.*` (`CollectibleFruit`), `CollectibleGem.*`, `HiddenGem.*` — Scoring and secrets.
+- `InteractiveCrate.*`, `BounceCrate.*` — Breakable/interactive objects.
+- `Spike.*`, `DangerousSpike.*`, `DeathZone.*` — Hazards.
+- `JumpPad.*`, `DynamicPlatform.*`, `LayerPlatform.*` — Traversal.
+- `FlyingEnemy.*` — Patrol/chase enemy with stomp interaction.
+- `GiantBoss.*` — Multi‑phase boss encountered in final level.
 
 ### UI System (`ui/`)
-- **MainMenu.tscn/gd** - Main menu with navigation
-- **LevelSelect.tscn/gd** - Level selection screen
-- **PauseMenu.tscn/gd** - In-game pause menu
-- **Results.tscn/gd** - Level completion screen
-- **SettingsMenu.tscn/gd** - Audio/display settings
-- **TouchControls.tscn/gd** - Mobile touch controls
-- **GameUI.tscn/gd** - In-game UI management
+- `MainMenu.tscn/gd` — Main menu and navigation.
+- `LevelMapPro.tscn/gd` — Professional level select.
+- `PauseMenu.tscn/gd` — Pause overlay and actions.
+- `LevelResults.tscn/gd` — Completion summary with continue options.
+- `SettingsMenuStandalone.tscn/gd` — Settings + reset progress.
+- `AchievementsMenu.tscn/gd` — Achievements UI (early version).
+- `TouchControls.tscn/gd` — Mobile/web controls.
+- `GameHUD.tscn/gd` — In‑game HUD (health, pause button).
+- `BossHealthUI.tscn/gd` — Boss fight UI.
 
 ### Levels (`levels/`)
-- **Level00.tscn/gd** - Tutorial level
-- **CrateTest.tscn/gd** - Crate mechanics tutorial
-- **CollectibleTest.tscn/gd** - Collectible tutorial
-- **DimensionTest.tscn/gd** - Dimension flip tutorial
-- **EnemyGauntlet.tscn/gd** - Enemy encounter test
-- **Level01.tscn/gd** - First Steps
-- **Level02.tscn/gd** - Forest Canopy
-- **Level03.tscn/gd** - Crystal Caves
-- **Chase01.tscn/gd** - The Great Escape
- 
+Playable levels are defined by scripts/scenes and the data‑driven map (`data/level_map_config.json`).
+- `Level00` — “First Steps” — order 1 — difficulty 1 — est 2–3 min — unlock: none.
+- `Level01` — “Mystic Realms” — order 2 — difficulty 2 — est 4–5 min — unlock: previous `Level00`.
+- `Level02` — “Parallel Worlds” — order 3 — difficulty 3 — est 5–7 min — unlock: previous `Level01`, min_score 100.
+- `Level_GiantBoss` — “The Giant’s Last Stand” — order 4 — difficulty 5 — est 8–12 min — unlock: previous `Level02`, min_score 10.
 
 ### Audio (`audio/`)
-- **default_bus_layout.tres** - Audio bus configuration
-- **music/** - Background music tracks
-- **sfx/** - Sound effects
+- `sfx/default_bus_layout.tres` — Audio bus configuration (Master/Music/SFX).
+- `music/` — Background music.
+- `sfx/` — Sound effects and UI sounds.
+- `narration/` — Narration/hints (ducking supported in code).
 
-### Web Assets (`web/`)
-- **index.html** - Landing page with controls guide
-- **manifest.json** - Progressive Web App configuration
-- **icon-*.png** - PWA icons for different sizes
-- **favicon.ico** - Browser favicon
+### Web Export (`web-dist/`)
+- `index.html`, `.js`, `.wasm`, `.pck` — Prebuilt web export bundle.
+- Static headers and caching via `vercel.json`.
 
 ## Input System
 
 ### Keyboard Controls
-- **WASD/Arrow Keys** - Movement
-- **Space/W** - Jump
-- **F** - Dimension flip
-- **ESC** - Pause
-- **R** - Restart level
+- **WASD/Arrow Keys** — Movement
+- **Space/W** — Jump
+- **F** — Dimension flip
+- **ESC** — Pause
+- **R** — Restart level
 
 ### Touch Controls (Mobile)
-- **Left/Right buttons** - Movement with hold-to-repeat
-- **Jump button** - Jump action
-- **DIM button** - Dimension flip
-- Auto-detected on touch devices
+- **Left/Right buttons** — Movement with hold‑to‑repeat
+- **Jump button** — Jump action
+- **DIM button** — Dimension flip
+- Auto‑detected on touch devices
 
 ## Audio Architecture
 
 ### Bus Structure
-- **Master** - Overall volume control
-- **Music** - Background music bus
-- **SFX** - Sound effects bus
+- **Master** — Overall volume control
+- **Music** — Background music bus
+- **SFX** — Sound effects bus
 
 ### Features
-- 10-player SFX pool for performance
-- Real-time volume controls
-- Automatic caching and loading
-- Cross-platform audio support
+- SFX player pool for performance
+- Runtime volume control with persistence
+- Lightweight music/narration handling
+- Cross‑platform audio support
 
 ## Performance Optimizations
 
 ### Object Pooling
-- Particle systems
-- Projectiles and debris
-- Temporary effects
-- Collectible items
+- Particle systems and temporary FX
+- Debris and reusable objects
+- Collectibles and transient nodes
 
 ### Rendering
-- Sprite atlasing for batched rendering
 - Texture compression for web
-- Efficient collision detection
-- Layer-based culling
+- Efficient collisions and grouping
+- Layer‑based culling and dimension masks
 
-### Memory Management
-- Resource caching
-- Automatic cleanup
-- Smart loading/unloading
-- Cross-platform save optimization
+### Memory & Loading
+- Resource caching and cleanup
+- Async scene loading via `LevelLoader`
+- Save/profile data kept minimal
 
 ## Level Progression System
 
-### Unlock Requirements
-- Score-based progression
-- Time-based challenges
-- Collectible requirements
-- Relic system (Bronze/Silver/Gold)
+### Data‑Driven Unlocks (`data/level_map_config.json`)
+- Per‑level `unlock_requirements` (previous level, min score, etc.).
+- Level card visuals (title, color, thumbnail, difficulty, time).
+- Optional dev mode flags (`unlock_all`, `show_debug_info`).
 
 ### Level Types
-- **Tutorial levels** - Teaching mechanics
-- **Standard levels** - Progressive difficulty
-- **Chase levels** - High-speed challenges
-- **Time trials** - Speed-based challenges
+- **Tutorial** — Introductory mechanics (Level00).
+- **Standard** — Progressive challenges (Level01–02).
+- **Boss** — Final fight (Level_GiantBoss).
 
 ## Web Deployment
 
 ### Export Configuration
-- HTML5 optimized settings
-- Progressive Web App support
-- Touch device compatibility
-- Responsive design
+- HTML5 optimized (GL Compatibility).
+- Touch and keyboard input.
+- Responsive canvas.
 
-### CI/CD Pipeline
-- GitHub Actions automation
-- Multi-platform builds
-- Vercel deployment
-- Artifact management
+### Deployment
+- Export to `web-dist/` and deploy (e.g., Vercel).
 
 ## Development Tools
 
 ### Testing Scenes
-- **AudioTest.tscn** - Audio system testing
-- **VFXTest.tscn** - Visual effects testing
-- **PerformanceTest.tscn** - Performance monitoring
-- **TouchControlsTest.tscn** - Touch input testing
+- `systems/AudioTest.tscn` — Audio system checks.
+- `systems/PerformanceTest.tscn` — Performance monitoring.
+- `ui/TouchControlsTest.tscn` — Touch input testing.
 
 ### Documentation
-- **TextureGuide.md** - Asset creation guide
-- **WebOptimization.md** - Performance guide
-- **Deployment.md** - CI/CD setup guide
-- **LevelRoutes.json** - Level design reference
+- `docs/LevelMapConfig.md` — Level map schema and behavior.
+- `docs/PortalSystem.md` — Portals and completion flow.
+- `docs/MainMenu_Features.md` — Main menu details.
+- `docs/PauseSystem_Features.md` — Pause system behavior.
+- `docs/WebOptimization.md` — Web build guidance.
+- `docs/DEPLOYMENT_GUIDE.md` — Deployment steps.
+- `docs/AssetChecklist.md`, `docs/Assets.md` — Asset requirements.
 
 ## Asset Requirements
 
 ### Textures Needed
-- Player character sprites (32x32)
-- Enemy sprites (32x32 each)
-- Collectible sprites (16x16 each)
-- Hazard and crate sprites (32x32 each)
-- UI elements and buttons
+- Player/enemy sprites (generally 32×32 tiles)
+- Collectibles and gems (16×16)
+- Hazards and crates (32×32)
+- UI elements/buttons and level thumbnails
 
 ### Audio Needed
 - Background music tracks
-- Jump/land sound effects
-- Collectible pickup sounds
-- Menu interaction sounds
-- Ambient level sounds
+- Jump/land, collect, portal, UI SFX
+- Ambient/narration where applicable
 
 ### Icons Needed
-- Game icon (128x128 SVG)
-- PWA icons (144x144, 180x180, 512x512 PNG)
-- Splash screen (1280x720 PNG)
-- Favicon (16x16, 32x32, 48x48 ICO)
+- Game icon, PWA icons, splash, favicon
 
 ## Quality Assurance
 
 ### Testing Checklist
 - [ ] All levels load without errors
-- [ ] Input controls work on all platforms
-- [ ] Audio system functions properly
-- [ ] Save/load system works correctly
-- [ ] Performance meets targets (60 FPS)
-- [ ] Web deployment successful
-- [ ] Mobile touch controls responsive
-- [ ] Progressive Web App features work
+- [ ] Input works on keyboard and touch
+- [ ] Audio buses and volumes function
+- [ ] Save/load and unlocks behave correctly
+- [ ] Performance meets 60 FPS target
+- [ ] Web deployment loads and plays
 
 ### Performance Targets
 - **Frame Rate**: 60 FPS on target devices
-- **Memory Usage**: Under 1GB RAM
+- **Memory Usage**: Under 1 GB RAM
 - **Loading Time**: Under 10 seconds initial load
 - **File Size**: Under 50MB total download
 
@@ -215,7 +198,7 @@
 ✅ Audio and visual effects
 ✅ Cross-platform saves
 ✅ Web optimization
-✅ CI/CD pipeline
+✅ Web deployment configured
 ✅ Documentation complete
 
 ### Pending Assets

@@ -1,23 +1,23 @@
 # Asset Requirements for Web Deployment
 
-## Required Web Assets
+## Web Export Assets
+
+The exported web game is placed in `web-dist/` (index.html/js/wasm/pck). If you use a custom HTML shell, include:
 
 ### Favicon
-- **File**: `web/favicon.ico`
-- **Size**: 16x16, 32x32, 48x48 pixels
-- **Format**: ICO format with multiple sizes
-- **Purpose**: Browser tab icon
+- **Path**: `web-dist/favicon.ico`
+- **Size**: 16x16, 32x32, 48x48
+- **Format**: ICO
 
-### Preview Image
-- **File**: `web/preview.png`
-- **Size**: 1200x630 pixels (Open Graph standard)
-- **Format**: PNG with transparency support
-- **Purpose**: Social media sharing preview
+### Preview Image (optional)
+- **Path**: `web-dist/preview.png`
+- **Size**: 1200x630 (Open Graph)
+- **Format**: PNG
 
-### App Icons (Progressive Web App)
-- **144x144**: `web/icon-144.png`
-- **180x180**: `web/icon-180.png`
-- **512x512**: `web/icon-512.png`
+### App Icons (optional PWA)
+- **144x144**: `web-dist/icon-144.png`
+- **180x180**: `web-dist/icon-180.png`
+- **512x512**: `web-dist/icon-512.png`
 
 ## Creating Assets
 
@@ -44,7 +44,7 @@ convert favicon-16.png favicon-32.png favicon-48.png favicon.ico
 
 ## Asset Integration
 
-### HTML Meta Tags
+### HTML Meta Tags (if using a custom shell)
 ```html
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
@@ -52,7 +52,7 @@ convert favicon-16.png favicon-32.png favicon-48.png favicon.ico
 ```
 
 ### Vercel Configuration
-Assets in `web/` directory are automatically served as static files by Vercel.
+`vercel.json` configures headers/MIME/caching for Godot’s web export.
 
 ## Asset Checklist
 

@@ -7,10 +7,9 @@ Game Start
     ↓
 Main Menu (MainMenu.tscn)
     ├── PLAY → Level00 (Tutorial)
-    ├── LEVEL SELECT → LevelSelect.tscn
-    │   ├── Level List (with unlock status)
-    │   ├── PLAY buttons → Load selected level
-    │   ├── TIME TRIAL buttons → Load time trial mode
+    ├── LEVEL SELECT → LevelMapPro.tscn
+    │   ├── Level Cards (unlock/score/hearts)
+    │   ├── ENTER/Click → Load selected level
     │   └── BACK TO MENU → MainMenu.tscn
     ├── OPTIONS → SettingsMenuStandalone.tscn
     │   ├── Volume Controls (Master/Music/SFX)
@@ -25,14 +24,12 @@ Main Menu (MainMenu.tscn)
 - **Level00** (Tutorial) - Always available
 - **CrateTest** (Crate Chaos) - Always available
 
-### Progressive Unlocks:
-1. **CollectibleTest** - Unlocks after CrateTest with min score 50
-2. **DimensionTest** - Unlocks after CollectibleTest with min score 75
-3. **EnemyGauntlet** - Unlocks after DimensionTest with max 3 deaths
-4. **Level01** - Unlocks after EnemyGauntlet with min score 100
-5. **Level02** - Unlocks after Level01 with min score 150
-6. **Level03** - Unlocks after Level02 with min score 200
-7. **Chase01** - Unlocks after Level03 with min score 250 + 3 relics
+### Progressive Unlocks
+Unlock rules are defined in `data/level_map_config.json` and enforced by `systems/Persistence.gd` using:
+- `previous_level`
+- `min_score`
+- `deaths_max`
+- `relic_count`
 
 ## Key Features
 
@@ -43,10 +40,10 @@ Main Menu (MainMenu.tscn)
 - **Audio Integration**: Plays menu music on startup
 
 ### Level Select
-- **Visual Progress**: Shows best times and scores
-- **Lock Status**: Clear indication of locked/unlocked levels
-- **Time Trials**: Separate unlock requirements for speed challenges
-- **Refresh Function**: Updates level status without restart
+- **Visual Progress**: Cards show latest/best score and hearts remaining
+- **Lock Status**: Clear indication of locked/unlocked levels with requirement overlay
+- **Keyboard/Mouse**: Horizontal navigation with focus/hover effects
+- **Dev Mode**: Cheat unlock in view (press `0` five times quickly)
 
 ### Settings Menu
 - **Real-time Audio**: Volume changes apply immediately
@@ -67,21 +64,21 @@ Main Menu (MainMenu.tscn)
 1. **Game starts** → Main Menu with familiar interface
 2. **LEVEL SELECT** → See all progress and unlocked content
 3. **Choose any unlocked level** → Jump straight to preferred content
-4. **Time Trials** → Challenge modes for completed levels
+
 
 ## Technical Implementation
 
 ### Scene Management:
 - **MainMenu.tscn** - Entry point (set in project.godot)
-- **LevelSelect.tscn** - Dynamic level list generation
+- **LevelMapPro.tscn** - Professional level selection view
 - **SettingsMenuStandalone.tscn** - Standalone settings interface
-- **Level scenes** - Individual level files loaded via LevelLoader
+- **Level scenes** - Individual levels via `SceneManager`
 
 ### Data Flow:
-- **levels.json** - Level configuration and unlock requirements
-- **Persistence system** - Saves progress and settings
-- **LevelLoader** - Handles async level loading with progress
-- **Audio system** - Manages music and sound effects
+- **data/level_map_config.json** - Level metadata and unlock requirements
+- **Persistence** - Saves progress, completions, and settings
+- **SceneManager** - Simple scene changes
+- **Audio** - Music and SFX
 
 ### Input Handling:
 - **Keyboard**: Arrow keys, Enter, Escape for navigation
@@ -92,12 +89,13 @@ Main Menu (MainMenu.tscn)
 
 ### Adding New Levels:
 1. Create level scene file
-2. Add entry to levels.json with unlock requirements
-3. Level automatically appears in Level Select
+2. Add entry to `data/level_map_config.json` under `level_nodes`
+3. Add a thumbnail under `content/thumbnails/`
+4. Level appears in Level Map
 
 ### Modifying Unlock Requirements:
-- Edit levels.json unlock_requirements section
-- Supports score, time, death count, and custom criteria
+- Edit `data/level_map_config.json` unlock_requirements section
+- Supports previous level, min score, deaths max, relic count
 
 ### Styling Changes:
 - Modify .tscn files for visual appearance

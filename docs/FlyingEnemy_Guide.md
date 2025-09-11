@@ -104,16 +104,11 @@ signal player_damaged(enemy: FlyingEnemy, player: Node2D, damage: int)
 
 ## Testing
 
-Run the test level to see all patterns in action:
-```bash
-godot --main-scene res://levels/FlyingEnemyTest.tscn
-```
-
-The test level demonstrates:
-- All 5 flight patterns
-- Different enemy types and colors
-- Varying difficulty levels
-- Pattern customization examples
+Practical testing steps:
+- Add `actors/FlyingEnemy.tscn` to any level and set `flight_pattern` in the inspector.
+- Use a large open section to observe sine/circular patterns.
+- Set `flight_pattern = "Chase Player"` and verify detection range and pursue behavior.
+- Combine with hazards and platforms to tune difficulty.
 
 ## Integration with Existing Systems
 

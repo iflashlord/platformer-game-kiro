@@ -1,92 +1,70 @@
 # Professional Level Selection System
 
 ## Overview
-A completely redesigned level selection system featuring large thumbnail cards, score/hearts display, visual effects for locked/unlocked states, and full keyboard navigation support.
+A horizontal, card-based level selection with thumbnails, score/hearts display, clear lock states, keyboard/mouse navigation, and data-driven unlock rules.
 
-## 🎯 **Key Features**
+## Key Features
 
-### **Grid-Based Card Layout**
-- **Large Thumbnail Cards** (380x240 pixels) showing 2-5 per row based on screen size
-- **Score & Hearts Display** showing best score and performance rating (1-3 hearts)
-- **Visual Status Indicators** with clear locked/unlocked/completed states
-- **Responsive Grid** that adapts to different screen resolutions
-- **Professional Card Design** with gradients, overlays, and effects
+### Horizontal Cards
+- Large thumbnail cards (responsive; ~2.5 visible), horizontal scroll.
+- Score and hearts display using latest/best data and hearts remaining (0–5).
+- Lock overlay with requirement text (e.g., “Need 100 points on Level01”).
+- Polished overlays, gradients, and focus borders.
 
-### **Progress Tracking & Display**
-- **Overall Progress Bar** showing X/Y levels completed with percentage
-- **Individual Performance** with score and heart-based rating system
-- **Visual Achievement Status** (locked 🔒, available 🟢, completed ✅, perfect ⭐)
-- **Real-Time Statistics** integrated with game save data
-- **Performance-Based Hearts** (Bronze=1❤️, Silver=2❤️, Gold=3❤️)
+### Progress Display
+- Overall header: “X/Y Complete • Z Perfect • Total Score: N • Avg Hearts: H/5”.
+- Progress bar animates to completion percentage.
+- Real-time stats from `Persistence.get_level_completion(level_id)`.
 
-### **Visual Effects System**
-- **Lock/Unlock Animations** with smooth transitions and effects
-- **Hover Effects** with scaling and color changes
-- **Focus Indicators** with pulsing borders for keyboard navigation
-- **Completion Effects** with golden glow for perfect scores
-- **Sparkle Effects** for perfectly completed levels
+### Visual Effects
+- Hover/focus scaling and tint.
+- Golden tint + sparkle for perfect completions.
+- Dimmed cards for locked levels.
 
-### **Full Keyboard Navigation**
-- **Arrow Keys/WASD** for grid navigation (up/down/left/right)
-- **Enter/Space** to select and play levels
-- **ESC** to go back to main menu
-- **Visual Focus Indicators** showing current selection
-- **Smart Scrolling** to keep selected item visible
+### Navigation
+- Left/Right or A/D to change selection.
+- Enter/Space/Jump to activate level.
+- Esc/Pause to return to Main Menu.
+- Mouse wheel up/down scrolls horizontally.
+- Smart scrolling keeps selection centered.
 
-## 📁 **File Structure**
+## File Structure
 
 ```
 ui/
-├── LevelMapPro.tscn        # Professional level map scene
-├── LevelMapPro.gd          # Level map controller logic
-└── LevelMap.tscn           # Legacy level map (deprecated)
+├── LevelMapPro.tscn        # Level map scene
+└── LevelMapPro.gd          # Controller logic
 
 data/
-├── level_map_config.json   # Visual map configuration
-└── levels.json             # Level data and progress
+└── level_map_config.json   # Map config and level metadata
 
 content/
-└── thumbnails/             # Level thumbnail images
-    ├── tutorial.png
-    ├── crate_test.png
-    └── ...
+└── thumbnails/             # Level thumbnails
+    ├── Level00.png
+    ├── Level01.png
+    ├── Level02.png
+    └── Level_GiantBoss.png
 
 tools/
-├── LevelMapEditor.gd       # Configuration editor script
+├── LevelMapEditor.gd       # Config editor helpers
 └── ThumbnailGenerator.gd   # Thumbnail creation tool
 ```
 
-## 🎮 **Level Map Features**
+## Configuration
 
-### **Visual Status Indicators**
-- **🔒 Locked** - Level not yet unlocked (gray)
-- **🟢 Available** - Level unlocked and playable (white)
-- **✅ Completed** - Level finished with any score (orange)
-- **⭐ Perfect** - Level completed with gold rating (gold)
-
-### **Interactive Elements**
-- **Click to Select** - Opens detailed level popup
-- **Hover Effects** - Visual feedback on mouse over
-- **Scroll Navigation** - Smooth scrolling across the map
-- **Keyboard Support** - ESC to go back, arrow keys to navigate
-
-### **Progress Display**
-- **Overall Progress Bar** - Shows X/Y levels completed
-- **Completion Percentage** - Visual progress indicator
-- **Statistics Summary** - Total levels, completion rate
-- **Achievement Status** - Perfect completions highlighted
-
-## 🔧 **Configuration System**
-
-### **Level Map Configuration (`level_map_config.json`)**
+### level_map_config.json
 ```json
 {
   "map_config": {
-    "title": "Adventure Map",
-    "background_image": "res://content/map_background.png",
+    "title": "Select Level",
+    "layout": "grid",
+    "grid_columns": 3,
+    "card_size": { "width": 380, "height": 240 },
     "progress_bar": {
       "show": true,
-      "position": "top"
+      "position": "top",
+      "color_complete": "#4CAF50",
+      "color_incomplete": "#757575"
     },
     "dev_mode": {
       "unlock_all": false,
@@ -96,157 +74,54 @@ tools/
   "level_nodes": [
     {
       "id": "Level00",
-      "display_name": "Tutorial",
-      "description": "Learn the basic controls",
-      "position": {"x": 150, "y": 400},
-      "thumbnail": "res://content/thumbnails/tutorial.png",
+      "display_name": "First Steps",
+      "description": "Welcome to the adventure!",
+      "order": 1,
+      "thumbnail": "res://content/thumbnails/Level00.png",
       "difficulty": 1,
       "estimated_time": "2-3 min",
+      "rewards": ["Movement Master"],
       "unlock_requirements": {},
-      "connections": ["CrateTest"]
+      "theme_color": "#4CAF50"
     }
   ]
 }
 ```
 
-### **Level Data Integration (`levels.json`)**
-- **Unlock Status** - `unlocked: true/false`
-- **Best Scores** - `best_score: number`
-- **Best Times** - `best_time: seconds`
-- **Time Trial** - `time_trial_unlocked: true/false`
-- **Requirements** - `unlock_requirements: {}`
+Notes:
+- Unlock rules supported now: `previous_level`, `min_score`.
+- Additional fields like `deaths_max`, `relic_count` are planned but not enforced yet.
 
-## 🛠️ **Development Tools**
+## Persistence
+- Per-level data via `Persistence.get_level_completion(level_id)` for score, hearts, gems, completion.
+- Unlock checks are performed in `LevelMapPro.gd` using `unlock_requirements` + saved data from Persistence.
 
-### **Level Map Editor (`tools/LevelMapEditor.gd`)**
-```gdscript
-# Run in Godot Editor to modify configuration
-# Available operations:
-- add_level()        # Add new levels to the map
-- update_positions() # Reposition existing levels
-- set_dev_mode()     # Toggle development features
-- validate_config()  # Check configuration integrity
-```
+## Dev Mode & Cheat
+- `map_config.dev_mode.unlock_all`: unlock all in the selector (display-only, non-persistent).
+- `map_config.dev_mode.show_debug_info`: shows a header Dev button (DEV: ON/OFF) to toggle unlock-all.
+- Cheat: press `0` key 5 times quickly on the Level Map to enable the same unlock-all behavior. Plays `ui_level_unlock` SFX and refreshes the grid.
 
-### **Thumbnail Generator (`tools/ThumbnailGenerator.gd`)**
-```gdscript
-# Generates placeholder thumbnails
-# Creates 120x80 pixel images with:
-- Gradient backgrounds
-- Color-coded themes
-- Border styling
-- Automatic naming
-```
+## Thumbnails
+- Preloaded constants in `LevelMapPro.gd` for Level00/Level01/Level02/Level_GiantBoss for export safety.
+- When adding levels, either add a preload or adjust loader logic to include the new thumbnail.
 
-### **Easy Configuration Workflow**
-1. **Edit JSON** - Modify `level_map_config.json` directly
-2. **Use Editor Script** - Run `LevelMapEditor.gd` for guided changes
-3. **Generate Thumbnails** - Run `ThumbnailGenerator.gd` for placeholders
-4. **Validate** - Use validation tools to check integrity
-5. **Test** - Load level map to see changes
+## Scene Flow
+- Selecting a card sets `Game.current_level`, triggers a brief glitch effect, resets to dimension A, then loads `res://levels/{ID}.tscn` via `change_scene_to_file`.
+- Back button and Esc/Pause return to `ui/MainMenu.tscn` with the same transition.
 
-## 🎨 **Visual Customization**
+## Visual Customization
+- Card size and grid columns come from config; LevelMapPro adapts card width to viewport.
+- Status colors: white (unlocked), dimmed (locked), brightened (completed), golden (perfect).
+- Hearts row uses heart textures to show latest `hearts_remaining` or placeholder when unknown.
 
-### **Node Appearance**
-- **Size**: 120x80 pixels (configurable)
-- **Thumbnails**: Custom images or generated placeholders
-- **Status Colors**: Different colors for each state
-- **Hover Effects**: Scale animation on mouse over
-- **Connection Lines**: Visual paths between levels
+## Performance
+- Preloads and avoids export-time file checks for robustness.
+- Smooth tweens for hover/focus; minimal idle processing.
 
-### **Theme Integration**
-- **Consistent Styling** with main menu theme
-- **Professional Typography** with proper font sizing
-- **Color Coordination** matching game's visual identity
-- **Responsive Layout** adapting to screen sizes
+## Future Enhancements
+- [ ] Async thumbnail loading
+- [ ] Localization of labels and requirement strings
+- [ ] Accessibility improvements (screen reader hints)
+- [ ] Mobile refinements (touch scrolling, bigger hit areas)
 
-## 🔐 **Unlock System**
-
-### **Unlock Requirements**
-```json
-"unlock_requirements": {
-  "previous_level": "Level00",    // Must complete this level
-  "min_score": 100,               // Minimum score required
-  "deaths_max": 3,                // Maximum deaths allowed
-  "relic_count": 2                // Number of relics needed
-}
-```
-
-### **Progressive Unlocking**
-- **Linear Progression** - Complete levels in order
-- **Score Gates** - Achieve minimum scores to proceed
-- **Skill Gates** - Demonstrate mastery before advancing
-- **Achievement Gates** - Collect specific rewards
-
-### **Development Mode**
-- **Unlock All** - Bypass all requirements for testing
-- **Debug Info** - Show additional development information
-- **Quick Access** - Toggle via dev button in UI
-- **Easy Testing** - Rapid iteration during development
-
-## 📊 **Progress Tracking**
-
-### **Individual Level Progress**
-- **Completion Status** - Finished/not finished
-- **Best Performance** - Highest score achieved
-- **Time Records** - Fastest completion time
-- **Perfect Completion** - Gold rating achievement
-
-### **Overall Progress**
-- **Completion Percentage** - X% of levels finished
-- **Total Statistics** - Aggregate performance data
-- **Achievement Summary** - Perfect completions count
-- **Progression Rate** - Levels unlocked vs available
-
-## 🎮 **User Experience**
-
-### **Intuitive Navigation**
-- **Visual Map Layout** - Clear progression paths
-- **Status Indicators** - Immediate feedback on progress
-- **Detailed Information** - Comprehensive level details
-- **Easy Access** - Quick level selection and loading
-
-### **Smooth Interactions**
-- **Hover Feedback** - Visual response to mouse movement
-- **Click Animations** - Satisfying button interactions
-- **Smooth Scrolling** - Fluid map navigation
-- **Transition Effects** - Professional scene changes
-
-### **Information Clarity**
-- **Clear Labels** - Descriptive level names
-- **Difficulty Indicators** - Star-based rating system
-- **Time Estimates** - Expected completion duration
-- **Reward Preview** - What players will earn
-
-## 🚀 **Performance Optimization**
-
-### **Efficient Rendering**
-- **Minimal Draw Calls** - Optimized visual elements
-- **Texture Atlasing** - Combined thumbnail loading
-- **Smart Culling** - Only render visible elements
-- **Memory Management** - Proper resource cleanup
-
-### **Fast Loading**
-- **Cached Data** - Pre-loaded configuration
-- **Lazy Loading** - Load thumbnails on demand
-- **Efficient Parsing** - Optimized JSON processing
-- **Quick Transitions** - Minimal scene change overhead
-
-## 🔮 **Future Enhancements**
-
-### **Planned Features**
-- [ ] **Animated Backgrounds** - Dynamic map environments
-- [ ] **3D Level Previews** - Mini 3D scenes in thumbnails
-- [ ] **Social Features** - Compare progress with friends
-- [ ] **Custom Paths** - Player-defined progression routes
-- [ ] **Level Editor Integration** - Create levels from map
-- [ ] **Achievement Showcase** - Detailed reward displays
-
-### **Technical Improvements**
-- [ ] **Async Loading** - Background thumbnail loading
-- [ ] **Caching System** - Improved performance
-- [ ] **Localization** - Multi-language support
-- [ ] **Accessibility** - Screen reader compatibility
-- [ ] **Mobile Optimization** - Touch-friendly interface
-
-This professional level map system provides a solid foundation for engaging level progression with comprehensive configuration options and excellent user experience.
+This Level Map matches the current implementation and data schema, and is ready for extension with more levels and rules.

@@ -1,15 +1,21 @@
 # HintArea Dimension Support
 
-The HintArea system now supports dimension-aware hints that only appear in specific layers of the dimension system.
+HintArea supports dimension‑aware hints that only appear in specific layers (A/B) of the dimension system, and it integrates optional narration audio with automatic music ducking.
 
 ## New Features
 
 ### Dimension Support
 
-- **target_layer**: Set which dimension layer the hint belongs to ("A", "B", or "Both")
-- **auto_register_layer**: Automatically register with DimensionManager (default: true)
-- Hints only trigger when the player is in the matching dimension
-- "Both" option shows hints in all dimensions
+- **target_layer**: Set which dimension layer the hint belongs to ("A", "B", or "Both").
+- **auto_register_layer**: Automatically register with DimensionManager (default: true).
+- Hints only trigger when the player is in the matching dimension; switching away auto‑hides active hints.
+- "Both" option shows hints in all dimensions.
+
+### Narration Support
+
+- **narration_audio**: Optional audio clip (by name) from `audio/narration/`.
+- **narration_limit_enabled** + **narration_max_plays**: Prevent repetitive narration.
+- Audio system ducks music while narration plays and restores it on finish.
 
 ### Dynamic Hint Display
 
@@ -75,19 +81,10 @@ Level
 
 ## Testing
 
-Run the example scene to see dimension-aware hints in action:
-
-```bash
-godot --main-scene res://examples/Level_HintSystem.tscn
-```
-
-The example demonstrates:
-
-- Dimension-specific hints that only appear in their target layer
-- Universal hints that appear in both dimensions
-- Dynamic sizing with both short and long text content
-- Integration with the DimensionSwitch system
-- Visual indicators showing which dimension you're in
+- Add `actors/HintArea.tscn` to any level; set a visible collider.
+- Set `target_layer` to A/B/Both; switch dimension (key `F`) to verify behavior.
+- Set `narration_audio` to a valid clip name (e.g., a file in `audio/narration/` without extension) and verify music ducking.
+- Configure `auto_hide_delay` to test auto‑hide; confirm `force_hide_hint()` for scripted cleanup.
 
 ## Integration Notes
 

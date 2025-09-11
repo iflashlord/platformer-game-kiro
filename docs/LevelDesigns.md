@@ -1,118 +1,91 @@
 # Level Design Overview
 
-This document outlines the unique design themes and elements for each level in the game.
+This document summarizes the intended design, theme, and mechanics of the playable levels, aligned with the current implementation and the Level Map configuration.
 
-## Debug System
+## Debug & Tools
 
 ### Debug Borders
-- **Toggle Key**: F12 (debug_toggle)
-- **Purpose**: Shows colored borders around all interactive elements for development
-- **Easy Disable**: Set `DebugSettings.show_debug_borders = false` for deployment
-- **Colors**:
-  - 🟢 **Player**: Green border - main character
-  - 🔴 **Enemies**: Red border - dangerous entities
-  - 🟠 **Collectibles**: Orange border - fruits/items to collect
-  - 🟣 **Hidden Gems**: Purple border - special collectibles
-  - ⚫ **Hazards**: Gray border - spikes and dangers
-  - 🟤 **Interactive**: Brown border - crates and interactive objects
+- **Toggle**: `debug_toggle` input action.
+- **Purpose**: Colored borders around interactables during development.
+- **Disable for Release**: `DebugSettings.show_debug_borders = false`.
+- **Color Key**: Player (green), Enemies (red), Collectibles (orange), Hidden Gems (purple), Hazards (gray), Interactive (brown).
 
-## Level 01: Forest Adventure
-**Theme**: Natural forest environment
-**Difficulty**: Beginner
-**Color Palette**: Earth tones and greens
+### Common Systems
+- **Health**: 5-heart system with UI updates via `HealthSystem`/`GameHUD`.
+- **Timer**: Level timer via `GameTimer` and results summary.
+- **Results**: Completion screen (`ui/LevelResults.tscn`) showing score, hearts, time, gems.
+- **Persistence**: Best score/time, completions, hearts, gems saved per level.
 
-### Elements:
-- **Background**: Deep blue-green (0.15, 0.25, 0.4)
-- **Platforms**: Various earth tones for visual variety
-- **Enemies**: 1 EnemyPatrol (red)
-- **Collectibles**: 4 fruits (apple, banana, cherry, orange)
-- **Hidden Gems**: 1 emerald gem
-- **Hazards**: 2 spikes
-- **Interactive**: 2 crates, 2 flip gates
-- **Special**: Section markers for progression
+## Level00 — First Steps (Tutorial)
+- **Theme**: Soft forest/ruins intro; calm palette.
+- **Focus**: Movement, jumping (buffer/coyote), dimension flip, basic hazards.
+- **Traversal**: Simple platforms, a few jump pads, one or two dynamic platforms.
+- **Collectibles**: Fruits along the golden path; at least one Hidden Gem.
+- **Hazards**: Gentle spike placements; death zones below.
+- **Checkpoints**: Early and mid checkpoints.
+- **Portal**: Standard LevelPortal to finish; shows Level Results.
 
-### Scoring:
-- Base Score: 1000
-- Fruit Bonus: 50 points each
-- Gem Bonus: 100 points each
-- Perfect Completion: +500 bonus
+## Level01 — Mystic Realms
+- Refer to `docs/Level01_Design.md` for a detailed layout.
+- **Theme**: Forest adventure; earthy tones.
+- **Focus**: Crates (regular/bounce), first enemy encounters, secret paths.
+- **Traversal**: Larger gaps, vertical segments, optional side routes.
+- **Collectibles**: Fruits on main and optional routes; multiple Hidden Gems.
+- **Hazards**: Spike clusters; simple environmental traps.
+- **Enemies**: Patrol enemy; basic combat or avoidance; stomp enabled.
+- **Checkpoints**: Start, mid, pre-portal.
+- **Portal**: Completion gateway with effects.
 
-## Level 02: Industrial Zone
-**Theme**: Factory/industrial environment
-**Difficulty**: Intermediate
-**Color Palette**: Metallic grays and blues
+## Level02 — Parallel Worlds
+- **Theme**: Dimensional overlays; stronger use of A/B layers.
+- **Focus**: Dimension gating puzzles; switching to progress safely.
+- **Traversal**: Interleaved platforms across layers; moving platforms; jump pads.
+- **Collectibles**: Placed to encourage flips and exploration; Hidden Gems behind flips.
+- **Hazards**: Layer-specific spikes/hazards that force timing.
+- **Enemies**: Introduces FlyingEnemy with patrol/sine or chase behavior.
+- **Checkpoints**: Frequent to encourage experimentation.
+- **Portal**: Standard; hints at the boss ahead.
 
-### Elements:
-- **Background**: Dark industrial blue (0.15, 0.15, 0.25)
-- **Platforms**: Metallic colors (grays, blues, browns)
-- **Enemies**: 2 EnemyPatrol + 1 EnemyCharger
-- **Collectibles**: 5 industrial parts (gear, bolt, spring, wrench, oil)
-- **Hidden Gems**: 2 gems (sapphire, ruby)
-- **Hazards**: 3 spikes in clusters
-- **Interactive**: 3 crates, 2 flip gates
-- **Special**: More challenging enemy placement
+## Level_GiantBoss — The Giant’s Last Stand (Boss)
+- **Theme**: Arena confrontation; high-contrast palette; dramatic music.
+- **Focus**: Multi-phase boss with stomp/bounce windows and telegraphed attacks.
+- **Traversal**: Safe platforms, temporary hazards, dimension-aware opportunities.
+- **Hazards**: Boss projectiles, shockwaves, spike summons.
+- **UI**: `ui/BossHealthUI.*` shows boss health; `GameHUD` minimized.
+- **Victory**: Portal activates after boss defeat to finish level.
 
-### Scoring:
-- Base Score: 1500
-- Fruit Bonus: 75 points each
-- Gem Bonus: 150 points each
-- Perfect Completion: +750 bonus
-
-## Level 03: Sky Realm
-**Theme**: Clouds and sky environment
-**Difficulty**: Advanced
-**Color Palette**: Light blues and whites
-
-### Elements:
-- **Background**: Sky blue (0.6, 0.8, 1.0)
-- **Platforms**: Cloud platforms (semi-transparent whites/blues)
-- **Enemies**: 1 EnemyPatrol + 2 EnemyCharger
-- **Collectibles**: 6 sky essences (cloud, star, wind, lightning, rainbow, feather)
-- **Hidden Gems**: 3 gems (diamond, crystal, star)
-- **Hazards**: 2 spikes + 1 rolling boulder
-- **Interactive**: 3 crates, 3 flip gates
-- **Special**: Highest difficulty with most elements
-
-### Scoring:
-- Base Score: 2000
-- Fruit Bonus: 100 points each
-- Gem Bonus: 200 points each
-- Perfect Completion: +1000 bonus
+## Progression & Unlocks
+- Ordering and unlocks are defined in `data/level_map_config.json`.
+- Current sequence:
+  - `Level00` → `Level01` (previous level)
+  - `Level01` → `Level02` (previous level + min_score 100 on `Level01`)
+  - `Level02` → `Level_GiantBoss` (previous level + min_score 10 on `Level02`)
+- The Level Map shows lock reasons (e.g., “Need 100 points on Level01”).
 
 ## Design Principles
 
 ### Visual Distinction
-Each level uses a unique color palette to create distinct atmospheres:
-1. **Forest**: Earthy greens and browns
-2. **Industrial**: Metallic grays and blues  
-3. **Sky**: Light blues and whites
+- `Level00`: Soft greens/browns, onboarding clarity
+- `Level01`: Natural forest, richer contrast and secrets
+- `Level02`: Dimensional overlays, purple/blue accents
+- `Boss`: Stark arena, readable telegraphs
 
 ### Progressive Difficulty
-- **Level 01**: 1 enemy, 4 collectibles, 1 gem
-- **Level 02**: 3 enemies, 5 collectibles, 2 gems
-- **Level 03**: 3 enemies, 6 collectibles, 3 gems
+- `Level00`: Intro; low hazard density; basic flips
+- `Level01`: Adds crates, patrol enemies, secret hunts
+- `Level02`: Layer puzzles, moving pieces, flying enemy
+- `Boss`: Pattern recognition, timing, survivability
 
-### Unique Elements
-Each level introduces new challenges:
-- **Level 01**: Basic platforming
-- **Level 02**: Enemy clusters and industrial hazards
-- **Level 03**: Cloud platforms and rolling boulders
+### Feature Introduction
+- Early levels introduce one new mechanic at a time (crates, flips, enemy types) and reinforce mastery before the boss.
 
-## Development Features
+## Scoring & Completion
+- Fruits and gems increase score; Hidden Gems tracked separately.
+- Hearts remaining contribute to results; perfect runs track high hearts and full gem counts.
+- Level Results include: score, time, deaths, hearts, gems (incl. hidden), completion flag.
 
-### Debug System
-- **F12**: Toggle debug borders on/off
-- **Visual Feedback**: Colored borders around all interactive elements
-- **Easy Deployment**: Single boolean flag to disable all debug features
-
-### Health & Timer Systems
-- **5 Hearts**: Player health system
-- **Real-time Timer**: Level completion tracking
-- **Fall Damage**: Lose heart when falling into death zones
-- **Double Jump**: Enhanced movement mechanics
-- **No Ground Shake**: Smooth landing experience
-
-### Scoring System
-- **Progressive Rewards**: Higher scores for harder levels
-- **Completion Bonuses**: Extra points for collecting everything
-- **Time Bonuses**: Faster completion = higher scores
+## Development Notes
+- Use `LevelPortal` for completion and ensure `BaseLevel` emits results and saves via `Persistence`.
+- Group gems in `gems` and hidden items in `hidden_gems` for BaseLevel counters.
+- Place `Checkpoint` nodes at natural boundaries; hook into `Respawn`.
+- Playtest flips with `DimensionManager` to ensure hazards/threats align between layers.

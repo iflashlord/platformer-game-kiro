@@ -1,100 +1,119 @@
 # MainMenu Production Features
 
 ## Overview
-The MainMenu has been upgraded to production-level standards with modern UI/UX features, accessibility improvements, and professional polish.
+The MainMenu implements production-ready UX with clean navigation, platform-aware behavior, and polish aligned to the current codebase.
 
 ## New Features
 
-### 🎨 Visual Design
-- **Professional Theme System**: Custom theme with consistent styling across all UI elements
-- **Responsive Layout**: Adapts to different screen sizes and orientations
-- **Smooth Animations**: Fade-in transitions and button hover effects
-- **Visual Feedback**: Button scaling and color changes on interaction
-- **Background Effects**: Subtle particle system for visual appeal
+### Visual Design
+- **Theme**: Consistent custom theme via `ui/MainMenuTheme.tres`.
+- **Responsive layout**: Adapts to desktop and web viewports.
+- **Animations**: Fade-in intro; hover/focus tween scaling and tint.
+- **Glitch transition**: Optional menu glitch effect via `DimensionManager`.
 
-### 🎮 Enhanced Navigation
-- **Keyboard Navigation**: Full keyboard support with focus indicators
-- **Controller Support**: Gamepad navigation ready
-- **Accessibility**: Screen reader friendly with proper focus management
-- **Quick Actions**: Keyboard shortcuts for common actions
+### Navigation & Input
+- **Keyboard/gamepad**: Full focus navigation; Enter/Accept triggers focused button.
+- **Quick keys**: `Esc` triggers Quit (desktop), `pause` opens Options.
+- **Focus feedback**: Hover/focus SFX (`ui_hover`, `ui_focus`) and visual highlights.
 
-### 📱 Platform Optimization
-- **Web-Specific Features**: 
-  - Hides quit button on web platforms
-  - Shows appropriate control hints
-  - PWA-ready design
-- **Mobile Support**: Touch-friendly button sizes and spacing
-- **Desktop Features**: Full feature set with quit functionality
+### Platform Optimization
+- **Web**: Quit button hidden; control hints reflect keyboard on web.
+- **Mobile**: Touch hint text when `OS.has_feature("mobile")`.
+- **Version label**: Reads from `ProjectSettings.application/config/version`.
 
-### 🎵 Audio Integration
-- **Sound Effects**: Button hover, focus, and click sounds
-- **Menu Music**: Background music integration
-- **Audio Feedback**: Consistent audio cues for all interactions
+### Audio Integration
+- **Intro → Menu music**: Plays `game_intro`, then `menu_theme` loop.
+- **UI SFX**: `ui_select` on press; hover/focus cues with fallback if SFX missing.
 
 ## Menu Structure
 
-### Main Buttons
-1. **▶ PLAY** - Start new game (Tutorial level)
-2. **↻ CONTINUE** - Resume saved game (shows only if save exists)
-3. **🗺 LEVEL SELECT** - Access level selection screen
-4. **🏆 ACHIEVEMENTS** - View unlocked achievements
-5. **⚙ OPTIONS** - Game settings and preferences
-6. **📜 CREDITS** - Development credits and information
-7. **✕ QUIT** - Exit game (hidden on web platforms)
+### Main Buttons (as implemented)
+1. **▶ PLAY / CONTINUE** — Single button; label switches to “Continue” if a save exists.
+2. **🗺 LEVEL SELECT** — Opens the Level Map Pro screen.
+3. **⚙ OPTIONS** — Opens standalone settings (with reset progress).
+4. **📜 CREDITS** — Opens credits.
+5. **✕ QUIT** — Exits game (hidden on web platforms).
+
+Notes:
+- A separate “Continue” button exists in the scene but is hidden at runtime.
+- An Achievements screen exists in the repo but is not wired in the main menu yet.
 
 ### Additional Features
-- **Version Display**: Shows current game version
-- **Platform Info**: Displays control scheme hints
-- **Save Detection**: Automatically shows/hides continue button
-- **Loading Screens**: Smooth transitions between scenes
+- **Version Display**: `v{version}` in footer.
+- **Platform Info**: Web/desktop control hints.
+- **Save Detection**: Toggles Play label and focus based on persistence.
+- **Scene Transitions**: Direct `change_scene_to_file` with optional glitch effect.
 
 ## Technical Implementation
 
 ### Files Structure
 ```
 ui/
-├── MainMenu.tscn          # Main menu scene
-├── MainMenu.gd            # Main menu logic
-├── MainMenuTheme.tres     # UI theme resource
-├── CreditsMenu.tscn       # Credits screen
-├── CreditsMenu.gd         # Credits logic
-├── AchievementsMenu.tscn  # Achievements screen
-├── AchievementsMenu.gd    # Achievements logic
-├── LoadingScreen.tscn     # Loading transition
-├── LoadingScreen.gd       # Loading logic
-└── MenuNavigationHelper.gd # Navigation utilities
+├── MainMenu.tscn              # Main menu scene
+├── MainMenu.gd                # Main menu logic
+├── MainMenuTheme.tres         # Theme resource
+├── LevelMapPro.tscn/.gd       # Level select
+├── SettingsMenuStandalone.tscn/.gd  # Options screen
+├── CreditsMenu.tscn/.gd       # Credits screen
+├── LoadingScreen.tscn/.gd     # Optional loading transition
+└── MenuNavigationHelper.gd    # Optional navigation utilities
 ```
 
 ### Key Classes
-- `MainMenu` - Main menu controller with all navigation logic
-- `CreditsMenu` - Credits display with scrollable content
-- `AchievementsMenu` - Achievement tracking and display
-- `LoadingScreen` - Smooth scene transitions
-- `MenuNavigationHelper` - Reusable navigation utilities
+- `MainMenu` — Controller: setup, platform hints, button callbacks, SFX.
+- `SettingsMenuStandalone` — Settings + reset progress action.
+- `CreditsMenu` — Scrollable credits with back to menu.
+- `LevelMapPro` — Level selection and unlocks.
+- `LoadingScreen` — Optional transition scene.
+- `MenuNavigationHelper` — Helper utilities (not required by MainMenu).
 
 ## Integration Points
 
 ### Save System Integration
 ```gdscript
-# Checks for existing save data
-if Persistence and Persistence.has_save_data():
-    continue_button.visible = true
-    continue_button.grab_focus()
+var has_save_data := false
+if Persistence and Persistence.has_method("has_save_data"):
+    has_save_data = Persistence.has_save_data()
+
+# Single Play/Continue button behavior
+if has_save_data:
+    play_button.text = "  Continue"
+else:
+    play_button.text = "  Play"
+
+# Separate Continue button (present but hidden)
+continue_button.visible = false
+```
+
+On press:
+```gdscript
+func _on_play_pressed():
+    if has_save_data and Persistence.has_method("get_next_recommended_level"):
+        var target = Persistence.get_next_recommended_level()
+        change_scene_to_file(target)
+    else:
+        change_scene_to_file("res://levels/Level00.tscn")
 ```
 
 ### Audio System Integration
 ```gdscript
-# Plays menu music and sound effects
-Audio.play_music("menu_theme")
-Audio.play_sfx("ui_select")
+# Intro → menu loop
+Audio.play_music("game_intro", false)
+await get_tree().create_timer(4.0).timeout
+Audio.play_music("menu_theme", true)
+
+# UI SFX with fallback
+_play_ui_sound("ui_select")    # press
+_play_ui_sound("ui_hover")     # hover
+_play_ui_sound("ui_focus")     # focus
 ```
 
-### Achievement System Integration
-```gdscript
-# Loads and displays achievement progress
-for achievement in achievements:
-    achievement.unlocked = Persistence.get_achievement(achievement.id)
-```
+### Scene Routes
+- Play/Continue → `res://levels/Level00.tscn` (or next recommended level)
+- Level Select → `res://ui/LevelMapPro.tscn`
+- Options → `res://ui/SettingsMenuStandalone.tscn`
+- Credits → `res://ui/CreditsMenu.tscn`
+- Quit → `get_tree().quit()` (desktop only in practice)
 
 ## Customization Options
 
@@ -115,76 +134,66 @@ Modify `ui/MainMenu.tscn` to adjust:
 ### Content Customization
 Update scripts to modify:
 - Menu options and navigation
-- Achievement definitions
+- Save/continue rules (`Persistence` helpers)
 - Credits information
-- Loading messages
+- Loading/transition behavior
 
 ## Best Practices
 
 ### Performance
-- Uses object pooling for particles
-- Efficient signal connections
-- Minimal processing during idle
-- Optimized for web deployment
+- Efficient signal connections and minimal idle work
+- Tween-based hover/focus for lightweight effects
+- Web-optimized assets per project settings
 
 ### Accessibility
-- Full keyboard navigation
-- Focus indicators
-- Screen reader compatibility
-- High contrast support
+- Full keyboard navigation and focus visuals
+- Clear audio cues on hover/focus/press
+- High-contrast theme support via theme overrides
 
 ### Maintainability
-- Modular component design
-- Reusable helper classes
-- Clear separation of concerns
-- Comprehensive documentation
+- Modular files and single-responsibility scripts
+- Optional helpers (Navigation, Loading) to keep MainMenu simple
+- Clear scene route constants for easy updates
 
 ## Future Enhancements
 
 ### Planned Features
-- [ ] Animated background scenes
-- [ ] More achievement categories
-- [ ] Social features integration
-- [ ] Cloud save synchronization
-- [ ] Multiple language support
-- [ ] Advanced graphics options
+- [ ] Wire Achievements into the main menu
+- [ ] Animated/background vignette variants
+- [ ] Cloud save sync and profiles
+- [ ] Localization (multi-language UI)
+- [ ] Advanced graphics/options presets
 
 ### Extension Points
-- Custom theme variants
-- Additional menu screens
-- Enhanced particle effects
-- Dynamic content loading
-- User profile system
+- Custom theme variants and SFX packs
+- Alternative transitions (shader-based, wipes)
+- Dynamic content (e.g., news panel, tips)
 
 ## Testing
 
 ### Manual Testing Checklist
-- [ ] All buttons respond correctly
-- [ ] Keyboard navigation works
-- [ ] Audio plays appropriately
-- [ ] Save detection functions
-- [ ] Platform-specific features work
-- [ ] Responsive layout adapts
-- [ ] Animations play smoothly
+- [ ] Play label switches to “Continue” when a save exists
+- [ ] Hover/focus visual + audio cues trigger
+- [ ] Web hides Quit; desktop shows Quit
+- [ ] Keyboard/gamepad focus navigation works
+- [ ] Scene routes open correct targets
+- [ ] Intro → menu music sequence plays
 
 ### Automated Testing
-- Unit tests for menu logic
-- Integration tests for save system
-- Performance benchmarks
-- Cross-platform compatibility
+- Unit tests for route selection and label toggling
+- Integration tests for persistence detection
+- Smoke tests for platform differences (Web/Desktop)
 
 ## Deployment Notes
 
 ### Web Deployment
 - Quit button automatically hidden
-- Touch controls enabled
-- PWA manifest integration
-- Optimized loading times
+- Touch hints shown on mobile feature
+- Optimized loading (see WebOptimization.md)
 
 ### Desktop Deployment
 - Full feature set available
-- Native window controls
-- System integration ready
-- High DPI support
+- Native window controls and exit flow
+- High DPI support per project settings
 
-This production-level MainMenu provides a solid foundation for professional game deployment while maintaining the flexibility for future enhancements and customization.
+This MainMenu reflects current behavior in `ui/MainMenu.gd` and is ready for production with clear paths for future enhancements.

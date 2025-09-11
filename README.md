@@ -1,188 +1,170 @@
-# Glitch Dimension
+# Glitch Dimension - Broken Reality
 
-A fast-paced 2D platformer built with Godot 4.4, featuring dimension-shifting mechanics, challenging levels, and smooth web deployment.
+## Overview
+
+A 2D platformer built with Godot 4.4 featuring dimension-shifting, a professional level select with unlocks, and smooth web deployment get inspired from classic platformers like Crash Bandicoot.
 
 ## 🎮 Play Online
 
-**[Play Now on Vercel](https://glitch-dimension.vercel.app/)**
+https://glitch-dimension-broken-reality.behrouz.nl/
 
-## ✨ Features
+## 📚 Docs Quick Links
 
-- **Dimension Shifting**: Switch between layers to navigate complex puzzles
-- **Responsive Controls**: Coyote time, jump buffering, and variable jump height
-- **Progressive Levels**: From tutorial to expert chase sequences
-- **Hidden Secrets**: Collectible gems and unlockable content
-- **Touch Support**: Mobile-friendly controls for web play
-- **Visual Effects**: Particle systems, screen shake, and hit-stop feedback
-- **Audio System**: Dynamic music and sound effects with volume controls
-- **Performance Optimized**: Object pooling, sprite atlases, and efficient rendering
+- Architecture: `docs/Architecture.md`
+- Save Data: `docs/SaveData.md`
+- Level Map Config: `docs/LevelMapConfig.md`
+- Game Config: `docs/GameConfig.md`
+- Audio System: `docs/AudioSystem.md`
+- Analytics: `docs/Analytics.md`
+- Web Optimization: `docs/WebOptimization.md`
+- Deployment Guide: `docs/DEPLOYMENT_GUIDE.md`
 
-## 🎯 Game Mechanics
+## ✨ Highlights
 
-### Core Movement
-- **WASD/Arrow Keys**: Movement and jumping
-- **Space**: Primary jump button
-- **S**: Dimension flip between layers A and B
-- **ESC**: Pause menu
-- **R**: Restart current level
+- **Dimension Flip**: Switch layers on the fly to solve puzzles and avoid hazards.
+- **Tight Platforming**: Coyote time, jump buffering, variable jump, double-jump.
+- **Level Select (Pro)**: Polished horizontal card UI with thumbnails, hearts and scores, keyboard/mouse navigation, and unlock rules from data.
+- **Progress & Saves**: Cross‑platform persistence (file on desktop, localStorage on web) with best runs and stats.
+- **Boss Battle**: Giant Boss encounter with dedicated health UI and mechanics.
+- **Touch Ready**: Mobile touch controls for web/mobile builds.
+- **Production Systems**: Audio buses + pooling, FX (shake/flash), object pool, event bus, analytics, pause/scene managers.
 
-### Advanced Techniques
-- **Coyote Time**: Jump briefly after leaving platforms
-- **Jump Buffering**: Press jump before landing for instant response
-- **Variable Jump**: Hold jump for higher jumps, release for shorter hops
-- **Mid-Air Flipping**: Use flip gates to change dimensions while jumping
+## 🎯 Controls
 
-## 🏗️ Development Setup
+- **Move**: `A/D` or Arrow Keys
+- **Jump**: `Space` or `W`/Up Arrow
+- **Flip Dimension**: `F`
+- **Pause**: `Esc`
+- **Restart Level**: `R`
 
-### Prerequisites
-- [Godot 4.3+](https://godotengine.org/download)
-- Git for version control
-- Node.js (for Vercel deployment)
+Touch controls are available on web/mobile (movement, jump, dimension flip).
 
-### Local Development
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/glitch-dimension.git
-cd glitch-dimension
+### Cheat Code (Level Map)
 
-# Open in Godot
-godot project.godot
+- On the Level Select screen, press the `0` key five times quickly to unlock all levels (dev unlock; does not modify save data).
 
-# Or run directly
-godot --main-scene res://ui/MainMenu.tscn
+## 🧱 Tech Overview
+
+- **Engine**: Godot 4.4 (GL Compatibility renderer for web).
+- **Autoloads**: See `project.godot` and `docs/Architecture.md` for global singletons.
+- **Input Map**: Declared in `project.godot:[input]` (WASD/arrows, `Space`/`W` jump, `F` flip, `Esc` pause, `R` restart).
+- **Persistence**: File on desktop or `localStorage` on web; schema in `docs/SaveData.md`.
+- **Data-Driven**: Level map and unlock rules in `data/level_map_config.json`; game tuning in `data/game_config.json`.
+
+## 🗺️ Level Select & Progression
+
+- **Unlock Rules**: Defined in `data/level_map_config.json` (per‑level requirements like previous level, min score, deaths max).
+- **Hearts & Scores**: Level cards show latest/best score and hearts remaining from your best completion.
+- **Dev Mode**: Optional dev mode can unlock all levels in the selector UI; a simple cheat is available on the map (press `0` five times quickly).
+- **Persistence**: Best scores/times, completions, attempts, deaths, and per‑level completion details are tracked in `systems/Persistence.gd`.
+
+Key scenes and scripts:
+- `ui/LevelMapPro.tscn` + `ui/LevelMapPro.gd`: Professional level map UI and navigation.
+- `systems/Persistence.gd`: Save format, unlock logic, “Reset Everything” support from settings.
+- `data/level_map_config.json`: Level metadata, order, thumbnails, unlock rules, visuals.
+
+See `docs/LevelMapConfig.md` for the full schema.
+
+## 🧩 Core Systems
+
+- **Game State**: `systems/Game.gd` signals for pause, restart, scoring, collectibles.
+- **Audio**: `systems/Audio.gd` with Master/Music/SFX buses, SFX player pool, runtime volume control, narration ducking.
+- **FX**: `systems/FX.gd` for screen shake, flashes, hit-stop.
+- **Pause**: `systems/PauseManager.gd` + `ui/PauseMenu.tscn` with resume/restart/level select/main menu.
+- **Scene Flow**: `systems/SceneManager.gd` with simple transitions and main routes.
+- **Persistence**: Cross‑platform saves, level completions, stats, unlocks; reset via `ui/SettingsMenu.tscn` (“Reset Everything”).
+- **Analytics**: `systems/Analytics.gd` batching to a local log (`user://analytics_log.json`) with gameplay/UI/performance events.
+- **Object Pool**: `systems/ObjectPool.gd` for performance and memory reuse.
+
+## 🏗️ Project Structure
+
+```
+actors/      # Player, enemies (e.g., GiantBoss), collectibles, hazards
+systems/     # Core game systems (Audio, FX, Game, Persistence, Pause, Scene, etc.)
+ui/          # Menus, HUD, Level Map, Results, Settings, Touch Controls
+levels/      # Playable levels and base level script
+data/        # Config JSONs (level map, game settings)
+audio/       # Music, SFX, narration, bus layout
+content/     # Sprites, thumbnails, icons
+tools/       # Editor and export helpers (LevelMapEditor, BuildManager, etc.)
+docs/        # Feature guides and technical docs
+web-dist/    # Prebuilt web export (HTML/JS/WASM/PCK)
+vercel.json  # Static headers for web hosting (COEP/COOP, caching)
 ```
 
-### Project Structure
+## 🧪 Gameplay & UI Overview
+
+- **Player Movement**: `actors/Player.gd` implements variable jump, coyote time, jump buffer, double-jump, stomp bounce, invincibility frames.
+- **Level Base**: `levels/BaseLevel.gd` integrates HUD, health, results (`ui/LevelResults.tscn`) and saves completion data.
+- **Main Menu**: `ui/MainMenu.tscn/gd` with platform hints, intro music sequence, and transitions.
+- **Boss Fight**: `levels/Level_GiantBoss.tscn` with `ui/BossHealthUI.*`.
+- **Touch Controls**: `ui/TouchControls.tscn/gd` for mobile/web.
+
+## 🛠️ Local Development
+
+- **Prerequisites**: Godot 4.4, optional Node.js (for Vercel CLI), Git.
+- **Open Project**: `godot project.godot`
+- **Run**: Start from the Main Menu or any level (`ui/MainMenu.tscn`, `ui/LevelMapPro.tscn`).
+
+Example CLI:
 ```
-├── actors/          # Player, enemies, collectibles
-├── systems/         # Core game systems (Audio, FX, etc.)
-├── ui/             # Menus and interface
-├── levels/         # Game levels and scenes
-├── data/           # Configuration files
-├── content/        # Sprites and assets
-├── audio/          # Music and sound effects
-├── docs/           # Documentation
-└── .github/        # CI/CD workflows
+godot --editor project.godot
+godot --path . --main-scene res://ui/MainMenu.tscn
 ```
 
 ## 🚀 Deployment
 
-### Automatic Deployment
-This project uses GitHub Actions for automatic deployment to Vercel:
+- **Prebuilt Web**: `web-dist/` contains an export ready to host (paired with `vercel.json`).
+- **Custom Export**: Export “Web” from Godot 4.4 to a folder (e.g., `web-dist/`).
+- **Vercel**: Deploy the static folder.
 
-1. **Fork this repository**
-2. **Set up Vercel project** and get your tokens
-3. **Add GitHub Secrets**:
-   - `VERCEL_TOKEN`: Your Vercel API token
-   - `VERCEL_ORG_ID`: Your Vercel organization ID
-   - `VERCEL_PROJECT_ID`: Your Vercel project ID
-4. **Push to main branch** - deployment happens automatically!
-
-### Manual Deployment
-```bash
-# Export HTML5 build
-godot --headless --export-release "Web" build/web/index.html
-
-# Deploy to Vercel
-cd build/web
+Example with Vercel CLI:
+```
+cd web-dist
 vercel --prod
 ```
 
-See [Deployment Guide](docs/Deployment.md) for detailed instructions.
+See docs/DEPLOYMENT_GUIDE.md and docs/WebOptimization.md for details.
 
-## 🎨 Game Design
+## 🔒 Privacy & Security
 
-### Level Progression
-1. **Level00**: Tutorial - Basic movement and mechanics
-2. **Level01**: First Steps - Introduction to dimension gates
-3. **Level02**: Forest Canopy - Multi-layer platforming with enemies
-4. **Level03**: Crystal Caves - Complex hazards and precise timing
-5. **Chase01**: The Great Escape - High-speed chase with pursuing wall
+- Analytics is offline by default: events batch to a local file (`user://analytics_log.json`). No network transmission. See `docs/Analytics.md`.
+- Security policy and reporting: `SECURITY.md`.
 
-### Scoring System
-- **Base Score**: Completion bonus per level
-- **Time Bonus**: Faster completion = higher score
-- **Collectibles**: Hidden gems provide significant bonuses
-- **Relics**: Bronze/Silver/Gold rankings based on completion time
+## 📚 Documentation
 
-### Hidden Content
-Each level contains one hidden gem:
-- **Emerald** (Level01): 150 points
-- **Sapphire** (Level02): 200 points  
-- **Diamond** (Level03): 300 points
-- **Amethyst** (Chase01): 250 points
-
-## 🛠️ Technical Details
-
-### Performance Optimizations
-- **Object Pooling**: Reuses particles, projectiles, and temporary objects
-- **Sprite Atlases**: Batches rendering calls for better performance
-- **Signal-Based Events**: Eliminates per-frame polling overhead
-- **Efficient Collision**: Layer-based collision detection
-
-### Web Optimization
-- **Canvas Items Stretch**: Maintains pixel-perfect scaling
-- **Compressed Assets**: Optimized textures and audio
-- **Progressive Loading**: Loads critical assets first
-- **CORS Headers**: Proper configuration for web deployment
-
-### Browser Compatibility
-- **WebGL 2.0** support (fallback to WebGL 1.0)
-- **Web Audio API** for sound
-- **Touch Events** for mobile devices
-- **Gamepad API** for controller support
-
-## 📊 Analytics and Monitoring
-
-The game includes built-in analytics for:
-- Level completion rates
-- Average completion times
-- Death locations and causes
-- Collectible discovery rates
-- Performance metrics
+- Main Menu Features: `docs/MainMenu_Features.md`
+- Pause System: `docs/PauseSystem_Features.md`
+- Portal System: `docs/PortalSystem.md`
+- Giant Boss Guide: `docs/GiantBoss_Guide.md`
+- Web Optimization: `docs/WebOptimization.md`
+- Deployment Guide: `docs/DEPLOYMENT_GUIDE.md`
+- Texture Guide: `docs/TextureGuide.md`
+- Asset Checklist: `docs/AssetChecklist.md`
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- Read `CONTRIBUTING.md` for setup, workflow, and quality checks.
+- **Branch**: `git checkout -b feature/your-change`
+- **Commit**: `git commit -m "feat: describe your change"`
+- **PR**: Open a Pull Request (include screenshots/GIFs for UI).
 
-### Development Guidelines
-- Follow Godot's GDScript style guide
-- Add comments for complex mechanics
-- Test on multiple browsers before submitting
-- Update documentation for new features
+Guidelines:
+- Follow Godot GDScript conventions and keep changes focused.
+- Test on web and desktop; verify level select/progression and saves.
+- Update docs if you add or change features.
+
+See also: `CODE_OF_CONDUCT.md`.
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see `LICENSE`.
 
-## 🙏 Acknowledgments
+## 🙏 Credits
 
-- **Behrouz Pooladrak**: Game Developer - [www.behrouz.nl](https://www.behrouz.nl)
-- **Kiro IDE**: Development environment for Vibe coding and development
-- **Godot Engine**: Amazing open-source game engine
-- **barichello/godot-ci**: Docker images for CI/CD
-- **Vercel**: Excellent hosting platform
-- **GitHub Actions**: Automated deployment pipeline
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/glitch-dimension/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/glitch-dimension/discussions)
-- **Documentation**: [docs/](docs/) folder
-
-## 🎯 Roadmap
-
-- [ ] Additional levels and worlds
-- [ ] Multiplayer support
-- [ ] Level editor
-- [ ] Steam integration
-- [ ] Mobile app versions
-- [ ] Speedrun leaderboards
-
----
-
-**Built with ❤️ by Behrouz Pooladrak using Godot Engine and Kiro IDE**
+- Behrouz Pooladrak — https://www.behrouz.nl
+- Make with ❤️ using Kiro IDE from Amazon
+- Godot Engine community
+- Vercel (hosting)
+- Kenney - For providing amazing game assets
+ 

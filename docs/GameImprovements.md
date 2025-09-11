@@ -61,8 +61,8 @@
 
 ## ✅ **5. Debug System**
 
-### **F12 Toggle System**
-- **Runtime Toggle**: Press F12 to show/hide debug borders
+### **Debug Toggle System**
+- **Runtime Toggle**: Use the `debug_toggle` action to show/hide debug borders (see input map)
 - **Development Mode**: Borders enabled by default in debug builds
 - **Production Ready**: Single flag to disable all debug features
 - **Visual Feedback**: Clear indication when borders are toggled
@@ -124,7 +124,7 @@
 ### **Developer-Friendly**
 - **Easy Testing**: Debug test level with all elements
 - **Visual Debugging**: Clear borders show interaction areas
-- **Quick Iteration**: F12 toggle for rapid testing
+- **Quick Iteration**: Debug toggle action for rapid testing
 - **Production Ready**: Easy deployment without debug features
 
 ### **Professional Polish**
