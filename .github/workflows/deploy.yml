@@ -1,4 +1,4 @@
-name: Deploy HTML5 Game to Vercel
+name: Deployment of the Game
 
 on:
   push:
