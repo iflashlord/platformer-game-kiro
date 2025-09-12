@@ -36,7 +36,7 @@ Thanks for your interest in improving Glitch Dimension! This guide helps you get
 - Actors: follow existing patterns in `actors/` and make elements reusable and not linked to specific levels, this will help to easily create new levels by drag and drop to the editor view.
 - Dimensions: use `DimensionManager` and `LayerObject` for layer‑specific behavior to make sure the dimension flip works correctly for new elements. All should have option to select layer A or B or Both.
 - UI: reuse existing themes and patterns (see `ui/` and `docs/`).
-- Audio: follow the conventions in `docs/AudioSystem.md`.
+- Audio: follow the conventions in `docs/audio-system.md`.
 - Data: document any new fields in `docs/` and validate JSON.
 
 ## Reporting Issues
@@ -47,4 +47,3 @@ Thanks for your interest in improving Glitch Dimension! This guide helps you get
 ## Code of Conduct
 
 By participating, you agree to uphold the standards in `CODE_OF_CONDUCT.md`.
-

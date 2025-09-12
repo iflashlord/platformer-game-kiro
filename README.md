@@ -10,14 +10,14 @@ https://glitch-dimension-broken-reality.behrouz.nl/
 
 ## 📚 Docs Quick Links
 
-- Architecture: `docs/Architecture.md`
-- Save Data: `docs/SaveData.md`
-- Level Map Config: `docs/LevelMapConfig.md`
-- Game Config: `docs/GameConfig.md`
-- Audio System: `docs/AudioSystem.md`
-- Analytics: `docs/Analytics.md`
-- Web Optimization: `docs/WebOptimization.md`
-- Deployment Guide: `docs/DEPLOYMENT_GUIDE.md`
+- Architecture: [docs/architecture.md](docs/architecture.md)
+- Save Data: [docs/save-data.md](docs/save-data.md)
+- Level Map Config: [docs/level-map-config.md](docs/level-map-config.md)
+- Game Config: [docs/game-config.md](docs/game-config.md)
+- Audio System: [docs/audio-system.md](docs/audio-system.md)
+- Analytics: [docs/analytics.md](docs/analytics.md)
+- Web Optimization: [docs/web-optimization.md](docs/web-optimization.md)
+- Deployment Guide: [docs/deployment-guide.md](docs/deployment-guide.md)
 
 ## ✨ Highlights
 
@@ -46,9 +46,9 @@ Touch controls are available on web/mobile (movement, jump, dimension flip).
 ## 🧱 Tech Overview
 
 - **Engine**: Godot 4.4 (GL Compatibility renderer for web).
-- **Autoloads**: See `project.godot` and `docs/Architecture.md` for global singletons.
+- **Autoloads**: See `project.godot` and `docs/architecture.md` for global singletons.
 - **Input Map**: Declared in `project.godot:[input]` (WASD/arrows, `Space`/`W` jump, `F` flip, `Esc` pause, `R` restart).
-- **Persistence**: File on desktop or `localStorage` on web; schema in `docs/SaveData.md`.
+- **Persistence**: File on desktop or `localStorage` on web; schema in `docs/save-data.md`.
 - **Data-Driven**: Level map and unlock rules in `data/level_map_config.json`; game tuning in `data/game_config.json`.
 
 ## 🗺️ Level Select & Progression
@@ -63,7 +63,7 @@ Key scenes and scripts:
 - `systems/Persistence.gd`: Save format, unlock logic, “Reset Everything” support from settings.
 - `data/level_map_config.json`: Level metadata, order, thumbnails, unlock rules, visuals.
 
-See `docs/LevelMapConfig.md` for the full schema.
+See `docs/level-map-config.md` for the full schema.
 
 ## 🧩 Core Systems
 
@@ -124,7 +124,7 @@ cd web-dist
 vercel --prod
 ```
 
-See docs/DEPLOYMENT_GUIDE.md and docs/WebOptimization.md for details.
+See `docs/deployment-guide.md` and `docs/web-optimization.md` for details.
 
 ## 📦 Releases & Downloads
 
@@ -148,19 +148,18 @@ Web version:
 
 ## 🔒 Privacy & Security
 
-- Analytics is offline by default: events batch to a local file (`user://analytics_log.json`). No network transmission. See `docs/Analytics.md`.
+- Analytics is offline by default: events batch to a local file (`user://analytics_log.json`). No network transmission. See `docs/analytics.md`.
 - Security policy and reporting: `SECURITY.md`.
 
 ## 📚 Documentation
 
-- Main Menu Features: `docs/MainMenu_Features.md`
-- Pause System: `docs/PauseSystem_Features.md`
-- Portal System: `docs/PortalSystem.md`
-- Giant Boss Guide: `docs/GiantBoss_Guide.md`
-- Web Optimization: `docs/WebOptimization.md`
-- Deployment Guide: `docs/DEPLOYMENT_GUIDE.md`
-- Texture Guide: `docs/TextureGuide.md`
-- Asset Checklist: `docs/AssetChecklist.md`
+- Main Menu Features: [docs/main-menu-features.md](docs/main-menu-features.md)
+- Pause System: [docs/pause-system-features.md](docs/pause-system-features.md)
+- Portal System: [docs/portal-system.md](docs/portal-system.md)
+- Giant Boss Guide: [docs/giant-boss-guide.md](docs/giant-boss-guide.md)
+- Web Optimization: [docs/web-optimization.md](docs/web-optimization.md)
+- Deployment Guide: [docs/deployment-guide.md](docs/deployment-guide.md)
+- Assets: [docs/assets.md](docs/assets.md)
 
 ## 🤝 Contributing
 

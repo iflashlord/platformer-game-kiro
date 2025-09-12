@@ -1,6 +1,6 @@
 # Deployment (Deprecated)
 
-This document is superseded by `docs/DEPLOYMENT_GUIDE.md`.
+This document is superseded by `docs/deployment-guide.md`.
 
 Quick start for web:
 
@@ -10,5 +10,4 @@ cd web-dist
 vercel --prod
 ```
 
-For headers and caching, see the `vercel.json` in the project root. For optimization tips, see `docs/WebOptimization.md`.
-
+For headers and caching, see the `vercel.json` in the project root. For optimization tips, see `docs/web-optimization.md`.
