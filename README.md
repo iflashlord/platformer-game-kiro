@@ -126,6 +126,26 @@ vercel --prod
 
 See docs/DEPLOYMENT_GUIDE.md and docs/WebOptimization.md for details.
 
+## 📦 Releases & Downloads
+
+- GitHub Actions builds platform zips as artifacts for macOS, Windows, and Linux.
+- Tagged builds (`v*`) publish a GitHub Release with assets attached for public download.
+
+How to create a release:
+- Bump your version, then tag and push: `git tag v1.0.0 && git push --tags`.
+- GitHub Actions runs the export jobs and attaches these files under Releases → Assets:
+  - macOS: `glitch-dimension.zip` (unsigned app inside; right‑click → Open on first launch)
+  - Windows: `glitch-dimension-windows.zip` (.exe + .pck)
+  - Linux: `glitch-dimension-linux.zip` (.x86_64 + .pck)
+
+Where to download without a tag:
+- Go to Actions → select a successful run → Artifacts → download `macos-build`, `windows-build`, or `linux-build`.
+- Note: artifacts require a GitHub login and expire after 14 days.
+
+Web version:
+- The HTML5 build is deployed to Vercel on main/master pushes and manual runs.
+- See the Action logs for the deployment URL, or use the permanent link at the top of this README.
+
 ## 🔒 Privacy & Security
 
 - Analytics is offline by default: events batch to a local file (`user://analytics_log.json`). No network transmission. See `docs/Analytics.md`.
